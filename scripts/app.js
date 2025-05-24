@@ -31,8 +31,20 @@ document.addEventListener('DOMContentLoaded', function() {
     grammarSubmenu.style.display = 'none';
     if (practiceTypeSelect.value === 'vocabulary_practice') {
       vocabSubmenu.style.display = 'flex';
+      // Auto-select first submenu button for vocabulary
+      const firstBtn = vocabSubmenu.querySelector('.submenu-btn');
+      if (firstBtn) {
+        vocabSubmenu.querySelectorAll('.submenu-btn').forEach(btn => btn.classList.remove('active'));
+        firstBtn.classList.add('active');
+      }
     } else if (practiceTypeSelect.value === 'grammar_practice') {
       grammarSubmenu.style.display = 'flex';
+      // Auto-select first submenu button for grammar
+      const firstBtn = grammarSubmenu.querySelector('.submenu-btn');
+      if (firstBtn) {
+        grammarSubmenu.querySelectorAll('.submenu-btn').forEach(btn => btn.classList.remove('active'));
+        firstBtn.classList.add('active');
+      }
     }
     // No submenu for speaking_practice
   });
