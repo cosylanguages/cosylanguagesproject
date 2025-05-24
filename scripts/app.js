@@ -49,8 +49,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function updateGenderButtonVisibility() {
     const genderBtn = document.querySelector('[data-practice="gender"]');
-    const hasGender = ['COSYfrançais', 'COSYdeutsch', 'COSYitaliano', 'COSYespañol'].includes(languageSelect.value);
-    genderBtn.style.display = hasGender ? 'block' : 'none';
+    if (languageSelect.value === 'COSYenglish') {
+      genderBtn.style.display = 'none';
+    } else {
+      genderBtn.style.display = 'block';
+    }
   }
 
   // Submenu button click handler
@@ -63,7 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
       e.target.classList.add('active');
       const practiceType = e.target.getAttribute('data-practice');
       const language = languageSelect.value;
-      // Accept day or day range
       const day = daySelect.value;
       const dayFrom = document.getElementById('day-from-select')?.value;
       const dayTo = document.getElementById('day-to-select')?.value;
@@ -96,7 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
           handleRandomImage(language, days);
           break;
         case 'gender':
-          showGrammarGenderPractice(language, days[0]);
+          if (language === 'COSYenglish') {
+            showMessage('Gender practice is not available for English.');
+          } else {
+            showGrammarGenderPractice(language, days[0]);
+          }
+          break;
+        case 'verb':
+          showGrammarVerbPractice(language, days[0]);
           break;
       }
     }
@@ -217,6 +226,44 @@ document.addEventListener('DOMContentLoaded', function() {
     questionDiv.onclick = function() {
       feedbackDiv.textContent = `Correct article: ${word.article}`;
     };
+    feedbackDiv.textContent = '';
+    resultContainer.append(questionDiv, optionsEl, feedbackDiv);
+  }
+
+  function showGrammarVerbPractice(language, day) {
+    resultContainer.innerHTML = '';
+    if (!day || day < 2) {
+      showMessage('Verb practice is only available from Day 2.');
+      return;
+    }
+    const data = verbPracticeData[language]?.[day];
+    if (!data || !data.length) return showMessage('No verb practice available');
+    // If data is array of strings, convert to prompt/answer pairs for demo
+    let items = data;
+    if (typeof data[0] === 'string') {
+      // For demo: show the string as prompt, answer is the same
+      items = data.map(str => ({ prompt: str, answer: str }));
+    }
+    const item = randomElement(items);
+    const questionDiv = document.createElement('div');
+    questionDiv.id = 'grammar-question';
+    questionDiv.textContent = item.prompt;
+    const optionsEl = document.createElement('div');
+    optionsEl.id = 'grammar-options';
+    optionsEl.className = 'grammar-gender-options';
+    // For verbs, just show a single button to reveal the answer (like image practice)
+    const showBtn = document.createElement('div');
+    showBtn.className = 'gender-option';
+    showBtn.textContent = 'Show Answer';
+    showBtn.addEventListener('click', () => {
+      showBtn.textContent = item.answer;
+      showBtn.classList.add('show-answer');
+      feedbackDiv.textContent = '✔';
+      feedbackDiv.style.color = '#4CAF50';
+    });
+    optionsEl.appendChild(showBtn);
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.id = 'grammar-feedback';
     feedbackDiv.textContent = '';
     resultContainer.append(questionDiv, optionsEl, feedbackDiv);
   }
