@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
       genderBtn.style.display = 'block';
     }
     updateVerbButtonVisibility();
+    updatePossessivesButtonVisibility();
   }
 
   function updateVerbButtonVisibility() {
@@ -79,9 +80,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Update verb button when day changes and on page load
-  document.getElementById('day-select').addEventListener('change', updateVerbButtonVisibility);
+  function updatePossessivesButtonVisibility() {
+    const possessivesBtn = document.querySelector('[data-practice="possessives"]');
+    const day = Number(document.getElementById('day-select').value);
+    if (day === 3) {
+      possessivesBtn.style.display = 'block';
+    } else {
+      possessivesBtn.style.display = 'none';
+    }
+  }
+
+  // Update verb and possessives buttons when day changes and on page load
+  document.getElementById('day-select').addEventListener('change', function() {
+    updateVerbButtonVisibility();
+    updatePossessivesButtonVisibility();
+  });
   updateVerbButtonVisibility();
+  updatePossessivesButtonVisibility();
 
   // Submenu button click handler
   document.addEventListener('click', function(e) {
@@ -133,6 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
           break;
         case 'verb':
           showGrammarVerbPractice(language, days[0]);
+          break;
+        case 'possessives':
+          showGrammarPossessivesPractice(language, days[0]);
           break;
       }
     }
@@ -200,6 +218,8 @@ document.addEventListener('DOMContentLoaded', function() {
         showGrammarGenderPractice(language, days[0]);
       } else if (activeBtn.getAttribute('data-practice') === 'verb') {
         showGrammarVerbPractice(language, days[0]);
+      } else if (activeBtn.getAttribute('data-practice') === 'possessives') {
+        showGrammarPossessivesPractice(language, days[0]);
       } else {
         showMessage('Selected grammar practice type is not supported.');
       }
@@ -286,6 +306,41 @@ document.addEventListener('DOMContentLoaded', function() {
     showBtn.textContent = 'Show Answer';
     showBtn.addEventListener('click', () => {
       showBtn.textContent = item.answer;
+      showBtn.classList.add('show-answer');
+      feedbackDiv.textContent = '✔';
+      feedbackDiv.style.color = '#4CAF50';
+    });
+    optionsEl.appendChild(showBtn);
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.id = 'grammar-feedback';
+    feedbackDiv.textContent = '';
+    resultContainer.append(questionDiv, optionsEl, feedbackDiv);
+  }
+
+  function showGrammarPossessivesPractice(language, day) {
+    resultContainer.innerHTML = '';
+    if (day !== 3) {
+      showMessage('Possessives practice is only available on Day 3.');
+      return;
+    }
+    const data = grammarData[language]?.[3]?.possessives;
+    if (!data || !data.length) return showMessage('No possessives practice available');
+    let items = data;
+    if (typeof data[0] === 'string') {
+      items = data.map(str => ({ prompt: str, answer: str }));
+    }
+    const item = randomElement(items);
+    const questionDiv = document.createElement('div');
+    questionDiv.id = 'grammar-question';
+    questionDiv.textContent = item.prompt || item;
+    const optionsEl = document.createElement('div');
+    optionsEl.id = 'grammar-options';
+    optionsEl.className = 'grammar-gender-options';
+    const showBtn = document.createElement('div');
+    showBtn.className = 'gender-option';
+    showBtn.textContent = 'Show Answer';
+    showBtn.addEventListener('click', () => {
+      showBtn.textContent = item.answer || item;
       showBtn.classList.add('show-answer');
       feedbackDiv.textContent = '✔';
       feedbackDiv.style.color = '#4CAF50';
