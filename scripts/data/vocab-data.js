@@ -3,7 +3,7 @@
 const vocabData = {
   COSYenglish: {
     1: ["Hello", "Goodbye", "Yes", "No", "Thank you", "You're welcome"],
-    2: ["Boy", "Girl", "Teacher", "Student", "Woman", "Man", "Person"],
+    2: ["Boy", "Girl", "Teacher", "Student", "Woman", "Man"],
     3: ["Mother", "Father", "Son", "Daughter", "Sister", "Brother", "Husband", "Wife", "Friend"],
     4: ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"],
     5: ["Good", "Bad", "Easy", "Difficult", "Boring", "Interesting", "Big", "Small", "Hot", "Cold", "Cheap", "Expensive"],
