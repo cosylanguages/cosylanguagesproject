@@ -28,13 +28,13 @@ const genderPracticeData = {
   },
   ΚΟΖΥελληνικά: {
     1: [
-      { word: "Νερό", article: "το" },
-      { word: "Χυμός", article: "ο" },
-      { word: "Μπύρα", article: "η" },
-      { word: "Κρασί", article: "το" },
-      { word: "Καφές", article: "ο" },
-      { word: "Τσάι", article: "το" },
-      { word: "Κάρτα", article: "η" }
+      { word: "νερό", article: "το" },
+      { word: "χυμός", article: "ο" },
+      { word: "μπύρα", article: "η" },
+      { word: "κρασί", article: "το" },
+      { word: "καφές", article: "ο" },
+      { word: "τσάι", article: "το" },
+      { word: "κάρτα", article: "η" }
     ]
   }
   // Add data for other languages
