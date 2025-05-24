@@ -36,6 +36,23 @@ const genderPracticeData = {
       { word: "τσάι", article: "το" },
       { word: "κάρτα", article: "η" }
     ]
+  },
+  COSYportuguês: {
+    1: [
+      { word: "água", article: "a" },
+      { word: "sumo", article: "o" },
+      { word: "cerveja", article: "a" },
+      { word: "vinho", article: "o" },
+      { word: "café", article: "o" },
+      { word: "chá", article: "o" },
+      { word: "cartão", article: "o" }
+    ],
+    2: [
+      { word: "livro", article: "o" },
+      { word: "mesa", article: "a" },
+      { word: "caneta", article: "a" },
+      { word: "cadeira", article: "a" }
+    ]
   }
   // Add data for other languages
 };
