@@ -25,6 +25,17 @@ const genderPracticeData = {
       { word: "Lehrer", article: "der" },
       { word: "Lehrerin", article: "die" }
     ]
+  },
+  ΚΟΖΥελληνικά: {
+    1: [
+      { word: "Νερό", article: "το" },
+      { word: "Χυμός", article: "ο" },
+      { word: "Μπύρα", article: "η" },
+      { word: "Κρασί", article: "το" },
+      { word: "Καφές", article: "ο" },
+      { word: "Τσάι", article: "το" },
+      { word: "Κάρτα", article: "η" }
+    ]
   }
   // Add data for other languages
 };
