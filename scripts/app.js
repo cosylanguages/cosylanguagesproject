@@ -171,6 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       if (activeBtn.getAttribute('data-practice') === 'gender') {
         showGrammarGenderPractice(language, days[0]);
+      } else if (activeBtn.getAttribute('data-practice') === 'verb') {
+        showGrammarVerbPractice(language, days[0]);
       } else {
         showMessage('Selected grammar practice type is not supported.');
       }
