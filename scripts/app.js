@@ -66,7 +66,23 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       genderBtn.style.display = 'block';
     }
+    updateVerbButtonVisibility();
   }
+
+  function updateVerbButtonVisibility() {
+    const verbBtn = document.querySelector('[data-practice="verb"]');
+    const day = Number(daySelect.value);
+    if (day >= 2) {
+      verbBtn.style.display = 'block';
+    } else {
+      verbBtn.style.display = 'none';
+    }
+  }
+
+  // Update verb button when day changes
+  daySelect.addEventListener('change', function() {
+    updateVerbButtonVisibility();
+  });
 
   // Submenu button click handler
   document.addEventListener('click', function(e) {
