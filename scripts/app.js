@@ -261,9 +261,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function getArticlesForLanguage(language) {
     const articles = {
-      'COSYfrançais': ['le', 'la', 'le/la'],
+      'COSYfrançais': ['le', 'la', 'l', 'le/la'],
       'COSYdeutsch': ['der', 'die', 'das'],
-      'COSYitaliano': ['il', 'la', 'lo'],
+      'COSYitaliano': ['il', 'la', 'l', 'lo'],
       'COSYespañol': ['el', 'la'],
       'ΚΟΖΥελληνικά': ['ο', 'η', 'το'],
       'COSYportuguês': ['o', 'a'],
