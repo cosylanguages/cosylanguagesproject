@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function updateVerbButtonVisibility() {
     const verbBtn = document.querySelector('[data-practice="verb"]');
-    const day = Number(daySelect.value);
+    const day = Number(document.getElementById('day-select').value);
     if (day >= 2) {
       verbBtn.style.display = 'block';
     } else {
@@ -79,10 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Update verb button when day changes
-  daySelect.addEventListener('change', function() {
-    updateVerbButtonVisibility();
-  });
+  // Update verb button when day changes and on page load
+  document.getElementById('day-select').addEventListener('change', updateVerbButtonVisibility);
+  updateVerbButtonVisibility();
 
   // Submenu button click handler
   document.addEventListener('click', function(e) {
