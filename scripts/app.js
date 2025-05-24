@@ -27,11 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Practice type change handler
   practiceTypeSelect.addEventListener('change', function() {
-    hideAllSubmenus();
+    vocabSubmenu.style.display = 'none';
+    grammarSubmenu.style.display = 'none';
     if (practiceTypeSelect.value === 'vocabulary_practice') {
-      vocabSubmenu.classList.add('active');
+      vocabSubmenu.style.display = 'flex';
     } else if (practiceTypeSelect.value === 'grammar_practice') {
-      grammarSubmenu.classList.add('active');
+      grammarSubmenu.style.display = 'flex';
     }
     // No submenu for speaking_practice
   });
