@@ -2,41 +2,90 @@
 
 const verbPracticeData = {
   COSYenglish: {
-    2: ["I", "You", "He", "She", "It", "am", "are", "is"],
-    3: ["I", "You", "He", "She", "It", "have", "has"]
+    2: [
+      { prompt: "I", answer: "am" },
+      { prompt: "You", answer: "are" },
+      { prompt: "He", answer: "is" },
+      { prompt: "She", answer: "is" },
+      { prompt: "It", answer: "is" },
+      { prompt: "am", answer: "I" },
+      { prompt: "are", answer: "you" },
+      { prompt: "is", answer: "he/she/it" }
+    ],
+    3: [
+      { prompt: "I", answer: "have" },
+      { prompt: "You", answer: "have" },
+      { prompt: "He", answer: "has" },
+      { prompt: "She", answer: "has" },
+      { prompt: "It", answer: "has" },
+      { prompt: "have", answer: "I/you" },
+      { prompt: "has", answer: "he/she/it" }
+    ]
   },
   COSYfrançais: {
-    2: ["Je", "Tu", "Il", "Elle", "Ce", "suis", "es", "est"],
-    3: ["Je", "Tu", "Il", "Elle", "Ce", "ai", "as", "a"]
+    2: [
+      { prompt: "Je", answer: "suis" },
+      { prompt: "Tu", answer: "es" },
+      { prompt: "Il", answer: "est" },
+      { prompt: "Elle", answer: "est" },
+      { prompt: "Ce", answer: "est" },
+      { prompt: "suis", answer: "je" },
+      { prompt: "es", answer: "tu" },
+      { prompt: "est", answer: "il/elle/ce" }
+    ],
+    3: [
+      { prompt: "J", answer: "ai" },
+      { prompt: "Tu", answer: "as" },
+      { prompt: "Il", answer: "a" },
+      { prompt: "Elle", answer: "a" },
+      { prompt: "Ce", answer: "a" },
+      { prompt: "ai", answer: "je" },
+      { prompt: "as", answer: "tu" },
+      { prompt: "a", answer: "il/elle/ce" }
+    ]
   },
   COSYitaliano: {
-    1: ["Buongiorno", "Arrivederci", "Sì", "No", "Grazie", "Prego"], 
-    2: ["Il ragazzo", "La ragazza", "Il professore", "La professoressa", "Lo studente", "La studentessa", "La donna", "L'uomo"],
-    3: ["la madre", "Il padre", "Il figlio", "La figlia", "La sorella", "Il fratello", "Il marito", "La moglie", "L'amico", "L'amica"]
-  },
-  COSYespañol: {
-    1: ["Hola", "Adiós", "Sí", "No", "Gracias", "De nada"],
-    2: ["El chico", "La chica", "El profesor", "La profesora", "El estudiante", "La estudiante", "La mujer", "El hombre"]
-  },
-  COSYportuguês: {
-    1: [],
-    2: []
-  },
-  COSYdeutsch: {
-    1: ["Hallo", "Auf Wiedersehen", "Ja", "Nein", "Danke", "Bitte"],
-    2: ["Der Junge", "Das Mädchen", "Der Lehrer", "Die Lehrerin", "Der Student", "Die Studentin", "Die Frau", "Der Mann"]
+    2: [
+      { prompt: "Io", answer: "sono" },
+      { prompt: "Tu", answer: "sei" },
+      { prompt: "Lui", answer: "è" },
+      { prompt: "Lei", answer: "è" },
+      { prompt: "sono", answer: "io" },
+      { prompt: "sei", answer: "tu" },
+      { prompt: "è", answer: "lui/lei" }
+    ],
+    3: [
+      { prompt: "Io", answer: "ho" },
+      { prompt: "Tu", answer: "hai" },
+      { prompt: "Lui", answer: "ha" },
+      { prompt: "Lei", answer: "ha" },
+      { prompt: "ho", answer: "io" },
+      { prompt: "hai", answer: "tu" },
+      { prompt: "ha", answer: "lui/lei" }
+    ]
   },
   ΚΟΖΥελληνικά: {
-    1: ["Γειά σου", "Αντίο", "Όχι", "Ναι", "Ευχαριστώ", "Παρακαλώ"],
-    2: ["Το αγόρι", "Το κορίτσι", "Ο δάσκαλος", "Η δασκάλα", "Ο μαθητής", "Η μαθήτρια", "Η γυναίκα", "Ο άντρας"],
-    3: ["Η μητέρα", "Ο πατέρας", "Ο γιος", "Η κόρη", "Η αδερφή", "Ο αδερφός", "Η σύζυγος", "Ο σύζυγος", "Ο φίλος", "η Φίλη"]
+    2: [
+      { prompt: "Εγώ", answer: "είμαι" },
+      { prompt: "Εσύ", answer: "είσαι" },
+      { prompt: "Αυτός", answer: "είναι" },
+      { prompt: "Αυτή", answer: "είναι" },
+      { prompt: "Αυτό", answer: "είναι" },
+      { prompt: "είμαι", answer: "εγώ" },
+      { prompt: "είσαι", answer: "εσύ" },
+      { prompt: "είναι", answer: "αυτός/αυτή/αυτό" }
+    ],
+    3: [
+      { prompt: "Εγώ", answer: "έχω" },
+      { prompt: "Εσύ", answer: "έχεις" },
+      { prompt: "Αυτός", answer: "έχει" },
+      { prompt: "Αυτή", answer: "έχει" },
+      { prompt: "Αυτό", answer: "έχει" },
+      { prompt: "έχω", answer: "εγώ" },
+      { prompt: "έχεις", answer: "εσύ" },
+      { prompt: "έχει", answer: "αυτός/αυτή/αυτό" }
+    ]
   },
   ТАКОЙрусский: {
-    1: ["Привет", "До свидания", "Да", "Нет", "Спасибо", "Пожалуйста"],
-    2: ["Мальчик", "Девочка", "Учитель", "Учительница", "Студент", "Студентка", "Женщина", "Мужчина"]
-  },
-  ԾՈՍՅհայկական: {
-    1: [],
-    2: []
   }
 };
