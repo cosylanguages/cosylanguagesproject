@@ -323,16 +323,21 @@ document.addEventListener('DOMContentLoaded', function() {
       showMessage('Possessives practice is only available on Day 3.');
       return;
     }
-    const data = grammarData[language]?.[3]?.possessives;
+    // Prefer possessivesPracticeData if available, else fallback to grammarData
+    let data = (typeof possessivesPracticeData !== 'undefined' && possessivesPracticeData[language]?.[3])
+      ? possessivesPracticeData[language][3]
+      : (grammarData[language]?.[3]?.possessives || []);
     if (!data || !data.length) return showMessage('No possessives practice available');
     let items = data;
     if (typeof data[0] === 'string') {
       items = data.map(str => ({ prompt: str, answer: str }));
     }
     const item = randomElement(items);
+    const prompt = item.prompt || item;
+    const answer = item.answer || item;
     const questionDiv = document.createElement('div');
     questionDiv.id = 'grammar-question';
-    questionDiv.textContent = item.prompt || item;
+    questionDiv.textContent = prompt;
     const optionsEl = document.createElement('div');
     optionsEl.id = 'grammar-options';
     optionsEl.className = 'grammar-gender-options';
@@ -340,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
     showBtn.className = 'gender-option';
     showBtn.textContent = 'Show Answer';
     showBtn.addEventListener('click', () => {
-      showBtn.textContent = item.answer || item;
+      showBtn.textContent = answer;
       showBtn.classList.add('show-answer');
       feedbackDiv.textContent = '✔';
       feedbackDiv.style.color = '#4CAF50';
