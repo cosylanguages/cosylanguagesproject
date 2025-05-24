@@ -3,7 +3,7 @@
 const genderPracticeData = {
   COSYfrançais: {
     1: [
-      { word: "eau", article: "l'" },
+      { word: "eau", article: "l" },
       { word: "jus", article: "le" },
       { word: "bière", article: "la" },
       { word: "vin", article: "le" },
@@ -12,18 +12,46 @@ const genderPracticeData = {
       { word: "carte", article: "la" }
     ],
     2: [
-      { word: "livre", article: "le" },
-      { word: "table", article: "la" },
-      { word: "stylo", article: "le" },
-      { word: "chaise", article: "la" }
+      { word: "professeur", article: "le/la" },
+      { word: "étudiant", article: "l" },
+      { word: "étudiante", article: "l" },
+      { word: "garçon", article: "le" },
+      { word: "femme", article: "la" },
+      { word: "homme", article: "l" },
+      { word: "fille", article: "la" },
+      { word: "chose", article: "la" },
+      { word: "personne", article: "la" },
+      { word: "boisson", article: "la" },
+      { word: "problème", article: "le" },
+    ]
+  },
+  COSYitaliano: {
+    1: [
+      { word: "acqua", article: "l" },
+      { word: "succo", article: "il" },
+      { word: "birra", article: "la" },
+      { word: "vino", article: "il" },
+      { word: "caffè", article: "il" },
+      { word: "tè", article: "il" },
+      { word: "carta", article: "la" }
+    ],
+    2: [
+      { word: "professore", article: "il" },
+      { word: "studente", article: "lo" },
+      { word: "uomo", article: "l" },
+      { word: "ragazzo", article: "il" },
+      { word: "donna", article: "la" },
+      { word: "professoressa", article: "la" },
+      { word: "studentessa", article: "la" },
+      { word: "ragazza", article: "la" },
+      { word: "cosa", article: "la" },
+      { word: "persona", article: "la" },
+      { word: "bevanda", article: "la" },
+      { word: "problema", article: "il" },
     ]
   },
   COSYdeutsch: {
     1: [
-      { word: "Junge", article: "der" },
-      { word: "Mädchen", article: "das" },
-      { word: "Lehrer", article: "der" },
-      { word: "Lehrerin", article: "die" }
     ]
   },
   ΚΟΖΥελληνικά: {
@@ -47,23 +75,14 @@ const genderPracticeData = {
       { word: "κορίτσι", article: "το" },
       { word: "πράγμα", article: "το" },
       { word: "άτομο", article: "το" },
-    ],
+      { word: "ποτό", article: "το" },
+      { word: "πρόβλημα", article: "το" },
+    ]
   },
   COSYportuguês: {
     1: [
-      { word: "água", article: "a" },
-      { word: "sumo", article: "o" },
-      { word: "cerveja", article: "a" },
-      { word: "vinho", article: "o" },
-      { word: "café", article: "o" },
-      { word: "chá", article: "o" },
-      { word: "cartão", article: "o" }
     ],
     2: [
-      { word: "livro", article: "o" },
-      { word: "mesa", article: "a" },
-      { word: "caneta", article: "a" },
-      { word: "cadeira", article: "a" }
     ]
   }
   // Add data for other languages
