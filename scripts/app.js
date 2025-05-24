@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
       'COSYdeutsch': ['der', 'die', 'das'],
       'COSYitaliano': ['il', 'la', 'l', 'lo'],
       'COSYespañol': ['el', 'la'],
-      'ΚΟΖΥελληνικά': ['ο', 'η', 'το'],
+      'ΚΟΖΥελληνικά': ['ο', 'η', 'το', 'ο/η'],
       'COSYportuguês': ['o', 'a'],
       'default': ['the']
     };
