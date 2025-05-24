@@ -35,7 +35,19 @@ const genderPracticeData = {
       { word: "καφές", article: "ο" },
       { word: "τσάι", article: "το" },
       { word: "κάρτα", article: "η" }
-    ]
+    ],
+    2: [
+      { word: "δάσκαλος", article: "ο'" },
+      { word: "μαθητής", article: "ο" },
+      { word: "άντρας", article: "ο" },
+      { word: "αγόρι", article: "το" },
+      { word: "γυναίκα", article: "η" },
+      { word: "μαθήτρια", article: "η" },
+      { word: "δασκάλα", article: "η" },
+      { word: "κορίτσι", article: "το" },
+      { word: "πράγμα", article: "το" },
+      { word: "άτομο", article: "το" },
+    ],
   },
   COSYportuguês: {
     1: [
