@@ -892,7 +892,7 @@ document.addEventListener('DOMContentLoaded', function() {
     deferredPrompt = e;
     installBtn.style.display = 'block';
   });
-  installBtn && installBtn.addEventListener('click', async () => {
+  installBtn.addEventListener('click', async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
@@ -901,6 +901,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       deferredPrompt = null;
     }
+  });
+  // Hide install button if app is already installed
+  window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
   });
 
   // Utility functions
@@ -1003,4 +1007,48 @@ document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => { rc.style.animation = ''; }, 500);
     }
   }
+
+  // Utility: ensure input fields are always enabled and focusable
+  function ensureInputFocusable(input) {
+    input.removeAttribute('readonly');
+    input.removeAttribute('disabled');
+    input.tabIndex = 0;
+    input.style.pointerEvents = 'auto';
+    input.style.zIndex = 2;
+  }
+
+  // Patch all input fields after they are created
+  function patchPracticeInputs() {
+    document.querySelectorAll('.practice-input').forEach(ensureInputFocusable);
+  }
+
+  // Patch after rendering practice content
+  const origShowPractice = window.showPractice;
+  window.showPractice = function(...args) {
+    origShowPractice.apply(this, args);
+    patchPracticeInputs();
+  };
+
+  // Also patch after submenu or random word/speaking
+  function patchAfterRender() {
+    setTimeout(patchPracticeInputs, 100);
+  }
+
+  // Patch after DOM updates
+  ['click', 'touchstart'].forEach(evt => {
+    document.addEventListener(evt, patchAfterRender, true);
+  });
+
+  // Microphone button: support touchstart for mobile
+  function addMicBtnTouchSupport(btn, handler) {
+    btn.addEventListener('click', handler);
+    btn.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      handler();
+    });
+  }
+
+  // When creating mic/pronounce buttons, use addMicBtnTouchSupport
+  // Example:
+  // addMicBtnTouchSupport(micBtn, () => { ... });
 });
