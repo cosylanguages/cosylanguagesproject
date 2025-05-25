@@ -52,3 +52,4 @@ const vocabData = {
     3: ["Մայրիկը", "Հայրիկը", "Տղան", "Աղջիկը", "Քույրը", "Անձնավորությունը", "Ամուսինը", "Կինը"]
   }
 };
+if (typeof window !== 'undefined') window.vocabData = vocabData;
