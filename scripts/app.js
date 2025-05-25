@@ -283,68 +283,84 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showGrammarVerbPractice(language, day) {
-    resultContainer.innerHTML = '';
-    if (!day || day < 2) {
-      showMessage('Verb practice is only available from Day 2.');
+    // Clear previous content
+    clearResultContainer();
+    const container = document.createElement('div');
+    container.className = 'image-container'; // visually match image card
+
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'image-question';
+    questionDiv.textContent = 'Verb Practice';
+
+    // Get verb data
+    const verbData = window.verbPracticeData?.[language]?.[day];
+    if (!verbData || verbData.length === 0) {
+      container.textContent = 'No verb practice for this language/day.';
+      resultContainer.appendChild(container);
       return;
     }
-    const data = verbPracticeData[language]?.[day];
-    if (!data || !data.length) return showMessage('No verb practice available');
-    let items = data;
-    if (typeof data[0] === 'string') {
-      items = data.map(str => ({ prompt: str, answer: str }));
-    }
-    const item = randomElement(items);
-    const questionDiv = document.createElement('div');
-    questionDiv.id = 'grammar-question';
-    questionDiv.textContent = item.prompt;
+    const item = randomElement(verbData);
 
-    // --- Input/check/pronounce row ---
-    const inputRow = document.createElement('div');
-    inputRow.className = 'practice-row verb-input-row';
+    // Prompt
+    const promptDiv = document.createElement('div');
+    promptDiv.className = 'image-caption';
+    promptDiv.style.fontSize = '1.3em';
+    promptDiv.style.margin = '12px 0 8px 0';
+    promptDiv.textContent = item.prompt;
 
-    const answerInput = document.createElement('input');
-    answerInput.type = 'text';
-    answerInput.placeholder = 'Type the correct form...';
-    answerInput.className = 'practice-input';
+    // Input row
+    const inputCol = document.createElement('div');
+    inputCol.className = 'image-input-col';
+    inputCol.style.display = 'flex';
+    inputCol.style.flexDirection = 'column';
+    inputCol.style.alignItems = 'center';
+    inputCol.style.justifyContent = 'center';
+    inputCol.style.margin = '0 auto';
 
-    // Check button as emoji
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'practice-input';
+    input.placeholder = 'Type your answer';
+    input.style.marginBottom = '8px';
+
     const checkBtn = document.createElement('button');
-    checkBtn.className = 'check-emoji-btn';
-    checkBtn.title = 'Check';
-    checkBtn.innerHTML = '✅';
+    checkBtn.className = 'btn check-emoji-btn';
+    checkBtn.textContent = 'Check';
 
-    const feedback = document.createElement('span');
+    const feedback = document.createElement('div');
     feedback.className = 'practice-feedback';
+    feedback.style.minHeight = '1.5em';
 
     checkBtn.onclick = function() {
-      const userAns = answerInput.value.trim().toLowerCase();
-      const correctAns = (item.answer || '').trim().toLowerCase();
-      if (userAns === correctAns) {
-        feedback.textContent = '✔ Correct!';
-        feedback.style.color = '#4CAF50';
+      const user = input.value.trim().toLowerCase();
+      const correct = item.answer.toLowerCase();
+      if (user === correct) {
+        feedback.textContent = '✅ Correct!';
+        feedback.style.color = '#0a7c0a';
       } else {
-        feedback.textContent = '✘ Incorrect!';
-        feedback.style.color = '#F44336';
+        feedback.textContent = `❌ ${item.prompt} → ${item.answer}`;
+        feedback.style.color = '#b80000';
       }
     };
 
-    // Pronunciation button as emoji
-    const speakBtn = document.createElement('button');
-    speakBtn.className = 'pronounce-btn';
-    speakBtn.title = 'Play pronunciation';
-    speakBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
-    speakBtn.onclick = function(e) {
-      e.preventDefault();
-      speakText(item.answer, language);
+    // Pronounce button
+    const pronounceBtn = document.createElement('button');
+    pronounceBtn.className = 'btn pronounce-btn';
+    pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
+    pronounceBtn.title = 'Hear pronunciation';
+    pronounceBtn.onclick = function() {
+      speakText(item.prompt, language);
     };
 
-    inputRow.appendChild(answerInput);
-    inputRow.appendChild(checkBtn);
-    inputRow.appendChild(speakBtn);
-    inputRow.appendChild(feedback);
+    inputCol.appendChild(input);
+    inputCol.appendChild(checkBtn);
+    inputCol.appendChild(pronounceBtn);
+    inputCol.appendChild(feedback);
 
-    resultContainer.append(questionDiv, inputRow);
+    container.appendChild(questionDiv);
+    container.appendChild(promptDiv);
+    container.appendChild(inputCol);
+    resultContainer.appendChild(container);
   }
 
   function showGrammarPossessivesPractice(language, day) {
@@ -611,36 +627,83 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Ensure voiceLanguageMap is available globally
+  if (typeof window !== 'undefined' && typeof window.voiceLanguageMap === 'undefined' && typeof voiceLanguageMap !== 'undefined') {
+    window.voiceLanguageMap = voiceLanguageMap;
+  }
+
   // Utility functions
   function randomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
+  let speechUnlocked = false;
+
+  function unlockSpeechSynthesis() {
+    if (!speechUnlocked && window.speechSynthesis) {
+      // Play a silent utterance to unlock
+      const silent = new SpeechSynthesisUtterance('');
+      silent.volume = 0;
+      window.speechSynthesis.speak(silent);
+      speechUnlocked = true;
+    }
+  }
+
+  // Attach to first user gesture
+  window.addEventListener('pointerdown', unlockSpeechSynthesis, { once: true });
+  window.addEventListener('keydown', unlockSpeechSynthesis, { once: true });
+
   function speakText(text, language) {
     if (!window.speechSynthesis) return;
+    let voiceLanguageMap = window.voiceLanguageMap || (typeof voiceLanguageMap !== 'undefined' ? voiceLanguageMap : {});
+    const voiceSettings = voiceLanguageMap[language] || voiceLanguageMap.COSYenglish || {};
     const utterance = new SpeechSynthesisUtterance(text);
-    const voiceSettings = voiceLanguageMap[language] || voiceLanguageMap.COSYenglish;
-    // Wait for voices to be loaded
-    let voices = window.speechSynthesis.getVoices();
-    // Try to find the best match: exact voiceURI, then exact lang, then fallback
-    let voice = null;
-    if (voiceSettings.voiceURI) {
-      voice = voices.find(v => v.voiceURI === voiceSettings.voiceURI);
+
+    function setVoiceAndSpeak(utt) {
+      let voices = window.speechSynthesis.getVoices();
+      let voice = null;
+      if (voiceSettings.voiceURI) {
+        voice = voices.find(v => v.voiceURI === voiceSettings.voiceURI);
+      }
+      if (!voice && voiceSettings.lang) {
+        voice = voices.find(v => v.lang === voiceSettings.lang);
+      }
+      if (!voice && voiceSettings.lang) {
+        const langPrefix = voiceSettings.lang.split('-')[0];
+        voice = voices.find(v => v.lang && v.lang.startsWith(langPrefix));
+      }
+      if (!voice) {
+        voice = voices[0];
+      }
+      if (voice) {
+        utt.voice = voice;
+        utt.lang = voice.lang;
+      } else if (voiceSettings.lang) {
+        utt.lang = voiceSettings.lang;
+      }
+      utt.rate = 0.9;
+      utt.pitch = 1.0;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utt);
     }
-    if (!voice && voiceSettings.lang) {
-      // Try to match language exactly (including region)
-      voice = voices.find(v => v.lang === voiceSettings.lang);
+
+    function waitAndSpeak() {
+      if (window.speechSynthesis.getVoices().length > 0) {
+        setVoiceAndSpeak(utterance);
+      } else {
+        window.speechSynthesis.onvoiceschanged = function handler() {
+          window.speechSynthesis.onvoiceschanged = null;
+          setVoiceAndSpeak(utterance);
+        };
+        window.speechSynthesis.getVoices();
+        setTimeout(function() {
+          if (window.speechSynthesis.getVoices().length > 0) {
+            window.speechSynthesis.onvoiceschanged = null;
+            setVoiceAndSpeak(utterance);
+          }
+        }, 350);
+      }
     }
-    if (!voice && voiceSettings.lang) {
-      // Try to match language only (ignore region)
-      const langPrefix = voiceSettings.lang.split('-')[0];
-      voice = voices.find(v => v.lang && v.lang.startsWith(langPrefix));
-    }
-    if (!voice) {
-      // Fallback to first available voice
-      voice = voices[0];
-    }
-    utterance.voice = voice;
-    window.speechSynthesis.speak(utterance);
+    waitAndSpeak();
   }
 });
