@@ -548,181 +548,166 @@ body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/
   text-align: center;
 }
 
+/* Responsive design for all devices and orientations */
 @media (max-width: 900px) {
   .main-container {
     max-width: 98vw;
-    padding: 8px 2vw;
+    padding: 10px 4vw;
   }
   .content-container {
-    padding: 12px 2vw 18px 2vw;
-    gap: 12px;
+    padding: 18px 4vw;
+    gap: 18px;
   }
   .result-container {
-    padding: 12px 2vw 12px 2vw;
-    min-height: 120px;
-  }
-  select, .btn, .submenu-btn {
-    font-size: 1rem;
+    max-width: 98vw;
+    padding: 12px 0 8px 0;
   }
 }
+
 @media (max-width: 600px) {
-  html, body {
-    padding: 0;
-    margin: 0;
-    min-width: 100vw;
-    min-height: 100vh;
-    font-size: 17px;
-    background-attachment: scroll;
-    box-sizing: border-box;
-  }
   .main-container {
-    max-width: 100vw;
-    min-width: 100vw;
-    padding: 0 0 12px 0;
-    border-radius: 0;
-    box-shadow: none;
-    border: none;
-    margin: 0;
-    background: hsl(178, 90%, 38%);
+    padding: 4vw 2vw;
+    border-radius: 8px;
   }
   .content-container {
-    padding: 0 0 8px 0;
-    border-radius: 0;
-    box-shadow: none;
-    gap: 8px;
-    min-width: 100vw;
-    background: none;
+    padding: 10px 2vw;
+    border-radius: 8px;
+    gap: 10px;
   }
   .controls-container {
-    gap: 8px;
-    width: 100vw;
-    padding: 0 0 8px 0;
-    background: none;
+    gap: 10px;
   }
   .selector-group {
     flex-direction: column;
-    gap: 4px;
-    align-items: stretch;
-    margin-bottom: 8px;
-    width: 100vw;
-    padding: 0 8px;
-    background: none;
+    gap: 10px;
   }
-  label {
-    flex: unset;
-    font-size: 1.08rem;
-    margin-bottom: 2px;
-    text-align: left;
-    width: 100%;
-    padding-left: 2px;
-    color: #fff;
-    text-shadow: 0 1px 2px #0abab5;
-  }
-  select {
+  label, select {
     flex: unset;
     width: 100%;
     min-width: 0;
-    font-size: 1.08rem;
-    margin-bottom: 8px;
-    padding: 13px 10px;
-    border-radius: 10px;
-    background: #fff;
-    color: #003a3c;
-    box-shadow: 0 1px 6px 0 rgba(0,0,0,0.07);
-    border: 1.5px solid #b2dfdf;
+    max-width: 100%;
   }
   .btn {
     width: 100%;
-    font-size: 1.15rem;
-    padding: 15px 0;
-    margin-top: 12px;
-    border-radius: 10px;
-    margin-left: 0;
-    margin-right: 0;
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
-  }
-  .submenu {
-    flex-direction: column;
-    gap: 5px;
-    margin: 8px 0 2px 0;
-    width: 100%;
-    padding: 0 8px;
-  }
-  .submenu-btn {
-    width: 100%;
-    font-size: 1.08rem;
-    padding: 12px 0;
-    border-radius: 10px;
+    font-size: 1rem;
+    padding: 10px 0;
+    border-radius: 8px;
   }
   .result-container {
     max-width: 100vw;
-    border-radius: 0;
-    padding: 10px 0 10px 0;
-    min-height: 90px;
-    width: 100vw;
-    margin: 0;
-    background: rgba(255,255,255,0.97);
-    box-shadow: 0 1px 6px 0 rgba(0,0,0,0.07);
-  }
-  .practice-word, .practice-speaking {
-    font-size: 1.25rem;
-    margin: 10px 0 8px 0;
-    word-break: break-word;
-    color: hsl(178, 90%, 38%);
+    border-radius: 10px;
+    padding: 8px 0 6px 0;
   }
   .image-container {
-    max-width: 100vw;
-    padding: 0;
+    max-width: 90vw;
   }
   .vocab-image {
-    width: 90px;
-    height: 90px;
+    width: 120px;
+    height: 120px;
     border-radius: 10px;
-    margin: 10px 0 6px 0;
   }
-  .image-caption, .image-caption-overlay {
+  .image-caption {
     font-size: 1rem;
-    min-width: 60px;
-    padding: 4px 8px;
+    min-width: 80px;
     border-radius: 6px;
-    bottom: 2px;
+    padding: 4px 8px;
   }
-  .grammar-gender-options {
+}
+
+@media (orientation: landscape) and (max-width: 900px) {
+  .content-container {
+    flex-direction: row;
+    gap: 10vw;
+    align-items: flex-start;
+  }
+  .controls-container, .result-container {
+    width: 48vw;
+    min-width: 0;
+    max-width: 100vw;
+  }
+}
+
+/* Ensure all elements scale smoothly */
+html {
+  font-size: 16px;
+}
+@media (max-width: 600px) {
+  html {
+    font-size: 14px;
+  }
+}
+@media (max-width: 900px) {
+  .main-container {
+    max-width: 98vw;
+    padding: 10px 4vw;
+  }
+  .content-container {
+    padding: 18px 4vw;
+    gap: 18px;
+  }
+  .result-container {
+    max-width: 98vw;
+    padding: 12px 0 8px 0;
+  }
+}
+@media (max-width: 600px) {
+  .main-container {
+    padding: 4vw 2vw;
+    border-radius: 8px;
+  }
+  .content-container {
+    padding: 10px 2vw;
+    border-radius: 8px;
+    gap: 10px;
+  }
+  .controls-container {
+    gap: 10px;
+  }
+  .selector-group {
     flex-direction: column;
-    gap: 5px;
-    margin: 8px 0 2px 0;
-    width: 100%;
+    gap: 10px;
   }
-  .gender-option {
-    font-size: 1.05rem;
+  label, select {
+    flex: unset;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .btn {
+    width: 100%;
+    font-size: 1rem;
     padding: 10px 0;
     border-radius: 8px;
-    width: 100%;
-    text-align: center;
   }
-  #grammar-question {
-    font-size: 1.15rem;
-    margin-bottom: 6px;
+  .result-container {
+    max-width: 100vw;
+    border-radius: 10px;
+    padding: 8px 0 6px 0;
   }
-  #grammar-feedback {
-    font-size: 1.05rem;
-    margin-top: 6px;
-    min-height: 18px;
+  .image-container {
+    max-width: 90vw;
   }
-  header {
-    margin-bottom: 0;
-    padding: 0;
+  .vocab-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
   }
-  h1 {
-    font-size: 1.5rem;
-    margin: 18px 0 10px 0;
-    padding: 0 8px;
-    word-break: break-word;
-    letter-spacing: 0.08em;
+  .image-caption {
+    font-size: 1rem;
+    min-width: 80px;
+    border-radius: 6px;
+    padding: 4px 8px;
   }
-  h1::after {
-    width: 60px;
-    height: 3px;
-    bottom: -6px;
+}
+@media (orientation: landscape) and (max-width: 900px) {
+  .content-container {
+    flex-direction: row;
+    gap: 10vw;
+    align-items: flex-start;
+  }
+  .controls-container, .result-container {
+    width: 48vw;
+    min-width: 0;
+    max-width: 100vw;
   }
 }
