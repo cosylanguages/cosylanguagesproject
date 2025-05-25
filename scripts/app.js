@@ -543,6 +543,38 @@ document.addEventListener('DOMContentLoaded', function() {
     resultContainer.appendChild(taskDiv);
     resultContainer.appendChild(exampleDiv);
     resultContainer.appendChild(speakPracticeDiv);
+
+    // --- Speech recognition logic for speaking practice ---
+    let recognition;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = (window.voiceLanguageMap?.[language]?.lang) || 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+    }
+
+    micBtn.onclick = function() {
+      if (!recognition) {
+        feedback.textContent = 'Speech recognition is not supported in this browser.';
+        feedback.style.color = '#F44336';
+        return;
+      }
+      feedback.textContent = 'Listening...';
+      feedback.style.color = '#0abab5';
+      recognition.start();
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript.trim();
+        feedback.textContent = `You said: "${transcript}"`;
+        feedback.style.color = '#4CAF50';
+        // Always award XP/streak for speaking
+        adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
+      };
+      recognition.onerror = function() {
+        feedback.textContent = 'Could not recognize speech. Try again.';
+        feedback.style.color = '#F44336';
+      };
+    };
   }
 
   // --- Adventure-like features ---
@@ -554,22 +586,19 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateProgressMap() {
     const map = document.getElementById('progress-map');
     map.innerHTML = '';
+    // Use a compact dot for each day
     for (let i = 1; i <= DAYS; i++) {
-      const node = document.createElement('div');
-      node.textContent = `Day ${i}`;
-      node.style.padding = '8px 12px';
-      node.style.borderRadius = '8px';
-      node.style.background = i <= unlockedDay ? '#4caf50' : '#ccc';
-      node.style.color = '#fff';
-      node.style.fontWeight = 'bold';
-      node.style.opacity = i <= unlockedDay ? '1' : '0.5';
-      map.appendChild(node);
-      if (i < DAYS) {
-        const arrow = document.createElement('span');
-        arrow.textContent = '→';
-        arrow.style.margin = '0 4px';
-        map.appendChild(arrow);
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot';
+      dot.setAttribute('data-day', `Day ${i}`);
+      if (i < unlockedDay) {
+        dot.classList.add('completed');
+      } else if (i === unlockedDay) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.add('locked');
       }
+      map.appendChild(dot);
     }
     document.getElementById('xp-display').textContent = `XP: ${userXP}`;
     document.getElementById('streak-display').textContent = `Streak: ${userStreak}`;
