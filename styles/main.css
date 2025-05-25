@@ -36,6 +36,82 @@ body {
   transition: var(--transition);
 }
 
+/* Responsive container and typography */
+.main-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 12px 8px 32px 8px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+header h1 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.content-container {
+  padding: 0;
+}
+
+.controls-container, .selector-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.selector-group label {
+  font-size: 1rem;
+}
+
+.selector-group select {
+  font-size: 1rem;
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.btn, .submenu-btn {
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+#result-container {
+  margin-top: 18px;
+  font-size: 1.05rem;
+  word-break: break-word;
+}
+
+#modal-message-box {
+  max-width: 90vw;
+  font-size: 1.1rem;
+}
+
+/* Adventure progress bar responsive */
+#adventure-progress {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#xp-display, #streak-display {
+  font-size: 1rem;
+  margin-left: 12px;
+}
+
+/* Install App button responsive */
+#install-app-btn {
+  font-size: 1rem;
+  padding: 8px 16px;
+  top: 8px;
+  right: 8px;
+}
+
 .main-container:hover {
   box-shadow: 0 0 40px rgba(0,0,0,0.28);
 }
