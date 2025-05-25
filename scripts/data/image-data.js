@@ -521,3 +521,4 @@ const imageData = {
     ],
   },
 };
+if (typeof window !== 'undefined') window.imageData = imageData;
