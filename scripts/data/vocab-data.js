@@ -13,7 +13,7 @@ const vocabData = {
   },
   COSYfrançais: {
     1: ["Bonjour", "Au revoir", "Oui", "Non", "Merci", "De rien"],
-    2: ["Le garçon", "La fille", "Le professeur", "La professeur", "L'étudiant", "L'étudiante", "La femme", "L'homme"],
+    2: ["Le garçon", "La fille", "Le professeur", "La professeure", "L'étudiant", "L'étudiante", "La femme", "L'homme"],
     3: ["La mère", "Le père", "Le fils", "La fille", "La sœur", "Le frère", "Le mari", "La femme", "L'ami", "L'amie"]
   },
   COSYitaliano: {
@@ -26,6 +26,29 @@ const vocabData = {
     2: ["Το αγόρι", "Το κορίτσι", "Ο δάσκαλος", "Η δασκάλα", "Ο μαθητής", "Η μαθήτρια", "Η γυναίκα", "Ο άντρας"],
     3: ["Η μητέρα", "Ο πατέρας", "Ο γιος", "Η κόρη", "Η αδερφή", "Ο αδερφός", "Η σύζυγος", "Ο σύζυγος", "Ο φίλος", "η Φίλη"]
   },
-  ТАКОЙрусский: {
+  ТАКОЙрусский:{
+    1: ["Привет", "До свидания", "Да", "Нет", "Спасибо", "Пожалуйста"],
+    2: ["Один мальчик", "Одна девочка", "Один учитель", "Одна учительница", "Один студент", "Одна студентка", "Одна женщина", "Один мужчина"],
+    3: ["Одна мать", "Один отец", "Один сын", "Одна дочь", "Одна сестра", "Один брат", "Одна жена", "Один муж", "Один друг", "Одна подруга"]
+  },
+  COSYdeutsch: {
+    1: ["Hallo", "Auf Wiedersehen", "Ja", "Nein", "Danke", "Bitte"],
+    2: ["Der Junge", "Das Mädchen", "Der Lehrer", "Die Lehrerin", "Der Schüler", "Die Schülerin", "Die Frau", "Der Mann"],
+    3: ["Die Mutter", "Der Vater", "Der Sohn", "Die Tochter", "Die Schwester", "Der Bruder", "Der Ehemann", "Die Ehefrau"]
+  },
+    COSYespañol: {
+    1: ["Hola", "Adiós", "Sí", "No", "Gracias", "De nada"],
+    2: ["El niño", "La niña", "El profesor", "La profesora", "El estudiante", "La estudiante", "La mujer", "El hombre"],
+    3: ["La madre", "El padre", "El hijo", "La hija", "La hermana", "El hermano", "El esposo", "La esposa"]
+  },
+  COSYportuguês: {
+    1: ["Olá", "Adeus", "Sim", "Não", "Obrigado", "De nada"],
+    2: ["O menino", "A menina", "O professor", "A professora", "O estudante", "A estudante", "A mulher", "O homem"],
+    3: ["A mãe", "O pai", "O filho", "A filha", "A irmã", "O irmão", "O marido", "A esposa"]
+  },
+  ԾՈՍՅհայկական: {
+    1: ["Բարև", "Ցտեսություն", "Այո", "Ոչ", "Շնորհակալություն", "Խնդրեմ"],
+    2: ["Տղան", "Աղջիկը", "Դասատուն", "Դասատուուհին", "Ուսանողը", "Ուսանողուհին", "Կինը", "Տղամարդը"],
+    3: ["Մայրիկը", "Հայրիկը", "Տղան", "Աղջիկը", "Քույրը", "Անձնավորությունը", "Ամուսինը", "Կինը"]
   }
 };
