@@ -249,7 +249,7 @@ const genderPracticeData = {
       { word: "mãe", article: "a" },
       { word: "pai", article: "o" },
       { word: "irmão", article: "o" },
-      { word: "irmã", article: "a" },
+      { word: "irm姐", article: "a" },
       { word: "filho", article: "o" },
       { word: "filha", article: "a" },
       { word: "marido", article: "o" },
@@ -298,3 +298,4 @@ const genderPracticeData = {
     ]
   }
 };
+if (typeof window !== 'undefined') window.genderPracticeData = genderPracticeData;
