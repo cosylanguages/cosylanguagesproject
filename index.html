@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>COSYlanguages</title>
   <link rel="stylesheet" href="styles/main.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+  </script>
 </head>
 <body>
   <div class="main-container">
@@ -13,6 +23,13 @@
     </header>
 
     <div class="content-container">
+      <!-- Adventure Progress Bar -->
+      <div id="adventure-progress" style="margin: 20px 0; display: flex; align-items: center; justify-content: center;">
+        <div id="progress-map" style="display: flex; gap: 12px;"></div>
+        <span id="xp-display" style="margin-left: 24px; font-weight: bold; color: #2d2d2d;">XP: 0</span>
+        <span id="streak-display" style="margin-left: 24px; font-weight: bold; color: #2d2d2d;">Streak: 0</span>
+      </div>
+
       <div class="controls-container">
         <div class="selector-group" id="language-day-selectors">
           <label for="language-select">Choose language:</label>
@@ -95,6 +112,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Install App button (PWA) -->
+  <button id="install-app-btn" style="position:absolute;top:10px;right:10px;z-index:1000;background:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,0.08);color:#222;display:none;">Install App</button>
 
   <!-- Scripts loaded at the end for performance -->
   <script src="scripts/data/vocab-data.js"></script>
