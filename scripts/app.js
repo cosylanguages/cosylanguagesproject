@@ -286,80 +286,80 @@ document.addEventListener('DOMContentLoaded', function() {
     // Clear previous content
     clearResultContainer();
     const container = document.createElement('div');
-    container.className = 'image-container'; // visually match image card
-
-    const questionDiv = document.createElement('div');
-    questionDiv.className = 'image-question';
-    questionDiv.textContent = 'Verb Practice';
+    container.className = 'image-container';
 
     // Get verb data
     const verbData = window.verbPracticeData?.[language]?.[day];
     if (!verbData || verbData.length === 0) {
-      container.textContent = 'No verb practice for this language/day.';
-      resultContainer.appendChild(container);
+      resultContainer.textContent = 'No verb data found for this selection.';
       return;
     }
     const item = randomElement(verbData);
 
-    // Prompt
+    // Prompt (random word)
     const promptDiv = document.createElement('div');
-    promptDiv.className = 'image-caption';
-    promptDiv.style.fontSize = '1.3em';
-    promptDiv.style.margin = '12px 0 8px 0';
+    promptDiv.className = 'image-question';
     promptDiv.textContent = item.prompt;
+    container.appendChild(promptDiv);
 
     // Input row
-    const inputCol = document.createElement('div');
-    inputCol.className = 'image-input-col';
-    inputCol.style.display = 'flex';
-    inputCol.style.flexDirection = 'column';
-    inputCol.style.alignItems = 'center';
-    inputCol.style.justifyContent = 'center';
-    inputCol.style.margin = '0 auto';
-
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'practice-input';
     input.placeholder = 'Type your answer';
-    input.style.marginBottom = '8px';
+    container.appendChild(input);
 
+    // Button row (Check + Show Answer + Pronounce)
+    const btnRow = document.createElement('div');
+    btnRow.className = 'practice-btn-row';
+
+    // Check button
     const checkBtn = document.createElement('button');
     checkBtn.className = 'btn check-emoji-btn';
-    checkBtn.textContent = 'Check';
+    checkBtn.title = 'Check your answer';
+    checkBtn.innerHTML = '✅';
 
-    const feedback = document.createElement('div');
-    feedback.className = 'practice-feedback';
-    feedback.style.minHeight = '1.5em';
-
-    checkBtn.onclick = function() {
-      const user = input.value.trim().toLowerCase();
-      const correct = item.answer.toLowerCase();
-      if (user === correct) {
-        feedback.textContent = '✅ Correct!';
-        feedback.style.color = '#0a7c0a';
-      } else {
-        feedback.textContent = `❌ ${item.prompt} → ${item.answer}`;
-        feedback.style.color = '#b80000';
-      }
-    };
+    // Show answer button
+    const showAnswerBtn = document.createElement('button');
+    showAnswerBtn.className = 'btn show-answer-btn';
+    showAnswerBtn.title = 'Show correct answer';
+    showAnswerBtn.innerHTML = '💡';
 
     // Pronounce button
     const pronounceBtn = document.createElement('button');
     pronounceBtn.className = 'btn pronounce-btn';
     pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
     pronounceBtn.title = 'Hear pronunciation';
-    pronounceBtn.onclick = function() {
-      speakText(item.prompt, language);
+
+    btnRow.appendChild(checkBtn);
+    btnRow.appendChild(showAnswerBtn);
+    btnRow.appendChild(pronounceBtn);
+    container.appendChild(btnRow);
+
+    // Feedback
+    const feedback = document.createElement('div');
+    feedback.className = 'practice-feedback';
+    container.appendChild(feedback);
+
+    checkBtn.onclick = function() {
+      if (input.value.trim().toLowerCase() === item.answer.trim().toLowerCase()) {
+        feedback.textContent = 'Correct!';
+        feedback.style.color = '#0abab5';
+      } else {
+        feedback.textContent = 'Try again!';
+        feedback.style.color = '#d9534f';
+      }
     };
 
-    inputCol.appendChild(input);
-    inputCol.appendChild(checkBtn);
-    inputCol.appendChild(pronounceBtn);
-    inputCol.appendChild(feedback);
+    showAnswerBtn.onclick = function() {
+      feedback.textContent = `Answer: ${item.answer}`;
+      feedback.style.color = '#333';
+    };
 
-    container.appendChild(questionDiv);
-    container.appendChild(promptDiv);
-    container.appendChild(inputCol);
+    pronounceBtn.onclick = function() {
+      speakText(item.answer, language);
+    };
+
     resultContainer.appendChild(container);
   }
 
@@ -520,13 +520,14 @@ document.addEventListener('DOMContentLoaded', function() {
     questionDiv.className = 'image-question';
     if (qSet) {
       questionDiv.innerHTML = `<span class="q1">${currentQs[0]}</span><br><span class="q2">${currentQs[1]}</span>`;
-      // Speak both questions with a pause
       speakText(currentQs[0], language);
       setTimeout(() => speakText(currentQs[1], language), 1200);
     } else {
-      questionDiv.textContent = questions.what;
-      speakText(questions.what, language);
+      questionDiv.textContent = currentQs[0];
+      speakText(currentQs[0], language);
     }
+    container.appendChild(questionDiv);
+
     const imgElem = document.createElement('img');
     imgElem.src = imgObj.src;
     imgElem.className = 'vocab-image';
@@ -539,29 +540,13 @@ document.addEventListener('DOMContentLoaded', function() {
     caption.style.display = 'none';
     imgElem.addEventListener('click', () => {
       caption.style.display = caption.style.display === 'none' ? 'flex' : 'none';
-      // Randomize questions on click (if day >= 2)
       if (qSet) {
         currentQs = [randomElement(qSet[0]), randomElement(qSet[1])];
-        questionDiv.innerHTML = `<span class="q1">${currentQs[0]}</span><br><span class="q2">${currentQs[1]}</span>`;
+        questionDiv.innerHTML = `<span class=\"q1\">${currentQs[0]}</span><br><span class=\"q2\">${currentQs[1]}</span>`;
         speakText(currentQs[0], language);
         setTimeout(() => speakText(currentQs[1], language), 1200);
       }
     });
-    // Center overlay
-    caption.style.position = 'absolute';
-    caption.style.top = '50%';
-    caption.style.left = '50%';
-    caption.style.transform = 'translate(-50%, -50%)';
-    caption.style.background = 'rgba(255,255,255,0.0)';
-    caption.style.color = '#111';
-    caption.style.fontWeight = 'bold';
-    caption.style.fontSize = '1.5rem';
-    caption.style.padding = '0.2em 0.8em';
-    caption.style.borderRadius = '10px';
-    caption.style.pointerEvents = 'none';
-    caption.style.textShadow = '0 1px 8px #fff, 0 0 2px #fff';
-    caption.style.justifyContent = 'center';
-    caption.style.alignItems = 'center';
 
     // --- Input/check/pronounce column under the image ---
     const inputCol = document.createElement('div');
@@ -571,15 +556,10 @@ document.addEventListener('DOMContentLoaded', function() {
     answerInput.type = 'text';
     answerInput.placeholder = 'Type the word or phrase...';
     answerInput.className = 'practice-input';
-    answerInput.style.margin = '0 auto 10px auto';
-    answerInput.style.display = 'block';
 
     // Row for buttons, centered
     const btnRow = document.createElement('div');
-    btnRow.style.display = 'flex';
-    btnRow.style.justifyContent = 'center';
-    btnRow.style.alignItems = 'center';
-    btnRow.style.gap = '12px';
+    btnRow.className = 'practice-btn-row';
 
     // Check button as emoji
     const checkBtn = document.createElement('button');
@@ -618,13 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
     inputCol.appendChild(answerInput);
     inputCol.appendChild(btnRow);
     inputCol.appendChild(feedback);
-    inputCol.style.display = 'flex';
-    inputCol.style.flexDirection = 'column';
-    inputCol.style.alignItems = 'center';
-    inputCol.style.justifyContent = 'center';
-    inputCol.style.margin = '0 auto';
 
-    container.appendChild(questionDiv);
     container.appendChild(imgElem);
     container.appendChild(caption);
     container.appendChild(inputCol);
