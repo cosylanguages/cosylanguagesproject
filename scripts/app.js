@@ -235,13 +235,83 @@ document.addEventListener('DOMContentLoaded', function() {
     const words = getWordsForDays(vocabData, language, days);
     if (!words.length) return showMessage('No words found');
     resultContainer.innerHTML = '';
+    const word = randomElement(words);
     const wordDiv = document.createElement('div');
     wordDiv.className = 'practice-word';
-    wordDiv.textContent = randomElement(words);
+    wordDiv.textContent = word;
     wordDiv.style.color = '#fff';
     wordDiv.style.textAlign = 'center';
     resultContainer.appendChild(wordDiv);
-    speakText(wordDiv.textContent, language);
+    speakText(word, language);
+
+    // Pronunciation practice UI
+    const speakPracticeDiv = document.createElement('div');
+    speakPracticeDiv.style.marginTop = '18px';
+    speakPracticeDiv.style.display = 'flex';
+    speakPracticeDiv.style.justifyContent = 'center';
+    speakPracticeDiv.style.alignItems = 'center';
+    const micBtn = document.createElement('button');
+    micBtn.textContent = '🎤 Practice Pronunciation';
+    micBtn.className = 'btn';
+    micBtn.style.margin = '0 8px';
+    const feedback = document.createElement('div');
+    feedback.className = 'practice-feedback';
+    feedback.style.marginTop = '10px';
+    feedback.style.marginLeft = '12px';
+    speakPracticeDiv.appendChild(micBtn);
+    speakPracticeDiv.appendChild(feedback);
+    resultContainer.appendChild(speakPracticeDiv);
+
+    let recognition;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = (window.voiceLanguageMap?.[language]?.lang) || 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+    }
+
+    micBtn.onclick = function() {
+      if (!recognition) {
+        feedback.textContent = 'Speech recognition is not supported in this browser.';
+        feedback.style.color = '#F44336';
+        return;
+      }
+      feedback.textContent = 'Listening...';
+      feedback.style.color = '#0abab5';
+      recognition.start();
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript.trim().toLowerCase();
+        const target = word.trim().toLowerCase();
+        // Accept answer if transcript contains the word or is very similar
+        if (transcript === target || transcript.includes(target) || target.includes(transcript) || getSimilarityScore(transcript, target) > 0.8) {
+          feedback.textContent = `✔ Pronunciation correct! You said: "${transcript}"`;
+          feedback.style.color = '#4CAF50';
+          adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
+        } else {
+          feedback.textContent = `✘ You said: "${transcript}". Try again!`;
+          feedback.style.color = '#F44336';
+          adventureWrongAnswer();
+        }
+      };
+      recognition.onerror = function() {
+        feedback.textContent = 'Could not recognize speech. Try again.';
+        feedback.style.color = '#F44336';
+      };
+    };
+
+    // Center the pronounce button
+    const pronounceBtn = document.createElement('button');
+    pronounceBtn.className = 'pronounce-btn';
+    pronounceBtn.title = 'Play pronunciation';
+    pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
+    pronounceBtn.style.display = 'block';
+    pronounceBtn.style.margin = '18px auto 0 auto';
+    pronounceBtn.onclick = function(e) {
+      e.preventDefault();
+      speakText(word, language);
+    };
+    resultContainer.appendChild(pronounceBtn);
   }
 
   function handleRandomImage(language, days) {
@@ -329,7 +399,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const pronounceBtn = document.createElement('button');
     pronounceBtn.className = 'btn pronounce-btn';
     pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
-    pronounceBtn.title = 'Hear pronunciation';
+    pronounceBtn.onclick = function() {
+      speakText(item.answer, language);
+    };
 
     btnRow.appendChild(checkBtn);
     btnRow.appendChild(showAnswerBtn);
@@ -345,9 +417,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (input.value.trim().toLowerCase() === item.answer.trim().toLowerCase()) {
         feedback.textContent = 'Correct!';
         feedback.style.color = '#0abab5';
+        adventureCorrectAnswer(day);
       } else {
         feedback.textContent = 'Try again!';
         feedback.style.color = '#d9534f';
+        adventureWrongAnswer();
       }
     };
 
@@ -449,9 +523,183 @@ document.addEventListener('DOMContentLoaded', function() {
     exampleDiv.style.marginTop = '8px';
     exampleDiv.style.fontSize = '1.05rem';
 
+    // Pronunciation practice UI for speaking: always award XP/streak, just transcribe
+    const speakPracticeDiv = document.createElement('div');
+    speakPracticeDiv.style.marginTop = '18px';
+    speakPracticeDiv.style.display = 'flex';
+    speakPracticeDiv.style.justifyContent = 'center';
+    speakPracticeDiv.style.alignItems = 'center';
+    const micBtn = document.createElement('button');
+    micBtn.textContent = '🎤 Answer by Speaking';
+    micBtn.className = 'btn';
+    micBtn.style.margin = '0 8px';
+    const feedback = document.createElement('div');
+    feedback.className = 'practice-feedback';
+    feedback.style.marginTop = '10px';
+    feedback.style.marginLeft = '12px';
+    speakPracticeDiv.appendChild(micBtn);
+    speakPracticeDiv.appendChild(feedback);
+
     resultContainer.appendChild(taskDiv);
     resultContainer.appendChild(exampleDiv);
+    resultContainer.appendChild(speakPracticeDiv);
   }
+
+  // --- Adventure-like features ---
+  const DAYS = 7;
+  let userXP = parseInt(localStorage.getItem('cosy_xp') || '0');
+  let userStreak = parseInt(localStorage.getItem('cosy_streak') || '0');
+  let unlockedDay = parseInt(localStorage.getItem('cosy_unlocked_day') || '1');
+
+  function updateProgressMap() {
+    const map = document.getElementById('progress-map');
+    map.innerHTML = '';
+    for (let i = 1; i <= DAYS; i++) {
+      const node = document.createElement('div');
+      node.textContent = `Day ${i}`;
+      node.style.padding = '8px 12px';
+      node.style.borderRadius = '8px';
+      node.style.background = i <= unlockedDay ? '#4caf50' : '#ccc';
+      node.style.color = '#fff';
+      node.style.fontWeight = 'bold';
+      node.style.opacity = i <= unlockedDay ? '1' : '0.5';
+      map.appendChild(node);
+      if (i < DAYS) {
+        const arrow = document.createElement('span');
+        arrow.textContent = '→';
+        arrow.style.margin = '0 4px';
+        map.appendChild(arrow);
+      }
+    }
+    document.getElementById('xp-display').textContent = `XP: ${userXP}`;
+    document.getElementById('streak-display').textContent = `Streak: ${userStreak}`;
+  }
+
+  // --- Gamification & Story Elements ---
+  // Save/load adventure progress to localStorage (XP, streak, unlockedDay)
+  function saveAdventureProgress() {
+    localStorage.setItem('cosy_xp', userXP);
+    localStorage.setItem('cosy_streak', userStreak);
+    localStorage.setItem('cosy_unlocked_day', unlockedDay);
+  }
+  function loadAdventureProgress() {
+    userXP = parseInt(localStorage.getItem('cosy_xp') || '0');
+    userStreak = parseInt(localStorage.getItem('cosy_streak') || '0');
+    unlockedDay = parseInt(localStorage.getItem('cosy_unlocked_day') || '1');
+  }
+  // Load progress on startup
+  loadAdventureProgress();
+
+  // Add a reset progress button
+  if (!document.getElementById('reset-progress-btn')) {
+    const btn = document.createElement('button');
+    btn.id = 'reset-progress-btn';
+    btn.textContent = 'Reset Adventure Progress';
+    btn.style.position = 'absolute';
+    btn.style.top = '50px';
+    btn.style.right = '10px';
+    btn.style.zIndex = '1000';
+    btn.style.background = '#fff';
+    btn.style.padding = '8px 16px';
+    btn.style.borderRadius = '6px';
+    btn.style.fontWeight = 'bold';
+    btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+    btn.style.color = '#222';
+    btn.onclick = function() {
+      if (confirm('Are you sure you want to reset your adventure progress?')) {
+        userXP = 0; userStreak = 0; unlockedDay = 1;
+        saveAdventureProgress();
+        updateProgressMap();
+      }
+    };
+    document.body.appendChild(btn);
+  }
+
+  // Save progress after every change
+  function addXP(amount) {
+    userXP += amount;
+    saveAdventureProgress();
+    updateProgressMap();
+  }
+
+  function incrementStreak() {
+    userStreak += 1;
+    saveAdventureProgress();
+    updateProgressMap();
+  }
+
+  function resetStreak() {
+    userStreak = 0;
+    saveAdventureProgress();
+    updateProgressMap();
+  }
+
+  function unlockNextDay(currentDay) {
+    if (currentDay >= unlockedDay && currentDay < DAYS) {
+      unlockedDay = currentDay + 1;
+      saveAdventureProgress();
+      updateProgressMap();
+    }
+  }
+
+  // --- Story & Gamification ---
+  // Show a story intro modal on first visit
+  if (!localStorage.getItem('cosy_story_intro_shown')) {
+    setTimeout(() => {
+      showMessage('Welcome, adventurer! Embark on your COSYlanguages journey. Unlock new days, earn XP, and discover language treasures!');
+      localStorage.setItem('cosy_story_intro_shown', '1');
+    }, 800);
+  }
+
+  // Show a reward modal when a new day is unlocked
+  function showDayUnlocked(day) {
+    showMessage(`🎉 Congratulations! You unlocked Day ${day}! Keep going to discover more language adventures!`);
+  }
+  // Patch unlockNextDay to show reward
+  const _unlockNextDay = unlockNextDay;
+  unlockNextDay = function(currentDay) {
+    const prevUnlocked = unlockedDay;
+    _unlockNextDay(currentDay);
+    if (unlockedDay > prevUnlocked) {
+      showDayUnlocked(unlockedDay);
+    }
+  };
+
+  // Show a streak reward modal
+  function showStreakReward(streak) {
+    if (streak > 0 && streak % 5 === 0) {
+      showMessage(`🔥 Streak bonus! ${streak} days in a row! +20 XP!`);
+      addXP(20);
+    }
+  }
+  // Patch incrementStreak to show streak reward
+  const _incrementStreak = incrementStreak;
+  incrementStreak = function() {
+    _incrementStreak();
+    showStreakReward(userStreak);
+  };
+
+  document.addEventListener('DOMContentLoaded', updateProgressMap);
+
+  // Restrict day selection to unlocked days
+  // Restrict day selection to unlocked days (adventure mode)
+  (function() {
+    var ds = document.getElementById('day-select');
+    if (ds) {
+      ds.addEventListener('mousedown', function() {
+        for (let i = 0; i < ds.options.length; i++) {
+          const opt = ds.options[i];
+          if (opt.value && parseInt(opt.value) > unlockedDay) {
+            opt.disabled = true;
+            opt.style.color = '#aaa';
+          } else {
+            opt.disabled = false;
+            opt.style.color = '';
+          }
+        }
+      });
+    }
+  })();
 
   // Helper functions
   function getWordsForDays(data, language, days) {
@@ -493,6 +741,7 @@ document.addEventListener('DOMContentLoaded', function() {
       selectedOption.classList.add('correct');
       feedbackEl.textContent = 'Correct!';
       feedbackEl.style.color = '#4CAF50';
+      adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
     } else {
       selectedOption.classList.add('incorrect');
       document.querySelectorAll('.gender-option').forEach(opt => {
@@ -500,6 +749,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       feedbackEl.textContent = 'Incorrect!';
       feedbackEl.style.color = '#F44336';
+      adventureWrongAnswer();
     }
   }
 
@@ -576,9 +826,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (userAns === correctAns) {
         feedback.textContent = '✔ Correct!';
         feedback.style.color = '#4CAF50';
+        adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
       } else {
         feedback.textContent = '✘ Incorrect!';
         feedback.style.color = '#F44336';
+        adventureWrongAnswer();
       }
     };
 
@@ -631,6 +883,25 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof window !== 'undefined' && typeof window.voiceLanguageMap === 'undefined' && typeof voiceLanguageMap !== 'undefined') {
     window.voiceLanguageMap = voiceLanguageMap;
   }
+
+  // PWA Install App button logic
+  let deferredPrompt;
+  const installBtn = document.getElementById('install-app-btn');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+  });
+  installBtn && installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        installBtn.style.display = 'none';
+      }
+      deferredPrompt = null;
+    }
+  });
 
   // Utility functions
   function randomElement(arr) {
@@ -708,5 +979,28 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
     waitAndSpeak();
+  }
+
+  // Example: Award XP and unlock next day after correct answer
+  function adventureCorrectAnswer(currentDay) {
+    addXP(10);
+    incrementStreak();
+    unlockNextDay(currentDay);
+    // Animated feedback
+    const rc = document.getElementById('result-container');
+    if (rc) {
+      rc.style.animation = 'adventure-correct 0.5s';
+      setTimeout(() => { rc.style.animation = ''; }, 500);
+    }
+  }
+
+  // Example: Reset streak and show feedback on wrong answer
+  function adventureWrongAnswer() {
+    resetStreak();
+    const rc = document.getElementById('result-container');
+    if (rc) {
+      rc.style.animation = 'adventure-wrong 0.5s';
+      setTimeout(() => { rc.style.animation = ''; }, 500);
+    }
   }
 });
