@@ -111,3 +111,4 @@ const possessivesPracticeData = {
     ]
   }
 };
+if (typeof window !== 'undefined') window.possessivesPracticeData = possessivesPracticeData;
