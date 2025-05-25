@@ -63,3 +63,4 @@ const grammarData = {
     }
   }
 };
+if (typeof window !== 'undefined') window.grammarData = grammarData;
