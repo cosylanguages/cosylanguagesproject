@@ -654,7 +654,10 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('keydown', unlockSpeechSynthesis, { once: true });
 
   function speakText(text, language) {
-    if (!window.speechSynthesis) return;
+    if (!window.speechSynthesis) {
+      showMessage('Speech synthesis is not supported on this device/browser.');
+      return;
+    }
     let voiceLanguageMap = window.voiceLanguageMap || (typeof voiceLanguageMap !== 'undefined' ? voiceLanguageMap : {});
     const voiceSettings = voiceLanguageMap[language] || voiceLanguageMap.COSYenglish || {};
     const utterance = new SpeechSynthesisUtterance(text);
@@ -672,8 +675,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const langPrefix = voiceSettings.lang.split('-')[0];
         voice = voices.find(v => v.lang && v.lang.startsWith(langPrefix));
       }
-      if (!voice) {
-        voice = voices[0];
+      if (!voice && voices.length > 0) {
+        voice = voices[0]; // fallback to any available voice
       }
       if (voice) {
         utt.voice = voice;
