@@ -40,3 +40,54 @@ const speakingData = {
     ],
     3: ["Η οικογένειά μου, ο φίλος μου και η οικογένειά του/της, τα ποτά που πίνεις."]
   },
+  COSYespañol: {
+    1: ["¿Un café o un té? ¿Efectivo o tarjeta?"],
+    2: [
+      "¿Quién eres? (nombre, hombre o mujer, estudiante o profesor/a?)",
+      "Nombra 3 personas populares (nombre, hombre o mujer?)",
+      "Nombra 3 personas (nombre, hombre o mujer?)"
+    ],
+    3: ["Mi familia, mi amigo y su familia, las bebidas que tomas."]
+  },
+  COSYportuguês: {
+    1: ["Um café ou um chá? Dinheiro ou cartão?"],
+    2: [
+      "Quem é você? (nome, homem ou mulher, estudante ou professor/a?)",
+      "Nomeie 3 pessoas populares (nome, homem ou mulher?)",
+      "Nomeie 3 pessoas (nome, homem ou mulher?)"
+    ],
+    3: ["Minha família, meu amigo e sua família, as bebidas que você toma."]
+  },
+  COSYdeutsch: {
+    1: ["Kaffee oder Tee? Bar oder Karte?"],
+    2: [
+      "Wer bist du? (Name, Mann oder Frau, Student/in oder Lehrer/in?)",
+      "Nenne 3 bekannte Personen (Name, Mann oder Frau?)",
+      "Nenne 3 Personen (Name, Mann oder Frau?)"
+    ],
+    3: ["Meine Familie, mein Freund und seine Familie, die Getränke, die du trinkst."]
+  },
+  'ТАКОЙрусский': {
+    1: ["Кофе или чай? Наличные или карта?"],
+    2: [
+      "Кто ты? (имя, мужчина или женщина, студент или преподаватель?)",
+      "Назови 3 известных человека (имя, мужчина или женщина?)",
+      "Назови 3 человека (имя, мужчина или женщина?)"
+    ],
+    3: ["Моя семья, мой друг и его семья, напитки, которые ты пьёшь."]
+  },
+  'ԾՈՍՅհայկական': {
+    1: ["Սուրճ թե թեյ։ Կանխիկ թե քարտ։"],
+    2: [
+      "Ո՞վ ես դու։ (անուն, տղամարդ թե կին, ուսանող/ուհի թե դասախոս)։",
+      "Անվանիր 3 հայտնի մարդ (անուն, տղամարդ թե կին)։",
+      "Անվանիր 3 մարդ (անուն, տղամարդ թե կին)։"
+    ],
+    3: ["Իմ ընտանիքը, իմ ընկերը և նրա ընտանիքը, այն ըմպելիքները, որ դու խմում ես։"]
+  }
+};
+
+// Make available globally
+if (typeof window !== 'undefined') {
+  window.speakingData = speakingData;
+}
