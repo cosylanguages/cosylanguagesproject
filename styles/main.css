@@ -114,21 +114,15 @@ header h1 {
 
 /* Adventure progress bar responsive */
 #adventure-progress {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 8px 0;
-  min-height: 36px;
-  background: linear-gradient(90deg, #e0f7f7 0%, #b2dfdf 100%);
-  border-radius: 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  margin: 12px auto 18px auto;
-  max-width: 340px;
-  width: 98vw;
   position: relative;
-  transition: box-shadow 0.2s;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 20px 0 18px 0;
+  background: none;
+  box-shadow: none;
 }
 #adventure-progress:hover {
   box-shadow: 0 4px 18px rgba(0,0,0,0.13);
@@ -1002,4 +996,93 @@ html {
 }
 #result-container[style*="adventure-wrong"] {
   animation: adventure-wrong 0.5s;
+}
+
+#adventure-progress {
+  position: relative;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 20px 0 18px 0;
+  background: none;
+  box-shadow: none;
+}
+#progress-overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.progress-dot-row {
+  display: flex;
+  gap: 7px;
+  padding: 6px 0 0 0;
+  overflow-x: auto;
+  max-width: 320px;
+  scrollbar-width: thin;
+}
+.progress-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #b2dfdf;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  transition: background 0.3s, transform 0.3s;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+}
+.progress-dot.completed {
+  background: #4caf50;
+  border-color: #c8f7c5;
+}
+.progress-dot.active {
+  background: #0abab5;
+  transform: scale(1.18);
+  border-color: #19d3c5;
+}
+.progress-dot.locked {
+  background: #e0f7f7;
+  opacity: 0.5;
+}
+.progress-dot:hover::after {
+  content: attr(data-day);
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: #0abab5;
+  font-size: 0.85rem;
+  padding: 2px 7px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  white-space: nowrap;
+  z-index: 10;
+}
+#xp-streak-box {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 8px 22px;
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  min-width: 160px;
+  justify-content: center;
+}
+@media (max-width: 600px) {
+  #progress-overlay-container { max-width: 98vw; }
+  .progress-dot-row { max-width: 98vw; }
+  #xp-streak-box { padding: 7px 8px; font-size: 0.98rem; }
 }
