@@ -8,5 +8,7 @@ const voiceLanguageMap = {
   COSYdeutsch: { lang: "de-DE", voiceURI: "Google Deutsch" },
   ΚΟΖΥελληνικά: { lang: "el-GR", voiceURI: "Google ελληνικά" },
   ТАКОЙрусский: { lang: "ru-RU", voiceURI: "Google русский" },
-  ԾՈՍՅհայկական: { lang: "hy-AM", voiceURI: "" }
+  ԾՈՍՅհայկական: { lang: "hy-AM", voiceURI: "Google հայերեն" } // Try Google Armenian first
 };
+// If Google Armenian is not available, fallback to Microsoft Hayk (Windows)
+// The app.js logic will try lang fallback if voiceURI is not found
