@@ -474,6 +474,8 @@ document.addEventListener('DOMContentLoaded', function() {
       'COSYespañol': ['el', 'la'],
       'ΚΟΖΥελληνικά': ['ο', 'η', 'το', 'ο/η'],
       'COSYportuguês': ['o', 'a'],
+      'ТАКОЙрусский': ['один', 'одна', 'одно'],
+      'ԾՈՍՅհայկական': ['ը', 'ն', 'նա', 'ը/ն'],
       'default': ['the']
     };
     return articles[language] || articles.default;
