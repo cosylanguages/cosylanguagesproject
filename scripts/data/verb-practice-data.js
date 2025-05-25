@@ -86,6 +86,85 @@ const verbPracticeData = {
       { prompt: "έχει", answer: "αυτός/αυτή/αυτό" }
     ]
   },
-  ТАКОЙрусский: {
+  COSYespañol: {
+    2: [
+      { prompt: "Yo", answer: "soy" },
+      { prompt: "Tú", answer: "eres" },
+      { prompt: "Él", answer: "es" },
+      { prompt: "Ella", answer: "es" },
+      { prompt: "Eso", answer: "es" },
+      { prompt: "soy", answer: "yo" },
+      { prompt: "eres", answer: "tú" },
+      { prompt: "es", answer: "él/ella/eso" }
+    ],
+    3: [
+      { prompt: "Yo", answer: "tengo" },
+      { prompt: "Tú", answer: "tienes" },
+      { prompt: "Él", answer: "tiene" },
+      { prompt: "Ella", answer: "tiene" },
+      { prompt: "tengo", answer: "yo" },
+      { prompt: "tienes", answer: "tú" },
+      { prompt: "tiene", answer: "él/ella" }
+    ]
+  },
+  COSYportuguês: {
+    2: [
+      { prompt: "Eu", answer: "sou" },
+      { prompt: "Tu", answer: "és" },
+      { prompt: "Ele", answer: "é" },
+      { prompt: "Ela", answer: "é" },
+      { prompt: "Isso", answer: "é" },
+      { prompt: "sou", answer: "eu" },
+      { prompt: "és", answer: "tu" },
+      { prompt: "é", answer: "ele/ela/isso" }
+    ],
+    3: [
+      { prompt: "Eu", answer: "tenho" },
+      { prompt: "Tu", answer: "tens" },
+      { prompt: "Ele", answer: "tem" },
+      { prompt: "Ela", answer: "tem" },
+      { prompt: "tenho", answer: "eu" },
+      { prompt: "tens", answer: "tu" },
+      { prompt: "tem", answer: "ele/ela" }
+    ]
+  },
+  COSYdeutsch: {
+    2: [
+      { prompt: "Ich", answer: "bin" },
+      { prompt: "Du", answer: "bist" },
+      { prompt: "Er", answer: "ist" },
+      { prompt: "Sie", answer: "ist" },
+      { prompt: "Es", answer: "ist" },
+      { prompt: "bin", answer: "ich" },
+      { prompt: "bist", answer: "du" },
+      { prompt: "ist", answer: "er/sie/es" }
+    ],
+    3: [
+      { prompt: "Ich", answer: "habe" },
+      { prompt: "Du", answer: "hast" },
+      { prompt: "Er", answer: "hat" },
+      { prompt: "Sie", answer: "hat" },
+      { prompt: "habe", answer: "ich" },
+      { prompt: "hast", answer: "du" },
+      { prompt: "hat", answer: "er/sie/es" }
+    ]
+  },
+  ԾՈՍՅհայկական: {
+    2: [
+      { prompt: "Ես", answer: "եմ" },
+      { prompt: "Դու", answer: "ես" },
+      { prompt: "Նա", answer: "է" },
+      { prompt: "Այն", answer: "է" },
+      { prompt: "ենք", answer: "մենք" },
+      { prompt: "ես", answer: "դու" },
+      { prompt: "է", answer: "նա/այն" }
+    ],
+    3: [
+      { prompt: "Ես", answer: "ունեմ" },
+      { prompt: "Դու", answer: "ունես" },
+      { prompt: "Նա", answer: "ունի" },
+      { prompt: "Այն", answer: "ունի" },
+      { prompt: "ունենամ", answer: "ես/դու/նա/այն" }
+    ]
   }
 };
