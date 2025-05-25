@@ -33,23 +33,23 @@ function getBestVoice(languageCode, voiceURI) {
 // Function to speak text with selected voice and language
 function speakText(text, language) {
   if (!window.speechSynthesis) {
-    console.warn("Speech synthesis not supported");
+    alert('Speech synthesis is not supported on this device/browser.');
     return;
   }
-
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
-  
   const voiceSettings = voiceLanguageMap[language] || voiceLanguageMap.COSYenglish;
-  const voice = getBestVoice(voiceSettings.lang, voiceSettings.voiceURI);
-  
+  let voice = getBestVoice(voiceSettings.lang, voiceSettings.voiceURI);
+  if (!voice) {
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) voice = voices[0];
+  }
   if (voice) {
     utterance.voice = voice;
     utterance.lang = voice.lang;
     utterance.rate = 0.9;
     utterance.pitch = 1.0;
   }
-
   window.speechSynthesis.speak(utterance);
 }
 
