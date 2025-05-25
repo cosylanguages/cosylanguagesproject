@@ -358,16 +358,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function handleRandomSpeaking(language, days) {
-    // Defensive: check if speakingData and language exist
-    if (!speakingData) {
+    if (!window.speakingData) {
       showMessage('No speaking exercises found for this language. (speakingData missing)');
       return;
     }
-    if (!speakingData[language]) {
+    if (!window.speakingData[language]) {
       showMessage(`No speaking exercises found for this language: ${language}`);
       return;
     }
-    const phrases = getSpeakingPhrases(speakingData, language, days);
+    // Defensive: flatten and filter phrases
+    let phrases = [];
+    days.forEach(day => {
+      if (window.speakingData[language][day]) {
+        phrases = phrases.concat(window.speakingData[language][day]);
+      }
+    });
     if (!phrases.length) {
       showMessage(`No speaking exercises found for language: ${language}, days: ${days.join(', ')}.\nCheck if data exists in scripts/data/speaking-data.js.`);
       return;
@@ -377,7 +382,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const phraseDiv = document.createElement('div');
     phraseDiv.className = 'practice-speaking';
     phraseDiv.textContent = randomElement(phrases);
-    phraseDiv.style.color = '#fff';
+    phraseDiv.style.color = '#222'; // Use dark color for visibility
+    phraseDiv.style.background = 'rgba(255,255,255,0.85)';
+    phraseDiv.style.borderRadius = '10px';
+    phraseDiv.style.padding = '18px 12px';
+    phraseDiv.style.margin = '18px auto';
+    phraseDiv.style.maxWidth = '90%';
+    phraseDiv.style.textAlign = 'center';
     resultContainer.appendChild(phraseDiv);
     speakText(phraseDiv.textContent, language);
   }
@@ -433,85 +444,64 @@ document.addEventListener('DOMContentLoaded', function() {
   function showImagePractice(imgObj, language) {
     const container = document.createElement('div');
     container.className = 'image-container';
-
     const questions = questionTranslations[language] || questionTranslations.COSYenglish;
     const questionDiv = document.createElement('div');
     questionDiv.className = 'image-question';
     questionDiv.textContent = questions.what;
-
     const imgElem = document.createElement('img');
     imgElem.src = imgObj.src;
     imgElem.className = 'vocab-image';
     imgElem.alt = imgObj.translations?.[language] || imgObj.alt || 'Image';
-
     // Caption hidden by default, shown on image click
     const caption = document.createElement('div');
-    caption.className = 'image-caption';
+    caption.className = 'image-caption-overlay';
     caption.textContent = imgObj.translations?.[language] || imgObj.alt;
     caption.style.display = 'none';
     imgElem.addEventListener('click', () => {
-      caption.style.display = caption.style.display === 'none' ? 'block' : 'none';
+      caption.style.display = caption.style.display === 'none' ? 'flex' : 'none';
     });
-
-    // --- Input and check button for writing practice (vertical layout) ---
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'image-word-input';
-    input.placeholder = questions.type_word || 'Type the word...';
-    input.style.margin = '18px 0 0 0';
-    input.style.display = 'block';
-    input.style.textAlign = 'center';
-    const checkBtn = document.createElement('button');
-    checkBtn.textContent = questions.check_word || 'Check';
-    checkBtn.className = 'image-word-check-btn';
-    checkBtn.style.margin = '14px 0 0 0';
-    checkBtn.style.display = 'block';
-    checkBtn.style.width = '100%';
-    const feedback = document.createElement('div');
-    feedback.className = 'image-word-feedback';
-    feedback.style.marginTop = '16px';
-    function playImageSound(type) {
-      let src = '';
-      if (type === 'success') src = 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae4c2.mp3';
-      if (type === 'fail') src = 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae4c2.mp3';
-      if (src) {
-        const audio = new Audio(src);
-        audio.volume = 0.25;
-        audio.play();
-      }
-    }
-    function checkAnswer() {
-      const correct = (imgObj.translations?.[language] || imgObj.alt || '').trim().toLowerCase();
-      const user = input.value.trim().toLowerCase();
-      if (!user) {
-        feedback.textContent = questions.enter_word || 'Please type your answer.';
-        feedback.style.color = '#F44336';
-        playImageSound('fail');
-        return;
-      }
-      if (user === correct) {
-        feedback.textContent = questions.correct_word || 'Correct!';
-        feedback.style.color = '#4CAF50';
-        playImageSound('success');
-      } else {
-        feedback.textContent = (questions.incorrect_word || 'Incorrect!') + ` (${correct})`;
-        feedback.style.color = '#F44336';
-        playImageSound('fail');
-      }
-    }
-    checkBtn.onclick = checkAnswer;
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkAnswer();
-    });
-    // Structure: image, caption overlay (hidden by default), input, check, feedback
-    container.append(questionDiv, imgElem, caption, input, checkBtn, feedback);
+    // Center overlay
+    caption.style.position = 'absolute';
+    caption.style.top = '50%';
+    caption.style.left = '50%';
+    caption.style.transform = 'translate(-50%, -50%)';
+    caption.style.background = 'rgba(255,255,255,0.0)';
+    caption.style.color = '#111';
+    caption.style.fontWeight = 'bold';
+    caption.style.fontSize = '1.5rem';
+    caption.style.padding = '0.2em 0.8em';
+    caption.style.borderRadius = '10px';
+    caption.style.pointerEvents = 'none';
+    caption.style.textShadow = '0 1px 8px #fff, 0 0 2px #fff';
+    caption.style.justifyContent = 'center';
+    caption.style.alignItems = 'center';
+    caption.style.display = 'none';
+    container.appendChild(questionDiv);
+    container.appendChild(imgElem);
+    container.appendChild(caption);
     resultContainer.appendChild(container);
   }
 
-  // Helper to show a message in the result container
+  // Modal for notifications
+  if (!document.getElementById('modal-overlay')) {
+    const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'modal-overlay';
+    modalOverlay.innerHTML = `<div id="modal-message-box"><span id="modal-message-text"></span><br><button id="modal-close-btn">OK</button></div>`;
+    document.body.appendChild(modalOverlay);
+    document.getElementById('modal-close-btn').onclick = function() {
+      document.getElementById('modal-overlay').style.display = 'none';
+    };
+  }
+
   function showMessage(msg) {
-    resultContainer.innerHTML = `<div class="message">${msg}</div>`;
-    resultContainer.style.display = 'block';
+    const modal = document.getElementById('modal-overlay');
+    const msgBox = document.getElementById('modal-message-text');
+    if (modal && msgBox) {
+      msgBox.textContent = msg;
+      modal.style.display = 'flex';
+    } else {
+      alert(msg);
+    }
   }
 
   // Utility functions
