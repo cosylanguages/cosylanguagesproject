@@ -507,9 +507,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.createElement('div');
     container.className = 'image-container';
     const questions = questionTranslations[language] || questionTranslations.COSYenglish;
+    const variants = (typeof questionVariants !== 'undefined' ? questionVariants[language] : undefined) || questionVariants.COSYenglish;
+    const day = Number(document.getElementById('day-select')?.value) || 1;
+    let qSet;
+    if (day === 2) {
+      qSet = variants.day2;
+    } else if (day >= 3) {
+      qSet = variants.day3plus;
+    }
+    let currentQs = qSet ? [randomElement(qSet[0]), randomElement(qSet[1])] : [questions.what];
     const questionDiv = document.createElement('div');
     questionDiv.className = 'image-question';
-    questionDiv.textContent = questions.what;
+    if (qSet) {
+      questionDiv.innerHTML = `<span class="q1">${currentQs[0]}</span><br><span class="q2">${currentQs[1]}</span>`;
+      // Speak both questions with a pause
+      speakText(currentQs[0], language);
+      setTimeout(() => speakText(currentQs[1], language), 1200);
+    } else {
+      questionDiv.textContent = questions.what;
+      speakText(questions.what, language);
+    }
     const imgElem = document.createElement('img');
     imgElem.src = imgObj.src;
     imgElem.className = 'vocab-image';
@@ -522,6 +539,13 @@ document.addEventListener('DOMContentLoaded', function() {
     caption.style.display = 'none';
     imgElem.addEventListener('click', () => {
       caption.style.display = caption.style.display === 'none' ? 'flex' : 'none';
+      // Randomize questions on click (if day >= 2)
+      if (qSet) {
+        currentQs = [randomElement(qSet[0]), randomElement(qSet[1])];
+        questionDiv.innerHTML = `<span class="q1">${currentQs[0]}</span><br><span class="q2">${currentQs[1]}</span>`;
+        speakText(currentQs[0], language);
+        setTimeout(() => speakText(currentQs[1], language), 1200);
+      }
     });
     // Center overlay
     caption.style.position = 'absolute';
