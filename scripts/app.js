@@ -239,6 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
     wordDiv.className = 'practice-word';
     wordDiv.textContent = randomElement(words);
     wordDiv.style.color = '#fff';
+    wordDiv.style.textAlign = 'center';
     resultContainer.appendChild(wordDiv);
     speakText(wordDiv.textContent, language);
   }
@@ -251,7 +252,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showGrammarGenderPractice(language, day) {
-    // Dynamically create gender practice UI
     resultContainer.innerHTML = '';
     const words = genderPracticeData[language]?.[day] || [];
     if (!words.length) return showMessage('No gender practice available');
@@ -260,6 +260,9 @@ document.addEventListener('DOMContentLoaded', function() {
     questionDiv.id = 'grammar-question';
     questionDiv.textContent = word.word;
     questionDiv.dataset.answer = word.article;
+    questionDiv.style.textAlign = 'center';
+    // Automatic pronunciation
+    speakText(word.word, language);
     const optionsEl = document.createElement('div');
     optionsEl.id = 'grammar-options';
     optionsEl.className = 'grammar-gender-options';
@@ -287,34 +290,61 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const data = verbPracticeData[language]?.[day];
     if (!data || !data.length) return showMessage('No verb practice available');
-    // If data is array of strings, convert to prompt/answer pairs for demo
     let items = data;
     if (typeof data[0] === 'string') {
-      // For demo: show the string as prompt, answer is the same
       items = data.map(str => ({ prompt: str, answer: str }));
     }
     const item = randomElement(items);
     const questionDiv = document.createElement('div');
     questionDiv.id = 'grammar-question';
     questionDiv.textContent = item.prompt;
-    const optionsEl = document.createElement('div');
-    optionsEl.id = 'grammar-options';
-    optionsEl.className = 'grammar-gender-options';
-    // For verbs, just show a single button to reveal the answer (like image practice)
-    const showBtn = document.createElement('div');
-    showBtn.className = 'gender-option';
-    showBtn.textContent = 'Show Answer';
-    showBtn.addEventListener('click', () => {
-      showBtn.textContent = item.answer;
-      showBtn.classList.add('show-answer');
-      feedbackDiv.textContent = '✔';
-      feedbackDiv.style.color = '#4CAF50';
-    });
-    optionsEl.appendChild(showBtn);
-    const feedbackDiv = document.createElement('div');
-    feedbackDiv.id = 'grammar-feedback';
-    feedbackDiv.textContent = '';
-    resultContainer.append(questionDiv, optionsEl, feedbackDiv);
+
+    // --- Input/check/pronounce row ---
+    const inputRow = document.createElement('div');
+    inputRow.className = 'practice-row verb-input-row';
+
+    const answerInput = document.createElement('input');
+    answerInput.type = 'text';
+    answerInput.placeholder = 'Type the correct form...';
+    answerInput.className = 'practice-input';
+
+    // Check button as emoji
+    const checkBtn = document.createElement('button');
+    checkBtn.className = 'check-emoji-btn';
+    checkBtn.title = 'Check';
+    checkBtn.innerHTML = '✅';
+
+    const feedback = document.createElement('span');
+    feedback.className = 'practice-feedback';
+
+    checkBtn.onclick = function() {
+      const userAns = answerInput.value.trim().toLowerCase();
+      const correctAns = (item.answer || '').trim().toLowerCase();
+      if (userAns === correctAns) {
+        feedback.textContent = '✔ Correct!';
+        feedback.style.color = '#4CAF50';
+      } else {
+        feedback.textContent = '✘ Incorrect!';
+        feedback.style.color = '#F44336';
+      }
+    };
+
+    // Pronunciation button as emoji
+    const speakBtn = document.createElement('button');
+    speakBtn.className = 'pronounce-btn';
+    speakBtn.title = 'Play pronunciation';
+    speakBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
+    speakBtn.onclick = function(e) {
+      e.preventDefault();
+      speakText(item.answer, language);
+    };
+
+    inputRow.appendChild(answerInput);
+    inputRow.appendChild(checkBtn);
+    inputRow.appendChild(speakBtn);
+    inputRow.appendChild(feedback);
+
+    resultContainer.append(questionDiv, inputRow);
   }
 
   function showGrammarPossessivesPractice(language, day) {
@@ -379,18 +409,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     resultContainer.innerHTML = '';
     resultContainer.style.display = 'block';
-    const phraseDiv = document.createElement('div');
-    phraseDiv.className = 'practice-speaking';
-    phraseDiv.textContent = randomElement(phrases);
-    phraseDiv.style.color = '#222'; // Use dark color for visibility
-    phraseDiv.style.background = 'rgba(255,255,255,0.85)';
-    phraseDiv.style.borderRadius = '10px';
-    phraseDiv.style.padding = '18px 12px';
-    phraseDiv.style.margin = '18px auto';
-    phraseDiv.style.maxWidth = '90%';
-    phraseDiv.style.textAlign = 'center';
-    resultContainer.appendChild(phraseDiv);
-    speakText(phraseDiv.textContent, language);
+    // Pick a random phrase and show as task, with example below
+    const phrase = randomElement(phrases);
+    const taskDiv = document.createElement('div');
+    taskDiv.className = 'speaking-task';
+    taskDiv.textContent = phrase;
+    taskDiv.style.color = '#222';
+    taskDiv.style.background = 'rgba(255,255,255,0.85)';
+    taskDiv.style.borderRadius = '10px';
+    taskDiv.style.padding = '18px 12px 8px 12px';
+    taskDiv.style.margin = '18px auto 0 auto';
+    taskDiv.style.maxWidth = '90%';
+    taskDiv.style.textAlign = 'center';
+    taskDiv.style.fontWeight = 'bold';
+    taskDiv.style.fontSize = '1.2rem';
+
+    // Example line (in cursive, different color)
+    const exampleDiv = document.createElement('div');
+    exampleDiv.className = 'speaking-example';
+    exampleDiv.textContent = '(Say your answer aloud)';
+    exampleDiv.style.fontStyle = 'italic';
+    exampleDiv.style.color = '#0abab5';
+    exampleDiv.style.marginTop = '8px';
+    exampleDiv.style.fontSize = '1.05rem';
+
+    resultContainer.appendChild(taskDiv);
+    resultContainer.appendChild(exampleDiv);
   }
 
   // Helper functions
@@ -452,6 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
     imgElem.src = imgObj.src;
     imgElem.className = 'vocab-image';
     imgElem.alt = imgObj.translations?.[language] || imgObj.alt || 'Image';
+
     // Caption hidden by default, shown on image click
     const caption = document.createElement('div');
     caption.className = 'image-caption-overlay';
@@ -475,10 +520,72 @@ document.addEventListener('DOMContentLoaded', function() {
     caption.style.textShadow = '0 1px 8px #fff, 0 0 2px #fff';
     caption.style.justifyContent = 'center';
     caption.style.alignItems = 'center';
-    caption.style.display = 'none';
+
+    // --- Input/check/pronounce column under the image ---
+    const inputCol = document.createElement('div');
+    inputCol.className = 'practice-col image-input-col';
+
+    const answerInput = document.createElement('input');
+    answerInput.type = 'text';
+    answerInput.placeholder = 'Type the word or phrase...';
+    answerInput.className = 'practice-input';
+    answerInput.style.margin = '0 auto 10px auto';
+    answerInput.style.display = 'block';
+
+    // Row for buttons, centered
+    const btnRow = document.createElement('div');
+    btnRow.style.display = 'flex';
+    btnRow.style.justifyContent = 'center';
+    btnRow.style.alignItems = 'center';
+    btnRow.style.gap = '12px';
+
+    // Check button as emoji
+    const checkBtn = document.createElement('button');
+    checkBtn.className = 'check-emoji-btn';
+    checkBtn.title = 'Check';
+    checkBtn.innerHTML = '✅';
+
+    const feedback = document.createElement('span');
+    feedback.className = 'practice-feedback';
+
+    checkBtn.onclick = function() {
+      const userAns = answerInput.value.trim().toLowerCase();
+      const correctAns = (imgObj.translations?.[language] || imgObj.alt || '').trim().toLowerCase();
+      if (userAns === correctAns) {
+        feedback.textContent = '✔ Correct!';
+        feedback.style.color = '#4CAF50';
+      } else {
+        feedback.textContent = '✘ Incorrect!';
+        feedback.style.color = '#F44336';
+      }
+    };
+
+    // Pronunciation button as emoji
+    const speakBtn = document.createElement('button');
+    speakBtn.className = 'pronounce-btn';
+    speakBtn.title = 'Play pronunciation';
+    speakBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
+    speakBtn.onclick = function(e) {
+      e.preventDefault();
+      speakText(imgObj.translations?.[language] || imgObj.alt, language);
+    };
+
+    btnRow.appendChild(checkBtn);
+    btnRow.appendChild(speakBtn);
+
+    inputCol.appendChild(answerInput);
+    inputCol.appendChild(btnRow);
+    inputCol.appendChild(feedback);
+    inputCol.style.display = 'flex';
+    inputCol.style.flexDirection = 'column';
+    inputCol.style.alignItems = 'center';
+    inputCol.style.justifyContent = 'center';
+    inputCol.style.margin = '0 auto';
+
     container.appendChild(questionDiv);
     container.appendChild(imgElem);
     container.appendChild(caption);
+    container.appendChild(inputCol);
     resultContainer.appendChild(container);
   }
 
