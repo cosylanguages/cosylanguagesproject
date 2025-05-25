@@ -792,3 +792,20 @@ html {
     max-width: 100vw;
   }
 }
+
+@keyframes adventure-correct {
+  0% { background: #fff; }
+  50% { background: #c8ffc8; }
+  100% { background: #fff; }
+}
+@keyframes adventure-wrong {
+  0% { background: #fff; }
+  50% { background: #ffd6d6; }
+  100% { background: #fff; }
+}
+#result-container[style*="adventure-correct"] {
+  animation: adventure-correct 0.5s;
+}
+#result-container[style*="adventure-wrong"] {
+  animation: adventure-wrong 0.5s;
+}
