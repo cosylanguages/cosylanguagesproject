@@ -168,3 +168,4 @@ const verbPracticeData = {
     ]
   }
 };
+if (typeof window !== 'undefined') window.verbPracticeData = verbPracticeData;
