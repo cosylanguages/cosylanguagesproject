@@ -12,15 +12,7 @@ const validateData = (data) => {
   return validated;
 };
 
-console.log('genderPracticeDataFrancais:', window.genderPracticeDataFrancais);
-console.log('genderPracticeDataItaliano:', window.genderPracticeDataItaliano);
-console.log('genderPracticeDataEllinika:', window.genderPracticeDataEllinika);
-console.log('genderPracticeDataBrezhoneg:', window.genderPracticeDataBrezhoneg);
-console.log('genderPracticeDataHaykakan:', window.genderPracticeDataHaykakan);
-console.log('genderPracticeDataDeutsch:', window.genderPracticeDataDeutsch);
-console.log('genderPracticeDataEnglish:', window.genderPracticeDataEnglish);
-console.log('genderPracticeDataEspanol:', window.genderPracticeDataEspanol);
-console.log('genderPracticeDataPortugues:', window.genderPracticeDataPortugues);
+// Debug logs removed for production. If needed, add them temporarily for troubleshooting.
 
 window.genderPracticeData = {
   COSYfrançais: validateData(window.genderPracticeDataFrancais),
@@ -34,4 +26,4 @@ window.genderPracticeData = {
   COSYportuguês: validateData(window.genderPracticeDataPortugues)
 };
 
-console.log('window.genderPracticeData:', window.genderPracticeData);
+// Debug log removed for production.
