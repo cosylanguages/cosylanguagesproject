@@ -1,93 +1,24 @@
-const grammarData = {
-  COSYenglish: {    
-    2: ["I", "You", "He", "She", "It", "am", "are", "is"],
-    3: {
-      to_have: ["I", "You", "He", "She", "It", "have", "has"],
-      possessives: ["Possessives (examples): my mother, your sister, his son, her husband."]
-    }
-  },
-  COSYfrançais: {
-    2: ["Je", "Tu", "Il", "Elle", "Ce", "suis", "es", "est"],
-    3: {
-      to_have: ["J'", "Tu", "Il", "Elle", "Ce", "ai", "as", "a"],
-      possessives: ["Possessifs (exemples) : ma mère, ta sœur, son fils, son mari."]
-    }
-  },
-  COSYitaliano: {
-    2: ["Io", "Tu", "Lui", "Lei", "sono", "sei", "è"],
-    3: {
-      to_have: ["Io", "Tu", "Lui", "Lei", "ho", "hai", "ha"],
-      possessives: ["Possessivi (esempi): mia madre, tua sorella, suo figlio, suo marito."]
-    }
-  },
-  COSYespañol: {
-    2: ["Yo", "Tú", "Él", "Ella", "Es", "soy", "eres", "es"],
-    3: {
-      to_have: ["Yo", "Tú", "Él", "Ella", "tengo", "tienes", "tiene"],
-      possessives: ["Posesivos (ejemplos): mi madre, tu hermana, su hijo, su marido."]
-    }
-  },
-  COSYportuguês: {
-    2: ["Eu", "Tu", "Ele", "Ela", "sou", "és", "é"],
-    3: {
-      to_have: ["Eu", "Tu", "Ele", "Ela", "tenho", "tens", "tem"],
-      possessives: ["Possessivos (exemplos): minha mãe, tua irmã, seu filho, seu marido."]
-    }
-  },
-  COSYdeutsch: {
-    2: ["Ich", "Du", "Er", "Sie", "Es", "bin", "bist", "ist"],
-    3: {
-      to_have: ["Ich", "Du", "Er", "Sie", "Es", "habe", "hast", "hat"],
-      possessives: ["Possessivartikel (Beispiele): meine Mutter, deine Schwester, sein Sohn, ihr Mann."]
-    }
-  },
-  ΚΟΖΥελληνικά: {
-    2: ["Εγώ", "Εσύ", "Αυτός", "Αυτή", "Αυτό", "είμαι", "είσαι", "είναι"],
-    3: {
-      to_have: ["Εγώ", "Εσύ", "Αυτός", "Αυτή", "Αυτό", "έχω", "έχεις", "έχει"],
-      possessives: ["Κτητικές αντωνυμίες (παραδείγματα): η μητέρα μου, η αδερφή σου, ο γιος του, ο σύζυγός της."]
-    }
-  },
-  ТАКОЙрусский: {
-    2: ["Я", "Ты", "Он", "Она", "Оно", "есть", "есть", "есть"],
-    3: {
-      to_have: ["У меня", "У тебя", "У него", "У неё", "есть", "есть", "есть"],
-      possessives: ["Притяжательные прилагательные (примеры): моя мать, твоя сестра, его сын, её муж."]
-    }
-  },
-  ԾՈՍՅհայկական: {
-    2: ["Ես", "Դու", "Նա", "Նա", "Այն", "եմ", "ես", "է"],
-    3: {
-      to_have: ["Ես", "Դու", "Նա", "Նա", "ունեմ", "ունես", "ունի"],
-      possessives: ["Ստացական ածականներ (օրինակներ). իմ մայրը, քո քույրը, նրա որդին, նրա ամուսինը:"]
-    }
-  },
-  COSYbrezhoneg: {
-    1: [
-      { phrase: "Me zo ur paotr", translation: "I am a boy" },
-      { phrase: "Te zo ur plac'h", translation: "You are a girl" }
-    ],
-    2: [
-      { phrase: "Ar c'helennerez a zo amañ", translation: "The teacher is here" }
-    ]
-  },
-  COSYtatarça: {
-    1: [
-      { phrase: "Min malay", translation: "I am a boy" },
-      { phrase: "Sin kız", translation: "You are a girl" }
-    ],
-    2: [
-      { phrase: "Ukıtuçı monda", translation: "The teacher is here" }
-    ]
-  },
-  COSYbashkort: {
-    1: [
-      { phrase: "Мин малай", translation: "I am a boy" },
-      { phrase: "Һин ҡыҙ", translation: "You are a girl" }
-    ],
-    2: [
-      { phrase: "Уҡытыусы бында", translation: "The teacher is here" }
-    ]
-  }
+// Grammar data for COSYlanguages (modularized)
+import { grammarDataFrancais } from './grammar/francais.js';
+import { grammarDataItaliano } from './grammar/italiano.js';
+import { grammarDataEllinika } from './grammar/ellinika.js';
+import { grammarDataBrezhoneg } from './grammar/brezhoneg.js';
+import { grammarDataHaykakan } from './grammar/haykakan.js';
+import { grammarDataDeutsch } from './grammar/deutsch.js';
+import { grammarDataEnglish } from './grammar/english.js';
+import { grammarDataEspanol } from './grammar/espanol.js';
+import { grammarDataPortugues } from './grammar/portugues.js';
+
+export const grammarData = {
+  COSYfrançais: grammarDataFrancais,
+  COSYitaliano: grammarDataItaliano,
+  ΚΟΖΥελληνικά: grammarDataEllinika,
+  COSYbrezhoneg: grammarDataBrezhoneg,
+  ԾՈՍՅհայկական: grammarDataHaykakan,
+  COSYdeutsch: grammarDataDeutsch,
+  COSYenglish: grammarDataEnglish,
+  COSYespañol: grammarDataEspanol,
+  COSYportuguês: grammarDataPortugues
 };
+
 if (typeof window !== 'undefined') window.grammarData = grammarData;
