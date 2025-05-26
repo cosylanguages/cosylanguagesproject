@@ -14,6 +14,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Γεια σου",
           ТАКОЙрусский: "Привет",
           ԾՈՍՅհայկական: "Բարև",
+          COSYbrezhoneg: "Demat",
+          COSYtatarça: "Isänme",
         },
       },
       {
@@ -29,6 +31,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Αντίο",
           ТАКОЙрусский: "До свидания",
           ԾՈՍՅհայկական: "Ցտեսություն",
+          COSYbrezhoneg: "Kenavo",
+          COSYtatarça: "Saubul",
         },
       },
       {
@@ -44,6 +48,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Ναι",
           ТАКОЙрусский: "Да",
           ԾՈՍՅհայկական: "Այո",
+          COSYbrezhoneg: "Ya",
+          COSYtatarça: "Äye",
         },
       },
       {
@@ -59,6 +65,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Όχι",
           ТАКОЙрусский: "Нет",
           ԾՈՍՅհայկական: "Ոչ",
+          COSYbrezhoneg: "Nann",
+          COSYtatarça: "Yuq",
         },
       },
       {
@@ -74,6 +82,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Ευχαριστώ",
           ТАКОЙрусский: "Спасибо",
           ԾՈՍՅհայկական: "Շնորհակալություն",
+          COSYbrezhoneg: "Trugarez",
+          COSYtatarça: "Räxmät",
         },
       },
       {
@@ -89,6 +99,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Παρακαλώ",
           ТАКОЙрусский: "Пожалуйста",
           ԾՈՍՅհայկական: "Խնդրեմ",
+          COSYbrezhoneg: "Gouel",
+          COSYtatarça: "Zinhar",
         },
       },
       {
@@ -104,6 +116,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Εντάξει",
           ТАКОЙрусский: "Хорошо",
           ԾՈՍՅհայկական: "Լավ",
+          COSYbrezhoneg: "Mat",
+          COSYtatarça: "Yaxşı",
         },
       },
       {
@@ -119,6 +133,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Συγνώμη",
           ТАКОЙрусский: "Извините",
           ԾՈՍՅհայկական: "Ներողություն",
+          COSYbrezhoneg: "Abaoe",
+          COSYtatarça: "Gafu",
         },
       },
       {
@@ -134,6 +150,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "το νερό",
           ТАКОЙрусский: "Вода",
           ԾՈՍՅհայկական: "Ջուր",
+          COSYbrezhoneg: "Eau",
+          COSYtatarça: "Suu",
         },
       },
       {
@@ -149,6 +167,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "ο χυμός",
           ТАКОЙрусский: "Сок",
           ԾՈՍՅհայկական: "Հյութ",
+          COSYbrezhoneg: "Ju",
+          COSYtatarça: "Cöç",
         },
       },
       {
@@ -164,6 +184,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η μπύρα",
           ТАКОЙрусский: "Пиво",
           ԾՈՍՅհայկական: "Գարեջուր",
+          COSYbrezhoneg: "C'hwezh",
+          COSYtatarça: "Pivä",
         },
       },
       {
@@ -179,6 +201,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "το κρασί",
           ТАКОЙрусский: "Вино",
           ԾՈՍՅհայկական: "Գինի",
+          COSYbrezhoneg: "Gwin",
+          COSYtatarça: "Şarap",
         },
       },
       {
@@ -194,6 +218,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "ο καφές",
           ТАКОЙрусский: "Кофе",
           ԾՈՍՅհայկական: "Սուրճ",
+          COSYbrezhoneg: "Kafe",
+          COSYtatarça: "Qahwa",
         },
       },
       {
@@ -209,6 +235,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "το τσάι",
           ТАКОЙрусский: "Чай",
           ԾՈՍՅհայկական: "Թեյ",
+          COSYbrezhoneg: "Te",
+          COSYtatarça: "Çäy",
         },
       },
       {
@@ -224,6 +252,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η κάρτα",
           ТАКОЙрусский: "Карта",
           ԾՈՍՅհայկական: "Քարտ",
+          COSYbrezhoneg: "Kart",
+          COSYtatarça: "Kart",
         },
       },
       {
@@ -239,6 +269,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "τα μετρητά",
           ТАКОЙрусский: "Наличные",
           ԾՈՍՅհայկական: "Կանխիկ",
+          COSYbrezhoneg: "Arc'hant",
+          COSYtatarça: "Pul",
         },
       },
     ],
@@ -256,6 +288,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "το άτομο",
           ТАКОЙрусский: "Человек",
           ԾՈՍՅհայկական: "Անձ",
+          COSYbrezhoneg: "Den",
+          COSYtatarça: "Keşe",
         },
       },
       {
@@ -271,6 +305,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "το πράγμα",
           ТАКОЙрусский: "Вещь",
           ԾՈՍՅհայկական: "Բան",
+          COSYbrezhoneg: "Traou",
+          COSYtatarça: "Nərsä",
         },
       },
       {
@@ -286,6 +322,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η γυναίκα",
           ТАКОЙрусский: "Женщина",
           ԾՈՍՅհայկական: "Կին",
+          COSYbrezhoneg: "Bod",
+          COSYtatarça: "Äyäl",
         },
       },
       {
@@ -301,6 +339,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "ο άντρας",
           ТАКОЙрусский: "Мужчина",
           ԾՈՍՅհայկական: "Տղամարդ",
+          COSYbrezhoneg: "Tad",
+          COSYtatarça: "Iäş",
         },
       },
       {
@@ -316,6 +356,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "το κορίτσι",
           ТАКОЙрусский: "Девочка",
           ԾՈՍՅհայկական: "Աղջիկ",
+          COSYbrezhoneg: "Plac'h",
+          COSYtatarça: "Qızı",
         },
       },
       {
@@ -331,6 +373,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "το αγόρι",
           ТАКОЙрусский: "Мальчик",
           ԾՈՍՅհայկական: "Տղա",
+          COSYbrezhoneg: "Bod",
+          COSYtatarça: "Ul",
         },
       },
       {
@@ -346,6 +390,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η μαθήτρια",
           ТАКОЙрусский: "Студентка",
           ԾՈՍՅհայկական: "Ուսանողուհի",
+          COSYbrezhoneg: "Stumder",
+          COSYtatarça: "Student",
         },
       },
       {
@@ -361,6 +407,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "ο μαθητής",
           ТАКОЙрусский: "Студент",
           ԾՈՍՅհայկական: "Ուսանող",
+          COSYbrezhoneg: "Stumder",
+          COSYtatarça: "Student",
         },
       },
       {
@@ -376,6 +424,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η δασκάλα",
           ТАКОЙрусский: "Учительница",
           ԾՈՍՅհայկական: "Ուսուցչուհի",
+          COSYbrezhoneg: "Kelenner",
+          COSYtatarça: "Uqıtuçı",
         },
       },
       {
@@ -391,6 +441,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "Χαίρω πολύ",
           ТАКОЙрусский: "Приятно познакомиться",
           ԾՈՍՅհայկական: "Ուրախ եմ ձեզ հետ ծանոթանալու համար",
+          COSYbrezhoneg: "Plijadur",
+          COSYtatarça: "Tanışuğa şatlıq",
         },
       },
     ],
@@ -408,6 +460,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η οικογένεια",
           ТАКОЙрусский: "",
           ԾՈՍՅհայկական: "",
+          COSYbrezhoneg: "Keneil",
+          COSYtatarça: "Ğailä",
         },
       },
       {
@@ -423,6 +477,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "ο πατέρας",
           ТАКОЙрусский: "",
           ԾՈՍՅհայկական: "",
+          COSYbrezhoneg: "Tad",
+          COSYtatarça: "Äti",
         },
       },
       {
@@ -438,6 +494,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η μητέρα",
           ТАКОЙрусский: "",
           ԾՈՍՅհայկական: "",
+          COSYbrezhoneg: "Mam",
+          COSYtatarça: "Äti",
         },
       },
       {
@@ -453,6 +511,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "ο αδελφός",
           ТАКОЙрусский: "",
           ԾՈՍՅհայկական: "",
+          COSYbrezhoneg: "Breur",
+          COSYtatarça: "Ağay",
         },
       },
       {
@@ -468,6 +528,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η αδελφή",
           ТАКОЙрусский: "",
           ԾՈՍՅհայկական: "",
+          COSYbrezhoneg: "Soeur",
+          COSYtatarça: "Sez",
         },
       },
       {
@@ -483,6 +545,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "ο γιος",
           ТАКОЙрусский: "",
           ԾՈՍՅհայկական: "",
+          COSYbrezhoneg: "Mab",
+          COSYtatarça: "Ul",
         },
       },
       {
@@ -498,6 +562,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "η κόρη",
           ТАКОЙрусский: "",
           ԾՈՍՅհայկական: "",
+          COSYbrezhoneg: "Mer",
+          COSYtatarça: "Qızı",
         },
       },
       {
@@ -513,6 +579,8 @@ const imageData = {
           ΚΟΖΥελληνικά: "ο/η σύζυγος",
           ТАКОЙрусский: "",
           ԾՈՍՅհայկական: "",
+          COSYbrezhoneg: "Kalon",
+          COSYtatarça: "İr-äyäl",
         },
       },
     ],
