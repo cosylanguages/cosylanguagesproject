@@ -109,49 +109,16 @@ document.addEventListener('DOMContentLoaded', function() {
       const practiceType = e.target.getAttribute('data-practice');
       const language = languageSelect.value;
       const day = daySelect.value;
-      const dayFrom = document.getElementById('day-from-select')?.value;
-      const dayTo = document.getElementById('day-to-select')?.value;
-      let days = [];
-      if (dayFrom && dayTo) {
-        const from = Number(dayFrom);
-        const to = Number(dayTo);
-        if (from > to) {
-          alert('Day from should be less than or equal to Day to');
-          return;
-        }
-        for (let d = from; d <= to; d++) days.push(d);
-      } else if (day) {
-        days = [Number(day)];
-      } else {
-        alert('Please select a day or a day range');
-        return;
-      }
-      if (!language) {
-        alert('Please select a language');
-        return;
-      }
-      clearResultContainer();
-      resultContainer.style.display = 'block';
-      switch(practiceType) {
-        case 'random_word':
-          handleRandomWord(language, days);
-          break;
-        case 'random_image':
-          handleRandomImage(language, days);
-          break;
-        case 'gender':
-          if (language === 'COSYenglish') {
-            showMessage('Gender practice is not available for English.');
-          } else {
-            showGrammarGenderPractice(language, days[0]);
-          }
-          break;
-        case 'verb':
-          showGrammarVerbPractice(language, days[0]);
-          break;
-        case 'possessives':
-          showGrammarPossessivesPractice(language, days[0]);
-          break;
+      if (practiceType === 'gender') {
+        showGrammarGenderPractice(language, day || 1);
+      } else if (practiceType === 'verb') {
+        showGrammarVerbPractice(language, day || 1);
+      } else if (practiceType === 'possessives') {
+        showGrammarPossessivesPractice(language, day || 3);
+      } else if (practiceType === 'random_word') {
+        handleRandomWord(language, [day || 1]);
+      } else if (practiceType === 'random_image') {
+        handleRandomImage(language, [day || 1]);
       }
     }
   });
@@ -324,32 +291,70 @@ document.addEventListener('DOMContentLoaded', function() {
   function showGrammarGenderPractice(language, day) {
     resultContainer.innerHTML = '';
     const words = genderPracticeData[language]?.[day] || [];
-    if (!words.length) return showMessage('No gender practice available');
-    const word = randomElement(words);
+    if (!words.length) {
+        showMessage('No gender practice available');
+        return;
+    }
+    const wordObj = randomElement(words);
     const questionDiv = document.createElement('div');
-    questionDiv.id = 'grammar-question';
-    questionDiv.textContent = word.word;
-    questionDiv.dataset.answer = word.article;
-    questionDiv.style.textAlign = 'center';
-    // Automatic pronunciation
-    speakText(word.word, language);
-    const optionsEl = document.createElement('div');
-    optionsEl.id = 'grammar-options';
-    optionsEl.className = 'grammar-gender-options';
-    getArticlesForLanguage(language).forEach(article => {
-      const option = document.createElement('div');
-      option.className = 'gender-option';
-      option.textContent = article;
-      option.addEventListener('click', () => checkGenderAnswer(option, word.article));
-      optionsEl.appendChild(option);
+    questionDiv.className = 'gender-question';
+    questionDiv.textContent = wordObj.word;
+    questionDiv.dataset.correctAnswer = wordObj.article;
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'gender-options';
+    const articles = getArticlesForLanguage(language);
+    articles.forEach(article => {
+        const btn = document.createElement('button');
+        btn.className = 'gender-option';
+        btn.textContent = article;
+        btn.addEventListener('click', () => checkGenderAnswer(btn, wordObj.article));
+        optionsDiv.appendChild(btn);
     });
     const feedbackDiv = document.createElement('div');
-    feedbackDiv.id = 'grammar-feedback';
-    questionDiv.onclick = function() {
-      feedbackDiv.textContent = `Correct article: ${word.article}`;
-    };
-    feedbackDiv.textContent = '';
-    resultContainer.append(questionDiv, optionsEl, feedbackDiv);
+    feedbackDiv.className = 'gender-feedback';
+    const showAnswerBtn = document.createElement('button');
+    showAnswerBtn.className = 'show-answer-btn';
+    showAnswerBtn.textContent = 'Show Answer';
+    showAnswerBtn.addEventListener('click', () => {
+        feedbackDiv.textContent = `Answer: ${wordObj.article}`;
+        feedbackDiv.style.color = '#333';
+        // Highlight correct answer
+        document.querySelectorAll('.gender-option').forEach(opt => {
+            if (opt.textContent === wordObj.article) {
+                opt.classList.add('correct');
+            }
+        });
+    });
+    resultContainer.appendChild(questionDiv);
+    resultContainer.appendChild(optionsDiv);
+    resultContainer.appendChild(feedbackDiv);
+    resultContainer.appendChild(showAnswerBtn);
+    speakText(wordObj.word, language);
+}
+
+  function checkGenderAnswer(selectedBtn, correctAnswer) {
+    const feedbackEl = document.querySelector('.gender-feedback');
+    const allOptions = document.querySelectorAll('.gender-option');
+    allOptions.forEach(opt => {
+        opt.classList.remove('correct', 'incorrect');
+    });
+    if (selectedBtn.textContent === correctAnswer) {
+        selectedBtn.classList.add('correct');
+        feedbackEl.textContent = 'Correct!';
+        feedbackEl.style.color = '#4CAF50';
+        adventureCorrectAnswer(Number(daySelect.value) || 1);
+    } else {
+        selectedBtn.classList.add('incorrect');
+        // Highlight correct answer
+        allOptions.forEach(opt => {
+            if (opt.textContent === correctAnswer) {
+                opt.classList.add('correct');
+            }
+        });
+        feedbackEl.textContent = 'Incorrect!';
+        feedbackEl.style.color = '#F44336';
+        adventureWrongAnswer();
+    }
   }
 
   function showGrammarVerbPractice(language, day) {
@@ -976,27 +981,28 @@ document.addEventListener('DOMContentLoaded', function() {
     return articles[language] || articles.default;
   }
 
-  function checkGenderAnswer(selectedOption, correctAnswer) {
-    const feedbackEl = document.getElementById('grammar-feedback');
-    const selectedArticle = selectedOption.textContent;
-    
-    document.querySelectorAll('.gender-option').forEach(opt => {
-      opt.classList.remove('correct', 'incorrect', 'show-answer');
+  function checkGenderAnswer(selectedBtn, correctAnswer) {
+    const feedbackEl = document.querySelector('.gender-feedback');
+    const allOptions = document.querySelectorAll('.gender-option');
+    allOptions.forEach(opt => {
+        opt.classList.remove('correct', 'incorrect');
     });
-    
-    if (selectedArticle === correctAnswer) {
-      selectedOption.classList.add('correct');
-      feedbackEl.textContent = 'Correct!';
-      feedbackEl.style.color = '#4CAF50';
-      adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
+    if (selectedBtn.textContent === correctAnswer) {
+        selectedBtn.classList.add('correct');
+        feedbackEl.textContent = 'Correct!';
+        feedbackEl.style.color = '#4CAF50';
+        adventureCorrectAnswer(Number(daySelect.value) || 1);
     } else {
-      selectedOption.classList.add('incorrect');
-      document.querySelectorAll('.gender-option').forEach(opt => {
-        if (opt.textContent === correctAnswer) opt.classList.add('show-answer');
-      });
-      feedbackEl.textContent = 'Incorrect!';
-      feedbackEl.style.color = '#F44336';
-      adventureWrongAnswer();
+        selectedBtn.classList.add('incorrect');
+        // Highlight correct answer
+        allOptions.forEach(opt => {
+            if (opt.textContent === correctAnswer) {
+                opt.classList.add('correct');
+            }
+        });
+        feedbackEl.textContent = 'Incorrect!';
+        feedbackEl.style.color = '#F44336';
+        adventureWrongAnswer();
     }
   }
 
