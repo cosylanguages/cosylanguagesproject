@@ -591,5 +591,20 @@ const imageData = {
       // Day 3 images would go here
     ],
   },
+  COSYbrezhoneg: {
+    1: [
+      { src: "icons/flag-brittany.png", alt: "Breton flag", translations: { COSYbrezhoneg: "Banniel Breizh" } }
+    ]
+  },
+  COSYtatarça: {
+    1: [
+      { src: "icons/flag-tatarstan.png", alt: "Tatarstan flag", translations: { COSYtatarça: "Татарстан байрагы" } }
+    ]
+  },
+  COSYbashkort: {
+    1: [
+      { src: "icons/flag-bashkortostan.png", alt: "Bashkortostan flag", translations: { COSYbashkort: "Башҡортостан байрағы" } }
+    ]
+  },
 };
 if (typeof window !== 'undefined') window.imageData = imageData;

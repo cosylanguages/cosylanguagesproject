@@ -300,102 +300,32 @@ const genderPracticeData = {
   },
   COSYbrezhoneg: {
     1: [
-      { word: "dour", article: "ar" },
-      { word: "jus", article: "ar" },
-      { word: "bier", article: "ar" },
-      { word: "gwin", article: "ar" },
-      { word: "kafe", article: "ar" },
-      { word: "te", article: "ar" },
-      { word: "kartenn", article: "ar" }
+      { word: "paotr", article: "ur" },
+      { word: "plac'h", article: "ur" }
     ],
     2: [
       { word: "kelenner", article: "ar" },
-      { word: "studier", article: "ar" },
-      { word: "paotr", article: "ar" },
-      { word: "plac'h", article: "ar" },
-      { word: "gwaz", article: "ar" },
-      { word: "maouez", article: "ar" },
-      { word: "tra", article: "an" },
-      { word: "den", article: "an" },
-      { word: "evaj", article: "an" },
-      { word: "kudennoù", article: "ar" }
-    ],
-    3: [
-      { word: "mamm", article: "ar" },
-      { word: "tad", article: "ar" },
-      { word: "breur", article: "ar" },
-      { word: "c'hoar", article: "ar" },
-      { word: "mab", article: "ar" },
-      { word: "merc'h", article: "ar" },
-      { word: "gwaz", article: "ar" },
-      { word: "maouez", article: "ar" },
-      { word: "mignon", article: "ar" },
-      { word: "mignonez", article: "ar" },
-      { word: "tiegezh", article: "an" }
+      { word: "kelenneres", article: "ar" }
     ]
   },
   COSYtatarça: {
     1: [
-      { word: "su", article: "бер" },
-      { word: "sok", article: "бер" },
-      { word: "pivo", article: "бер" },
-      { word: "şarap", article: "бер" },
-      { word: "kofe", article: "бер" },
-      { word: "çäy", article: "бер" },
-      { word: "kart", article: "бер" }
+      { word: "malay", article: "бер" },
+      { word: "kız", article: "бер" }
     ],
     2: [
-      { word: "ukıtuçı", article: "бер" },
-      { word: "student", article: "бер" },
-      { word: "egit", article: "бер" },
-      { word: "kız", article: "бер" },
-      { word: "ir-at", article: "бер" },
-      { word: "xatın", article: "бер" },
-      { word: "närsä", article: "бер" },
-      { word: "keşe", article: "бер" },
-      { word: "eçemlek", article: "бер" },
-      { word: "problema", article: "бер" }
-    ],
-    3: [
-      { word: "änä", article: "бер" },
-      { word: "ätä", article: "бер" },
-      { word: "abıy", article: "бер" },
-      { word: "señel", article: "бер" },
-      { word: "ul", article: "бер" },
-      { word: "kız", article: "бер" },
-      { word: "ir", article: "бер" },
-      { word: "xatın", article: "бер" },
-      { word: "dus", article: "бер" },
-      { word: "dus kız", article: "бер" },
-      { word: "ğailä", article: "бер" }
+      { word: "uqıtuçı", article: "бер" },
+      { word: "uquçı", article: "бер" }
     ]
   },
   COSYbashkort: {
     1: [
-      { word: "әсә", article: "-һы" },
-      { word: "атай", article: "-һы" },
-      { word: "малай", article: "-ы" },
-      { word: "ҡыҙ", article: "-ы" },
-      { word: "ир", article: "-е" },
-      { word: "ҡатын", article: "-ы" },
-      { word: "дуҫ", article: "-ы" }
+      { word: "малай", article: "бер" },
+      { word: "ҡыҙ", article: "бер" }
     ],
     2: [
-      { word: "уҡытыусы", article: "-һы" },
-      { word: "студент", article: "-ы" },
-      { word: "малай", article: "-ы" },
-      { word: "ҡыҙ", article: "-ы" },
-      { word: "ир", article: "-е" },
-      { word: "ҡатын", article: "-ы" }
-    ],
-    3: [
-      { word: "әсә", article: "-һы" },
-      { word: "атай", article: "-һы" },
-      { word: "малай", article: "-ы" },
-      { word: "ҡыҙ", article: "-ы" },
-      { word: "ир", article: "-е" },
-      { word: "ҡатын", article: "-ы" },
-      { word: "дуҫ", article: "-ы" }
+      { word: "уҡытыусы", article: "бер" },
+      { word: "уҡыусы", article: "бер" }
     ]
   }
 };

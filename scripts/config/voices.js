@@ -10,22 +10,16 @@ const voiceLanguageMap = {
   ТАКОЙрусский: { lang: "ru-RU", voiceURI: "Google русский" },
   ԾՈՍՅհայկական: { lang: "hy-AM", voiceURI: "Google հայերեն" }, // Try Google Armenian first
   COSYbrezhoneg: {
-    lang: "br-FR", // Use Breton code if supported, fallback to French
-    voiceURI: "Google français",
     hello: "audio/breton-hello.mp3",
     goodbye: "audio/breton-goodbye.mp3"
     // Add more as needed
   },
   COSYtatarça: {
-    lang: "tt-RU", // Use Tatar code if supported, fallback to Russian
-    voiceURI: "Google русский",
     hello: "audio/tatar-hello.mp3",
     goodbye: "audio/tatar-goodbye.mp3"
     // Add more as needed
   },
   COSYbashkort: {
-    lang: "ba-RU", // Use Bashkir code if supported, fallback to Russian
-    voiceURI: "Google русский",
     hello: "audio/bashkir-hello.mp3",
     goodbye: "audio/bashkir-goodbye.mp3"
     // Add more as needed

@@ -79,6 +79,15 @@ const grammarData = {
     2: [
       { phrase: "Ukıtuçı monda", translation: "The teacher is here" }
     ]
+  },
+  COSYbashkort: {
+    1: [
+      { phrase: "Мин малай", translation: "I am a boy" },
+      { phrase: "Һин ҡыҙ", translation: "You are a girl" }
+    ],
+    2: [
+      { phrase: "Уҡытыусы бында", translation: "The teacher is here" }
+    ]
   }
 };
 if (typeof window !== 'undefined') window.grammarData = grammarData;
