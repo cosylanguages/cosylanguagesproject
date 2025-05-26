@@ -251,9 +251,9 @@ document.addEventListener('DOMContentLoaded', function() {
     speakPracticeDiv.style.justifyContent = 'center';
     speakPracticeDiv.style.alignItems = 'center';
     const micBtn = document.createElement('button');
-    micBtn.textContent = '🎤 Practice Pronunciation';
-    micBtn.className = 'btn';
-    micBtn.style.margin = '0 8px';
+    micBtn.textContent = '🎤Speak';
+    micBtn.className = 'btn speak-btn';
+    micBtn.style.margin = '0 auto';
     const feedback = document.createElement('div');
     feedback.className = 'practice-feedback';
     feedback.style.marginTop = '10px';
@@ -530,9 +530,9 @@ document.addEventListener('DOMContentLoaded', function() {
     speakPracticeDiv.style.justifyContent = 'center';
     speakPracticeDiv.style.alignItems = 'center';
     const micBtn = document.createElement('button');
-    micBtn.textContent = '🎤 Answer by Speaking';
-    micBtn.className = 'btn';
-    micBtn.style.margin = '0 8px';
+    micBtn.textContent = '🎤Speak';
+    micBtn.className = 'btn speak-btn';
+    micBtn.style.margin = '0 auto';
     const feedback = document.createElement('div');
     feedback.className = 'practice-feedback';
     feedback.style.marginTop = '10px';
@@ -729,6 +729,203 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   })();
+
+  // --- UI Translation Logic (inserted at end of DOMContentLoaded) ---
+  const navIds = [
+    { id: 'nav-home', key: 'nav_home', emoji: '🏠' },
+    { id: 'nav-practice', key: 'nav_practice', emoji: '📝' },
+    { id: 'nav-progress', key: 'nav_progress', emoji: '📈' },
+    { id: 'nav-help', key: 'nav_help', emoji: '❓' }
+  ];
+  const labelMap = [
+    { sel: 'label[for="language-select"]', key: 'choose_language' },
+    { sel: 'label[for="day-select"]', key: 'choose_day' },
+    { sel: 'label[for="day-from-select"]', key: 'day_from' },
+    { sel: 'label[for="day-to-select"]', key: 'day_to' },
+    { sel: '#show-button', key: 'show_practice' },
+    { sel: '#vocabulary-submenu [data-practice="random_word"]', key: 'random_word' },
+    { sel: '#vocabulary-submenu [data-practice="random_image"]', key: 'random_image' },
+    { sel: '#grammar-submenu [data-practice="gender"]', key: 'gender' },
+    { sel: '#grammar-submenu [data-practice="verb"]', key: 'verb' },
+    { sel: '#grammar-submenu [data-practice="possessives"]', key: 'possessives' },
+    { sel: '#xp-display', key: 'xp', prefix: 'XP: ' },
+    { sel: '#streak-display', key: 'streak', prefix: 'Streak: ' },
+    { sel: '#install-app-btn', key: 'install_app' }
+  ];
+  let showEnglish = false;
+  function translateUI(lang) {
+    const uiT = (window.uiTranslations && window.uiTranslations[lang]) || window.uiTranslations.COSYenglish;
+    // Nav
+    navIds.forEach(({id, key, emoji}) => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        const label = btn.querySelector('.nav-label');
+        if (label) label.textContent = uiT[key] || window.uiTranslations.COSYenglish[key];
+        btn.title = emoji + ' ' + (uiT[key] || window.uiTranslations.COSYenglish[key]);
+        if (showEnglish && lang !== 'COSYenglish') btn.setAttribute('data-tooltip', window.uiTranslations.COSYenglish[key]);
+        else btn.removeAttribute('data-tooltip');
+      }
+    });
+    // Labels/buttons
+    labelMap.forEach(({sel, key, prefix}) => {
+      const el = document.querySelector(sel);
+      if (el) {
+        // Remove translation for XP and Streak
+        if (sel === '#xp-display') {
+          el.textContent = 'XP:';
+          return;
+        }
+        if (sel === '#streak-display') {
+          el.textContent = 'Streak:';
+          return;
+        }
+        let txt = uiT[key] || window.uiTranslations.COSYenglish[key];
+        if (prefix) txt = (uiT[key] ? prefix : window.uiTranslations.COSYenglish[key] ? prefix : '') + txt;
+        el.textContent = txt;
+        if (showEnglish && lang !== 'COSYenglish') el.setAttribute('data-tooltip', window.uiTranslations.COSYenglish[key]);
+        else el.removeAttribute('data-tooltip');
+      }
+    });
+    // Help popup
+    const helpBtn = document.getElementById('nav-help');
+    if (helpBtn) helpBtn.title = (uiT.help_popup || window.uiTranslations.COSYenglish.help_popup);
+
+    // --- Dynamic select options translation ---
+    // Language select: keep as is (language names)
+    // Day select
+    const daySelect = document.getElementById('day-select');
+    if (daySelect) {
+      for (let i = 1; i <= 7; i++) {
+        const opt = daySelect.querySelector(`option[value="${i}"]`);
+        if (opt) opt.textContent = (uiT['choose_day'] ? uiT['choose_day'].replace(/\D+/g, '') + ' ' + i : 'Day ' + i);
+      }
+      const firstOpt = daySelect.querySelector('option[value=""]');
+      if (firstOpt) firstOpt.textContent = '--' + (uiT['choose_day'] || 'Select Day') + '--';
+    }
+    // Day from/to selects
+    const dayFrom = document.getElementById('day-from-select');
+    const dayTo = document.getElementById('day-to-select');
+    [dayFrom, dayTo].forEach((sel, idx) => {
+      if (sel) {
+        const labelKey = idx === 0 ? 'day_from' : 'day_to';
+        for (let i = 1; i <= 7; i++) {
+          const opt = sel.querySelector(`option[value="${i}"]`);
+          if (opt) opt.textContent = i;
+        }
+        const firstOpt = sel.querySelector('option[value=""]');
+        if (firstOpt) firstOpt.textContent = (idx === 0 ? (uiT['day_from'] || 'From') : (uiT['day_to'] || 'To'));
+      }
+    });
+    // Practice type select
+    const practiceTypeSelect = document.getElementById('practice-type-select');
+    if (practiceTypeSelect) {
+      const opts = practiceTypeSelect.querySelectorAll('option');
+      opts[0].textContent = '--' + (uiT['show_practice'] || 'Select Practice') + '--';
+      opts[1].textContent = uiT['random_word'] ? uiT['random_word'] + ' Practice' : 'Vocabulary Practice';
+      opts[2].textContent = uiT['gender'] ? uiT['gender'] + ' Practice' : 'Grammar Practice';
+      opts[3].textContent = uiT['show_practice'] ? uiT['show_practice'] : 'Speaking Practice';
+    }
+    // Submenu buttons (already handled above)
+  }
+  // Tooltip logic
+  function showTooltip(e) {
+    const target = e.target.closest('[data-tooltip]');
+    if (!target) return;
+    let tooltip = document.getElementById('ui-tooltip');
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.id = 'ui-tooltip';
+      tooltip.className = 'ui-tooltip';
+      document.body.appendChild(tooltip);
+    }
+    tooltip.textContent = target.getAttribute('data-tooltip');
+    const rect = target.getBoundingClientRect();
+    tooltip.style.left = (rect.left + rect.width/2 - tooltip.offsetWidth/2) + 'px';
+    tooltip.style.top = (rect.bottom + 6 + window.scrollY) + 'px';
+    tooltip.classList.add('visible');
+  }
+  function hideTooltip() {
+    const tooltip = document.getElementById('ui-tooltip');
+    if (tooltip) tooltip.classList.remove('visible');
+  }
+  document.body.addEventListener('mouseover', showTooltip);
+  document.body.addEventListener('mouseout', hideTooltip);
+  document.body.addEventListener('focusin', showTooltip);
+  document.body.addEventListener('focusout', hideTooltip);
+  // Show English button
+  const showEnglishBtn = document.getElementById('show-english-btn');
+  if (showEnglishBtn) {
+    showEnglishBtn.onclick = function() {
+      showEnglish = !showEnglish;
+      showEnglishBtn.classList.toggle('active', showEnglish);
+      translateUI(languageSelect.value || 'COSYenglish');
+      // Add English tooltips to all controls
+      document.querySelectorAll('[data-tooltip]').forEach(el => {
+        if (showEnglish && languageSelect.value !== 'COSYenglish') {
+          const key = el.getAttribute('data-tooltip-key');
+          if (key && window.uiTranslations.COSYenglish[key]) {
+            el.setAttribute('data-tooltip', window.uiTranslations.COSYenglish[key]);
+          }
+        }
+      });
+    };
+  }
+  // Language select triggers translation
+  languageSelect.addEventListener('change', function() {
+    translateUI(languageSelect.value || 'COSYenglish');
+  });
+  // Initial translation
+  translateUI(languageSelect.value || 'COSYenglish');
+  // Nav button handlers (for demo, scroll to sections or show popups)
+  document.getElementById('nav-home')?.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  document.getElementById('nav-practice')?.addEventListener('click',()=>document.querySelector('.controls-container')?.scrollIntoView({behavior:'smooth'}));
+  document.getElementById('nav-progress')?.addEventListener('click',()=>document.getElementById('adventure-progress')?.scrollIntoView({behavior:'smooth'}));
+  document.getElementById('nav-help')?.addEventListener('click',()=>{
+    showMessage((window.uiTranslations[languageSelect.value]?.help_popup)||window.uiTranslations.COSYenglish.help_popup);
+  });
+
+  // --- Visual hints/demonstrations for practice types and controls ---
+  // Add tooltips to submenu buttons and controls for accessibility
+  function addPracticeTypeHints() {
+    // Vocabulary submenu
+    document.querySelectorAll('#vocabulary-submenu .submenu-btn').forEach(btn => {
+      if (btn.getAttribute('data-practice') === 'random_word') {
+        btn.setAttribute('data-tooltip', '🔤 ' + (window.uiTranslations[languageSelect.value]?.random_word || 'Random Word'));
+      } else if (btn.getAttribute('data-practice') === 'random_image') {
+        btn.setAttribute('data-tooltip', '🖼️ ' + (window.uiTranslations[languageSelect.value]?.random_image || 'Random Image'));
+      }
+    });
+    // Grammar submenu
+    document.querySelectorAll('#grammar-submenu .submenu-btn').forEach(btn => {
+      if (btn.getAttribute('data-practice') === 'gender') {
+        btn.setAttribute('data-tooltip', '♀♂ ' + (window.uiTranslations[languageSelect.value]?.gender || 'Gender'));
+      } else if (btn.getAttribute('data-practice') === 'verb') {
+        btn.setAttribute('data-tooltip', '🔄 ' + (window.uiTranslations[languageSelect.value]?.verb || 'Verb'));
+      } else if (btn.getAttribute('data-practice') === 'possessives') {
+        btn.setAttribute('data-tooltip', '👪 ' + (window.uiTranslations[languageSelect.value]?.possessives || 'Possessives'));
+      }
+    });
+    // Practice type select
+    const practiceTypeSelect = document.getElementById('practice-type-select');
+    if (practiceTypeSelect) {
+      practiceTypeSelect.setAttribute('data-tooltip', '📝 ' + (window.uiTranslations[languageSelect.value]?.show_practice || 'Choose a practice type'));
+    }
+    // Show button
+    const showBtn = document.getElementById('show-button');
+    if (showBtn) {
+      showBtn.setAttribute('data-tooltip', '▶️ ' + (window.uiTranslations[languageSelect.value]?.show_practice || 'Show Practice'));
+    }
+  }
+  // Call after translation
+  function updateUIHints() {
+    addPracticeTypeHints();
+  }
+  // Patch translateUI to also update hints
+  const origTranslateUI = translateUI;
+  translateUI = function(lang) {
+    origTranslateUI(lang);
+    updateUIHints();
+  };
 
   // Helper functions
   function getWordsForDays(data, language, days) {
