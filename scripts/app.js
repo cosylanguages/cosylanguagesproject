@@ -1262,9 +1262,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Utility functions
-  function randomElement(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
+  // Remove the duplicate randomElement function from here. Use the one from utils.js instead.
 
   // Use the global unlockSpeechSynthesis utility from utils.js
   if (typeof window.unlockSpeechSynthesis === 'function') {
