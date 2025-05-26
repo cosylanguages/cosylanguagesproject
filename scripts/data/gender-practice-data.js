@@ -1,13 +1,5 @@
 // gender-practice-data.js
-import { genderPracticeDataFrancais } from './gender/francais.js';
-import { genderPracticeDataItaliano } from './gender/italiano.js';
-import { genderPracticeDataEllinika } from './gender/ellinika.js';
-import { genderPracticeDataBrezhoneg } from './gender/brezhoneg.js';
-import { genderPracticeDataHaykakan } from './gender/haykakan.js';
-import { genderPracticeDataDeutsch } from './gender/deutsch.js';
-import { genderPracticeDataEnglish } from './gender/english.js';
-import { genderPracticeDataEspanol } from './gender/espanol.js';
-import { genderPracticeDataPortugues } from './gender/portugues.js';
+// All gender data files must be loaded before this file in index.html
 
 // Validate and provide fallback for missing data
 const validateData = (data) => {
@@ -20,16 +12,16 @@ const validateData = (data) => {
   return validated;
 };
 
-export const genderPracticeData = {
-  COSYfrançais: validateData(genderPracticeDataFrancais),
-  COSYitaliano: validateData(genderPracticeDataItaliano),
-  ΚΟΖΥελληνικά: validateData(genderPracticeDataEllinika),
-  COSYbrezhoneg: validateData(genderPracticeDataBrezhoneg),
-  ԾՈՍՅհայկական: validateData(genderPracticeDataHaykakan),
-  COSYdeutsch: validateData(genderPracticeDataDeutsch),
-  COSYenglish: validateData(genderPracticeDataEnglish),
-  COSYespañol: validateData(genderPracticeDataEspanol),
-  COSYportuguês: validateData(genderPracticeDataPortugues)
+var genderPracticeData = {
+  COSYfrançais: validateData(window.genderPracticeDataFrancais),
+  COSYitaliano: validateData(window.genderPracticeDataItaliano),
+  ΚΟΖΥελληνικά: validateData(window.genderPracticeDataEllinika),
+  COSYbrezhoneg: validateData(window.genderPracticeDataBrezhoneg),
+  ԾՈՍՅհայկական: validateData(window.genderPracticeDataHaykakan),
+  COSYdeutsch: validateData(window.genderPracticeDataDeutsch),
+  COSYenglish: validateData(window.genderPracticeDataEnglish),
+  COSYespañol: validateData(window.genderPracticeDataEspanol),
+  COSYportuguês: validateData(window.genderPracticeDataPortugues)
 };
 
 if (typeof window !== 'undefined') {

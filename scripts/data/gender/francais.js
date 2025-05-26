@@ -1,4 +1,4 @@
-export const genderPracticeDataFrancais = {
+window.genderPracticeDataFrancais = {
   1: [
     { word: "eau", article: "l" },
     { word: "jus", article: "le" },
