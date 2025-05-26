@@ -1,3 +1,6 @@
+// Speaking practice data for COSYlanguages
+// TODO: Add speaking practice data here.
+
 const speakingData = {
   COSYenglish: {
     1: ["One coffee or one tea? Cash or card?"],

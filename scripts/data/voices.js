@@ -1,4 +1,6 @@
 // Voices data for COSYlanguages
+// This file is now obsolete. Please use scripts/config/voices.js for voiceLanguageMap.
+
 const voiceLanguageMap = {
   COSYenglish: { lang: "en-UK", voiceURI: "Google UK English" },
   COSYfrançais: { lang: "fr-FR", voiceURI: "Google français" },

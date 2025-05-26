@@ -1,3 +1,6 @@
+// Image data for COSYlanguages
+// TODO: Add image data here.
+
 const imageData = {
   allLanguages: {
     1: [

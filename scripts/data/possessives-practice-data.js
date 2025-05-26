@@ -1,5 +1,5 @@
 // Possessives practice data for COSYlanguages
-// Example structure, add your own data as needed
+// TODO: Add possessives practice data here.
 
 const possessivesPracticeData = {
   COSYenglish: {

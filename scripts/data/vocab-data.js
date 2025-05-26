@@ -1,28 +1,37 @@
-// Voices data for COSYlanguages
-const voiceLanguageMap = {
-  COSYenglish: { lang: "en-UK", voiceURI: "Google UK English" },
-  COSYfrançais: { lang: "fr-FR", voiceURI: "Google français" },
-  COSYitaliano: { lang: "it-IT", voiceURI: "Google italiano" },
-  COSYespañol: { lang: "es-ES", voiceURI: "Google español" },
-  COSYportuguês: { lang: "pt-PT", voiceURI: "Google português" },
-  COSYdeutsch: { lang: "de-DE", voiceURI: "Google Deutsch" },
-  ΚΟΖΥελληνικά: { lang: "el-GR", voiceURI: "Google ελληνικά" },
-  ТАКОЙрусский: { lang: "ru-RU", voiceURI: "Google русский" },
-  ԾՈՍՅհայկական: { lang: "hy-AM", voiceURI: "Google հայերեն" }, // Try Google Armenian first
-  COSYbrezhoneg: {
-    hello: "/audio/breton-hello.mp3",
-    goodbye: "/audio/breton-goodbye.mp3"
-    // ...add more as needed
+// Only vocabulary data should be here. Remove voiceLanguageMap (now in config/voices.js)
+
+// Add your vocabulary data here
+const vocabulary = {
+  // Example entry
+  hello: {
+    en: "Hello",
+    fr: "Bonjour",
+    es: "Hola",
+    de: "Hallo",
+    it: "Ciao",
+    pt: "Olá",
+    ru: "Привет",
+    zh: "你好",
+    ja: "こんにちは",
+    ko: "안녕하세요",
+    ar: "مرحبا",
+    hi: "नमस्ते",
+    // Add more languages as needed
   },
-  COSYtatarça: {
-    hello: "/audio/tatar-hello.mp3",
-    goodbye: "/audio/tatar-goodbye.mp3"
-    // ...add more as needed
+  goodbye: {
+    en: "Goodbye",
+    fr: "Au revoir",
+    es: "Adiós",
+    de: "Auf Wiedersehen",
+    it: "Addio",
+    pt: "Adeus",
+    ru: "До свидания",
+    zh: "再见",
+    ja: "さようなら",
+    ko: "안녕히 가세요",
+    ar: "وداعا",
+    hi: "अलविदा",
+    // Add more languages as needed
   },
-  COSYbashkort: {
-    lang: "ba-RU",
-    voiceURI: "Google русский" // Fallback to Russian TTS, or use custom audio if available
-  }
+  // ...other vocabulary entries...
 };
-// If Google Armenian is not available, fallback to Microsoft Hayk (Windows)
-// The app.js logic will try lang fallback if voiceURI is not found

@@ -1,4 +1,5 @@
 // Gender practice data for COSYlanguages
+// TODO: Add gender practice data here.
 
 const genderPracticeData = {
   COSYfrançais: {
