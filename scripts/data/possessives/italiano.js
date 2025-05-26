@@ -1,12 +1,12 @@
 export const possessivesDataItaliano = {
-  1: [
-    { prompt: "mia madre", answer: "my mother" },
-    { prompt: "tua sorella", answer: "your sister" },
-    { prompt: "suo figlio", answer: "his son" },
-    { prompt: "suo marito", answer: "her husband" }
-  ]
-};
-
-export const possessivesPracticeDataItaliano = {
-  // Add Italian possessives practice data here as needed
-};
+    3: [
+      { prompt: "Io ho una madre", answer: "Mia madre" },
+      { prompt: "Tu hai una sorella", answer: "Tua sorella" },
+      { prompt: "Lui ha un figlio", answer: "Suo figlio" },
+      { prompt: "Lei ha un marito", answer: "Suo marito" },
+      { prompt: "Mio padre", answer: "Io ho un padre" },
+      { prompt: "Tuo fratello", answer: "Tu hai un fratello" },
+      { prompt: "Sua figlia", answer: "Lui ha una figlia" },
+      { prompt: "Sua moglie", answer: "Lei ha una moglie" }
+    ]
+  },

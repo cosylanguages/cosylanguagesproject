@@ -1,0 +1,5 @@
+export const vocabDataEspanol = {
+  1: ["Hola", "Adiós", "Sí", "No", "Gracias", "De nada"],
+  2: ["El niño", "La niña", "El profesor", "La profesora", "El estudiante", "La estudiante", "La mujer", "El hombre"],
+  3: ["La madre", "El padre", "El hijo", "La hija", "La hermana", "El hermano", "El esposo", "La esposa"]
+};

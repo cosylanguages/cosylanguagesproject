@@ -1,8 +1,12 @@
 export const possessivesDataEllinika = {
-  1: [
-    { prompt: "η μητέρα μου", answer: "my mother" },
-    { prompt: "η αδερφή σου", answer: "your sister" },
-    { prompt: "ο γιος του", answer: "his son" },
-    { prompt: "ο σύζυγός της", answer: "her husband" }
-  ]
-};
+    3: [
+      { prompt: "Έχω μια μητέρα", answer: "Η μητέρα μου" },
+      { prompt: "Έχεις μια αδερφή", answer: "Η αδερφή σου" },
+      { prompt: "Έχει έναν γιο", answer: "Ο γιος του" },
+      { prompt: "Έχει έναν σύζυγο", answer: "Ο σύζυγός της" },
+      { prompt: "Ο πατέρας μου", answer: "Έχω έναν πατέρα" },
+      { prompt: "Ο αδερφός σου", answer: "Έχεις έναν αδερφό" },
+      { prompt: "Η κόρη του", answer: "Έχει μια κόρη" },
+      { prompt: "Η γυναίκα της", answer: "Έχει μια γυναίκα" }
+    ]
+  },
