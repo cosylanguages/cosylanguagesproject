@@ -922,6 +922,8 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.setAttribute('data-tooltip', '🔄 ' + (window.uiTranslations[languageSelect.value]?.verb || 'Verb'));
       } else if (btn.getAttribute('data-practice') === 'possessives') {
         btn.setAttribute('data-tooltip', '👪 ' + (window.uiTranslations[languageSelect.value]?.possessives || 'Possessives'));
+      } else if (btn.getAttribute('data-practice') === 'speaking') {
+        btn.setAttribute('data-tooltip', '🗣️ ' + (window.uiTranslations[languageSelect.value]?.speaking || 'Speaking'));
       }
     });
     // Practice type select
