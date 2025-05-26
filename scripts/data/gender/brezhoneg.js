@@ -1,3 +1,3 @@
-window.genderPracticeDataBrezhoneg = {
+export const genderPracticeDataBrezhoneg = {
   
 };

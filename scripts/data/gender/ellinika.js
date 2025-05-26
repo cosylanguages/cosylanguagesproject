@@ -1,4 +1,4 @@
-window.genderPracticeDataEllinika = {
+export const genderPracticeDataEllinika = {
   1: [
     { word: "νερό", article: "το" },
     { word: "χυμός", article: "ο" },
