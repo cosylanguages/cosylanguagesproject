@@ -364,10 +364,18 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showGrammarVerbPractice(language, day) {
-    // Clear previous content
     clearResultContainer();
     const container = document.createElement('div');
-    container.className = 'image-container';
+    container.className = 'verb-container';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.alignItems = 'center';
+    container.style.justifyContent = 'center';
+    container.style.width = '100%';
+    container.style.maxWidth = '340px';
+    container.style.margin = '0 auto';
+    container.style.padding = '12px 0 0 0';
+    container.style.position = 'relative';
 
     // Get verb data
     const verbData = window.verbPracticeData?.[language]?.[day];
@@ -379,37 +387,82 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Prompt (random word)
     const promptDiv = document.createElement('div');
-    promptDiv.className = 'image-question';
+    promptDiv.className = 'verb-question';
     promptDiv.textContent = item.prompt;
-    container.appendChild(promptDiv);
+    promptDiv.style.fontSize = '2.2rem';
+    promptDiv.style.fontWeight = '600';
+    promptDiv.style.color = '#2e4e4e';
+    promptDiv.style.textAlign = 'center';
+    promptDiv.style.margin = '32px 0 18px 0';
+    // Pronounce automatically
+    if (typeof speakText === 'function') {
+        setTimeout(() => speakText(item.prompt, language), 300);
+    }
 
     // Input row
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'practice-input';
     input.placeholder = 'Type your answer';
-    container.appendChild(input);
+    input.style.fontSize = '1.3rem';
+    input.style.textAlign = 'center';
+    input.style.margin = '10px 0 8px 0';
+    input.style.display = 'block';
+    input.style.width = '80%';
+    input.style.maxWidth = '260px';
+    input.style.borderRadius = '8px';
+    input.style.border = '2px solid #b2dfdf';
+    input.style.background = '#f8f8f8';
+    input.style.color = '#003a3c';
+    input.style.padding = '10px 12px';
 
     // Button row (Check + Show Answer + Pronounce)
     const btnRow = document.createElement('div');
     btnRow.className = 'practice-btn-row';
+    btnRow.style.display = 'flex';
+    btnRow.style.justifyContent = 'center';
+    btnRow.style.alignItems = 'center';
+    btnRow.style.gap = '12px';
+    btnRow.style.marginBottom = '8px';
 
     // Check button
     const checkBtn = document.createElement('button');
     checkBtn.className = 'btn check-emoji-btn';
     checkBtn.title = 'Check your answer';
     checkBtn.innerHTML = '✅';
+    checkBtn.style.fontSize = '1.5rem';
+    checkBtn.style.borderRadius = '50%';
+    checkBtn.style.width = '44px';
+    checkBtn.style.height = '44px';
+    checkBtn.style.display = 'flex';
+    checkBtn.style.alignItems = 'center';
+    checkBtn.style.justifyContent = 'center';
 
     // Show answer button
     const showAnswerBtn = document.createElement('button');
     showAnswerBtn.className = 'btn show-answer-btn';
     showAnswerBtn.title = 'Show correct answer';
     showAnswerBtn.innerHTML = '💡';
+    showAnswerBtn.style.fontSize = '1.5rem';
+    showAnswerBtn.style.borderRadius = '50%';
+    showAnswerBtn.style.width = '44px';
+    showAnswerBtn.style.height = '44px';
+    showAnswerBtn.style.display = 'flex';
+    showAnswerBtn.style.alignItems = 'center';
+    showAnswerBtn.style.justifyContent = 'center';
 
     // Pronounce button
     const pronounceBtn = document.createElement('button');
     pronounceBtn.className = 'btn pronounce-btn';
     pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
+    pronounceBtn.title = 'Play pronunciation';
+    pronounceBtn.style.fontSize = '1.5rem';
+    pronounceBtn.style.borderRadius = '50%';
+    pronounceBtn.style.width = '44px';
+    pronounceBtn.style.height = '44px';
+    pronounceBtn.style.display = 'flex';
+    pronounceBtn.style.alignItems = 'center';
+    pronounceBtn.style.justifyContent = 'center';
     pronounceBtn.onclick = function() {
       speakText(item.answer, language);
     };
@@ -417,21 +470,24 @@ document.addEventListener('DOMContentLoaded', function() {
     btnRow.appendChild(checkBtn);
     btnRow.appendChild(showAnswerBtn);
     btnRow.appendChild(pronounceBtn);
-    container.appendChild(btnRow);
 
     // Feedback
     const feedback = document.createElement('div');
-    feedback.className = 'practice-feedback';
-    container.appendChild(feedback);
+    feedback.className = 'verb-feedback';
+    feedback.style.textAlign = 'center';
+    feedback.style.fontSize = '2rem';
+    feedback.style.fontWeight = '500';
+    feedback.style.marginTop = '24px';
+    feedback.style.minHeight = '2.5em';
 
     checkBtn.onclick = function() {
       if (input.value.trim().toLowerCase() === item.answer.trim().toLowerCase()) {
         feedback.textContent = 'Correct!';
-        feedback.style.color = '#0abab5';
+        feedback.style.color = '#4CAF50';
         adventureCorrectAnswer(day);
       } else {
         feedback.textContent = 'Try again!';
-        feedback.style.color = '#d9534f';
+        feedback.style.color = '#F44336';
         adventureWrongAnswer();
       }
     };
@@ -445,6 +501,10 @@ document.addEventListener('DOMContentLoaded', function() {
       speakText(item.answer, language);
     };
 
+    container.appendChild(promptDiv);
+    container.appendChild(input);
+    container.appendChild(btnRow);
+    container.appendChild(feedback);
     resultContainer.appendChild(container);
   }
 
