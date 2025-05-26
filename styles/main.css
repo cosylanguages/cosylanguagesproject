@@ -842,26 +842,27 @@ body.flag-COSYbashkort { background-image: url('icons/flag-bashkortostan.png'); 
     min-width: 0;
     padding: 6vw 2vw 8vw 2vw;
     box-sizing: border-box;
+    position: relative;
   }
-  .controls-container, .selector-group {
-    flex-wrap: wrap;
-    flex-direction: row;
-    gap: 8px 0;
-    width: 100%;
-    min-width: 0;
-    justify-content: center;
+  #main-nav, .main-nav {
+    position: static !important;
+    width: 100% !important;
+    margin: 0 auto 12px auto !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px 8px !important;
+    z-index: 2;
+    background: none !important;
   }
-  .practice-btn-row {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px 0;
-  }
-  .btn, .submenu-btn, .practice-btn-row button {
-    min-width: 90px;
-    max-width: 100%;
+  .nav-btn {
+    flex: 1 1 40%;
+    min-width: 110px;
+    max-width: 48vw;
+    margin: 4px 2px;
+    font-size: 1rem;
+    padding: 10px 0;
     box-sizing: border-box;
-    font-size: 1.1rem;
-    margin: 8px 4px 0 4px;
   }
 }
 
@@ -1244,4 +1245,27 @@ html {
   font-weight: bold;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   color: #222;
+}
+
+@media (max-width: 600px) {
+  #main-nav, .main-nav {
+    position: static !important;
+    width: 100% !important;
+    margin: 0 auto 12px auto !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px 8px !important;
+    z-index: 2;
+    background: none !important;
+  }
+  .nav-btn {
+    flex: 1 1 40%;
+    min-width: 110px;
+    max-width: 48vw;
+    margin: 4px 2px;
+    font-size: 1rem;
+    padding: 10px 0;
+    box-sizing: border-box;
+  }
 }
