@@ -1,6 +1,8 @@
 // Main app logic for COSYlanguages
 // All DOM event handlers and UI logic are here
 
+console.log('[app.js] window.genderPracticeData at startup:', window.genderPracticeData);
+
 document.addEventListener('DOMContentLoaded', function() {
   // Get all DOM elements
   const languageSelect = document.getElementById('language-select');
