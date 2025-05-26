@@ -436,49 +436,52 @@ result-container {
   margin: 18px 0 10px 0;
 }
 .gender-option {
-  font-size: 1.2rem;
-  font-weight: 500;
-  background: #eaf6f6;
-  color: #1a6e6e;
-  border: 2px solid #b2dfdf;
-  border-radius: 10px;
-  padding: 10px 18px;
+  font-size: 2rem;
+  font-weight: 600;
+  min-width: 90px;
+  padding: 18px 28px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.18s;
+  background: #fffbe6;
+  color: #8d6c00;
+  border: 3px solid #ffe082;
+  margin-bottom: 0;
   cursor: pointer;
-  transition: background 0.18s, border 0.18s, color 0.18s;
-  box-shadow: 0 1px 6px 0 rgba(0,0,0,0.07);
 }
 .gender-option:hover {
-  background: hsl(178, 90%, 38%);
-  color: #fff;
-  border-color: hsl(178, 90%, 38%);
+  background: #ffe082;
+  color: #6d4c00;
 }
 .gender-option.correct {
-  background: #c8f7c5;
-  color: #1a6e1a;
-  border-color: #4CAF50;
+  background: #c8f7c5 !important;
+  color: #1a6e1a !important;
+  border-color: #4CAF50 !important;
 }
 .gender-option.incorrect {
-  background: #ffd6d6;
-  color: #b71c1c;
-  border-color: #F44336;
+  background: #ffd6d6 !important;
+  color: #b71c1c !important;
+  border-color: #F44336 !important;
 }
-.gender-option.show-answer {
-  background: #fff3cd;
-  color: #856404;
-  border-color: #ffe082;
-}
-#grammar-question {
-  font-size: 1.5rem;
+.gender-question {
+  font-size: 2.6rem;
   font-weight: 600;
-  color: #1a6e6e;
-  margin-bottom: 10px;
+  color: #2e4e4e;
   text-align: center;
+  margin: 32px 0 18px 0;
 }
-#grammar-feedback {
-  font-size: 1.1rem;
-  margin-top: 10px;
-  min-height: 24px;
+.gender-options {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 32px 0 0 0;
+}
+.gender-feedback {
   text-align: center;
+  font-size: 2rem;
+  font-weight: 500;
+  margin-top: 24px;
+  min-height: 2.5em;
 }
 
 .submenu {

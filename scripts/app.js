@@ -309,22 +309,58 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     const wordObj = randomElement(words);
+    // --- UI ---
     const questionDiv = document.createElement('div');
     questionDiv.className = 'gender-question';
     questionDiv.textContent = wordObj.word;
     questionDiv.dataset.correctAnswer = wordObj.article;
+    questionDiv.style.fontSize = '2.6rem';
+    questionDiv.style.fontWeight = '600';
+    questionDiv.style.color = '#2e4e4e';
+    questionDiv.style.textAlign = 'center';
+    questionDiv.style.margin = '32px 0 18px 0';
+    // Pronounce automatically
+    if (typeof speakText === 'function') {
+        setTimeout(() => speakText(wordObj.word, language), 300);
+    }
+    // Options
     const optionsDiv = document.createElement('div');
     optionsDiv.className = 'gender-options';
+    optionsDiv.style.display = 'flex';
+    optionsDiv.style.justifyContent = 'center';
+    optionsDiv.style.gap = '24px';
+    optionsDiv.style.margin = '32px 0 0 0';
     const articles = getArticlesForLanguage(language);
     articles.forEach(article => {
         const btn = document.createElement('button');
         btn.className = 'gender-option';
         btn.textContent = article;
+        btn.style.fontSize = '2rem';
+        btn.style.fontWeight = '600';
+        btn.style.minWidth = '90px';
+        btn.style.padding = '18px 28px';
+        btn.style.borderRadius = '16px';
+        btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+        btn.style.transition = 'all 0.18s';
+        btn.style.background = '#fffbe6';
+        btn.style.color = '#8d6c00';
+        btn.style.border = '3px solid #ffe082';
+        btn.style.marginBottom = '0';
         btn.addEventListener('click', () => checkGenderAnswer(btn, wordObj.article));
         optionsDiv.appendChild(btn);
     });
+    // Feedback area
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.className = 'gender-feedback';
+    feedbackDiv.style.textAlign = 'center';
+    feedbackDiv.style.fontSize = '2rem';
+    feedbackDiv.style.fontWeight = '500';
+    feedbackDiv.style.marginTop = '24px';
+    feedbackDiv.style.minHeight = '2.5em';
+    // Insert all
     resultContainer.appendChild(questionDiv);
     resultContainer.appendChild(optionsDiv);
+    resultContainer.appendChild(feedbackDiv);
   }
 
   function showGrammarVerbPractice(language, day) {
@@ -957,18 +993,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const allOptions = document.querySelectorAll('.gender-option');
     allOptions.forEach(opt => {
         opt.classList.remove('correct', 'incorrect');
+        opt.style.background = '#fffbe6';
+        opt.style.color = '#8d6c00';
+        opt.style.borderColor = '#ffe082';
     });
     if (selectedBtn.textContent === correctAnswer) {
         selectedBtn.classList.add('correct');
+        selectedBtn.style.background = '#c8f7c5';
+        selectedBtn.style.color = '#1a6e1a';
+        selectedBtn.style.borderColor = '#4CAF50';
         feedbackEl.textContent = 'Correct!';
         feedbackEl.style.color = '#4CAF50';
-        adventureCorrectAnswer(Number(daySelect.value) || 1);
+        adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
     } else {
         selectedBtn.classList.add('incorrect');
+        selectedBtn.style.background = '#ffd6d6';
+        selectedBtn.style.color = '#b71c1c';
+        selectedBtn.style.borderColor = '#F44336';
         // Highlight correct answer
         allOptions.forEach(opt => {
             if (opt.textContent === correctAnswer) {
                 opt.classList.add('correct');
+                opt.style.background = '#c8f7c5';
+                opt.style.color = '#1a6e1a';
+                opt.style.borderColor = '#4CAF50';
             }
         });
         feedbackEl.textContent = 'Incorrect!';
