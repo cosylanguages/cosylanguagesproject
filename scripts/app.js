@@ -1153,6 +1153,20 @@ document.addEventListener('DOMContentLoaded', function() {
     installBtn.style.display = 'none';
   });
 
+  // --- Install App on Logo Click ---
+  const logoImg = document.querySelector('.logo-img');
+  if (logoImg) {
+    logoImg.style.cursor = 'pointer';
+    logoImg.title = 'Install this app';
+    logoImg.addEventListener('click', function() {
+      if (typeof deferredPrompt !== 'undefined' && deferredPrompt) {
+        deferredPrompt.prompt();
+      } else {
+        showMessage('To install the app, use your browser\'s install or Add to Home Screen option.');
+      }
+    });
+  }
+
   // Utility functions
   function randomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
