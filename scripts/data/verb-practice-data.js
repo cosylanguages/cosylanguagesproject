@@ -166,6 +166,8 @@ const verbPracticeData = {
       { prompt: "Այն", answer: "ունի" },
       { prompt: "ունենամ", answer: "ես/դու/նա/այն" }
     ]
-  }
+  },
+  
+
 };
 if (typeof window !== 'undefined') window.verbPracticeData = verbPracticeData;
