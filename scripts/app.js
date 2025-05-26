@@ -1139,16 +1139,31 @@ document.addEventListener('DOMContentLoaded', function() {
     deferredPrompt = e;
     installBtn.style.display = 'block';
   });
-  installBtn.addEventListener('click', async () => {
-    if (deferredPrompt) {
+
+  async function handlePWAInstallAttempt() {
+    if (typeof deferredPrompt !== 'undefined' && deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
         installBtn.style.display = 'none';
       }
       deferredPrompt = null;
+    } else {
+      // Wait briefly in case beforeinstallprompt is about to fire
+      setTimeout(() => {
+        if (!deferredPrompt) {
+          showMessage(
+            'To install the app:\n\n' +
+            '- On Chrome/Edge: Tap the browser menu (⋮) and choose "Install app" or "Add to Home screen".\n' +
+            '- On Safari (iOS): Tap the Share icon (⬆️) and choose "Add to Home Screen".\n' +
+            '- On Firefox: Tap the browser menu and look for "Install" or "Add to Home screen".\n\nIf you do not see the option, try refreshing the page or visiting from your browser menu.'
+          );
+        }
+      }, 200);
     }
-  });
+  }
+
+  installBtn.addEventListener('click', handlePWAInstallAttempt);
   window.addEventListener('appinstalled', () => {
     installBtn.style.display = 'none';
   });
@@ -1158,13 +1173,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (logoImg) {
     logoImg.style.cursor = 'pointer';
     logoImg.title = 'Install this app';
-    logoImg.addEventListener('click', function() {
-      if (typeof deferredPrompt !== 'undefined' && deferredPrompt) {
-        deferredPrompt.prompt();
-      } else {
-        showMessage('To install the app, use your browser\'s install or Add to Home Screen option.');
-      }
-    });
+    logoImg.addEventListener('click', handlePWAInstallAttempt);
   }
 
   // Utility functions
