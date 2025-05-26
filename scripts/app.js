@@ -1057,6 +1057,9 @@ document.addEventListener('DOMContentLoaded', function() {
         opt.style.color = '#8d6c00';
         opt.style.borderColor = '#ffe082';
     });
+    // Play sound
+    const soundCorrect = document.getElementById('sound-correct');
+    const soundWrong = document.getElementById('sound-wrong');
     if (selectedBtn.textContent === correctAnswer) {
         selectedBtn.classList.add('correct');
         selectedBtn.style.background = '#c8f7c5';
@@ -1065,6 +1068,13 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackEl.textContent = 'Correct!';
         feedbackEl.style.color = '#4CAF50';
         adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
+        if (soundCorrect) { soundCorrect.currentTime = 0; soundCorrect.play(); }
+        // Auto-advance to another word after a short delay
+        setTimeout(() => {
+            const language = document.getElementById('language-select')?.value;
+            const day = Number(document.getElementById('day-select')?.value) || 1;
+            showGrammarGenderPractice(language, day);
+        }, 900);
     } else {
         selectedBtn.classList.add('incorrect');
         selectedBtn.style.background = '#ffd6d6';
@@ -1082,6 +1092,7 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackEl.textContent = 'Incorrect!';
         feedbackEl.style.color = '#F44336';
         adventureWrongAnswer();
+        if (soundWrong) { soundWrong.currentTime = 0; soundWrong.play(); }
     }
   }
 
