@@ -61,6 +61,24 @@ const grammarData = {
       to_have: ["Ես", "Դու", "Նա", "Նա", "ունեմ", "ունես", "ունի"],
       possessives: ["Ստացական ածականներ (օրինակներ). իմ մայրը, քո քույրը, նրա որդին, նրա ամուսինը:"]
     }
+  },
+  COSYbrezhoneg: {
+    1: [
+      { phrase: "Me zo ur paotr", translation: "I am a boy" },
+      { phrase: "Te zo ur plac'h", translation: "You are a girl" }
+    ],
+    2: [
+      { phrase: "Ar c'helennerez a zo amañ", translation: "The teacher is here" }
+    ]
+  },
+  COSYtatarça: {
+    1: [
+      { phrase: "Min malay", translation: "I am a boy" },
+      { phrase: "Sin kız", translation: "You are a girl" }
+    ],
+    2: [
+      { phrase: "Ukıtuçı monda", translation: "The teacher is here" }
+    ]
   }
 };
 if (typeof window !== 'undefined') window.grammarData = grammarData;
