@@ -27,5 +27,4 @@ const possessivesPracticeData = {
   COSYbrezhoneg: possessivesDataBrezhoneg
 };
 
-if (typeof window !== 'undefined') window.possessivesPracticeData = possessivesPracticeData;
-export { possessivesPracticeData };
+window.possessivesPracticeData = possessivesPracticeData;

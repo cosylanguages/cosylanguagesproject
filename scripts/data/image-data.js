@@ -2,7 +2,7 @@
 // Shared for all languages
 // TODO: Add image data here.
 
-export const imageData = [
+const imageData = [
   {
     src: "https://knowt-user-attachments.s3.amazonaws.com/d1b268c8-b4a8-448f-b332-5f8b25d5e673.jpg",
     alt: "Hello",
