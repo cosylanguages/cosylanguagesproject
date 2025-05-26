@@ -579,9 +579,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // --- Adventure-like features ---
   const DAYS = 7;
-  let userXP = parseInt(localStorage.getItem('cosy_xp') || '0');
-  let userStreak = parseInt(localStorage.getItem('cosy_streak') || '0');
-  let unlockedDay = parseInt(localStorage.getItem('cosy_unlocked_day') || '1');
+  let userXP = 0;
+  let userStreak = 0;
+  let unlockedDay = 1;
+
+  function saveAdventureProgress() {
+    localStorage.setItem('cosy_xp', userXP);
+    localStorage.setItem('cosy_streak', userStreak);
+    localStorage.setItem('cosy_unlocked_day', unlockedDay);
+  }
+  function loadAdventureProgress() {
+    userXP = parseInt(localStorage.getItem('cosy_xp') || '0');
+    userStreak = parseInt(localStorage.getItem('cosy_streak') || '0');
+    unlockedDay = parseInt(localStorage.getItem('cosy_unlocked_day') || '1');
+  }
+  // Load progress on startup
+  loadAdventureProgress();
+
+  // Update progress bar and XP/streak on page load
+  updateProgressMap();
 
   function updateProgressMap() {
     const map = document.getElementById('progress-map');
@@ -618,6 +634,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   // Load progress on startup
   loadAdventureProgress();
+
+  // Update progress map on page load
+  updateProgressMap();
 
   // Add a reset progress button
   if (!document.getElementById('reset-progress-btn')) {
@@ -1128,7 +1147,6 @@ document.addEventListener('DOMContentLoaded', function() {
       deferredPrompt = null;
     }
   });
-  // Hide install button if app is already installed
   window.addEventListener('appinstalled', () => {
     installBtn.style.display = 'none';
   });
