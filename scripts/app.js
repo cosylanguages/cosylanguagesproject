@@ -971,11 +971,12 @@ document.addEventListener('DOMContentLoaded', function() {
       'COSYfrançais': ['le', 'la', 'l', 'le/la'],
       'COSYdeutsch': ['der', 'die', 'das'],
       'COSYitaliano': ['il', 'la', 'l', 'lo'],
-      'COSYespañol': ['el', 'la'],
+      'COSYespañol': ['el', 'la', 'el/la'],
       'ΚΟΖΥελληνικά': ['ο', 'η', 'το', 'ο/η'],
       'COSYportuguês': ['o', 'a'],
       'ТАКОЙрусский': ['один', 'одна', 'одно'],
       'ԾՈՍՅհայկական': ['ը', 'ն', 'նա', 'ը/ն'],
+      'COSYenglish': ['he', 'she', 'it', 'he/she'],
       'default': ['the']
     };
     return articles[language] || articles.default;
