@@ -30,51 +30,19 @@ function getBestVoice(languageCode, voiceURI) {
   return voices[0] || null;
 }
 
-// Function to speak text with selected voice and language
-function speakText(text, language) {
-  // 1. Try browser TTS with correct language
-  if (window.speechSynthesis && typeof SpeechSynthesisUtterance !== 'undefined') {
-    const voiceSettings = voiceLanguageMap[language] || voiceLanguageMap.COSYenglish;
-    let utterance = new SpeechSynthesisUtterance(text);
-    let voice = null;
-    if (voiceSettings.lang && voiceSettings.voiceURI) {
-      voice = getBestVoice(voiceSettings.lang, voiceSettings.voiceURI);
-      // Special fallback for Armenian (try Microsoft Hayk if Google Armenian not found)
-      if (!voice && voiceSettings.lang === 'hy-AM') {
-        voice = getBestVoice('hy-AM', 'Microsoft Hayk');
-      }
-    }
-    if (voice) {
-      utterance.voice = voice;
-      utterance.lang = voice.lang;
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-      return;
-    }
-    // If no matching voice, try to use the language code only
-    if (voiceSettings.lang) {
-      utterance.lang = voiceSettings.lang;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-      return;
-    }
+// Utility: unlock speech synthesis on first user gesture (for iOS/Android)
+function unlockSpeechSynthesis() {
+  if (typeof window !== 'undefined' && window.speechSynthesis && !window.__speechUnlocked) {
+    try {
+      const silent = new window.SpeechSynthesisUtterance('');
+      silent.volume = 0;
+      window.speechSynthesis.speak(silent);
+      window.__speechUnlocked = true;
+    } catch (e) {}
   }
-  // 2. Fallback: Play audio file if available (for Breton, Tatar, Bashkir, etc.)
-  const voiceSettings = voiceLanguageMap[language];
-  if (voiceSettings && typeof voiceSettings === 'object') {
-    // Try to match a key in the config (e.g., hello, goodbye)
-    const key = Object.keys(voiceSettings).find(k => typeof text === 'string' && text.toLowerCase().includes(k));
-    if (key && voiceSettings[key]) {
-      const audio = new Audio(voiceSettings[key]);
-      audio.play();
-      return;
-    }
-  }
-  // 3. If nothing works, show a message
-  alert('Sorry, pronunciation for this language is not supported on your device/browser.');
 }
+// Make available globally
+if (typeof window !== 'undefined') window.unlockSpeechSynthesis = unlockSpeechSynthesis;
 
 function getGrammarItems(grammarData, language, days, type) {
   let combinedGrammar = [];
@@ -110,7 +78,7 @@ function handleRandomWord(language, days, container) {
   }
   const word = randomElement(combinedWords);
   container.textContent = word;
-  speakText(word, language);
+  window.speakText(word, language);
 }
 
 function handleRandomGrammar(language, days, container) {
@@ -133,7 +101,7 @@ function handleRandomGrammar(language, days, container) {
           const grammar = randomElement(grammarData[language][d].to_have);
           container.innerHTML = "";
           container.appendChild(document.createTextNode(grammar));
-          speakText(grammar, language);
+          window.speakText(grammar, language);
         });
         
         const possessivesOption = document.createElement("div");
@@ -143,7 +111,7 @@ function handleRandomGrammar(language, days, container) {
           const grammar = randomElement(grammarData[language][d].possessives);
           container.innerHTML = "";
           container.appendChild(document.createTextNode(grammar));
-          speakText(grammar, language);
+          window.speakText(grammar, language);
         });
         
         optionsDiv.appendChild(toHaveOption);
@@ -163,7 +131,7 @@ function handleRandomGrammar(language, days, container) {
   
   const grammar = randomElement(combinedGrammar);
   container.textContent = grammar;
-  speakText(grammar, language);
+  window.speakText(grammar, language);
 }
 
 function handleRandomSpeaking(language, days, container) {
@@ -177,7 +145,7 @@ function handleRandomSpeaking(language, days, container) {
   }
   const phrase = randomElement(combinedSpeaking);
   container.textContent = phrase;
-  speakText(phrase, language);
+  window.speakText(phrase, language);
 }
 
 function handleRandomImage(language, days, container) {

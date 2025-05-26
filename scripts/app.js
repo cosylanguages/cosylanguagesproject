@@ -1158,21 +1158,14 @@ document.addEventListener('DOMContentLoaded', function() {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  let speechUnlocked = false;
-
-  function unlockSpeechSynthesis() {
-    if (!speechUnlocked && window.speechSynthesis) {
-      // Play a silent utterance to unlock
-      const silent = new SpeechSynthesisUtterance('');
-      silent.volume = 0;
-      window.speechSynthesis.speak(silent);
-      speechUnlocked = true;
-    }
+  // Use the global unlockSpeechSynthesis utility from utils.js
+  if (typeof window.unlockSpeechSynthesis === 'function') {
+    window.addEventListener('pointerdown', window.unlockSpeechSynthesis, { once: true });
+    window.addEventListener('keydown', window.unlockSpeechSynthesis, { once: true });
   }
 
-  // Attach to first user gesture
-  window.addEventListener('pointerdown', unlockSpeechSynthesis, { once: true });
-  window.addEventListener('keydown', unlockSpeechSynthesis, { once: true });
+  // Ensure speakText is available globally for utils.js and other modules
+  window.speakText = speakText;
 
   function speakText(text, language) {
     if (!window.speechSynthesis) {
