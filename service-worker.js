@@ -10,7 +10,7 @@ const urlsToCache = [
   '/scripts/data/speaking-data.js',
   '/scripts/data/image-data.js',
   '/scripts/data/translations.js',
-  '/scripts/data/voices.js',
+  '/scripts/config/voices.js',
   '/scripts/data/gender-practice-data.js',
   '/scripts/data/verb-practice-data.js',
   '/scripts/data/possessives-practice-data.js'

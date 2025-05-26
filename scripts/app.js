@@ -289,48 +289,34 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showGrammarGenderPractice(language, day) {
+    // Dynamically create gender practice UI
     resultContainer.innerHTML = '';
     const words = genderPracticeData[language]?.[day] || [];
-    if (!words.length) {
-        showMessage('No gender practice available');
-        return;
-    }
-    const wordObj = randomElement(words);
+    if (!words.length) return showMessage('No gender practice available');
+    const word = randomElement(words);
     const questionDiv = document.createElement('div');
-    questionDiv.className = 'gender-question';
-    questionDiv.textContent = wordObj.word;
-    questionDiv.dataset.correctAnswer = wordObj.article;
-    const optionsDiv = document.createElement('div');
-    optionsDiv.className = 'gender-options';
-    const articles = getArticlesForLanguage(language);
-    articles.forEach(article => {
-        const btn = document.createElement('button');
-        btn.className = 'gender-option';
-        btn.textContent = article;
-        btn.addEventListener('click', () => checkGenderAnswer(btn, wordObj.article));
-        optionsDiv.appendChild(btn);
+    questionDiv.id = 'grammar-question';
+    questionDiv.textContent = word.word;
+    questionDiv.dataset.answer = word.article;
+    const optionsEl = document.createElement('div');
+    optionsEl.id = 'grammar-options';
+    optionsEl.className = 'grammar-gender-options';
+    getArticlesForLanguage(language).forEach(article => {
+      const option = document.createElement('div');
+      option.className = 'gender-option';
+      option.textContent = article;
+      option.addEventListener('click', () => checkGenderAnswer(option, word.article));
+      optionsEl.appendChild(option);
     });
     const feedbackDiv = document.createElement('div');
-    feedbackDiv.className = 'gender-feedback';
-    const showAnswerBtn = document.createElement('button');
-    showAnswerBtn.className = 'show-answer-btn';
-    showAnswerBtn.textContent = 'Show Answer';
-    showAnswerBtn.addEventListener('click', () => {
-        feedbackDiv.textContent = `Answer: ${wordObj.article}`;
-        feedbackDiv.style.color = '#333';
-        // Highlight correct answer
-        document.querySelectorAll('.gender-option').forEach(opt => {
-            if (opt.textContent === wordObj.article) {
-                opt.classList.add('correct');
-            }
-        });
-    });
-    resultContainer.appendChild(questionDiv);
-    resultContainer.appendChild(optionsDiv);
-    resultContainer.appendChild(feedbackDiv);
-    resultContainer.appendChild(showAnswerBtn);
-    speakText(wordObj.word, language);
-}
+    feedbackDiv.id = 'grammar-feedback';
+    questionDiv.onclick = function() {
+      feedbackDiv.textContent = `Correct article: ${word.article}`;
+      feedbackDiv.style.color = '#333';
+    };
+    feedbackDiv.textContent = '';
+    resultContainer.append(questionDiv, optionsEl, feedbackDiv);
+  }
 
   function checkGenderAnswer(selectedBtn, correctAnswer) {
     const feedbackEl = document.querySelector('.gender-feedback');

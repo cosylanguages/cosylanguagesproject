@@ -74,8 +74,8 @@ const questionVariants = {
   },
   COSYfrançais: {
     day2: [
-      ["C'est qui?", "Qui est cette personne?"],
-      ["C'est quoi?", "Qu'est-ce que c'est? (cette chose)" ]
+      ["C'est qui?", "C'est qui cette personne?"],
+      ["C'est quoi?", "C'est quoi cette chose?" ]
     ],
     day3plus: [
       ["C'est qui?", "Qui est cette personne?"],
