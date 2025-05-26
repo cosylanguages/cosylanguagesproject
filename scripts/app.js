@@ -1057,9 +1057,6 @@ document.addEventListener('DOMContentLoaded', function() {
         opt.style.color = '#8d6c00';
         opt.style.borderColor = '#ffe082';
     });
-    // Play sound
-    const soundCorrect = document.getElementById('sound-correct');
-    const soundWrong = document.getElementById('sound-wrong');
     if (selectedBtn.textContent === correctAnswer) {
         selectedBtn.classList.add('correct');
         selectedBtn.style.background = '#c8f7c5';
@@ -1067,9 +1064,11 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedBtn.style.borderColor = '#4CAF50';
         feedbackEl.textContent = 'Correct!';
         feedbackEl.style.color = '#4CAF50';
+        // Play correct sound
+        const correctSound = document.getElementById('sound-correct');
+        if (correctSound) { correctSound.currentTime = 0; correctSound.play(); }
         adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
-        if (soundCorrect) { soundCorrect.currentTime = 0; soundCorrect.play(); }
-        // Auto-advance to another word after a short delay
+        // Auto-advance to another random word after a short delay
         setTimeout(() => {
             const language = document.getElementById('language-select')?.value;
             const day = Number(document.getElementById('day-select')?.value) || 1;
@@ -1091,8 +1090,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         feedbackEl.textContent = 'Incorrect!';
         feedbackEl.style.color = '#F44336';
+        // Play wrong sound
+        const wrongSound = document.getElementById('sound-wrong');
+        if (wrongSound) { wrongSound.currentTime = 0; wrongSound.play(); }
         adventureWrongAnswer();
-        if (soundWrong) { soundWrong.currentTime = 0; soundWrong.play(); }
     }
   }
 
