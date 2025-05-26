@@ -289,58 +289,40 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showGrammarGenderPractice(language, day) {
-    // Dynamically create gender practice UI
-    resultContainer.innerHTML = '';
-    const words = genderPracticeData[language]?.[day] || [];
-    if (!words.length) return showMessage('No gender practice available');
-    const word = randomElement(words);
-    const questionDiv = document.createElement('div');
-    questionDiv.id = 'grammar-question';
-    questionDiv.textContent = word.word;
-    questionDiv.dataset.answer = word.article;
-    const optionsEl = document.createElement('div');
-    optionsEl.id = 'grammar-options';
-    optionsEl.className = 'grammar-gender-options';
-    getArticlesForLanguage(language).forEach(article => {
-      const option = document.createElement('div');
-      option.className = 'gender-option';
-      option.textContent = article;
-      option.addEventListener('click', () => checkGenderAnswer(option, word.article));
-      optionsEl.appendChild(option);
-    });
-    const feedbackDiv = document.createElement('div');
-    feedbackDiv.id = 'grammar-feedback';
-    questionDiv.onclick = function() {
-      feedbackDiv.textContent = `Correct article: ${word.article}`;
-      feedbackDiv.style.color = '#333';
-    };
-    feedbackDiv.textContent = '';
-    resultContainer.append(questionDiv, optionsEl, feedbackDiv);
-  }
-
-  function checkGenderAnswer(selectedBtn, correctAnswer) {
-    const feedbackEl = document.querySelector('.gender-feedback');
-    const allOptions = document.querySelectorAll('.gender-option');
-    allOptions.forEach(opt => {
-        opt.classList.remove('correct', 'incorrect');
-    });
-    if (selectedBtn.textContent === correctAnswer) {
-        selectedBtn.classList.add('correct');
-        feedbackEl.textContent = 'Correct!';
-        feedbackEl.style.color = '#4CAF50';
-        adventureCorrectAnswer(Number(daySelect.value) || 1);
-    } else {
-        selectedBtn.classList.add('incorrect');
-        // Highlight correct answer
-        allOptions.forEach(opt => {
-            if (opt.textContent === correctAnswer) {
-                opt.classList.add('correct');
-            }
-        });
-        feedbackEl.textContent = 'Incorrect!';
-        feedbackEl.style.color = '#F44336';
-        adventureWrongAnswer();
+    // Debugging output
+    console.log('[Gender Practice] Language:', language, 'Day:', day);
+    if (!language || !day) {
+        showMessage('Please select both a language and a day.');
+        return;
     }
+    if (!window.genderPracticeData) {
+        showMessage('Gender practice data is not loaded.');
+        return;
+    }
+    const words = genderPracticeData[language]?.[day] || [];
+    console.log('[Gender Practice] Data for', language, 'on day', day, ':', words);
+    resultContainer.innerHTML = '';
+    if (!words.length) {
+        showMessage('No gender practice available for this language and day.');
+        return;
+    }
+    const wordObj = randomElement(words);
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'gender-question';
+    questionDiv.textContent = wordObj.word;
+    questionDiv.dataset.correctAnswer = wordObj.article;
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'gender-options';
+    const articles = getArticlesForLanguage(language);
+    articles.forEach(article => {
+        const btn = document.createElement('button');
+        btn.className = 'gender-option';
+        btn.textContent = article;
+        btn.addEventListener('click', () => checkGenderAnswer(btn, wordObj.article));
+        optionsDiv.appendChild(btn);
+    });
+    resultContainer.appendChild(questionDiv);
+    resultContainer.appendChild(optionsDiv);
   }
 
   function showGrammarVerbPractice(language, day) {
