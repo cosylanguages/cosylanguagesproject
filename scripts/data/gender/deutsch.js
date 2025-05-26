@@ -9,17 +9,17 @@ export const genderPracticeDataDeutsch = {
     { word: "Karte", article: "die" }
     ],
   2: [
-        { word: "Lehrer", article: "der" },
-        { word: "Schüler", article: "der" },
-        { word: "Mann", article: "der" },
-        { word: "Junge", article: "der" },
-        { word: "Frau", article: "die" },
-        { word: "Schülerin", article: "die" },
-        { word: "Lehrerin", article: "die" },
-        { word: "Mädchen", article: "das" },
-        { word: "Ding", article: "das" },
-        { word: "Person", article: "die" },
-        { word: "Getränk", article: "das" }
+    { word: "Lehrer", article: "der" },
+    { word: "Schüler", article: "der" },
+    { word: "Mann", article: "der" },
+    { word: "Junge", article: "der" },
+    { word: "Frau", article: "die" },
+    { word: "Schülerin", article: "die" },
+    { word: "Lehrerin", article: "die" },
+    { word: "Mädchen", article: "das" },
+    { word: "Ding", article: "das" },
+    { word: "Person", article: "die" },
+    { word: "Getränk", article: "das" }
     ]
 };
-    // Add German gender practice data here as needed
+

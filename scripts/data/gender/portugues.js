@@ -21,5 +21,4 @@ export const genderPracticeDataPortugues = {
     { word: "pessoa", article: "a" },
     { word: "bebida", article: "a" }
     ]
-  // Add Portuguese gender practice data here as needed
 };

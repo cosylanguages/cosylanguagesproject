@@ -10,11 +10,10 @@ export const genderPracticeDataEspanol = {
     ],
    2: [
     { word: "profesor", article: "el" },
-    { word: "estudiante", article: "el" },
+    { word: "estudiante", article: "el/la" },
     { word: "hombre", article: "el" },
     { word: "niño", article: "el" },
     { word: "mujer", article: "la" },
-    { word: "estudiante (femenino)", article: "la" },
     { word: "profesora", article: "la" },
     { word: "niña", article: "la" },
     { word: "cosa", article: "la" },
