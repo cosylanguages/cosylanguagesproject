@@ -525,6 +525,9 @@ body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'); }
 body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'); }
 body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'); }
 body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'); }
+body.flag-COSYbrezhoneg { background-image: url('icons/flag-brittany.png'); }
+body.flag-COSYtatarça { background-image: url('icons/flag-tatarstan.png'); }
+body.flag-COSYbashkort { background-image: url('icons/flag-bashkortostan.png'); }
 
 #modal-overlay {
   position: fixed;
