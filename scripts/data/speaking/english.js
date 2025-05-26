@@ -1,0 +1,14 @@
+export const speakingDataEnglish = {
+  1: ["One coffee or one tea? Cash or card?"],
+  2: [
+    "Who are you? (name, man or woman, student or teacher?)",
+    "Name 3 popular people (name, man or woman?)",
+    "Name 3 people (name, man or woman?)"
+  ],
+  3: [
+    "Your family",
+    "Your friend and his/her family",
+    "Drinks you have and drinks you don't have",
+    "Drinks your friend has and drinks he/she doesn't have"
+  ]
+};
