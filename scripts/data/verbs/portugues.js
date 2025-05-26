@@ -16,6 +16,6 @@ export const verbPracticeDataPortugues = {
     { prompt: "Ela", answer: "tem" },
     { prompt: "tenho", answer: "eu" },
     { prompt: "tens", answer: "tu" },
-    { prompt: "tem", answer: "ele/ela" }
+    { prompt: "tem", answer: "ele/ela/isso" }
   ]
 };
