@@ -456,13 +456,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   // Initial translation
   translateUI(languageSelect.value || 'COSYenglish');
-  // Nav button handlers (for demo, scroll to sections or show popups)
-  document.getElementById('nav-home')?.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-  document.getElementById('nav-practice')?.addEventListener('click',()=>document.querySelector('.controls-container')?.scrollIntoView({behavior:'smooth'}));
-  document.getElementById('nav-progress')?.addEventListener('click',()=>document.getElementById('adventure-progress')?.scrollIntoView({behavior:'smooth'}));
-  document.getElementById('nav-help')?.addEventListener('click',()=>{
-    showMessage((window.uiTranslations[languageSelect.value]?.help_popup)||window.uiTranslations.COSYenglish.help_popup);
-  });
 
   // --- Visual hints/demonstrations for practice types and controls ---
   // Add tooltips to submenu buttons and controls for accessibility
