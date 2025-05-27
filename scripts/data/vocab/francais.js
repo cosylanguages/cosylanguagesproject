@@ -1,5 +1,0 @@
-export const vocabDataFrancais = {
-  1: ["Bonjour", "Au revoir", "Oui", "Non", "Merci", "De rien"],
-  2: ["Le garçon", "La fille", "Le professeur", "La professeure", "L'étudiant", "L'étudiante", "La femme", "L'homme"],
-  3: ["La mère", "Le père", "Le fils", "La fille", "La sœur", "Le frère", "Le mari", "La femme", "L'ami", "L'amie"]
-};

@@ -1,159 +1,1176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>COSYlanguages</title>
-  <link rel="stylesheet" href="styles/main.css">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('service-worker.js');
-      });
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSYlanguages</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="main-container">
-    <header>
-      <img src="icons/logo.png" alt="COSY Languages Logo" class="logo-img" />
-      <h1 class="main-title">COSYlanguages</h1>
-    </header>
-
-    <div class="content-container">
-      <!-- Adventure Progress Bar (compact, overlay style) -->
-      <div id="adventure-progress" class="adventure-progress">
-        <div id="progress-overlay-container">
-          <div id="progress-map" class="progress-dot-row"></div>
+    <div class="container">
+        <h1>COSYlanguages</h1>
+        
+        <div class="menu-section">
+            <label for="language">Choose Language:</label>
+            <select id="language">
+                <option value="">Select a language</option>
+                <option value="COSYenglish" data-bg="COSYenglish">COSYenglish</option>
+                <option value="COSYfrançais" data-bg="COSYfrançais">COSYfrançais</option>
+                <option value="COSYitaliano" data-bg="COSYitaliano">COSYitaliano</option>
+                <option value="COSYespañol" data-bg="COSYespañol">COSYespañol</option>
+                <option value="COSYportuguês" data-bg="COSYportuguês">COSYportuguês</option>
+                <option value="COSYdeutsch" data-bg="COSYdeutsch">COSYdeutsch</option>
+                <option value="ΚΟΖΥελληνικά" data-bg="ΚΟΖΥελληνικά">ΚΟΖΥελληνικά</option>
+                <option value="ТАКОЙрусский" data-bg="ТАКОЙрусский">ТАКОЙрусский</option>
+                <option value="ԾՈՍՅհայկական" data-bg="ԾՈՍՅհայկական">ԾՈՍՅհայկական</option>
+                <option value="COSYbrezhoneg" data-bg="COSYbrezhoneg">COSYbrezhoneg</option>
+                <option value="COSYtatarça" data-bg="COSYtatarça">COSYtatarça</option>
+                <option value="COSYbashkort" data-bg="COSYbashkort">COSYbashkort</option>
+            </select>
         </div>
-        <div id="xp-streak-box">
-          <span id="xp-display" class="xp-display">XP: 0</span>
-          <span id="streak-display" class="streak-display">Streak: 0</span>
+        
+        <div class="menu-section">
+            <label for="day">Choose Day:</label>
+            <select id="day">
+                <option value="">Select a day</option>
+                <!-- Days will be populated by JavaScript -->
+            </select>
+            
+            <div class="day-range">
+                <div>
+                    <label for="day-from">Day From:</label>
+                    <select id="day-from">
+                        <option value="">From</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="day-to">Day To:</label>
+                    <select id="day-to">
+                        <option value="">To</option>
+                    </select>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div class="controls-container">
-        <div class="selector-group" id="language-day-selectors">
-          <label for="language-select">Choose language:</label>
-          <select id="language-select">
-            <option value="">--Select Language--</option>
-            <option value="COSYenglish" data-bg="COSYenglish">COSYenglish</option>
-            <option value="COSYfrançais" data-bg="COSYfrançais">COSYfrançais</option>
-            <option value="COSYitaliano" data-bg="COSYitaliano">COSYitaliano</option>
-            <option value="COSYespañol" data-bg="COSYespañol">COSYespañol</option>
-            <option value="COSYportuguês" data-bg="COSYportuguês">COSYportuguês</option>
-            <option value="COSYdeutsch" data-bg="COSYdeutsch">COSYdeutsch</option>
-            <option value="ΚΟΖΥελληνικά" data-bg="ΚΟΖΥελληνικά">ΚΟΖΥελληνικά</option>
-            <option value="ТАКОЙрусский" data-bg="ТАКОЙрусский">ТАКОЙрусский</option>
-            <option value="ԾՈՍՅհայկական" data-bg="ԾՈՍՅհայկական">ԾՈՍՅհայկական</option>
-            <option value="COSYbrezhoneg" data-bg="COSYbrezhoneg">COSYbrezhoneg</option>
-            <option value="COSYtatarça" data-bg="COSYtatarça">COSYtatarça</option>
-            <option value="COSYbashkort" data-bg="COSYbashkort">COSYbashkort</option>
-          </select>
-
-          <label for="day-select" id="day-label">Choose day:</label>
-          <select id="day-select">
-            <option value="">--Select Day--</option>
-            <option value="1">Day 1</option>
-            <option value="2">Day 2</option>
-            <option value="3">Day 3</option>
-            <option value="4">Day 4</option>
-            <option value="5">Day 5</option>
-            <option value="6">Day 6</option>
-            <option value="7">Day 7</option>
-          </select>
+        
+        <div class="menu-section">
+            <label>Select Practice Type:</label>
+            <div class="practice-types">
+                <button id="vocabulary-btn" class="btn-primary">Vocabulary</button>
+                <button id="grammar-btn" class="btn-primary">Grammar</button>
+                <button id="speaking-btn" class="btn-primary">Speaking</button>
+            </div>
+            
+            <div id="vocabulary-options" class="practice-options">
+                <div class="vocabulary-options">
+                    <button id="random-word-btn" class="btn-secondary">Random Word</button>
+                    <button id="random-image-btn" class="btn-secondary">Random Image</button>
+                </div>
+            </div>
+            
+            <div id="grammar-options" class="practice-options">
+                <div class="grammar-options">
+                    <!-- Grammar buttons will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div id="speaking-options" class="practice-options">
+                <button id="speaking-practice-btn" class="btn-primary">Get Speaking Prompt</button>
+            </div>
         </div>
-
-        <div class="selector-group" id="day-range-practice-selectors">
-          <label for="day-from-select">Day from:</label>
-          <select id="day-from-select">
-            <option value="">From</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-          </select>
-
-          <label for="day-to-select">Day to:</label>
-          <select id="day-to-select">
-            <option value="">To</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-          </select>
-
-          <label for="practice-type-select">Type of practice:</label>
-          <select id="practice-type-select">
-            <option value="">--Select Practice--</option>
-            <option value="vocabulary_practice">Vocabulary Practice</option>
-            <option value="grammar_practice">Grammar Practice</option>
-            <option value="speaking_practice">Speaking Practice</option>
-          </select>
-        </div>
-
-        <div id="vocabulary-submenu" class="submenu" style="display:none;">
-          <button class="submenu-btn" data-practice="random_word">Random Word</button>
-          <button class="submenu-btn" data-practice="random_image">Random Image</button>
-        </div>
-
-        <div id="grammar-submenu" class="submenu" style="display:none;">
-          <button class="submenu-btn" data-practice="gender">Grammar</button>
-          <button class="submenu-btn" data-practice="verb">Verb</button>
-          <button class="submenu-btn" data-practice="speaking" style="display:none;">Speaking</button>
-          <button class="submenu-btn" data-practice="possessives" style="display:none;">Possessives</button>
-        </div>
-      </div>
-
-      <div id="result-container" class="result-container">
-        <!-- Practice content will be injected here by JS -->
-      </div>
+        
+        <div id="result" class="result-area"></div>
     </div>
-  </div>
 
-  <!-- Install App button (PWA) -->
-  <button id="install-app-btn" class="install-app-btn" style="display:none;">Install App</button>
+    <script>
+        // Populate days dropdown (1-30)
+        const daySelect = document.getElementById('day');
+        const dayFromSelect = document.getElementById('day-from');
+        const dayToSelect = document.getElementById('day-to');
+        
+        for (let i = 1; i <= 30; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `Day ${i}`;
+            daySelect.appendChild(option.cloneNode(true));
+            dayFromSelect.appendChild(option.cloneNode(true));
+            dayToSelect.appendChild(option.cloneNode(true));
+        }
+        
+        // Practice type buttons
+        const vocabularyBtn = document.getElementById('vocabulary-btn');
+        const grammarBtn = document.getElementById('grammar-btn');
+        const speakingBtn = document.getElementById('speaking-btn');
+        
+        const vocabularyOptions = document.getElementById('vocabulary-options');
+        const grammarOptions = document.getElementById('grammar-options');
+        const grammarOptionsContainer = grammarOptions.querySelector('.grammar-options');
+        const speakingOptions = document.getElementById('speaking-options');
+        
+        // Hide all options initially
+        vocabularyOptions.style.display = 'none';
+        grammarOptions.style.display = 'none';
+        speakingOptions.style.display = 'none';
+        
+        // Vocabulary button click
+        vocabularyBtn.addEventListener('click', function() {
+            // Reset all buttons
+            vocabularyBtn.classList.add('btn-primary');
+            vocabularyBtn.classList.remove('btn-secondary');
+            grammarBtn.classList.add('btn-primary');
+            grammarBtn.classList.remove('btn-secondary');
+            speakingBtn.classList.add('btn-primary');
+            speakingBtn.classList.remove('btn-secondary');
+            
+            // Toggle vocabulary options
+            vocabularyOptions.style.display = vocabularyOptions.style.display === 'none' ? 'block' : 'none';
+            grammarOptions.style.display = 'none';
+            speakingOptions.style.display = 'none';
+            
+            // Style the active button
+            vocabularyBtn.classList.remove('btn-primary');
+            vocabularyBtn.classList.add('btn-secondary');
+        });
+        
+        // Grammar button click
+        grammarBtn.addEventListener('click', function() {
+            // Reset all buttons
+            vocabularyBtn.classList.add('btn-primary');
+            vocabularyBtn.classList.remove('btn-secondary');
+            grammarBtn.classList.add('btn-primary');
+            grammarBtn.classList.remove('btn-secondary');
+            speakingBtn.classList.add('btn-primary');
+            speakingBtn.classList.remove('btn-secondary');
+            
+            // Update grammar options based on day
+            updateGrammarOptions();
+            
+            // Toggle grammar options
+            grammarOptions.style.display = grammarOptions.style.display === 'none' ? 'block' : 'none';
+            vocabularyOptions.style.display = 'none';
+            speakingOptions.style.display = 'none';
+            
+            // Style the active button
+            grammarBtn.classList.remove('btn-primary');
+            grammarBtn.classList.add('btn-secondary');
+        });
+        
+        // Speaking button click
+        speakingBtn.addEventListener('click', function() {
+            // Reset all buttons
+            vocabularyBtn.classList.add('btn-primary');
+            vocabularyBtn.classList.remove('btn-secondary');
+            grammarBtn.classList.add('btn-primary');
+            grammarBtn.classList.remove('btn-secondary');
+            speakingBtn.classList.add('btn-primary');
+            speakingBtn.classList.remove('btn-secondary');
+            
+            // Toggle speaking options
+            speakingOptions.style.display = speakingOptions.style.display === 'none' ? 'block' : 'none';
+            vocabularyOptions.style.display = 'none';
+            grammarOptions.style.display = 'none';
+            
+            // Style the active button
+            speakingBtn.classList.remove('btn-primary');
+            speakingBtn.classList.add('btn-secondary');
+        });
+        
+        // Update grammar options based on selected day
+        function updateGrammarOptions() {
+            const day = parseInt(daySelect.value);
+            
+            // Clear existing options
+            grammarOptionsContainer.innerHTML = '';
+            
+            if (!day) {
+                const noDayMsg = document.createElement('p');
+                noDayMsg.textContent = 'Please select a day first';
+                grammarOptionsContainer.appendChild(noDayMsg);
+                return;
+            }
+            
+            // Add options based on day
+            if (day >= 1) {
+                const genderBtn = document.createElement('button');
+                genderBtn.textContent = 'Gender';
+                genderBtn.className = 'btn-secondary btn-small';
+                genderBtn.onclick = function() { practiceGrammar('gender'); };
+                grammarOptionsContainer.appendChild(genderBtn);
+            }
+            
+            if (day >= 2) {
+                const verbBtn = document.createElement('button');
+                verbBtn.textContent = 'Verbs';
+                verbBtn.className = 'btn-secondary btn-small';
+                verbBtn.onclick = function() { practiceGrammar('verbs'); };
+                grammarOptionsContainer.appendChild(verbBtn);
+            }
+            
+            if (day >= 3) {
+                const adjBtn = document.createElement('button');
+                adjBtn.textContent = 'Adjectives';
+                adjBtn.className = 'btn-secondary btn-small';
+                adjBtn.onclick = function() { practiceGrammar('adjectives'); };
+                grammarOptionsContainer.appendChild(adjBtn);
+                
+                const pluralBtn = document.createElement('button');
+                pluralBtn.textContent = 'Plurals';
+                pluralBtn.className = 'btn-secondary btn-small';
+                pluralBtn.onclick = function() { practiceGrammar('plurals'); };
+                grammarOptionsContainer.appendChild(pluralBtn);
+            }
+            
+            if (day >= 5) {
+                const pastBtn = document.createElement('button');
+                pastBtn.textContent = 'Past Tense';
+                pastBtn.className = 'btn-secondary btn-small';
+                pastBtn.onclick = function() { practiceGrammar('past-tense'); };
+                grammarOptionsContainer.appendChild(pastBtn);
+            }
+            
+            if (day >= 7) {
+                const futureBtn = document.createElement('button');
+                futureBtn.textContent = 'Future Tense';
+                futureBtn.className = 'btn-secondary btn-small';
+                futureBtn.onclick = function() { practiceGrammar('future-tense'); };
+                grammarOptionsContainer.appendChild(futureBtn);
+            }
+        }
+        
+        // Update grammar options when day changes
+        daySelect.addEventListener('change', function() {
+            if (grammarOptions.style.display === 'block') {
+                updateGrammarOptions();
+            }
+        });
+        
+        // Helper: map language select value to vocabulary file
+        function getVocabularyFile(language) {
+            switch(language) {
+                case 'COSYenglish': return 'vocabulary/words/vocabulary_english.json';
+                case 'COSYfrançais': return 'vocabulary/words/vocabulary_french.json';
+                case 'COSYespañol': return 'vocabulary/words/vocabulary_spanish.json';
+                case 'COSYitaliano': return 'vocabulary/words/vocabulary_italian.json';
+                case 'COSYdeutsch': return 'vocabulary/words/vocabulary_german.json';
+                case 'COSYportuguês': return 'vocabulary/words/vocabulary_portuguese.json';
+                case 'ТАКОЙрусский': return 'vocabulary/words/vocabulary_russian.json';
+                case 'COSYbrezhoneg': return 'vocabulary/words/vocabulary_breton.json';
+                case 'COSYtatarça': return 'vocabulary/words/vocabulary_tatar.json';
+                case 'COSYbashkort': return 'vocabulary/words/vocabulary_bashkir.json';
+                case 'ԾՈՍՅհայկական': return 'vocabulary/words/vocabulary_armenian.json';
+                default: return null;
+            }
+        }
 
-  <!-- Sound effects for correct/wrong answers (free sounds from pixabay.com/audio) -->
-  <audio id="sound-correct" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b6fae7b6.mp3" preload="auto"></audio> <!-- Correct: success chime -->
-  <audio id="sound-wrong" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115cfae2b7.mp3" preload="auto"></audio> <!-- Wrong: error buzz -->
-  <!-- Attribution: sounds from https://pixabay.com/sound-effects/ -->
+        // New: Load vocabulary for selected language and day
+        async function loadVocabulary(language, day) {
+            const file = getVocabularyFile(language);
+            if (!file) return [];
+            try {
+                const response = await fetch(file);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data[day] || [];
+            } catch (e) {
+                return [];
+            }
+        }
 
-  <!-- Scripts loaded at the end for performance -->
-  <script src="scripts/data/vocab-data.js"></script>
-  <script src="scripts/data/grammar-data.js"></script>
-  <script src="scripts/data/speaking-data.js"></script>
-  <script src="scripts/data/image-data.js"></script>
-  <script src="scripts/data/translations.js"></script>
-  <script src="scripts/config/voices.js"></script>
-  <script src="scripts/data/gender/francais.js"></script>
-  <script src="scripts/data/gender/italiano.js"></script>
-  <script src="scripts/data/gender/ellinika.js"></script>
-  <script src="scripts/data/gender/brezhoneg.js"></script>
-  <script src="scripts/data/gender/haykakan.js"></script>
-  <script src="scripts/data/gender/deutsch.js"></script>
-  <script src="scripts/data/gender/english.js"></script>
-  <script src="scripts/data/gender/espanol.js"></script>
-  <script src="scripts/data/gender/portugues.js"></script>
-  <script src="scripts/data/gender-practice-data.js"></script>
-  <script src="scripts/utils.js"></script>
-  <script src="scripts/app.js"></script>
+        // Load random image data for a given day
+        async function loadImageVocabulary(day) {
+            try {
+                const response = await fetch('vocabulary/images/vocabulary_images.json');
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data[day] || [];
+            } catch (e) {
+                return [];
+            }
+        }
 
-  <!-- Add static HTML for modal overlays, nav, etc. that was previously created in JS -->
-  <div id="modal-overlay" style="display:none;align-items:center;justify-content:center;">
-    <div id="modal-message-box">
-      <span id="modal-message-text"></span><br>
-      <button id="modal-close-btn" onclick="document.getElementById('modal-overlay').style.display='none'">OK</button>
-    </div>
-  </div>
+        // Pronunciation: play word using SpeechSynthesis API
+        function pronounceWord(word, language) {
+            let langCode = 'en-US';
+            switch(language) {
+                case 'COSYenglish': langCode = 'en-UK'; break;
+                case 'COSYfrançais': langCode = 'fr-FR'; break;
+                case 'COSYespañol': langCode = 'es-ES'; break;
+                case 'COSYitaliano': langCode = 'it-IT'; break;
+                case 'COSYdeutsch': langCode = 'de-DE'; break;
+                case 'COSYportuguês': langCode = 'pt-PT'; break;
+                case 'ТАКОЙрусский': langCode = 'ru-RU'; break;
+                case 'COSYbrezhoneg': langCode = 'br-FR'; break; // Breton (may fallback)
+                case 'COSYtatarça': langCode = 'tt-RU'; break; // Tatar (may fallback)
+                case 'COSYbashkort': langCode = 'ba-RU'; break; // Bashkir (may fallback)
+                case 'ԾՈՍՅհայկական': langCode = 'hy-AM'; break; // Armenian
+                default: langCode = 'en-UK';
+            }
+            const utter = new SpeechSynthesisUtterance(word);
+            utter.lang = langCode;
+            window.speechSynthesis.speak(utter);
+        }
+
+        // Pronunciation check: record and compare
+        let recognition;
+        function startPronunciationCheck(targetWord, language) {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Speech recognition is not supported in this browser.');
+                return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = (function(lang) {
+                switch(lang) {
+                    case 'COSYenglish': return 'en-US';
+                    case 'COSYfrançais': return
+                    case 'COSYespañol': return 'es-ES';
+                    case 'COSYitaliano': return 'it-IT';
+                    case 'COSYdeutsch': return 'de-DE';
+                    case 'COSYportuguês': return 'pt-PT';
+                    case 'ТАКОЙрусский': return 'ru-RU';
+                    case 'COSYbrezhoneg': return 'br-FR';
+                    case 'COSYtatarça': return 'tt-RU';
+                    case 'COSYbashkort': return 'ba-RU';
+                    case 'ԾՈՍՅհայկական': return 'hy-AM';
+                    default: return 'en-US';
+                }
+            })(language);
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            recognition.onresult = function(event) {
+                const userSaid = event.results[0][0].transcript.trim().toLowerCase();
+                const target = targetWord.trim().toLowerCase();
+                // Simple similarity: check if user said word is contained or similar
+                let similarity = 0;
+                if (userSaid === target) {
+                    similarity = 1;
+                } else if (userSaid.includes(target) || target.includes(userSaid)) {
+                    similarity = 0.8;
+                } else {
+                    // Levenshtein distance (basic)
+                    function lev(a, b) {
+                        const matrix = [];
+                        for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+                        for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+                        for (let i = 1; i <= b.length; i++) {
+                            for (let j = 1; j <= a.length; j++) {
+                                if (b.charAt(i-1) === a.charAt(j-1)) {
+                                    matrix[i][j] = matrix[i-1][j-1];
+                                } else {
+                                    matrix[i][j] = Math.min(
+                                        matrix[i-1][j-1] + 1,
+                                        matrix[i][j-1] + 1,
+                                        matrix[i-1][j] + 1
+                                    );
+                                }
+                            }
+                        }
+                        return matrix[b.length][a.length];
+                    }
+                    const dist = lev(userSaid, target);
+                    similarity = 1 - dist / Math.max(target.length, userSaid.length);
+                }
+                let feedback = '';
+                if (similarity > 0.7) {
+                    feedback = '✅ Good job! Your pronunciation is close enough.';
+                } else if (similarity > 0.4) {
+                    feedback = '🟡 Not bad! Try again for a closer pronunciation.';
+                } else {
+                    feedback = '🔴 Keep practicing! Try to say the word more clearly.';
+                }
+                document.getElementById('pronunciation-feedback').innerHTML =
+                    `<p><strong>You said:</strong> ${userSaid}</p><p>${feedback}</p>`;
+            };
+            recognition.onerror = function(event) {
+                document.getElementById('pronunciation-feedback').innerHTML =
+                    `<p style='color:red;'>Error: ${event.error}</p>`;
+            };
+            recognition.start();
+            document.getElementById('pronunciation-feedback').innerHTML = '<p>Listening...</p>';
+        }
+
+        // Vocabulary practice function (random word from file)
+        async function practiceVocabulary(type) {
+            const language = document.getElementById('language').value;
+            const day = document.getElementById('day').value;
+            const resultArea = document.getElementById('result');
+            if (!language) {
+                alert('Please select a language first');
+                return;
+            }
+            if (!day) {
+                alert('Please select a day first');
+                return;
+            }
+            resultArea.style.display = 'block';
+            if (type === 'random-word') {
+                const words = await loadVocabulary(language, day);
+                if (!words.length) {
+                    resultArea.innerHTML = `<p style="text-align:center;">No vocabulary found for this day.</p>`;
+                    return;
+                }
+                const word = words[Math.floor(Math.random() * words.length)];
+                // Modern, centered, minimal UI for random word
+                resultArea.innerHTML = `
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
+                        <div id="vocab-word" style="font-size:2.2rem; font-weight:600; margin-bottom:18px; text-align:center;">${word}</div>
+                        <div style="display:flex; gap:24px; justify-content:center; align-items:center;">
+                            <button id="play-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:2rem;">🔊</button>
+                            <button id="check-pronounce-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:2rem;">🎤</button>
+                        </div>
+                        <div id="pronunciation-feedback" style="margin-top:18px;"></div>
+                    </div>
+                `;
+                // Automatic pronunciation
+                pronounceWord(word, language);
+                setTimeout(() => {
+                    document.getElementById('play-pronounce-btn').onclick = function() {
+                        pronounceWord(word, language);
+                    };
+                    document.getElementById('check-pronounce-btn').onclick = function() {
+                        startPronunciationCheck(word, language);
+                    };
+                }, 0);
+                return;
+            } else if (type === 'random-image') {
+                const images = await loadImageVocabulary(day);
+                if (!images.length) {
+                    resultArea.innerHTML = `<p style="text-align:center;">No images found for this day.</p>`;
+                    return;
+                }
+                const item = images[Math.floor(Math.random() * images.length)];
+                const answer = item.translations[language] || '[No translation]';
+                // Modern, centered, minimal UI for random image
+                resultArea.innerHTML = `
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px;">
+                        <img src="${item.src}" alt="${item.alt}" class="vocabulary-image" style="max-width:180px; max-height:180px; margin-bottom:18px; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.10);">
+                        <input id="image-answer-input" type="text" placeholder="Type your answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
+                        <button id="check-image-answer-btn" class="btn-secondary" style="margin-bottom:18px; min-width:120px;">Check</button>
+                        <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-bottom:0;">
+                            <button id="play-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:2rem;">🔊</button>
+                            <button id="check-pronounce-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:2rem;">🎤</button>
+                        </div>
+                        <div id="pronunciation-feedback" style="margin-top:18px;"></div>
+                        <div id="image-answer-feedback" style="margin-top:10px;"></div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    document.getElementById('play-pronounce-btn').onclick = function() {
+                        pronounceWord(answer, language);
+                    };
+                    document.getElementById('check-pronounce-btn').onclick = function() {
+                        startPronunciationCheck(answer, language);
+                    };
+                    document.getElementById('check-image-answer-btn').onclick = function() {
+                        const userInput = document.getElementById('image-answer-input').value.trim().toLowerCase();
+                        const correct = answer.trim().toLowerCase();
+                        let feedback = '';
+                        if (!userInput) {
+                            feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
+                        } else if (userInput === correct) {
+                            feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                        } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
+                            feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
+                        } else {
+                            feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${answer}</b></span>`;
+                        }
+                        document.getElementById('image-answer-feedback').innerHTML = feedback;
+                    };
+                }, 0);
+                return;
+            }
+        }
+        
+        // Load gender grammar data for a given language and day
+        async function loadGenderGrammar(language, day) {
+            const fileMap = {
+                'COSYitaliano': 'grammar/gender/grammar_gender_italian.json',
+                'COSYfrançais': 'grammar/gender/grammar_gender_french.json',
+                'COSYespañol': 'grammar/gender/grammar_gender_spanish.json',
+                'COSYdeutsch': 'grammar/gender/grammar_gender_german.json',
+                'COSYportuguês': 'grammar/gender/grammar_gender_portuguese.json',
+                'ТАКОЙрусский': 'grammar/gender/grammar_gender_russian.json',
+                'COSYbrezhoneg': 'grammar/gender/grammar_gender_breton.json',
+                'COSYtatarça': 'grammar/gender/grammar_gender_tatar.json',
+                'COSYbashkort': 'grammar/gender/grammar_gender_bashkir.json',
+                'ԾՈՍՅհայկական': 'grammar/gender/grammar_gender_armenian.json',
+                'ΚΟΖΥελληνικά': 'grammar/gender/grammar_gender_greek.json'
+            };
+            const file = fileMap[language];
+            if (!file) return [];
+            try {
+                const response = await fetch(file);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data[day] || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Load verb grammar data for a given language and day
+        async function loadVerbGrammar(language, day) {
+            const fileMap = {
+                'COSYitaliano': 'grammar/verbs/grammar_verbs_italian.json',
+                'COSYfrançais': 'grammar/verbs/grammar_verbs_french.json',
+                'COSYespañol': 'grammar/verbs/grammar_verbs_spanish.json',
+                'COSYdeutsch': 'grammar/verbs/grammar_verbs_german.json',
+                'COSYportuguês': 'grammar/verbs/grammar_verbs_portuguese.json',
+                'ΚΟΖΥελληνικά': 'grammar/verbs/grammar_verbs_greek.json'
+            };
+            const file = fileMap[language];
+            if (!file) return [];
+            try {
+                const response = await fetch(file);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data[day] || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Update all fetch paths in scripts to use the new folder structure: vocabulary/, grammar/, speaking/. For example, fetch('vocabulary/vocabulary_english.json'), fetch('grammar/grammar_gender_french.json'), fetch('speaking/speaking_french.json'), etc.
+        async function loadSpeakingPrompts(language, day) {
+            const fileMap = {
+                'COSYenglish': 'speaking/prompts/speaking_english.json',
+                'COSYfrançais': 'speaking/prompts/speaking_french.json',
+                'COSYespañol': 'speaking/prompts/speaking_spanish.json',
+                'COSYitaliano': 'speaking/prompts/speaking_italian.json',
+                'COSYdeutsch': 'speaking/prompts/speaking_german.json',
+                'COSYportuguês': 'speaking/prompts/speaking_portuguese.json',
+                'ΚΟΖΥελληνικά': 'speaking/prompts/speaking_greek.json',
+                'COSYbrezhoneg': 'speaking/prompts/speaking_breton.json',
+                'ТАКОЙрусский': 'speaking/prompts/speaking_russian.json',
+                'ԾՈՍՅհայկական': 'speaking/prompts/speaking_armenian.json',
+                'COSYtatarça': 'speaking/prompts/speaking_tatar.json',
+                'COSYbashkort': 'speaking/prompts/speaking_bashkir.json'
+            };
+            const file = fileMap[language];
+            if (!file) return [];
+            try {
+                const response = await fetch(file);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data[day] || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Speaking practice function
+        async function practiceSpeaking() {
+            const language = document.getElementById('language').value;
+            const day = document.getElementById('day').value;
+            const resultArea = document.getElementById('result');
+            if (!language || !day) {
+                alert('Please select language and day first');
+                return;
+            }
+            resultArea.style.display = 'block';
+            const prompts = await loadSpeakingPrompts(language, day);
+            if (!prompts.length) {
+                resultArea.innerHTML = `<h3>Speaking Practice</h3><p>No prompts found for this day/language.</p>`;
+                return;
+            }
+            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+            resultArea.innerHTML = `
+                <h3>Speaking Practice</h3>
+                <div style="font-size:1.3rem; margin:20px 0;">${prompt}</div>
+                <button id="start-record-btn" class="btn-secondary">🎤 Record & Check</button>
+                <div id="speaking-feedback" style="margin-top:16px;"></div>
+            `;
+            setTimeout(() => {
+                document.getElementById('start-record-btn').onclick = function() {
+                    startSpeakingCheck(prompt, language);
+                };
+            }, 0);
+        }
+
+        // Accent-tolerant speaking check: does user say any word from the prompt?
+        function startSpeakingCheck(prompt, language) {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Speech recognition is not supported in this browser.');
+                return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = (function(lang) {
+                switch(lang) {
+                    case 'COSYenglish': return 'en-US';
+                    case 'COSYfrançais': return 'fr-FR';
+                    case 'COSYespañol': return 'es-ES';
+                    case 'COSYitaliano': return 'it-IT';
+                    case 'COSYdeutsch': return 'de-DE';
+                    case 'COSYportuguês': return 'pt-PT';
+                    default: return 'en-US';
+                }
+            })(language);
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            recognition.onresult = function(event) {
+                const userSaid = event.results[0][0].transcript.trim().toLowerCase();
+                // Check if any word from the prompt is in the user's speech (accent-tolerant)
+                const promptWords = prompt.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
+                const userWords = userSaid.split(/\s+/);
+                let match = false;
+                for (let w of promptWords) {
+                    if (w.length > 2 && userWords.some(u => u.includes(w) || w.includes(u))) {
+                        match = true;
+                        break;
+                    }
+                }
+                let feedback = '';
+                if (match) {
+                    feedback = '✅ Good job! Your answer contains words from the prompt.';
+                } else {
+                    feedback = '🟡 Not bad! Try to include more words from the prompt.';
+                }
+                document.getElementById('speaking-feedback').innerHTML =
+                    `<p><strong>You said:</strong> ${userSaid}</p><p>${feedback}</p>`;
+            };
+            recognition.onerror = function(event) {
+                document.getElementById('speaking-feedback').innerHTML =
+                    `<p style='color:red;'>Error: ${event.error}</p>`;
+            };
+            recognition.start();
+            document.getElementById('speaking-feedback').innerHTML = '<p>Listening...</p>';
+        }
+
+        // Change background flag on language select
+        const languageSelect = document.getElementById('language');
+        languageSelect.addEventListener('change', function() {
+            const lang = languageSelect.value;
+            // Remove any previous flag class
+            document.body.className = document.body.className
+                .split(' ') // split classes
+                .filter(c => !c.startsWith('flag-')) // remove flag- classes
+                .join(' ');
+            if (lang) {
+                document.body.classList.add('flag-' + lang);
+            }
+        });
+        
+        // Speaking practice button
+        document.getElementById('speaking-practice-btn').addEventListener('click', function() {
+            practiceSpeaking();
+        });
+        
+        document.getElementById('random-word-btn').addEventListener('click', function() {
+            practiceVocabulary('random-word');
+        });
+        document.getElementById('random-image-btn').addEventListener('click', function() {
+            practiceVocabulary('random-image');
+        });
+        
+        // Adventure-style translations for UI
+        const translations = {
+  COSYenglish: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Choose Your Language:',
+    chooseDay: '📅 Choose Your Day:',
+    dayFrom: 'From',
+    dayTo: 'To',
+    selectPractice: '🧭 Choose Your Practice:',
+    vocabulary: 'Vocabulary',
+    grammar: 'Grammar',
+    speaking: 'Speaking',
+    randomWord: '🔮 Random Word',
+    randomImage: '🖼️ Random Image',
+    getPrompt: '🎲 Get Speaking Prompt',
+    gender: '⚖️ Gender',
+    verbs: '⚡ Verbs',
+    adjectives: '✨ Adjectives',
+    plurals: '🔢 Plurals',
+    pastTense: '⏳ Past Tense',
+    futureTense: '🔮 Future Tense',
+    selectDay: 'Select a day',
+    selectLang: 'Select a language',
+    check: 'Check',
+    trySentence: 'Try to use this word in a sentence!'
+  },
+  COSYitaliano: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Scegli la lingua:',
+    chooseDay: '📅 Scegli il giorno:',
+    dayFrom: 'Da',
+    dayTo: 'A',
+    selectPractice: '🧭 Scegli la pratica:',
+    vocabulary: 'Vocabolario',
+    grammar: 'Grammatica',
+    speaking: 'Conversazione',
+    randomWord: '🔮 Parola Casuale',
+    randomImage: '🖼️ Immagine Casuale',
+    getPrompt: '🎲 Ottieni Spunto Orale',
+    gender: '⚖️ Genere',
+    verbs: '⚡ Verbi',
+    adjectives: '✨ Aggettivi',
+    plurals: '🔢 Plurali',
+    pastTense: '⏳ Passato',
+    futureTense: '🔮 Futuro',
+    selectDay: 'Scegli un giorno',
+    selectLang: 'Scegli una lingua',
+    check: 'Controlla',
+    trySentence: 'Prova a usare questa parola in una frase!'
+  },
+  COSYfrançais: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Choisis ta langue :',
+    chooseDay: '📅 Choisis le jour :',
+    dayFrom: 'De',
+    dayTo: 'À',
+    selectPractice: '🧭 Choisis ta pratique :',
+    vocabulary: 'Vocabulaire',
+    grammar: 'Grammaire',
+    speaking: 'Conversation',
+    randomWord: '🔮 Mot Aléatoire',
+    randomImage: '🖼️ Image Aléatoire',
+    getPrompt: '🎲 Obtenir un Sujet Oral',
+    gender: '⚖️ Genre',
+    verbs: '⚡ Verbes',
+    adjectives: '✨ Adjectifs',
+    plurals: '🔢 Pluriels',
+    pastTense: '⏳ Passé',
+    futureTense: '🔮 Futur',
+    selectDay: 'Choisis un jour',
+    selectLang: 'Choisis une langue',
+    check: 'Vérifier',
+    trySentence: 'Essaie d’utiliser ce mot dans une phrase !'
+  },
+  COSYespañol: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Elige tu idioma:',
+    chooseDay: '📅 Elige el día:',
+    dayFrom: 'De',
+    dayTo: 'A',
+    selectPractice: '🧭 Elige tu práctica:',
+    vocabulary: 'Vocabulario',
+    grammar: 'Gramática',
+    speaking: 'Conversación',
+    randomWord: '🔮 Palabra Aleatoria',
+    randomImage: '🖼️ Imagen Aleatoria',
+    getPrompt: '🎲 Obtener Tema Oral',
+    gender: '⚖️ Género',
+    verbs: '⚡ Verbos',
+    adjectives: '✨ Adjetivos',
+    plurals: '🔢 Plurales',
+    pastTense: '⏳ Pasado',
+    futureTense: '🔮 Futuro',
+    selectDay: 'Elige un día',
+    selectLang: 'Elige un idioma',
+    check: 'Comprobar',
+    trySentence: '¡Intenta usar esta palabra en una frase!'
+  },
+  COSYdeutsch: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Wähle deine Sprache:',
+    chooseDay: '📅 Wähle den Tag:',
+    dayFrom: 'Von',
+    dayTo: 'Bis',
+    selectPractice: '🧭 Wähle deine Übung:',
+    vocabulary: 'Vokabular',
+    grammar: 'Grammatik',
+    speaking: 'Sprechen',
+    randomWord: '🔮 Zufallswort',
+    randomImage: '🖼️ Zufallsbild',
+    getPrompt: '🎲 Sprech-Aufgabe',
+    gender: '⚖️ Genus',
+    verbs: '⚡ Verben',
+    adjectives: '✨ Adjektive',
+    plurals: '🔢 Plural',
+    pastTense: '⏳ Vergangenheit',
+    futureTense: '🔮 Zukunft',
+    selectDay: 'Wähle einen Tag',
+    selectLang: 'Wähle eine Sprache',
+    check: 'Prüfen',
+    trySentence: 'Versuche, dieses Wort in einem Satz zu verwenden!'
+  },
+  COSYportuguês: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Escolha o idioma:',
+    chooseDay: '📅 Escolha o dia:',
+    dayFrom: 'De',
+    dayTo: 'Até',
+    selectPractice: '🧭 Escolha sua prática:',
+    vocabulary: 'Vocabulário',
+    grammar: 'Gramática',
+    speaking: 'Conversação',
+    randomWord: '🔮 Palavra Aleatória',
+    randomImage: '🖼️ Imagem Aleatória',
+    getPrompt: '🎲 Obter Tema Oral',
+    gender: '⚖️ Gênero',
+    verbs: '⚡ Verbos',
+    adjectives: '✨ Adjetivos',
+    plurals: '🔢 Plurais',
+    pastTense: '⏳ Passado',
+    futureTense: '🔮 Futuro',
+    selectDay: 'Escolha um dia',
+    selectLang: 'Escolha um idioma',
+    check: 'Verificar',
+    trySentence: 'Tente usar esta palavra em uma frase!'
+  },
+  ΚΟΖΥελληνικά: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Επίλεξε γλώσσα:',
+    chooseDay: '📅 Επίλεξε ημέρα:',
+    dayFrom: 'Από',
+    dayTo: 'Έως',
+    selectPractice: '🧭 Επίλεξε πρακτική:',
+    vocabulary: 'Λεξιλόγιο',
+    grammar: 'Γραμματική',
+    speaking: 'Ομιλία',
+    randomWord: '🔮 Τυχαία Λέξη',
+    randomImage: '🖼️ Τυχαία Εικόνα',
+    getPrompt: '🎲 Πάρε Θέμα Ομιλίας',
+    gender: '⚖️ Γένος',
+    verbs: '⚡ Ρήματα',
+    adjectives: '✨ Επίθετα',
+    plurals: '🔢 Πληθυντικός',
+    pastTense: '⏳ Παρελθόν',
+    futureTense: '🔮 Μέλλον',
+    selectDay: 'Επίλεξε ημέρα',
+    selectLang: 'Επίλεξε γλώσσα',
+    check: 'Έλεγχος',
+    trySentence: 'Δοκίμασε να χρησιμοποιήσεις αυτή τη λέξη σε μια πρόταση!'
+  },
+  ТАКОЙрусский: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Выбери язык:',
+    chooseDay: '📅 Выбери день:',
+    dayFrom: 'С',
+    dayTo: 'По',
+    selectPractice: '🧭 Выбери практику:',
+    vocabulary: 'Словарь',
+    grammar: 'Грамматика',
+    speaking: 'Разговор',
+    randomWord: '🔮 Случайное слово',
+    randomImage: '🖼️ Случайное изображение',
+    getPrompt: '🎲 Получить тему для разговора',
+    gender: '⚖️ Род',
+    verbs: '⚡ Глаголы',
+    adjectives: '✨ Прилагательные',
+    plurals: '🔢 Множественное число',
+    pastTense: '⏳ Прошедшее',
+    futureTense: '🔮 Будущее',
+    selectDay: 'Выбери день',
+    selectLang: 'Выбери язык',
+    check: 'Проверить',
+    trySentence: 'Попробуй использовать это слово в предложении!'
+  },
+  ԾՈՍՅհայկական: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Ընտրիր լեզուն:',
+    chooseDay: '📅 Ընտրիր օրը:',
+    dayFrom: 'Սկսած',
+    dayTo: 'Մինչև',
+    selectPractice: '🧭 Ընտրիր վարժությունը:',
+    vocabulary: 'Բառապաշար',
+    grammar: 'Քերականություն',
+    speaking: 'Խոսք',
+    randomWord: '🔮 Պատահական բառ',
+    randomImage: '🖼️ Պատահական պատկեր',
+    getPrompt: '🎲 Ստացիր բանավոր թեմա',
+    gender: '⚖️ Սեռ',
+    verbs: '⚡ Բայեր',
+    adjectives: '✨ Առանցքային բառեր',
+    plurals: '🔢 Բազմական',
+    pastTense: '⏳ Անցյալ',
+    futureTense: '🔮 Ապագա',
+    selectDay: 'Ընտրիր օրը',
+    selectLang: 'Ընտրիր լեզուն',
+    check: 'Ստուգել',
+    trySentence: 'Փորձիր օգտագործել այս բառը նախադասության մեջ!'
+  },
+  COSYbrezhoneg: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Dibab yezh:',
+    chooseDay: '📅 Dibab deiz:',
+    dayFrom: 'Adalek',
+    dayTo: 'Betek',
+    selectPractice: '🧭 Dibab ar prantad:',
+    vocabulary: 'Gerioù',
+    grammar: 'Yezhadur',
+    speaking: 'Komz',
+    randomWord: '🔮 Ger dre zegouezh',
+    randomImage: '🖼️ Skeudenn dre zegouezh',
+    getPrompt: '🎲 Kaout tem komz',
+    gender: '⚖️ Reizh',
+    verbs: '⚡ Verbioù',
+    adjectives: '✨ Adveziadoù',
+    plurals: '🔢 Lies',
+    pastTense: '⏳ Dremenet',
+    futureTense: '🔮 Da zont',
+    selectDay: 'Dibab deiz',
+    selectLang: 'Dibab yezh',
+    check: 'Gwiriañ',
+    trySentence: 'Klask implij ar ger-mañ en ur frazenn!'
+  },
+  COSYtatarça: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Телне сайла:',
+    chooseDay: '📅 Көнне сайла:',
+    dayFrom: 'Кемнән',
+    dayTo: 'Кемгә',
+    selectPractice: '🧭 Практика төрен сайла:',
+    vocabulary: 'Сүзлек',
+    grammar: 'Грамматика',
+    speaking: 'Сөйләм',
+    randomWord: '🔮 Очраклы сүз',
+    randomImage: '🖼️ Очраклы рәсем',
+    getPrompt: '🎲 Сөйләм темасын ал',
+    gender: '⚖️ Җенес',
+    verbs: '⚡ Фигыльләр',
+    adjectives: '✨ Сыйфатлар',
+    plurals: '🔢 Күплек',
+    pastTense: '⏳ Үткән заман',
+    futureTense: '🔮 Киләчәк заман',
+    selectDay: 'Көнне сайла',
+    selectLang: 'Телне сайла',
+    check: 'Тикшерергә',
+    trySentence: 'Бу сүзне җөмләдә кулланып кара!'
+  },
+  COSYbashkort: {
+    title: 'COSYlanguages',
+    chooseLanguage: '🌐 Тел һайлағыҙ:',
+    chooseDay: '📅 Көн һайлағыҙ:',
+    dayFrom: 'Башынан',
+    dayTo: 'Тиклем',
+    selectPractice: '🧭 Практика төрөн һайлағыҙ:',
+    vocabulary: 'Һүҙлек',
+    grammar: 'Грамматика',
+    speaking: 'Һөйләү',
+    randomWord: '🔮 Осраҡлы һүҙ',
+    randomImage: '🖼️ Осраҡлы һүрәт',
+    getPrompt: '🎲 Һөйләү темаһын ал',
+    gender: '⚖️ Енес',
+    verbs: '⚡ Фигыльдәр',
+    adjectives: '✨ Сифаттар',
+    plurals: '🔢 Күплек',
+    pastTense: '⏳ Үткән заман',
+    futureTense: '🔮 Киләсәк заман',
+    selectDay: 'Көн һайлағыҙ',
+    selectLang: 'Тел һайлағыҙ',
+    check: 'Тикшерергә',
+    trySentence: 'Был һүҙҙе һөйләмдә ҡулланып ҡарағыҙ!'
+  }
+  // Add more languages as needed
+};
+
+function updateUIForLanguage(lang) {
+  const t = translations[lang] || translations['COSYenglish'];
+  document.querySelector('h1').textContent = 'COSYlanguages';
+  document.querySelector('label[for="language"]').textContent = t.chooseLanguage;
+  document.querySelector('label[for="day"]').textContent = t.chooseDay;
+  document.querySelector('label[for="day-from"]').textContent = t.dayFrom + ':';
+  document.querySelector('label[for="day-to"]').textContent = t.dayTo + ':';
+  document.querySelector('.menu-section label[for="language"]').textContent = t.chooseLanguage;
+  document.querySelector('.menu-section label[for="day"]').textContent = t.chooseDay;
+  document.querySelector('.menu-section label[for="day-from"]').textContent = t.dayFrom + ':';
+  document.querySelector('.menu-section label[for="day-to"]').textContent = t.dayTo + ':';
+  document.querySelector('.menu-section label:not([for])').textContent = t.selectPractice;
+  document.getElementById('vocabulary-btn').textContent = t.vocabulary;
+  document.getElementById('grammar-btn').textContent = t.grammar;
+  document.getElementById('speaking-btn').textContent = t.speaking;
+  document.getElementById('random-word-btn').textContent = t.randomWord;
+  document.getElementById('random-image-btn').textContent = t.randomImage;
+  document.getElementById('speaking-practice-btn').textContent = t.getPrompt;
+  // Update grammar options if visible
+  if (document.getElementById('grammar-options').style.display === 'block') updateGrammarOptions();
+}
+
+// Update grammar options to use adventure translations
+function updateGrammarOptions() {
+  const lang = document.getElementById('language').value;
+  const t = translations[lang] || translations['COSYenglish'];
+  const day = parseInt(daySelect.value);
+  grammarOptionsContainer.innerHTML = '';
+  if (!day) {
+    const noDayMsg = document.createElement('p');
+    noDayMsg.textContent = t.selectDay;
+    grammarOptionsContainer.appendChild(noDayMsg);
+    return;
+  }
+  if (day >= 1) {
+    const genderBtn = document.createElement('button');
+    genderBtn.textContent = t.gender;
+    genderBtn.className = 'btn-secondary btn-small';
+    genderBtn.onclick = function() { practiceGrammar('gender'); };
+    grammarOptionsContainer.appendChild(genderBtn);
+  }
+  if (day >= 2) {
+    const verbBtn = document.createElement('button');
+    verbBtn.textContent = t.verbs;
+    verbBtn.className = 'btn-secondary btn-small';
+    verbBtn.onclick = function() { practiceGrammar('verbs'); };
+    grammarOptionsContainer.appendChild(verbBtn);
+  }
+  if (day >= 3) {
+    const adjBtn = document.createElement('button');
+    adjBtn.textContent = t.adjectives;
+    adjBtn.className = 'btn-secondary btn-small';
+    adjBtn.onclick = function() { practiceGrammar('adjectives'); };
+    grammarOptionsContainer.appendChild(adjBtn);
+    const pluralBtn = document.createElement('button');
+    pluralBtn.textContent = t.plurals;
+    pluralBtn.className = 'btn-secondary btn-small';
+    pluralBtn.onclick = function() { practiceGrammar('plurals'); };
+    grammarOptionsContainer.appendChild(pluralBtn);
+  }
+  if (day >= 5) {
+    const pastBtn = document.createElement('button');
+    pastBtn.textContent = t.pastTense;
+    pastBtn.className = 'btn-secondary btn-small';
+    pastBtn.onclick = function() { practiceGrammar('past-tense'); };
+    grammarOptionsContainer.appendChild(pastBtn);
+  }
+  if (day >= 7) {
+    const futureBtn = document.createElement('button');
+    futureBtn.textContent = t.futureTense;
+    futureBtn.className = 'btn-secondary btn-small';
+    futureBtn.onclick = function() { practiceGrammar('future-tense'); };
+    grammarOptionsContainer.appendChild(futureBtn);
+  }
+}
+
+// Update UI language on language change
+languageSelect.addEventListener('change', function() {
+  // ...existing flag logic...
+  const lang = languageSelect.value;
+  // Remove any previous flag class
+  document.body.className = document.body.className
+    .split(' ')
+    .filter(c => !c.startsWith('flag-'))
+    .join(' ');
+  if (lang) {
+    document.body.classList.add('flag-' + lang);
+  }
+  updateUIForLanguage(lang);
+});
+
+// On page load, set UI to default language
+updateUIForLanguage(document.getElementById('language').value || 'COSYenglish');
+
+// Grammar practice function (gender/verbs)
+async function practiceGrammar(type) {
+    const language = document.getElementById('language').value;
+    const day = document.getElementById('day').value;
+    const resultArea = document.getElementById('result');
+    if (!language) {
+        alert('Please select a language first');
+        return;
+    }
+    if (!day) {
+        alert('Please select a day first');
+        return;
+    }
+    resultArea.style.display = 'block';
+    if (type === 'gender') {
+        const items = await loadGenderGrammar(language, day);
+        if (!items.length) {
+            resultArea.innerHTML = `<p style="text-align:center;">No gender data for this day/language.</p>`;
+            return;
+        }
+        const item = items[Math.floor(Math.random() * items.length)];
+        // Determine articles for the language
+        let articles = [];
+        switch(language) {
+            case 'COSYfrançais': articles = ['le', 'la', 'les', "l'"]; break;
+            case 'COSYitaliano': articles = ['il', 'la', 'lo', "l'", 'i', 'gli', 'le', 'un', 'una', 'uno']; break;
+            case 'COSYespañol': articles = ['el', 'la', 'los', 'las', 'un', 'una']; break;
+            case 'COSYdeutsch': articles = ['der', 'die', 'das', 'ein', 'eine']; break;
+            case 'COSYportuguês': articles = ['o', 'a', 'os', 'as', 'um', 'uma']; break;
+            case 'ТАКОЙрусский': articles = ['мужской', 'женский', 'средний']; break;
+            case 'COSYbrezhoneg': articles = ['ar', 'an', 'al', 'ur', 'ul', 'un']; break;
+            case 'COSYtatarça': articles = ['ир-ат', 'хатын-кыз']; break;
+            case 'COSYbashkort': articles = ['ир-ат', 'ҡатын-ҡыҙ']; break;
+            case 'ԾՈՍՅհայկական': articles = ['արական', 'իգական', 'միջին']; break;
+            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'οι', 'τα', 'ένας', 'μία', 'ένα']; break;
+            default: articles = ['the', 'a', 'an']; break;
+        }
+        // Build radio buttons for articles
+        let articleOptions = articles.map((art, idx) =>
+            `<label style='margin:0 10px; font-size:1.1rem;'><input type='radio' name='article' value='${art}' ${idx===0?'checked':''}> ${art}</label>`
+        ).join('');
+        resultArea.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+                    <span id="gender-word" style="font-size:2rem; font-weight:600;">${item.word}</span>
+                    <button id="play-gender-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:1.5rem;">🔊</button>
+                </div>
+                <div id="article-options" style="margin-bottom:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">${articleOptions}</div>
+                <button id="check-gender-btn" class="btn-secondary" style="min-width:120px; margin-bottom:10px;">Check</button>
+                <div id="gender-feedback" style="margin-top:14px;"></div>
+            </div>
+        `;
+        // Automatic pronunciation
+        pronounceWord(item.word, language);
+        setTimeout(() => {
+            document.getElementById('play-gender-pronounce-btn').onclick = function() {
+                pronounceWord(item.word, language);
+            };
+            document.getElementById('check-gender-btn').onclick = function() {
+                const selected = document.querySelector('input[name="article"]:checked');
+                let correct = false;
+                if (Array.isArray(item.article)) {
+                    correct = item.article.includes(selected.value);
+                } else {
+                    correct = selected && selected.value && (selected.value === item.article);
+                }
+                let feedback = '';
+                if (!selected) {
+                    feedback = '<span style="color:#e67e22;">Please select an article.</span>';
+                } else if (correct) {
+                    feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                } else {
+                    feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct article is: <b>${Array.isArray(item.article) ? item.article.join(', ') : item.article}</b></span>`;
+                }
+                document.getElementById('gender-feedback').innerHTML = feedback;
+            };
+        }, 0);
+        return;
+    } else if (type === 'verbs') {
+        const items = await loadVerbGrammar(language, day);
+        if (!items.length) {
+            resultArea.innerHTML = `<p style="text-align:center;">No verb data for this day/language.</p>`;
+            return;
+        }
+        const item = items[Math.floor(Math.random() * items.length)];
+        // UI: show prompt with listen button, ask for answer
+        resultArea.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+                    <span id="verb-prompt" style="font-size:2rem; font-weight:600;">${item.prompt}</span>
+                    <button id="play-verb-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:1.5rem;">🔊</button>
+                </div>
+                <input id="verb-answer-input" type="text" placeholder="Type the answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
+                <button id="check-verb-answer-btn" class="btn-secondary" style="margin-bottom:18px; min-width:120px;">Check</button>
+                <div id="verb-answer-feedback" style="margin-top:10px;"></div>
+            </div>
+        `;
+        // Automatic pronunciation
+        pronounceWord(item.prompt, language);
+        setTimeout(() => {
+            document.getElementById('play-verb-pronounce-btn').onclick = function() {
+                pronounceWord(item.prompt, language);
+            };
+            document.getElementById('check-verb-answer-btn').onclick = function() {
+                const userInput = document.getElementById('verb-answer-input').value.trim().toLowerCase();
+                const correct = item.answer.trim().toLowerCase();
+                let feedback = '';
+                if (!userInput) {
+                    feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
+                } else if (userInput === correct) {
+                    feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
+                    feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
+                } else {
+                    feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${item.answer}</b></span>`;
+                }
+                document.getElementById('verb-answer-feedback').innerHTML = feedback;
+            };
+        }, 0);
+        return;
+    }
+}
+    </script>
 </body>
 </html>

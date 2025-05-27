@@ -1,0 +1,11 @@
+{
+  "1": [
+    "Hello", "Goodbye", "Yes", "No", "Thank you", "You're welcome"
+  ],
+  "2": [
+    "The boy", "The girl", "The teacher", "The student", "The woman", "The man"
+  ],
+  "3": [
+    "The mother", "The father", "The son", "The daughter", "The sister", "The brother", "The husband", "The wife", "The friend (m)", "The friend (f)"
+  ]
+}

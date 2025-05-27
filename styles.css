@@ -1,0 +1,153 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #00bdbd 0%, #1de9b6 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 30px;
+    font-size: 2.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.container {
+    background: linear-gradient(135deg, hsla(178, 90%, 38%, 0.97) 0%, hsla(178, 90%, 48%, 0.90) 100%);
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-section {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+}
+
+select, button {
+    background: #fff;
+    color: #009999;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: background 0.2s, color 0.2s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+select:focus, button:focus {
+    outline: none;
+    background: #e0f7fa;
+    color: #00796b;
+}
+
+button.btn-primary {
+    background: #fff;
+    color: #00bdbd;
+    font-weight: bold;
+}
+button.btn-primary:hover {
+    background: #e0f7fa;
+    color: #00796b;
+}
+button.btn-secondary {
+    background: #e0f7fa;
+    color: #00bdbd;
+}
+button.btn-secondary:hover {
+    background: #b2ebf2;
+    color: #00796b;
+}
+.btn-small {
+    padding: 8px 15px;
+    font-size: 14px;
+}
+.day-range {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+.day-range div {
+    flex: 1;
+}
+.practice-types {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.practice-options {
+    margin-top: 10px;
+    text-align: center;
+}
+.result-area {
+    background: rgba(255,255,255,0.18);
+    color: #006666;
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-align: center;
+}
+.vocabulary-image {
+    max-width: 120px;
+    display: block;
+    margin: 18px auto 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+@media (max-width: 600px) {
+    body {
+        justify-content: flex-start;
+    }
+    .container {
+        margin-top: 20px;
+    }
+    .practice-types {
+        flex-direction: column;
+    }
+    .day-range {
+        flex-direction: column;
+    }
+}
+body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'); background-size: cover; }
+body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'); background-size: cover; }
+body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'); background-size: cover; }
+body.flag-COSYespañol { background-image: url('https://flagcdn.com/es.svg'); background-size: cover; }
+body.flag-COSYportuguês { background-image: url('https://flagcdn.com/pt.svg'); background-size: cover; }
+body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'); background-size: cover; }
+body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'); background-size: cover; }
+body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'); background-size: cover; }
+body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'); background-size: cover; }
+body.flag-COSYbrezhoneg { background-image: url('icons/flag-brittany.png'); background-size: cover; }
+body.flag-COSYtatarça { background-image: url('icons/flag-tatarstan.png'); background-size: cover; }
+body.flag-COSYbashkort { background-image: url('icons/flag-bashkortostan.png'); background-size: cover; }

@@ -1,0 +1,16 @@
+{
+  "1": [
+    { "word": "menino", "article": "o" },
+    { "word": "menina", "article": "a" },
+    { "word": "livro", "article": "o" },
+    { "word": "casa", "article": "a" },
+    { "word": "amigos", "article": "os" },
+    { "word": "amigas", "article": "as" }
+  ],
+  "2": [
+    { "word": "carro", "article": "o" },
+    { "word": "porta", "article": "a" },
+    { "word": "gato", "article": "o" },
+    { "word": "gata", "article": "a" }
+  ]
+}

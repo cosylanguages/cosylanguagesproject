@@ -1,0 +1,14 @@
+{
+  "1": ["¿Un café o un té? ¿Efectivo o tarjeta?"],
+  "2": [
+    "¿Quién eres? (nombre, hombre o mujer, estudiante o profesor?)",
+    "Nombra 3 personas famosas (nombre, hombre o mujer?)",
+    "Nombra 3 personas (nombre, hombre o mujer?)"
+  ],
+  "3": [
+    "Tu familia",
+    "Tu amigo y su familia",
+    "Bebidas que tienes y que no tienes",
+    "Bebidas que tu amigo tiene y que no tiene"
+  ]
+}
