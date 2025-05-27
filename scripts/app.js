@@ -284,7 +284,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function handleRandomImage(language, days) {
-    const images = getImagesForDays(imageData.allLanguages, days);
+    // Support both array and object imageData
+    let images = [];
+    if (Array.isArray(window.imageData)) {
+      images = window.imageData;
+    } else if (window.imageData && window.imageData.allLanguages) {
+      images = getImagesForDays(window.imageData.allLanguages, days);
+    }
     if (!images.length) return showMessage('No images found');
     const imgObj = randomElement(images);
     showImagePractice(imgObj, language);
