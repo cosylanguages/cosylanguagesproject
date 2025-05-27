@@ -1,19 +1,17 @@
 // Main app logic for COSYlanguages
 // All DOM event handlers and UI logic are here
 
-import { randomElement, getSimilarityScore, speakText, unlockSpeechSynthesis, adventureCorrectAnswer, adventureWrongAnswer, ensureInputFocusable, patchPracticeInputs } from './utils.js';
-// Import translation-related functions and data
-import { uiTranslations, translateUI } from './data/translations.js';
-
-console.log('[app.js] window.genderPracticeData at startup:', window.genderPracticeData);
-
 document.addEventListener('DOMContentLoaded', function() {
   // Get all DOM elements
   const languageSelect = document.getElementById('language-select');
   const daySelect = document.getElementById('day-select');
   const practiceTypeSelect = document.getElementById('practice-type-select');
+  const vocabSubmenu = document.getElementById('vocabulary-submenu');
+  const grammarSubmenu = document.getElementById('grammar-submenu');
+  const showButton = document.getElementById('show-button');
   const resultContainer = document.getElementById('result-container');
 
+  
   // --- Practice Type Submenu (new unified submenu) ---
   // Remove old vocabSubmenu and grammarSubmenu logic, and create a new unified submenu
   const practiceTypeSubmenu = document.createElement('div');
