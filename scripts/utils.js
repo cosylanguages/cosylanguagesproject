@@ -65,3 +65,15 @@ function getGrammarItems(grammarData, language, days, type) {
   
   return combinedGrammar;
 }
+
+// Add utility/helper functions from app.js if missing:
+// - randomElement
+// - getSimilarityScore
+// - speakText
+// - unlockSpeechSynthesis
+// - adventureCorrectAnswer
+// - adventureWrongAnswer
+// - ensureInputFocusable
+// - patchPracticeInputs
+
+// Export these functions for use in app.js

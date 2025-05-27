@@ -1,6 +1,10 @@
 // Main app logic for COSYlanguages
 // All DOM event handlers and UI logic are here
 
+import { randomElement, getSimilarityScore, speakText, unlockSpeechSynthesis, adventureCorrectAnswer, adventureWrongAnswer, ensureInputFocusable, patchPracticeInputs } from './utils.js';
+// Import translation-related functions and data
+import { uiTranslations, translateUI } from './data/translations.js';
+
 console.log('[app.js] window.genderPracticeData at startup:', window.genderPracticeData);
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -8,14 +12,45 @@ document.addEventListener('DOMContentLoaded', function() {
   const languageSelect = document.getElementById('language-select');
   const daySelect = document.getElementById('day-select');
   const practiceTypeSelect = document.getElementById('practice-type-select');
-  const vocabSubmenu = document.getElementById('vocabulary-submenu');
-  const grammarSubmenu = document.getElementById('grammar-submenu');
-  const showButton = document.getElementById('show-button');
   const resultContainer = document.getElementById('result-container');
 
+  // --- Practice Type Submenu (new unified submenu) ---
+  // Remove old vocabSubmenu and grammarSubmenu logic, and create a new unified submenu
+  const practiceTypeSubmenu = document.createElement('div');
+  practiceTypeSubmenu.id = 'practice-type-submenu';
+  practiceTypeSubmenu.className = 'practice-type-submenu';
+  practiceTypeSubmenu.style.display = 'flex';
+  practiceTypeSubmenu.style.justifyContent = 'center';
+  practiceTypeSubmenu.style.gap = '16px';
+  practiceTypeSubmenu.style.margin = '18px 0 0 0';
+  // Add submenu buttons for each practice type
+  const submenuTypes = [
+    { key: 'vocabulary_practice', dataPractice: 'vocabulary_practice' },
+    { key: 'grammar_practice', dataPractice: 'grammar_practice' },
+    { key: 'speaking_practice', dataPractice: 'speaking_practice' }
+  ];
+  submenuTypes.forEach(({key, dataPractice}) => {
+    const btn = document.createElement('button');
+    btn.className = 'submenu-btn';
+    btn.setAttribute('data-practice', dataPractice);
+    btn.textContent = (window.uiTranslations?.[languageSelect.value]?.[key] || window.uiTranslations?.COSYenglish?.[key] || key);
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      // Remove 'active' from all submenu buttons
+      practiceTypeSubmenu.querySelectorAll('.submenu-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // Set the main select to match the submenu
+      practiceTypeSelect.value = dataPractice;
+      practiceTypeSelect.dispatchEvent(new Event('change'));
+    });
+    practiceTypeSubmenu.appendChild(btn);
+  });
+  // Insert the new submenu after the practiceTypeSelect
+  practiceTypeSelect.parentElement.insertBefore(practiceTypeSubmenu, practiceTypeSelect.nextSibling);
+
   function hideAllSubmenus() {
-    vocabSubmenu.classList.remove('active');
-    grammarSubmenu.classList.remove('active');
+    //vocabSubmenu.classList.remove('active');
+    //grammarSubmenu.classList.remove('active');
   }
 
   languageSelect.addEventListener('change', function() {
@@ -29,10 +64,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Practice type change handler
   practiceTypeSelect.addEventListener('change', function() {
-    vocabSubmenu.style.display = 'none';
-    grammarSubmenu.style.display = 'none';
+    //vocabSubmenu.style.display = 'none';
+    //grammarSubmenu.style.display = 'none';
     if (practiceTypeSelect.value === 'vocabulary_practice') {
-      vocabSubmenu.style.display = 'flex';
+      //vocabSubmenu.style.display = 'flex';
       // Auto-select first submenu button for vocabulary
       const firstBtn = vocabSubmenu.querySelector('.submenu-btn');
       if (firstBtn) {
@@ -40,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         firstBtn.classList.add('active');
       }
     } else if (practiceTypeSelect.value === 'grammar_practice') {
-      grammarSubmenu.style.display = 'flex';
+      //grammarSubmenu.style.display = 'flex';
       // Auto-select first submenu button for grammar
       const firstBtn = grammarSubmenu.querySelector('.submenu-btn');
       if (firstBtn) {
@@ -208,25 +243,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const wordDiv = document.createElement('div');
     wordDiv.className = 'practice-word';
     wordDiv.textContent = word;
-    wordDiv.style.color = '#fff';
-    wordDiv.style.textAlign = 'center';
     resultContainer.appendChild(wordDiv);
     speakText(word, language);
 
     // Pronunciation practice UI
     const speakPracticeDiv = document.createElement('div');
-    speakPracticeDiv.style.marginTop = '18px';
-    speakPracticeDiv.style.display = 'flex';
-    speakPracticeDiv.style.justifyContent = 'center';
-    speakPracticeDiv.style.alignItems = 'center';
+    speakPracticeDiv.className = 'speak-practice';
     const micBtn = document.createElement('button');
     micBtn.textContent = '🎤Speak';
     micBtn.className = 'btn speak-btn';
-    micBtn.style.margin = '0 auto';
     const feedback = document.createElement('div');
     feedback.className = 'practice-feedback';
-    feedback.style.marginTop = '10px';
-    feedback.style.marginLeft = '12px';
     speakPracticeDiv.appendChild(micBtn);
     speakPracticeDiv.appendChild(feedback);
     resultContainer.appendChild(speakPracticeDiv);
@@ -274,8 +301,6 @@ document.addEventListener('DOMContentLoaded', function() {
     pronounceBtn.className = 'pronounce-btn';
     pronounceBtn.title = 'Play pronunciation';
     pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
-    pronounceBtn.style.display = 'block';
-    pronounceBtn.style.margin = '18px auto 0 auto';
     pronounceBtn.onclick = function(e) {
       e.preventDefault();
       speakText(word, language);
@@ -320,11 +345,6 @@ document.addEventListener('DOMContentLoaded', function() {
     questionDiv.className = 'gender-question';
     questionDiv.textContent = wordObj.word;
     questionDiv.dataset.correctAnswer = wordObj.article;
-    questionDiv.style.fontSize = '2.6rem';
-    questionDiv.style.fontWeight = '600';
-    questionDiv.style.color = '#2e4e4e';
-    questionDiv.style.textAlign = 'center';
-    questionDiv.style.margin = '32px 0 18px 0';
     // Pronounce automatically
     if (typeof speakText === 'function') {
         setTimeout(() => speakText(wordObj.word, language), 300);
@@ -345,17 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const btn = document.createElement('button');
         btn.className = 'gender-option';
         btn.textContent = article;
-        btn.style.fontSize = '2rem';
-        btn.style.fontWeight = '600';
-        btn.style.minWidth = '90px';
-        btn.style.padding = '18px 28px';
-        btn.style.borderRadius = '16px';
-        btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
-        btn.style.transition = 'all 0.18s';
-        btn.style.background = '#fffbe6';
-        btn.style.color = '#8d6c00';
-        btn.style.border = '3px solid #ffe082';
-        btn.style.marginBottom = '0';
         btn.addEventListener('click', () => checkGenderAnswer(btn, wordObj.article));
         optionsDiv.appendChild(btn);
     });
@@ -377,15 +386,6 @@ document.addEventListener('DOMContentLoaded', function() {
     clearResultContainer();
     const container = document.createElement('div');
     container.className = 'verb-container';
-    container.style.display = 'flex';
-    container.style.flexDirection = 'column';
-    container.style.alignItems = 'center';
-    container.style.justifyContent = 'center';
-    container.style.width = '100%';
-    container.style.maxWidth = '340px';
-    container.style.margin = '0 auto';
-    container.style.padding = '12px 0 0 0';
-    container.style.position = 'relative';
 
     // Get verb data
     const verbData = window.verbPracticeData?.[language]?.[day];
@@ -399,11 +399,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const promptDiv = document.createElement('div');
     promptDiv.className = 'verb-question';
     promptDiv.textContent = item.prompt;
-    promptDiv.style.fontSize = '2.2rem';
-    promptDiv.style.fontWeight = '600';
-    promptDiv.style.color = '#2e4e4e';
-    promptDiv.style.textAlign = 'center';
-    promptDiv.style.margin = '32px 0 18px 0';
     // Pronounce automatically
     if (typeof speakText === 'function') {
         setTimeout(() => speakText(item.prompt, language), 300);
@@ -414,65 +409,28 @@ document.addEventListener('DOMContentLoaded', function() {
     input.type = 'text';
     input.className = 'practice-input';
     input.placeholder = 'Type your answer';
-    input.style.fontSize = '1.3rem';
-    input.style.textAlign = 'center';
-    input.style.margin = '10px 0 8px 0';
-    input.style.display = 'block';
-    input.style.width = '80%';
-    input.style.maxWidth = '260px';
-    input.style.borderRadius = '8px';
-    input.style.border = '2px solid #b2dfdf';
-    input.style.background = '#f8f8f8';
-    input.style.color = '#003a3c';
-    input.style.padding = '10px 12px';
 
     // Button row (Check + Show Answer + Pronounce)
     const btnRow = document.createElement('div');
     btnRow.className = 'practice-btn-row';
-    btnRow.style.display = 'flex';
-    btnRow.style.justifyContent = 'center';
-    btnRow.style.alignItems = 'center';
-    btnRow.style.gap = '12px';
-    btnRow.style.marginBottom = '8px';
 
     // Check button
     const checkBtn = document.createElement('button');
     checkBtn.className = 'btn check-emoji-btn';
     checkBtn.title = 'Check your answer';
     checkBtn.innerHTML = '✅';
-    checkBtn.style.fontSize = '1.5rem';
-    checkBtn.style.borderRadius = '50%';
-    checkBtn.style.width = '44px';
-    checkBtn.style.height = '44px';
-    checkBtn.style.display = 'flex';
-    checkBtn.style.alignItems = 'center';
-    checkBtn.style.justifyContent = 'center';
 
     // Show answer button
     const showAnswerBtn = document.createElement('button');
     showAnswerBtn.className = 'btn show-answer-btn';
     showAnswerBtn.title = 'Show correct answer';
     showAnswerBtn.innerHTML = '💡';
-    showAnswerBtn.style.fontSize = '1.5rem';
-    showAnswerBtn.style.borderRadius = '50%';
-    showAnswerBtn.style.width = '44px';
-    showAnswerBtn.style.height = '44px';
-    showAnswerBtn.style.display = 'flex';
-    showAnswerBtn.style.alignItems = 'center';
-    showAnswerBtn.style.justifyContent = 'center';
 
     // Pronounce button
     const pronounceBtn = document.createElement('button');
     pronounceBtn.className = 'btn pronounce-btn';
     pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
     pronounceBtn.title = 'Play pronunciation';
-    pronounceBtn.style.fontSize = '1.5rem';
-    pronounceBtn.style.borderRadius = '50%';
-    pronounceBtn.style.width = '44px';
-    pronounceBtn.style.height = '44px';
-    pronounceBtn.style.display = 'flex';
-    pronounceBtn.style.alignItems = 'center';
-    pronounceBtn.style.justifyContent = 'center';
     pronounceBtn.onclick = function() {
       speakText(item.answer, language);
     };
@@ -606,18 +564,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Pronunciation practice UI for speaking: always award XP/streak, just transcribe
     const speakPracticeDiv = document.createElement('div');
-    speakPracticeDiv.style.marginTop = '18px';
-    speakPracticeDiv.style.display = 'flex';
-    speakPracticeDiv.style.justifyContent = 'center';
-    speakPracticeDiv.style.alignItems = 'center';
+    speakPracticeDiv.className = 'speak-practice';
     const micBtn = document.createElement('button');
     micBtn.textContent = '🎤Speak';
     micBtn.className = 'btn speak-btn';
-    micBtn.style.margin = '0 auto';
     const feedback = document.createElement('div');
     feedback.className = 'practice-feedback';
-    feedback.style.marginTop = '10px';
-    feedback.style.marginLeft = '12px';
     speakPracticeDiv.appendChild(micBtn);
     speakPracticeDiv.appendChild(feedback);
 
@@ -830,103 +782,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   })();
 
-  // --- UI Translation Logic (inserted at end of DOMContentLoaded) ---
-  const navIds = [
-    { id: 'nav-home', key: 'nav_home', emoji: '🏠' },
-    { id: 'nav-practice', key: 'nav_practice', emoji: '📝' },
-    { id: 'nav-progress', key: 'nav_progress', emoji: '📈' },
-    { id: 'nav-help', key: 'nav_help', emoji: '❓' }
-  ];
-  const labelMap = [
-    { sel: 'label[for="language-select"]', key: 'choose_language' },
-    { sel: 'label[for="day-select"]', key: 'choose_day' },
-    { sel: 'label[for="day-from-select"]', key: 'day_from' },
-    { sel: 'label[for="day-to-select"]', key: 'day_to' },
-    { sel: '#show-button', key: 'show_practice' },
-    { sel: '#vocabulary-submenu [data-practice="random_word"]', key: 'random_word' },
-    { sel: '#vocabulary-submenu [data-practice="random_image"]', key: 'random_image' },
-    { sel: '#grammar-submenu [data-practice="gender"]', key: 'gender' },
-    { sel: '#grammar-submenu [data-practice="verb"]', key: 'verb' },
-    { sel: '#grammar-submenu [data-practice="possessives"]', key: 'possessives' },
-    { sel: '#xp-display', key: 'xp', prefix: 'XP: ' },
-    { sel: '#streak-display', key: 'streak', prefix: 'Streak: ' },
-    { sel: '#install-app-btn', key: 'install_app' }
-  ];
-  let showEnglish = false;
-  function translateUI(lang) {
-    const uiT = (window.uiTranslations && window.uiTranslations[lang]) || window.uiTranslations.COSYenglish;
-    // Nav
-    navIds.forEach(({id, key, emoji}) => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        const label = btn.querySelector('.nav-label');
-        if (label) label.textContent = uiT[key] || window.uiTranslations.COSYenglish[key];
-        btn.title = emoji + ' ' + (uiT[key] || window.uiTranslations.COSYenglish[key]);
-        if (showEnglish && lang !== 'COSYenglish') btn.setAttribute('data-tooltip', window.uiTranslations.COSYenglish[key]);
-        else btn.removeAttribute('data-tooltip');
-      }
-    });
-    // Labels/buttons
-    labelMap.forEach(({sel, key, prefix}) => {
-      const el = document.querySelector(sel);
-      if (el) {
-        // Remove translation for XP and Streak
-        if (sel === '#xp-display') {
-          el.textContent = 'XP:';
-          return;
-        }
-        if (sel === '#streak-display') {
-          el.textContent = 'Streak:';
-          return;
-        }
-        let txt = uiT[key] || window.uiTranslations.COSYenglish[key];
-        if (prefix) txt = (uiT[key] ? prefix : window.uiTranslations.COSYenglish[key] ? prefix : '') + txt;
-        el.textContent = txt;
-        if (showEnglish && lang !== 'COSYenglish') el.setAttribute('data-tooltip', window.uiTranslations.COSYenglish[key]);
-        else el.removeAttribute('data-tooltip');
-      }
-    });
-    // Help popup
-    const helpBtn = document.getElementById('nav-help');
-    if (helpBtn) helpBtn.title = (uiT.help_popup || window.uiTranslations.COSYenglish.help_popup);
+  // --- UI Translation Logic (imported from translations.js) ---
+  // Translation logic is now handled in translations.js
+  // See translations.js for details on uiTranslations, translateUI, labelMap, navIds, etc.
+  // Example usage:
+  // translateUI(languageSelect.value || 'COSYenglish');
 
-    // --- Dynamic select options translation ---
-    // Language select: keep as is (language names)
-    // Day select
-    const daySelect = document.getElementById('day-select');
-    if (daySelect) {
-      for (let i = 1; i <= 7; i++) {
-        const opt = daySelect.querySelector(`option[value="${i}"]`);
-        if (opt) opt.textContent = (uiT['choose_day'] ? uiT['choose_day'].replace(/\D+/g, '') + ' ' + i : 'Day ' + i);
-      }
-      const firstOpt = daySelect.querySelector('option[value=""]');
-      if (firstOpt) firstOpt.textContent = '--' + (uiT['choose_day'] || 'Select Day') + '--';
-    }
-    // Day from/to selects
-    const dayFrom = document.getElementById('day-from-select');
-    const dayTo = document.getElementById('day-to-select');
-    [dayFrom, dayTo].forEach((sel, idx) => {
-      if (sel) {
-        const labelKey = idx === 0 ? 'day_from' : 'day_to';
-        for (let i = 1; i <= 7; i++) {
-          const opt = sel.querySelector(`option[value="${i}"]`);
-          if (opt) opt.textContent = i;
-        }
-        const firstOpt = sel.querySelector('option[value=""]');
-        if (firstOpt) firstOpt.textContent = (idx === 0 ? (uiT['day_from'] || 'From') : (uiT['day_to'] || 'To'));
-      }
-    });
-    // Practice type select
-    const practiceTypeSelect = document.getElementById('practice-type-select');
-    if (practiceTypeSelect) {
-      const opts = practiceTypeSelect.querySelectorAll('option');
-      opts[0].textContent = '--' + (uiT['show_practice'] || 'Select Practice') + '--';
-      opts[1].textContent = uiT['random_word'] ? uiT['random_word'] + ' Practice' : 'Vocabulary Practice';
-      opts[2].textContent = uiT['gender'] ? uiT['gender'] + ' Practice' : 'Grammar Practice';
-      opts[3].textContent = uiT['show_practice'] ? uiT['show_practice'] : 'Speaking Practice';
-    }
-    // Submenu buttons (already handled above)
-  }
   // Tooltip logic
   function showTooltip(e) {
     const target = e.target.closest('[data-tooltip]');
@@ -1211,70 +1072,6 @@ document.addEventListener('DOMContentLoaded', function() {
     resultContainer.appendChild(container);
   }
 
-  // Modal for notifications
-  if (!document.getElementById('modal-overlay')) {
-    const modalOverlay = document.createElement('div');
-    modalOverlay.id = 'modal-overlay';
-    modalOverlay.innerHTML = `<div id="modal-message-box"><span id="modal-message-text"></span><br><button id="modal-close-btn">OK</button></div>`;
-    document.body.appendChild(modalOverlay);
-    document.getElementById('modal-close-btn').onclick = function() {
-      document.getElementById('modal-overlay').style.display = 'none';
-    };
-  }
-
-  function showMessage(msg) {
-    const modal = document.getElementById('modal-overlay');
-    const msgBox = document.getElementById('modal-message-text');
-    if (modal && msgBox) {
-      msgBox.textContent = msg;
-      modal.style.display = 'flex';
-    } else {
-      alert(msg);
-    }
-  }
-
-  // Ensure voiceLanguageMap is available globally
-  if (typeof window !== 'undefined' && typeof window.voiceLanguageMap === 'undefined' && typeof voiceLanguageMap !== 'undefined') {
-    window.voiceLanguageMap = voiceLanguageMap;
-  }
-
-  // PWA Install App button logic
-  let deferredPrompt;
-  const installBtn = document.getElementById('install-app-btn');
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.style.display = 'block';
-  });
-
-  async function handlePWAInstallAttempt() {
-    if (typeof deferredPrompt !== 'undefined' && deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        installBtn.style.display = 'none';
-      }
-      deferredPrompt = null;
-    } else {
-      // Wait briefly in case beforeinstallprompt is about to fire
-      setTimeout(() => {
-        if (!deferredPrompt) {
-          showMessage(
-            'To install the app:\n\n' +
-            '- On Chrome/Edge: Tap the browser menu (⋮) and choose "Install app" or "Add to Home screen".\n' +
-            '- On Safari (iOS): Tap the Share icon (⬆️) and choose "Add to Home Screen".\n' +
-            '- On Firefox: Tap the browser menu and look for "Install" or "Add to Home screen".\n\nIf you do not see the option, try refreshing the page or visiting from your browser menu.'
-          );
-        }
-      }, 200);
-    }
-  }
-
-  installBtn.addEventListener('click', handlePWAInstallAttempt);
-  window.addEventListener('appinstalled', () => {
-    installBtn.style.display = 'none';
-  });
-
   // --- Install App on Logo Click ---
   const logoImg = document.querySelector('.logo-img');
   if (logoImg) {
@@ -1294,63 +1091,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Ensure speakText is available globally for utils.js and other modules
   window.speakText = speakText;
-
-  function speakText(text, language) {
-    if (!window.speechSynthesis) {
-      showMessage('Speech synthesis is not supported on this device/browser.');
-      return;
-    }
-    let voiceLanguageMap = window.voiceLanguageMap || (typeof voiceLanguageMap !== 'undefined' ? voiceLanguageMap : {});
-    const voiceSettings = voiceLanguageMap[language] || voiceLanguageMap.COSYenglish || {};
-    const utterance = new SpeechSynthesisUtterance(text);
-
-    function setVoiceAndSpeak(utt) {
-      let voices = window.speechSynthesis.getVoices();
-      let voice = null;
-      if (voiceSettings.voiceURI) {
-        voice = voices.find(v => v.voiceURI === voiceSettings.voiceURI);
-      }
-      if (!voice && voiceSettings.lang) {
-        voice = voices.find(v => v.lang === voiceSettings.lang);
-      }
-      if (!voice && voiceSettings.lang) {
-        const langPrefix = voiceSettings.lang.split('-')[0];
-        voice = voices.find(v => v.lang && v.lang.startsWith(langPrefix));
-      }
-      if (!voice && voices.length > 0) {
-        voice = voices[0]; // fallback to any available voice
-      }
-      if (voice) {
-        utt.voice = voice;
-        utt.lang = voice.lang;
-      } else if (voiceSettings.lang) {
-        utt.lang = voiceSettings.lang;
-      }
-      utt.rate = 0.9;
-      utt.pitch = 1.0;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utt);
-    }
-
-    function waitAndSpeak() {
-      if (window.speechSynthesis.getVoices().length > 0) {
-        setVoiceAndSpeak(utterance);
-      } else {
-        window.speechSynthesis.onvoiceschanged = function handler() {
-          window.speechSynthesis.onvoiceschanged = null;
-          setVoiceAndSpeak(utterance);
-        };
-        window.speechSynthesis.getVoices();
-        setTimeout(function() {
-          if (window.speechSynthesis.getVoices().length > 0) {
-            window.speechSynthesis.onvoiceschanged = null;
-            setVoiceAndSpeak(utterance);
-          }
-        }, 350);
-      }
-    }
-    waitAndSpeak();
-  }
 
   // Example: Award XP and unlock next day after correct answer
   function adventureCorrectAnswer(currentDay) {
@@ -1418,4 +1158,17 @@ document.addEventListener('DOMContentLoaded', function() {
   // When creating mic/pronounce buttons, use addMicBtnTouchSupport
   // Example:
   // addMicBtnTouchSupport(micBtn, () => { ... });
+
+  // On page load, restore language selection from localStorage if available
+  const savedLanguage = localStorage.getItem('cosy_selected_language');
+  if (savedLanguage && languageSelect) {
+    languageSelect.value = savedLanguage;
+    // Trigger change event to update UI (flag, translation, etc.)
+    languageSelect.dispatchEvent(new Event('change'));
+  }
+
+  // Save language selection to localStorage whenever it changes
+  languageSelect.addEventListener('change', function() {
+    localStorage.setItem('cosy_selected_language', languageSelect.value);
+  });
 });

@@ -427,6 +427,13 @@ const uiTranslations = {
   }
 };
 
+// Add translation logic from app.js if missing:
+// - uiTranslations
+// - translateUI
+// - labelMap
+// - navIds
+
+// Export these for use in app.js
 if (typeof window !== 'undefined') window.questionTranslations = questionTranslations;
 if (typeof window !== 'undefined') window.grammarOptionsText = grammarOptionsText;
 if (typeof window !== 'undefined') window.questionVariants = questionVariants;
