@@ -92,6 +92,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // No submenu for speaking_practice
   });
 
+  // Show/hide submenus based on practice type selection
+  function updateSubmenus() {
+    const vocabSubmenu = document.getElementById('vocabulary-submenu');
+    const grammarSubmenu = document.getElementById('grammar-submenu');
+    if (practiceTypeSelect.value === 'vocabulary_practice') {
+      vocabSubmenu.style.display = 'flex';
+      grammarSubmenu.style.display = 'none';
+    } else if (practiceTypeSelect.value === 'grammar_practice') {
+      vocabSubmenu.style.display = 'none';
+      grammarSubmenu.style.display = 'flex';
+    } else {
+      vocabSubmenu.style.display = 'none';
+      grammarSubmenu.style.display = 'none';
+    }
+  }
+  // Call on page load and whenever practice type changes
+  updateSubmenus();
+  practiceTypeSelect.addEventListener('change', updateSubmenus);
+
   // On page load, hide all submenus
   hideAllSubmenus();
 
