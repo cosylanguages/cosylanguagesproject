@@ -328,6 +328,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Pronounce automatically
     if (typeof speakText === 'function') {
         setTimeout(() => speakText(wordObj.word, language), 300);
+        // Also pronounce the article if available and not empty
+        if (wordObj.article && wordObj.article.trim()) {
+            setTimeout(() => speakText(wordObj.article, language), 1200);
+        }
     }
     // Options
     const optionsDiv = document.createElement('div');
