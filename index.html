@@ -287,7 +287,7 @@
             }
         }
 
-        // Pronunciation: play word using SpeechSynthesis API
+        // --- Pronunciation: play word using SpeechSynthesis API, with mobile support ---
         function pronounceWord(word, language) {
             let langCode = 'en-US';
             switch(language) {
@@ -298,17 +298,44 @@
                 case 'COSYdeutsch': langCode = 'de-DE'; break;
                 case 'COSYportuguês': langCode = 'pt-PT'; break;
                 case 'ТАКОЙрусский': langCode = 'ru-RU'; break;
-                case 'COSYbrezhoneg': langCode = 'br-FR'; break; // Breton (may fallback)
-                case 'COSYtatarça': langCode = 'tt-RU'; break; // Tatar (may fallback)
-                case 'COSYbashkort': langCode = 'ba-RU'; break; // Bashkir (may fallback)
-                case 'ԾՈՍՅհայկական': langCode = 'hy-AM'; break; // Armenian
+                case 'COSYbrezhoneg': langCode = 'br-FR'; break;
+                case 'COSYtatarça': langCode = 'tt-RU'; break;
+                case 'COSYbashkort': langCode = 'ba-RU'; break;
+                case 'ԾՈՍՅհայկական': langCode = 'hy-AM'; break;
                 default: langCode = 'en-UK';
             }
-            const utter = new SpeechSynthesisUtterance(word);
-            utter.lang = langCode;
-            window.speechSynthesis.speak(utter);
+            // iOS/Android: require user gesture, so always call from a button or setTimeout after interaction
+            if ('speechSynthesis' in window) {
+                // Stop any current speech
+                window.speechSynthesis.cancel();
+                // Some mobile browsers need a short delay
+                setTimeout(() => {
+                    const utter = new SpeechSynthesisUtterance(word);
+                    utter.lang = langCode;
+                    utter.rate = 1;
+                    utter.pitch = 1;
+                    window.speechSynthesis.speak(utter);
+                }, 100);
+            } else {
+                alert('Sorry, speech synthesis is not supported on this device/browser.');
+            }
         }
-
+        // --- Unlock audio context for iOS/Android on first user gesture ---
+        (function unlockAudio() {
+            function unlock() {
+                if (window.speechSynthesis && window.speechSynthesis.speak) {
+                    try {
+                        const u = new SpeechSynthesisUtterance(' ');
+                        window.speechSynthesis.speak(u);
+                    } catch(e) {}
+                }
+                window.removeEventListener('touchstart', unlock, false);
+                window.removeEventListener('click', unlock, false);
+            }
+            window.addEventListener('touchstart', unlock, false);
+            window.addEventListener('click', unlock, false);
+        })();
+        
         // Pronunciation check: record and compare
         let recognition;
         function startPronunciationCheck(targetWord, language) {
@@ -316,12 +343,16 @@
                 alert('Speech recognition is not supported in this browser.');
                 return;
             }
+            // Stop previous recognition if running
+            if (recognition && recognition.stop) {
+                try { recognition.onresult = null; recognition.onerror = null; recognition.onend = null; recognition.stop(); } catch(e) {}
+            }
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.lang = (function(lang) {
                 switch(lang) {
                     case 'COSYenglish': return 'en-US';
-                    case 'COSYfrançais': return
+                    case 'COSYfrançais': return 'fr-FR';
                     case 'COSYespañol': return 'es-ES';
                     case 'COSYitaliano': return 'it-IT';
                     case 'COSYdeutsch': return 'de-DE';
@@ -383,6 +414,11 @@
             recognition.onerror = function(event) {
                 document.getElementById('pronunciation-feedback').innerHTML =
                     `<p style='color:red;'>Error: ${event.error}</p>`;
+                // Always stop on error to avoid stuck state
+                try { recognition.stop(); } catch(e) {}
+            };
+            recognition.onend = function() {
+                // Optionally, you can re-enable the button or give UI feedback here
             };
             recognition.start();
             document.getElementById('pronunciation-feedback').innerHTML = '<p>Listening...</p>';
@@ -592,8 +628,11 @@
                 alert('Speech recognition is not supported in this browser.');
                 return;
             }
+            if (recognition && recognition.stop) {
+                try { recognition.onresult = null; recognition.onerror = null; recognition.onend = null; recognition.stop(); } catch(e) {}
+            }
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
+            recognition = new SpeechRecognition();
             recognition.lang = (function(lang) {
                 switch(lang) {
                     case 'COSYenglish': return 'en-US';
@@ -631,7 +670,9 @@
             recognition.onerror = function(event) {
                 document.getElementById('speaking-feedback').innerHTML =
                     `<p style='color:red;'>Error: ${event.error}</p>`;
+                try { recognition.stop(); } catch(e) {}
             };
+            recognition.onend = function() {};
             recognition.start();
             document.getElementById('speaking-feedback').innerHTML = '<p>Listening...</p>';
         }
@@ -1073,17 +1114,18 @@ async function practiceGrammar(type) {
         // Determine articles for the language
         let articles = [];
         switch(language) {
-            case 'COSYfrançais': articles = ['le', 'la', 'les', "l'"]; break;
-            case 'COSYitaliano': articles = ['il', 'la', 'lo', "l'", 'i', 'gli', 'le', 'un', 'una', 'uno']; break;
-            case 'COSYespañol': articles = ['el', 'la', 'los', 'las', 'un', 'una']; break;
-            case 'COSYdeutsch': articles = ['der', 'die', 'das', 'ein', 'eine']; break;
-            case 'COSYportuguês': articles = ['o', 'a', 'os', 'as', 'um', 'uma']; break;
-            case 'ТАКОЙрусский': articles = ['мужской', 'женский', 'средний']; break;
-            case 'COSYbrezhoneg': articles = ['ar', 'an', 'al', 'ur', 'ul', 'un']; break;
+            case 'COSYfrançais': articles = ['le', 'la', "l'"]; break;
+            case 'COSYitaliano': articles = ['il', 'la', 'lo', "l'"]; break;
+            case 'COSYespañol': articles = ['el', 'la']; break;
+            case 'COSYdeutsch': articles = ['der', 'die', 'das']; break;
+            case 'COSYportuguês': articles = ['o', 'a']; break;
+            case 'ТАКОЙрусский': articles = ['он', 'она', 'оно']; break;
+            case 'COSYenglish': articles = ['he', 'she', 'it']; break;
+            case 'COSYbrezhoneg': articles = ['ar', 'an']; break;
             case 'COSYtatarça': articles = ['ир-ат', 'хатын-кыз']; break;
             case 'COSYbashkort': articles = ['ир-ат', 'ҡатын-ҡыҙ']; break;
             case 'ԾՈՍՅհայկական': articles = ['արական', 'իգական', 'միջին']; break;
-            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'οι', 'τα', 'ένας', 'μία', 'ένα']; break;
+            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το']; break;
             default: articles = ['the', 'a', 'an']; break;
         }
         // Build radio buttons for articles
