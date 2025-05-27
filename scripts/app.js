@@ -160,45 +160,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Main Show button click handler
-  showButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
+  // Remove Show Practice button logic
+  // Instead, trigger practice automatically on selection
+  function autoTriggerPractice() {
     const language = languageSelect.value;
     const day = daySelect.value;
     const dayFrom = document.getElementById('day-from-select')?.value;
     const dayTo = document.getElementById('day-to-select')?.value;
     const practiceType = practiceTypeSelect.value;
-
     // Defensive: always clear and show result container
     clearResultContainer();
     resultContainer.style.display = 'block';
-
-    if (!language) {
-      showMessage('Please select a language.');
-      return;
-    }
-    // Require either a single day or a valid day range
+    if (!language) return;
     let days = [];
     if (dayFrom && dayTo) {
       const from = Number(dayFrom);
       const to = Number(dayTo);
-      if (from > to) {
-        showMessage('Day from should be less than or equal to Day to.');
-        return;
-      }
+      if (from > to) return;
       for (let d = from; d <= to; d++) days.push(d);
     } else if (day) {
       days = [Number(day)];
     } else {
-      showMessage('Please select a day or a day range.');
       return;
     }
-    if (!practiceType) {
-      showMessage('Please select a practice type.');
-      return;
-    }
-    // Remove requirement for submenu button to be active
+    if (!practiceType) return;
     if (practiceType === 'speaking_practice') {
       handleRandomSpeaking(language, days);
     } else if (practiceType === 'vocabulary_practice') {
@@ -214,401 +199,35 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     } else if (practiceType === 'grammar_practice') {
       const activeBtn = document.querySelector('#grammar-submenu .submenu-btn.active');
-      if (!activeBtn) {
-        showMessage('Please select a grammar practice type (e.g., Gender) before continuing.');
-        return;
-      }
+      if (!activeBtn) return;
       if (activeBtn.getAttribute('data-practice') === 'gender') {
         showGrammarGenderPractice(language, days[0]);
       } else if (activeBtn.getAttribute('data-practice') === 'verb') {
         showGrammarVerbPractice(language, days[0]);
       } else if (activeBtn.getAttribute('data-practice') === 'possessives') {
         showGrammarPossessivesPractice(language, days[0]);
-      } else {
-        showMessage('Selected grammar practice type is not supported.');
       }
     }
+  }
+  // Auto-translate UI on language select
+  languageSelect.addEventListener('change', function() {
+    translateUI(languageSelect.value || 'COSYenglish');
+    autoTriggerPractice();
   });
-
-  function clearResultContainer() {
-    resultContainer.innerHTML = '';
-  }
-
-  // Practice handlers
-  function handleRandomWord(language, days) {
-    const words = getWordsForDays(vocabData, language, days);
-    if (!words.length) return showMessage('No words found');
-    resultContainer.innerHTML = '';
-    const word = randomElement(words);
-    const wordDiv = document.createElement('div');
-    wordDiv.className = 'practice-word';
-    wordDiv.textContent = word;
-    resultContainer.appendChild(wordDiv);
-    speakText(word, language);
-
-    // Pronunciation practice UI
-    const speakPracticeDiv = document.createElement('div');
-    speakPracticeDiv.className = 'speak-practice';
-    const micBtn = document.createElement('button');
-    micBtn.textContent = '🎤Speak';
-    micBtn.className = 'btn speak-btn';
-    const feedback = document.createElement('div');
-    feedback.className = 'practice-feedback';
-    speakPracticeDiv.appendChild(micBtn);
-    speakPracticeDiv.appendChild(feedback);
-    resultContainer.appendChild(speakPracticeDiv);
-
-    let recognition;
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.lang = (window.voiceLanguageMap?.[language]?.lang) || 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-    }
-
-    micBtn.onclick = function() {
-      if (!recognition) {
-        feedback.textContent = 'Speech recognition is not supported in this browser.';
-        feedback.style.color = '#F44336';
-        return;
-      }
-      feedback.textContent = 'Listening...';
-      feedback.style.color = '#0abab5';
-      recognition.start();
-      recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript.trim().toLowerCase();
-        const target = word.trim().toLowerCase();
-        // Accept answer if transcript contains the word or is very similar
-        if (transcript === target || transcript.includes(target) || target.includes(transcript) || getSimilarityScore(transcript, target) > 0.8) {
-          feedback.textContent = `✔ Pronunciation correct! You said: "${transcript}"`;
-          feedback.style.color = '#4CAF50';
-          adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
-        } else {
-          feedback.textContent = `✘ You said: "${transcript}". Try again!`;
-          feedback.style.color = '#F44336';
-          adventureWrongAnswer();
-        }
-      };
-      recognition.onerror = function() {
-        feedback.textContent = 'Could not recognize speech. Try again.';
-        feedback.style.color = '#F44336';
-      };
-    };
-
-    // Center the pronounce button
-    const pronounceBtn = document.createElement('button');
-    pronounceBtn.className = 'pronounce-btn';
-    pronounceBtn.title = 'Play pronunciation';
-    pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
-    pronounceBtn.onclick = function(e) {
-      e.preventDefault();
-      speakText(word, language);
-    };
-    resultContainer.appendChild(pronounceBtn);
-  }
-
-  function handleRandomImage(language, days) {
-    // Support both array and object imageData
-    let images = [];
-    if (Array.isArray(window.imageData)) {
-      images = window.imageData;
-    } else if (window.imageData && window.imageData.allLanguages) {
-      images = getImagesForDays(window.imageData.allLanguages, days);
-    }
-    if (!images.length) return showMessage('No images found');
-    const imgObj = randomElement(images);
-    showImagePractice(imgObj, language);
-  }
-
-  function showGrammarGenderPractice(language, day) {
-    // Debugging output
-    console.log('[Gender Practice] Language:', language, 'Day:', day);
-    if (!language || !day) {
-        showMessage('Please select both a language and a day.');
-        return;
-    }
-    if (!window.genderPracticeData) {
-        showMessage('Gender practice data is not loaded.');
-        return;
-    }
-    const words = genderPracticeData[language]?.[day] || [];
-    console.log('[Gender Practice] Data for', language, 'on day', day, ':', words);
-    resultContainer.innerHTML = '';
-    if (!words.length) {
-        showMessage('No gender practice available for this language and day.');
-        return;
-    }
-    const wordObj = randomElement(words);
-    // --- UI ---
-    const questionDiv = document.createElement('div');
-    questionDiv.className = 'gender-question';
-    questionDiv.textContent = wordObj.word;
-    questionDiv.dataset.correctAnswer = wordObj.article;
-    // Pronounce automatically
-    if (typeof speakText === 'function') {
-        setTimeout(() => speakText(wordObj.word, language), 300);
-        // Also pronounce the article if available and not empty
-        if (wordObj.article && wordObj.article.trim()) {
-            setTimeout(() => speakText(wordObj.article, language), 1200);
-        }
-    }
-    // Options
-    const optionsDiv = document.createElement('div');
-    optionsDiv.className = 'gender-options';
-    optionsDiv.style.display = 'flex';
-    optionsDiv.style.justifyContent = 'center';
-    optionsDiv.style.gap = '24px';
-    optionsDiv.style.margin = '32px 0 0 0';
-    const articles = getArticlesForLanguage(language);
-    articles.forEach(article => {
-        const btn = document.createElement('button');
-        btn.className = 'gender-option';
-        btn.textContent = article;
-        btn.addEventListener('click', () => checkGenderAnswer(btn, wordObj.article));
-        optionsDiv.appendChild(btn);
+  // Auto-update on day select
+  daySelect.addEventListener('change', function() {
+    autoTriggerPractice();
+  });
+  // Auto-update on practice type select
+  practiceTypeSelect.addEventListener('change', function() {
+    autoTriggerPractice();
+  });
+  // Auto-update on submenu button click
+  document.querySelectorAll('.submenu-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      autoTriggerPractice();
     });
-    // Feedback area
-    const feedbackDiv = document.createElement('div');
-    feedbackDiv.className = 'gender-feedback';
-    feedbackDiv.style.textAlign = 'center';
-    feedbackDiv.style.fontSize = '2rem';
-    feedbackDiv.style.fontWeight = '500';
-    feedbackDiv.style.marginTop = '24px';
-    feedbackDiv.style.minHeight = '2.5em';
-    // Insert all
-    resultContainer.appendChild(questionDiv);
-    resultContainer.appendChild(optionsDiv);
-    resultContainer.appendChild(feedbackDiv);
-  }
-
-  function showGrammarVerbPractice(language, day) {
-    clearResultContainer();
-    const container = document.createElement('div');
-    container.className = 'verb-container';
-
-    // Get verb data
-    const verbData = window.verbPracticeData?.[language]?.[day];
-    if (!verbData || verbData.length === 0) {
-      resultContainer.textContent = 'No verb data found for this selection.';
-      return;
-    }
-    const item = randomElement(verbData);
-
-    // Prompt (random word)
-    const promptDiv = document.createElement('div');
-    promptDiv.className = 'verb-question';
-    promptDiv.textContent = item.prompt;
-    // Pronounce automatically
-    if (typeof speakText === 'function') {
-        setTimeout(() => speakText(item.prompt, language), 300);
-    }
-
-    // Input row
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'practice-input';
-    input.placeholder = 'Type your answer';
-
-    // Button row (Check + Show Answer + Pronounce)
-    const btnRow = document.createElement('div');
-    btnRow.className = 'practice-btn-row';
-
-    // Check button
-    const checkBtn = document.createElement('button');
-    checkBtn.className = 'btn check-emoji-btn';
-    checkBtn.title = 'Check your answer';
-    checkBtn.innerHTML = '✅';
-
-    // Show answer button
-    const showAnswerBtn = document.createElement('button');
-    showAnswerBtn.className = 'btn show-answer-btn';
-    showAnswerBtn.title = 'Show correct answer';
-    showAnswerBtn.innerHTML = '💡';
-
-    // Pronounce button
-    const pronounceBtn = document.createElement('button');
-    pronounceBtn.className = 'btn pronounce-btn';
-    pronounceBtn.innerHTML = '<span class="pronounce-icon">🔊</span>';
-    pronounceBtn.title = 'Play pronunciation';
-    pronounceBtn.onclick = function() {
-      speakText(item.answer, language);
-    };
-
-    btnRow.appendChild(checkBtn);
-    btnRow.appendChild(showAnswerBtn);
-    btnRow.appendChild(pronounceBtn);
-
-    // Feedback
-    const feedback = document.createElement('div');
-    feedback.className = 'verb-feedback';
-    feedback.style.textAlign = 'center';
-    feedback.style.fontSize = '2rem';
-    feedback.style.fontWeight = '500';
-    feedback.style.marginTop = '24px';
-    feedback.style.minHeight = '2.5em';
-
-    checkBtn.onclick = function() {
-      if (input.value.trim().toLowerCase() === item.answer.trim().toLowerCase()) {
-        feedback.textContent = 'Correct!';
-        feedback.style.color = '#4CAF50';
-        adventureCorrectAnswer(day);
-      } else {
-        feedback.textContent = 'Try again!';
-        feedback.style.color = '#F44336';
-        adventureWrongAnswer();
-      }
-    };
-
-    showAnswerBtn.onclick = function() {
-      feedback.textContent = `Answer: ${item.answer}`;
-      feedback.style.color = '#333';
-    };
-
-    pronounceBtn.onclick = function() {
-      speakText(item.answer, language);
-    };
-
-    container.appendChild(promptDiv);
-    container.appendChild(input);
-    container.appendChild(btnRow);
-    container.appendChild(feedback);
-    resultContainer.appendChild(container);
-  }
-
-  function showGrammarPossessivesPractice(language, day) {
-    resultContainer.innerHTML = '';
-    if (day !== 3) {
-      showMessage('Possessives practice is only available on Day 3.');
-      return;
-    }
-    // Prefer possessivesPracticeData if available, else fallback to grammarData
-    let data = (typeof possessivesPracticeData !== 'undefined' && possessivesPracticeData[language]?.[3])
-      ? possessivesPracticeData[language][3]
-      : (grammarData[language]?.[3]?.possessives || []);
-    if (!data || !data.length) return showMessage('No possessives practice available');
-    let items = data;
-    if (typeof data[0] === 'string') {
-      items = data.map(str => ({ prompt: str, answer: str }));
-    }
-    const item = randomElement(items);
-    const prompt = item.prompt || item;
-    const answer = item.answer || item;
-    const questionDiv = document.createElement('div');
-    questionDiv.id = 'grammar-question';
-    questionDiv.textContent = prompt;
-    const optionsEl = document.createElement('div');
-    optionsEl.id = 'grammar-options';
-    optionsEl.className = 'grammar-gender-options';
-    const showBtn = document.createElement('div');
-    showBtn.className = 'gender-option';
-    showBtn.textContent = 'Show Answer';
-    showBtn.addEventListener('click', () => {
-      showBtn.textContent = answer;
-      showBtn.classList.add('show-answer');
-      feedbackDiv.textContent = '✔';
-      feedbackDiv.style.color = '#4CAF50';
-    });
-    optionsEl.appendChild(showBtn);
-    const feedbackDiv = document.createElement('div');
-    feedbackDiv.id = 'grammar-feedback';
-    feedbackDiv.textContent = '';
-    resultContainer.append(questionDiv, optionsEl, feedbackDiv);
-  }
-
-  function handleRandomSpeaking(language, days) {
-    if (!window.speakingData) {
-      showMessage('No speaking exercises found for this language. (speakingData missing)');
-      return;
-    }
-    if (!window.speakingData[language]) {
-      showMessage(`No speaking exercises found for this language: ${language}`);
-      return;
-    }
-    // Defensive: flatten and filter phrases
-    let phrases = [];
-    days.forEach(day => {
-      if (window.speakingData[language][day]) {
-        phrases = phrases.concat(window.speakingData[language][day]);
-      }
-    });
-    if (!phrases.length) {
-      showMessage(`No speaking exercises found for language: ${language}, days: ${days.join(', ')}.\nCheck if data exists in scripts/data/speaking-data.js.`);
-      return;
-    }
-    resultContainer.innerHTML = '';
-    resultContainer.style.display = 'block';
-    // Pick a random phrase and show as task, with example below
-    const phrase = randomElement(phrases);
-    const taskDiv = document.createElement('div');
-    taskDiv.className = 'speaking-task';
-    taskDiv.textContent = phrase;
-    taskDiv.style.color = '#222';
-    taskDiv.style.background = 'rgba(255,255,255,0.85)';
-    taskDiv.style.borderRadius = '10px';
-    taskDiv.style.padding = '18px 12px 8px 12px';
-    taskDiv.style.margin = '18px auto 0 auto';
-    taskDiv.style.maxWidth = '90%';
-    taskDiv.style.textAlign = 'center';
-    taskDiv.style.fontWeight = 'bold';
-    taskDiv.style.fontSize = '1.2rem';
-
-    // Example line (in cursive, different color)
-    const exampleDiv = document.createElement('div');
-    exampleDiv.className = 'speaking-example';
-    exampleDiv.textContent = '(Say your answer aloud)';
-    exampleDiv.style.fontStyle = 'italic';
-    exampleDiv.style.color = '#0abab5';
-    exampleDiv.style.marginTop = '8px';
-    exampleDiv.style.fontSize = '1.05rem';
-
-    // Pronunciation practice UI for speaking: always award XP/streak, just transcribe
-    const speakPracticeDiv = document.createElement('div');
-    speakPracticeDiv.className = 'speak-practice';
-    const micBtn = document.createElement('button');
-    micBtn.textContent = '🎤Speak';
-    micBtn.className = 'btn speak-btn';
-    const feedback = document.createElement('div');
-    feedback.className = 'practice-feedback';
-    speakPracticeDiv.appendChild(micBtn);
-    speakPracticeDiv.appendChild(feedback);
-
-    resultContainer.appendChild(taskDiv);
-    resultContainer.appendChild(exampleDiv);
-    resultContainer.appendChild(speakPracticeDiv);
-
-    // --- Speech recognition logic for speaking practice ---
-    let recognition;
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.lang = (window.voiceLanguageMap?.[language]?.lang) || 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-    }
-
-    micBtn.onclick = function() {
-      if (!recognition) {
-        feedback.textContent = 'Speech recognition is not supported in this browser.';
-        feedback.style.color = '#F44336';
-        return;
-      }
-      feedback.textContent = 'Listening...';
-      feedback.style.color = '#0abab5';
-      recognition.start();
-      recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript.trim();
-        feedback.textContent = `You said: "${transcript}"`;
-        feedback.style.color = '#4CAF50';
-        // Always award XP/streak for speaking
-        adventureCorrectAnswer(Number(document.getElementById('day-select')?.value) || 1);
-      };
-      recognition.onerror = function() {
-        feedback.textContent = 'Could not recognize speech. Try again.';
-        feedback.style.color = '#F44336';
-      };
-    };
-  }
+  });
 
   // --- Adventure-like features ---
   const DAYS = 7;
