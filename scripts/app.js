@@ -60,6 +60,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (lang) {
       document.body.classList.add('flag-' + lang);
     }
+    // Translate UI
+    if (typeof translateUI === 'function') {
+      translateUI(lang || 'COSYenglish');
+    }
+    if (typeof updateUIHints === 'function') updateUIHints();
+    if (typeof autoTriggerPractice === 'function') autoTriggerPractice();
   });
 
   // Practice type change handler
@@ -212,8 +218,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // Auto-translate UI on language select
   languageSelect.addEventListener('change', function() {
     translateUI(languageSelect.value || 'COSYenglish');
-    autoTriggerPractice();
+    if (typeof updateUIHints === 'function') updateUIHints();
+    if (typeof autoTriggerPractice === 'function') autoTriggerPractice();
   });
+  // Initial translation and UI hints on page load
+  if (typeof translateUI === 'function') {
+    translateUI(languageSelect.value || 'COSYenglish');
+  }
+  if (typeof updateUIHints === 'function') updateUIHints();
+
   // Auto-update on day select
   daySelect.addEventListener('change', function() {
     autoTriggerPractice();
@@ -450,12 +463,26 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     };
   }
-  // Language select triggers translation
+  // Language select triggers translation and practice
   languageSelect.addEventListener('change', function() {
-    translateUI(languageSelect.value || 'COSYenglish');
+    // Remove any previous flag class
+    document.body.className = document.body.className.replace(/\bflag-[^ ]+/g, '').trim();
+    const lang = languageSelect.value;
+    if (lang) {
+      document.body.classList.add('flag-' + lang);
+    }
+    // Translate UI
+    if (typeof translateUI === 'function') {
+      translateUI(lang || 'COSYenglish');
+    }
+    if (typeof updateUIHints === 'function') updateUIHints();
+    if (typeof autoTriggerPractice === 'function') autoTriggerPractice();
   });
-  // Initial translation
-  translateUI(languageSelect.value || 'COSYenglish');
+  // Initial translation and UI hints on page load
+  if (typeof translateUI === 'function') {
+    translateUI(languageSelect.value || 'COSYenglish');
+  }
+  if (typeof updateUIHints === 'function') updateUIHints();
 
   // --- Visual hints/demonstrations for practice types and controls ---
   // Add tooltips to submenu buttons and controls for accessibility
