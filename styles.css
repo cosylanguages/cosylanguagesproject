@@ -3,13 +3,20 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background: linear-gradient(135deg, #00bdbd 0%, #1de9b6 100%);
+    background: linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%);
+    background-attachment: fixed;
     color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    animation: flagFloat 12s ease-in-out infinite alternate;
+}
+
+@keyframes flagFloat {
+    0% { background-position: 50% 50%; }
+    100% { background-position: 53% 47%; }
 }
 
 h1 {
@@ -33,6 +40,12 @@ h1 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    animation: fadeInUp 0.7s cubic-bezier(.23,1.01,.32,1) 0.1s both;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .menu-section {
@@ -40,6 +53,7 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
 label {
@@ -48,6 +62,13 @@ label {
     font-weight: bold;
     color: #fff;
     text-align: center;
+    font-size: 1.08rem;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+label:hover {
+    color: #ffe082;
 }
 
 select, button {
@@ -59,10 +80,11 @@ select, button {
     font-size: 1rem;
     margin-bottom: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.18s, box-shadow 0.18s;
     display: block;
     margin-left: auto;
     margin-right: auto;
+    cursor: pointer;
 }
 
 select:focus, button:focus {
@@ -71,83 +93,142 @@ select:focus, button:focus {
     color: #00796b;
 }
 
+button:active, select:active {
+    transform: scale(0.97);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
 button.btn-primary {
     background: #fff;
     color: #00bdbd;
     font-weight: bold;
+    box-shadow: 0 4px 16px 0 rgba(0, 189, 189, 0.10);
 }
+
 button.btn-primary:hover {
     background: #e0f7fa;
     color: #00796b;
+    transform: scale(1.07);
+    box-shadow: 0 8px 24px 0 rgba(0, 189, 189, 0.18);
+    filter: brightness(1.08);
 }
+
 button.btn-secondary {
     background: #e0f7fa;
     color: #00bdbd;
 }
+
 button.btn-secondary:hover {
     background: #b2ebf2;
     color: #00796b;
+    transform: scale(1.07);
+    box-shadow: 0 8px 24px 0 rgba(0, 189, 189, 0.18);
+    filter: brightness(1.08);
 }
+
 .btn-small {
     padding: 8px 15px;
     font-size: 14px;
 }
+
 .day-range {
     display: flex;
     gap: 15px;
     justify-content: center;
 }
+
 .day-range div {
     flex: 1;
 }
+
 .practice-types {
     display: flex;
     gap: 10px;
     justify-content: center;
 }
+
 .practice-options {
     margin-top: 10px;
     text-align: center;
 }
+
 .result-area {
-    background: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.22);
     color: #006666;
-    border-radius: 10px;
-    padding: 18px;
-    margin-top: 25px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-radius: 16px;
+    padding: 24px 18px;
+    margin-top: 28px;
+    box-shadow: 0 4px 18px rgba(0,189,189,0.10);
     text-align: center;
+    font-size: 1.18rem;
+    min-height: 80px;
+    animation: popIn 0.5s cubic-bezier(.23,1.01,.32,1) 0.1s both;
 }
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
 .vocabulary-image {
-    max-width: 120px;
+    max-width: 150px;
+    border-radius: 18px;
+    box-shadow: 0 4px 18px rgba(0,189,189,0.13);
+    transition: transform 0.18s, box-shadow 0.18s;
     display: block;
     margin: 18px auto 0 auto;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
-@media (max-width: 600px) {
-    body {
-        justify-content: flex-start;
-    }
-    .container {
-        margin-top: 20px;
-    }
-    .practice-types {
-        flex-direction: column;
-    }
-    .day-range {
-        flex-direction: column;
-    }
+
+.vocabulary-image:hover {
+    transform: scale(1.08) rotate(-2deg);
+    box-shadow: 0 8px 32px rgba(0,189,189,0.18);
 }
-body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'); background-size: cover; }
-body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'); background-size: cover; }
-body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'); background-size: cover; }
-body.flag-COSYespañol { background-image: url('https://flagcdn.com/es.svg'); background-size: cover; }
-body.flag-COSYportuguês { background-image: url('https://flagcdn.com/pt.svg'); background-size: cover; }
-body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'); background-size: cover; }
-body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'); background-size: cover; }
-body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'); background-size: cover; }
-body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'); background-size: cover; }
-body.flag-COSYbrezhoneg { background-image: url('icons/flag-brittany.png'); background-size: cover; }
-body.flag-COSYtatarça { background-image: url('icons/flag-tatarstan.png'); background-size: cover; }
-body.flag-COSYbashkort { background-image: url('icons/flag-bashkortostan.png'); background-size: cover; }
+
+input[type="text"], select {
+    border: 2px solid #00bdbd;
+    background: #f8ffff;
+    color: #009999;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 1.08rem;
+    margin-bottom: 12px;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, select:focus {
+    border: 2.5px solid #1de9b6;
+    box-shadow: 0 0 0 2px #b2ebf2;
+}
+
+/* Fun animated underline for active menu-section */
+.menu-section:focus-within::after, .menu-section:hover::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(90deg, #ffe082 0%, #00bdbd 100%);
+    border-radius: 2px;
+    transform: translateX(-50%) scaleX(1.1);
+    animation: underlineGrow 0.4s cubic-bezier(.23,1.01,.32,1);
+}
+
+@keyframes underlineGrow {
+    from { width: 0; opacity: 0; }
+    to { width: 60%; opacity: 1; }
+}
+
+body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYespañol { background-image: url('https://flagcdn.com/es.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYportuguês { background-image: url('https://flagcdn.com/pt.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYbrezhoneg { background-image: url('icons/flag-brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYtatarça { background-image: url('icons/flag-tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYbashkort { background-image: url('icons/flag-bashkortostan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
