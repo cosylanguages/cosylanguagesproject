@@ -14,7 +14,8 @@
                 "ТАКОЙрусский": "Привет",
                 "ԾՈՍՅհայկական": "Բարև",
                 "COSYbrezhoneg": "Demat",
-                "COSYtatarça": "Isänme"
+                "COSYtatarça": "Isänme",
+                "COSYbashkort": "Һаумыһығыҙ"
             }
         },
         {
@@ -31,7 +32,8 @@
                 "ТАКОЙрусский": "До свидания",
                 "ԾՈՍՅհայկական": "Ցտեսություն",
                 "COSYbrezhoneg": "Kenavo",
-                "COSYtatarça": "Saubul"
+                "COSYtatarça": "Saubul",
+                "COSYbashkort": "Һау булығыҙ"
             }
         },
         {
@@ -48,7 +50,8 @@
                 "ТАКОЙрусский": "Да",
                 "ԾՈՍՅհայկական": "Այո",
                 "COSYbrezhoneg": "Ya",
-                "COSYtatarça": "Äye"
+                "COSYtatarça": "Äye",
+                "COSYbashkort": "Эйе"
             }
         },
         {
@@ -65,7 +68,8 @@
                 "ТАКОЙрусский": "Нет",
                 "ԾՈՍՅհայկական": "Ոչ",
                 "COSYbrezhoneg": "Nann",
-                "COSYtatarça": "Yuq"
+                "COSYtatarça": "Yuq",
+                "COSYbashkort": "Юҡ"
             }
         },
         {
@@ -82,7 +86,8 @@
                 "ТАКОЙрусский": "Спасибо",
                 "ԾՈՍՅհայկական": "Շնորհակալություն",
                 "COSYbrezhoneg": "Trugarez",
-                "COSYtatarça": "Räxmät"
+                "COSYtatarça": "Räxmät",
+                "COSYbashkort": "Рәхмәт"
             }
         },
         {
@@ -99,7 +104,8 @@
                 "ТАКОЙрусский": "Пожалуйста",
                 "ԾՈՍՅհայկական": "Խնդրեմ",
                 "COSYbrezhoneg": "Gouel",
-                "COSYtatarça": "Zinhar"
+                "COSYtatarça": "Zinhar",
+                "COSYbashkort": "Рәхим итегеҙ"
             }
         },
         {
@@ -116,7 +122,8 @@
                 "ТАКОЙрусский": "Хорошо",
                 "ԾՈՍՅհայկական": "Լավ",
                 "COSYbrezhoneg": "Mat",
-                "COSYtatarça": "Yaxşı"
+                "COSYtatarça": "Yaxşı",
+                "COSYbashkort": "Яҡшы"
             }
         },
         {
@@ -133,7 +140,8 @@
                 "ТАКОЙрусский": "Извините",
                 "ԾՈՍՅհայկական": "Ներողություն",
                 "COSYbrezhoneg": "Abaoe",
-                "COSYtatarça": "Gafu"
+                "COSYtatarça": "Gafu",
+                "COSYbashkort": "Гафу итегеҙ"
             }
         },
         {
@@ -150,7 +158,8 @@
                 "ТАКОЙрусский": "Вода",
                 "ԾՈՍՅհայկական": "Ջուր",
                 "COSYbrezhoneg": "Eau",
-                "COSYtatarça": "Suu"
+                "COSYtatarça": "Suu",
+                "COSYbashkort": "Һыу"
             }
         },
         {
@@ -167,7 +176,8 @@
                 "ТАКОЙрусский": "Сок",
                 "ԾՈՍՅհայկական": "Հյութ",
                 "COSYbrezhoneg": "Ju",
-                "COSYtatarça": "Cöç"
+                "COSYtatarça": "Cöç",
+                "COSYbashkort": "Һут"
             }
         },
         {
@@ -184,7 +194,8 @@
                 "ТАКОЙрусский": "Пиво",
                 "ԾՈՍՅհայկական": "Գարեջուր",
                 "COSYbrezhoneg": "C'hwezh",
-                "COSYtatarça": "Pivä"
+                "COSYtatarça": "Pivä",
+                "COSYbashkort": "Һыра"
             }
         },
         {
@@ -201,7 +212,8 @@
                 "ТАКОЙрусский": "Вино",
                 "ԾՈՍՅհայկական": "Գինի",
                 "COSYbrezhoneg": "Gwin",
-                "COSYtatarça": "Şarap"
+                "COSYtatarça": "Şarap",
+                "COSYbashkort": "Шарап"
             }
         },
         {
@@ -218,7 +230,8 @@
                 "ТАКОЙрусский": "Кофе",
                 "ԾՈՍՅհայկական": "Սուրճ",
                 "COSYbrezhoneg": "Kafe",
-                "COSYtatarça": "Qahwa"
+                "COSYtatarça": "Qahwa",
+                "COSYbashkort": "Кофе"
             }
         },
         {
@@ -235,7 +248,8 @@
                 "ТАКОЙрусский": "Чай",
                 "ԾՈՍՅհայկական": "Թեյ",
                 "COSYbrezhoneg": "Te",
-                "COSYtatarça": "Çäy"
+                "COSYtatarça": "Çäy",
+                "COSYbashkort": "Сәй"
             }
         },
         {
@@ -252,7 +266,8 @@
                 "ТАКОЙрусский": "Карта",
                 "ԾՈՍՅհայկական": "Քարտ",
                 "COSYbrezhoneg": "Kart",
-                "COSYtatarça": "Kart"
+                "COSYtatarça": "Kart",
+                "COSYbashkort": "Карта"
             }
         },
         {
@@ -269,7 +284,8 @@
                 "ТАКОЙрусский": "Наличные",
                 "ԾՈՍՅհայկական": "Կանխիկ",
                 "COSYbrezhoneg": "Arc'hant",
-                "COSYtatarça": "Pul"
+                "COSYtatarça": "Pul",
+                "COSYbashkort": "Аҡса"
             }
         }
     ],
@@ -288,7 +304,8 @@
                 "ТАКОЙрусский": "Человек",
                 "ԾՈՍՅհայկական": "Անձ",
                 "COSYbrezhoneg": "Den",
-                "COSYtatarça": "Keşe"
+                "COSYtatarça": "Keşe",
+                "COSYbashkort": "Кеше"
             }
         },
         {
@@ -305,7 +322,8 @@
                 "ТАКОЙрусский": "Вещь",
                 "ԾՈՍՅհայկական": "Բան",
                 "COSYbrezhoneg": "Traou",
-                "COSYtatarça": "Nərsä"
+                "COSYtatarça": "Nərsä",
+                "COSYbashkort": "Нәмә"
             }
         },
         {
@@ -322,7 +340,8 @@
                 "ТАКОЙрусский": "Женщина",
                 "ԾՈՍՅհայկական": "Կին",
                 "COSYbrezhoneg": "Bod",
-                "COSYtatarça": "Äyäl"
+                "COSYtatarça": "Äyäl",
+                "COSYbashkort": "Ҡатын-ҡыҙ"
             }
         },
         {
@@ -339,7 +358,8 @@
                 "ТАКОЙрусский": "Мужчина",
                 "ԾՈՍՅհայկական": "Տղամարդ",
                 "COSYbrezhoneg": "Tad",
-                "COSYtatarça": "Iäş"
+                "COSYtatarça": "Iäş",
+                "COSYbashkort": "Ир-егет"
             }
         },
         {
@@ -356,7 +376,8 @@
                 "ТАКОЙрусский": "Девочка",
                 "ԾՈՍՅհայկական": "Աղջիկ",
                 "COSYbrezhoneg": "Plac'h",
-                "COSYtatarça": "Qızı"
+                "COSYtatarça": "Qızı",
+                "COSYbashkort": "Ҡыҙ"
             }
         },
         {
@@ -373,7 +394,8 @@
                 "ТАКОЙрусский": "Мальчик",
                 "ԾՈՍՅհայկական": "Տղա",
                 "COSYbrezhoneg": "Bod",
-                "COSYtatarça": "Ul"
+                "COSYtatarça": "Ul",
+                "COSYbashkort": "Малай"
             }
         },
         {
@@ -390,7 +412,8 @@
                 "ТАКОЙрусский": "Студентка",
                 "ԾՈՍՅհայկական": "Ուսանողուհի",
                 "COSYbrezhoneg": "Stumder",
-                "COSYtatarça": "Student"
+                "COSYtatarça": "Student",
+                "COSYbashkort": "Студентка"
             }
         },
         {
@@ -407,7 +430,8 @@
                 "ТАКОЙрусский": "Студент",
                 "ԾՈՍՅհայկական": "Ուսանող",
                 "COSYbrezhoneg": "Stumder",
-                "COSYtatarça": "Student"
+                "COSYtatarça": "Student",
+                "COSYbashkort": "Студент"
             }
         },
     {
@@ -424,7 +448,8 @@
             "ТАКОЙрусский": "Учительница",
             "ԾՈՍՅհայկական": "Ուսուցչուհի",
             "COSYbrezhoneg": "Kelenner",
-            "COSYtatarça": "Uqıtuçı"
+            "COSYtatarça": "Uqıtuçı",
+            "COSYbashkort": "Уҡытыусы ҡатын"
         }
     },
     {
@@ -441,7 +466,8 @@
             "ТАКОЙрусский": "Учитель",
             "ԾՈՍՅհայկական": "Ուսուցիչ",
             "COSYbrezhoneg": "Kelenner",
-            "COSYtatarça": "Uqıtuçı"
+            "COSYtatarça": "Uqıtuçı",
+            "COSYbashkort": "Уҡытыусы ир"
         }
     },
     {
@@ -458,7 +484,8 @@
             "ТАКОЙрусский": "Приятно познакомиться",
             "ԾՈՍՅհայկական": "Ուրախ եմ ձեզ հետ ծանոթանալու համար",
             "COSYbrezhoneg": "Plijadur",
-            "COSYtatarça": "Tanışuğa şatlıq"
+            "COSYtatarça": "Tanışuğa şatlıq",
+            "COSYbashkort": "Танышҡаныма шатмын"
         }
     }
 ]
