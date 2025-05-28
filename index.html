@@ -1281,31 +1281,23 @@
         // --- Remember language and day selection using localStorage ---
         function saveUserSelection() {
             localStorage.setItem('cosy_language', document.getElementById('language').value);
-            localStorage.setItem('cosy_day', document.getElementById('day').value);
+            // Removed saving of day selection
         }
         function restoreUserSelection() {
             const savedLang = localStorage.getItem('cosy_language');
-            const savedDay = localStorage.getItem('cosy_day');
+            // Removed restoring of day selection
             if (savedLang) {
                 document.getElementById('language').value = savedLang;
                 // Trigger change event to update UI/flag
                 document.getElementById('language').dispatchEvent(new Event('change'));
-               }
-            if (savedDay) {
-                document.getElementById('day').value = savedDay;
-
-
-                // Optionally trigger change event if needed
-                document.getElementById('day').dispatchEvent(new Event('change'));
             }
+            // Do not restore day
         }
         // Attach save on change
         if (document.getElementById('language')) {
             document.getElementById('language').addEventListener('change', saveUserSelection);
         }
-        if (document.getElementById('day')) {
-            document.getElementById('day').addEventListener('change', saveUserSelection);
-        }
+        // Removed event listener for day
         // Restore on page load
         window.addEventListener('DOMContentLoaded', restoreUserSelection);
 
