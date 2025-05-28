@@ -1141,19 +1141,19 @@ async function practiceGrammar(type) {
         // Determine articles for the language
         let articles = [];
         switch(language) {
-            case 'COSYenglish': articles = ['he', 'she', 'it']; break;
-            case 'COSYfrançais': articles = ['le', 'la', "l'"]; break;
+            case 'COSYenglish': articles = ['he', 'she', 'it', "he/she"]; break;
+            case 'COSYfrançais': articles = ['le', 'la', "l'", 'le/la']; break;
             case 'COSYitaliano': articles = ['il', 'la', 'lo', "l'"]; break;
-            case 'COSYespañol': articles = ['el', 'la']; break;
+            case 'COSYespañol': articles = ['el', 'la', 'el/la']; break;
             case 'COSYdeutsch': articles = ['der', 'die', 'das']; break;
-            case 'COSYportuguês': articles = ['o', 'a']; break;
+            case 'COSYportuguês': articles = ['o', 'a', 'o/a']; break;
             case 'ТАКОЙрусский': articles = ['он', 'она', 'оно']; break;
-            case 'COSYenglish': articles = ['he', 'she', 'it']; break;
+            case 'COSYenglish': articles = ['he', 'she', 'it', 'he/she']; break;
             case 'COSYbrezhoneg': articles = ['ar', 'an']; break;
-            case 'COSYtatarça': articles = ['ир-ат', 'хатын-кыз']; break;
-            case 'COSYbashkort': articles = ['ир-ат', 'ҡатын-ҡыҙ']; break;
+            case 'COSYtatarça': articles = ['ир-ат', 'хатын-кыз', 'әйбер']; break;
+            case 'COSYbashkort': articles = ['ир-ат', 'ҡатын-ҡыҙ', 'әйбер']; break;
             case 'ԾՈՍՅհայկական': articles = ['արական', 'իգական', 'միջին']; break;
-            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το']; break;
+            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'o/h']; break;
             default: articles = ['the', 'a', 'an']; break;
         }
         // Build visually appealing article buttons
