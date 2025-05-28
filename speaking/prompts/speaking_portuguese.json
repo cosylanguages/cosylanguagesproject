@@ -1,9 +1,9 @@
 {
   "1": ["Um café ou um chá? Dinheiro ou cartão?"],
   "2": [
-    "Quem é você? (nome, homem ou mulher, estudante ou professor?)",
-    "Nomeie 3 pessoas famosas (nome, homem ou mulher?)",
-    "Nomeie 3 pessoas (nome, homem ou mulher?)"
+    "Quem é você?\n<em>Seu nome.</em>\n<em>Você é homem ou mulher?</em>\n<em>Você é estudante ou professor?</em>",
+    "Nomeie 3 pessoas famosas.\n<em>O nome dele/dela.</em>\n<em>Ele/Ela é homem ou mulher?</em>",
+    "Nomeie 3 pessoas.\n<em>O nome dele/dela.</em>\n<em>Ele/Ela é homem ou mulher?</em>"
   ],
   "3": [
     "Sua família",

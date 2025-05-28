@@ -1,9 +1,9 @@
 {
   "1": ["Ur banne kafe pe ur banne te? Gwir pe kartenn?"],
   "2": [
-    "Piv out? (anv, paotr pe plac'h, studier pe kelenner?)",
-    "Anv 3 den brudet (anv, paotr pe plac'h?)",
-    "Anv 3 den (anv, paotr pe plac'h?)"
+    "Piv zo out?\n<em>Da anv.</em>\n<em>Un den pe ur vaouez out?</em>\n<em>Un deskard pe ur c'helennerez out?</em>",
+    "Anv 3 den brudet.\n<em>E anv.</em>\n<em>Un den pe ur vaouez eo?</em>",
+    "Anv 3 den.\n<em>E anv.</em>\n<em>Un den pe ur vaouez eo?</em>"
   ],
   "3": [
     "Da familh",
