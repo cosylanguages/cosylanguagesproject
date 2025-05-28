@@ -272,7 +272,14 @@
                     } else {
                         hideOtherGrammarOptionBtns(btn);
                         document.getElementById('result').innerHTML = '';
-                        // Optionally, you could trigger the practiceGrammar function here if you want auto-start
+                        // Auto-start practice for this grammar type
+                        const type = btn.textContent.trim().toLowerCase();
+                        if (type.includes('gender')) practiceGrammar('gender');
+                        else if (type.includes('verb')) practiceGrammar('verbs');
+                        else if (type.includes('adjective')) practiceGrammar('adjectives');
+                        else if (type.includes('plural')) practiceGrammar('plurals');
+                        else if (type.includes('past')) practiceGrammar('pastTense');
+                        else if (type.includes('future')) practiceGrammar('futureTense');
                     }
                 };
             }
@@ -982,7 +989,14 @@
               } else {
                 hideOtherGrammarOptionBtns(btn);
                 document.getElementById('result').innerHTML = '';
-                // Optionally, you could trigger the practiceGrammar function here if you want auto-start
+                // Auto-start practice for this grammar type
+                const type = btn.textContent.trim().toLowerCase();
+                if (type.includes('gender')) practiceGrammar('gender');
+                else if (type.includes('verb')) practiceGrammar('verbs');
+                else if (type.includes('adjective')) practiceGrammar('adjectives');
+                else if (type.includes('plural')) practiceGrammar('plurals');
+                else if (type.includes('past')) practiceGrammar('pastTense');
+                else if (type.includes('future')) practiceGrammar('futureTense');
               }
             };
           }
