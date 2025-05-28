@@ -334,11 +334,12 @@
             }
         }
 
-        // --- Pronunciation: play word using SpeechSynthesis API, with mobile support ---
+        // --- Pronunciation: play word using SpeechSynthesis API, with mobile support and robust voice selection ---
         function pronounceWord(word, language) {
-            let langCode = 'en-US';
+            // Map to standard BCP-47 codes
+            let langCode = 'en-GB';
             switch(language) {
-                case 'COSYenglish': langCode = 'en-UK'; break;
+                case 'COSYenglish': langCode = 'en-GB'; break;
                 case 'COSYfrançais': langCode = 'fr-FR'; break;
                 case 'COSYespañol': langCode = 'es-ES'; break;
                 case 'COSYitaliano': langCode = 'it-IT'; break;
@@ -349,20 +350,24 @@
                 case 'COSYtatarça': langCode = 'tt-RU'; break;
                 case 'COSYbashkort': langCode = 'ba-RU'; break;
                 case 'ԾՈՍՅհայկական': langCode = 'hy-AM'; break;
-                default: langCode = 'en-UK';
+                default: langCode = 'en-GB';
             }
-            // iOS/Android: require user gesture, so always call from a button or setTimeout after interaction
             if ('speechSynthesis' in window) {
-                // Stop any current speech
                 window.speechSynthesis.cancel();
-                // Some mobile browsers need a short delay
                 setTimeout(() => {
                     const utter = new SpeechSynthesisUtterance(word);
                     utter.lang = langCode;
                     utter.rate = 1;
                     utter.pitch = 1;
+                    // Try to select a matching voice
+                    const voices = window.speechSynthesis.getVoices();
+                    if (voices && voices.length) {
+                        const match = voices.find(v => v.lang === langCode);
+                        if (match) utter.voice = match;
+                        else utter.voice = voices[0]; // fallback
+                    }
                     window.speechSynthesis.speak(utter);
-                }, 100);
+                }, 200); // Slightly longer delay for mobile
             } else {
                 alert('Sorry, speech synthesis is not supported on this device/browser.');
             }
@@ -384,10 +389,11 @@
         })();
         
         // Pronunciation check: record and compare
+        // --- Robust Speech Recognition: record and compare ---
         let recognition;
         function startPronunciationCheck(targetWord, language) {
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert('Speech recognition is not supported in this browser.');
+                alert('Speech recognition is not supported in this browser. Try using Chrome on Android or desktop.');
                 return;
             }
             // Stop previous recognition if running
@@ -398,7 +404,7 @@
             recognition = new SpeechRecognition();
             recognition.lang = (function(lang) {
                 switch(lang) {
-                    case 'COSYenglish': return 'en-UK';
+                    case 'COSYenglish': return 'en-GB';
                     case 'COSYfrançais': return 'fr-FR';
                     case 'COSYespañol': return 'es-ES';
                     case 'COSYitaliano': return 'it-IT';
@@ -409,7 +415,7 @@
                     case 'COSYtatarça': return 'tt-RU';
                     case 'COSYbashkort': return 'ba-RU';
                     case 'ԾՈՍՅհայկական': return 'hy-AM';
-                    default: return 'en-UK';
+                    default: return 'en-GB';
                 }
             })(language);
             recognition.interimResults = false;
@@ -459,16 +465,24 @@
                     `<p><strong>You said:</strong> ${userSaid}</p><p>${feedback}</p>`;
             };
             recognition.onerror = function(event) {
-                document.getElementById('pronunciation-feedback').innerHTML =
-                    `<p style='color:red;'>Error: ${event.error}</p>`;
-                // Always stop on error to avoid stuck state
+                let msg = `<p style='color:red;'>Error: ${event.error}</p>`;
+                if (event.error === 'not-allowed' || event.error === 'denied') {
+                    msg += '<p style="color:red;">Microphone access denied. Please allow microphone permissions in your browser settings.</p>';
+                } else if (event.error === 'no-speech') {
+                    msg += '<p style="color:red;">No speech detected. Please try again and speak clearly.</p>';
+                }
+                document.getElementById('pronunciation-feedback').innerHTML = msg;
                 try { recognition.stop(); } catch(e) {}
             };
             recognition.onend = function() {
                 // Optionally, you can re-enable the button or give UI feedback here
             };
-            recognition.start();
-            document.getElementById('pronunciation-feedback').innerHTML = '<p>Listening...</p>';
+            try {
+                recognition.start();
+                document.getElementById('pronunciation-feedback').innerHTML = '<p>Listening...</p>';
+            } catch(e) {
+                document.getElementById('pronunciation-feedback').innerHTML = '<p style="color:red;">Could not start recognition. Please check your microphone permissions.</p>';
+            }
         }
 
         // Vocabulary practice function (random word from file)
