@@ -275,3 +275,117 @@ body.flag-COSYbashkort { background-image: url('icons/flag-bashkortostan.png'), 
         gap: 8px;
     }
 }
+
+/* Adventure/game-like UI animations */
+#cosy-gamestats {
+  animation: popIn 0.7s cubic-bezier(.23,1.01,.32,1) 0.1s both;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+#cosy-gamestats.levelup {
+  background: #ffe082 !important;
+  color: #00bdbd !important;
+  box-shadow: 0 0 24px 6px #ffe08299;
+  animation: levelUpPop 0.7s cubic-bezier(.23,1.01,.32,1);
+}
+@keyframes levelUpPop {
+  0% { transform: scale(1.2) rotate(-2deg); }
+  60% { transform: scale(1.05) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+/* Toast animation */
+body .cosy-toast {
+  animation: popIn 0.5s cubic-bezier(.23,1.01,.32,1) 0.1s both;
+}
+/* Add a sparkle effect for correct answers */
+.result-area span[style*='#27ae60']::after {
+  content: ' ✨';
+  animation: sparkle 0.7s linear;
+}
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(0.7) rotate(-10deg); }
+  60% { opacity: 1; transform: scale(1.2) rotate(10deg); }
+  100% { opacity: 0; transform: scale(0.7) rotate(-10deg); }
+}
+
+/* --- Practice All UI/UX improvements --- */
+.match-container {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  margin: 24px 0 12px 0;
+}
+.match-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.match-item {
+  background: #e0f7fa;
+  color: #00bdbd;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 1.1rem;
+  margin: 0 0 4px 0;
+  box-shadow: 0 2px 8px #00bdbd22;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, border 0.2s;
+  border: 2px solid transparent;
+  outline: none;
+}
+.match-item.selected {
+  background: #ffe082;
+  color: #009999;
+  border: 2px solid #ffe082;
+}
+.match-item.matched {
+  background: #27ae60;
+  color: #fff;
+  border: 2px solid #27ae60;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.tf-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0 12px 0;
+}
+.tf-statement {
+  font-size: 1.3rem;
+  color: #009999;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.tf-btns button {
+  margin: 0 12px;
+  min-width: 90px;
+  font-size: 1.1rem;
+}
+.choose4-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0 12px 0;
+}
+.choose4-question {
+  font-size: 1.3rem;
+  color: #009999;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.choose4-options {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.choose4-btn.correct {
+  background: #27ae60 !important;
+  color: #fff !important;
+}
+.choose4-btn.incorrect {
+  background: #e74c3c !important;
+  color: #fff !important;
+}
