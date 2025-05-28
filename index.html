@@ -298,6 +298,7 @@
                 genderBtn.textContent = t.gender;
                 genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
                 genderBtn.onclick = function() {
+                    // Start gender practice on single click
                     hideOtherGrammarOptionBtns(genderBtn);
                     document.getElementById('result').innerHTML = '';
                     practiceGrammar('gender');
@@ -308,7 +309,12 @@
                 const verbBtn = document.createElement('button');
                 verbBtn.textContent = t.verbs;
                 verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                verbBtn.onclick = makeToggleHandler(verbBtn);
+                verbBtn.onclick = function() {
+                    // Start verb practice on single click
+                    hideOtherGrammarOptionBtns(verbBtn);
+                    document.getElementById('result').innerHTML = '';
+                    practiceGrammar('verbs');
+                };
                 grammarOptionsContainer.appendChild(verbBtn);
             }
             if (day >= 3) {
@@ -1021,6 +1027,7 @@
             genderBtn.textContent = t.gender;
             genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
             genderBtn.onclick = function() {
+                // Start gender practice on single click
                 hideOtherGrammarOptionBtns(genderBtn);
                 document.getElementById('result').innerHTML = '';
                 practiceGrammar('gender');
@@ -1031,7 +1038,12 @@
             const verbBtn = document.createElement('button');
             verbBtn.textContent = t.verbs;
             verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
-            verbBtn.onclick = makeToggleHandler(verbBtn);
+            verbBtn.onclick = function() {
+                // Start verb practice on single click
+                hideOtherGrammarOptionBtns(verbBtn);
+                document.getElementById('result').innerHTML = '';
+                practiceGrammar('verbs');
+            };
             grammarOptionsContainer.appendChild(verbBtn);
           }
           if (day >= 3) {
@@ -1100,55 +1112,75 @@
                     resultArea.innerHTML = `<p style="text-align:center;">No gender data for this day/language.</p>`;
                     return;
                 }
-                const item = items[Math.floor(Math.random() * items.length)];
-                // Determine articles for the language
-                let articles = [];
-                switch(language) {
-                    case 'COSYenglish': articles = ['he', 'she', 'it', "he/she"]; break;
-                    case 'COSYfrançais': articles = ['le', 'la', "l'", 'le/la']; break;
-                    case 'COSYitaliano': articles = ['il', 'la', 'lo', "l'"]; break;
-                    case 'COSYespañol': articles = ['el', 'la', 'el/la']; break;
-                    case 'COSYdeutsch': articles = ['der', 'die', 'das']; break;
-                    case 'COSYportuguês': articles = ['o', 'a', 'o/a']; break;
-                    case 'ТАКОЙрусский': articles = ['он', 'она', 'оно']; break;
-                    case 'COSYenglish': articles = ['he', 'she', 'it', 'he/she']; break;
-                    case 'COSYbrezhoneg': articles = ['ar', 'an']; break;
-                    case 'COSYtatarça': articles = ['ир-ат', 'хатын-кыз', 'әйбер']; break;
-                    case 'COSYbashkort': articles = ['ир-ат', 'ҡатын-ҡыҙ', 'әйбер']; break;
-                    case 'ԾՈՍՅհայկական': articles = ['արական', 'իգական', 'միջին']; break;
-                    case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'o/h']; break;
-                    default: articles = ['the', 'a', 'an']; break;
-                }
-                // Build visually appealing article buttons
-                let articleOptions = articles.map((art, idx) =>
-                    `<button type='button' class='article-btn${idx===0 ? " selected" : ""}' data-article='${art}'>${art}</button>`
-                ).join('');
-                resultArea.innerHTML = `
-                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;">
-                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
-                            <span id="gender-word" style="font-size:2rem; font-weight:600;">${item.word}</span>
-                            <button id="play-gender-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:1.5rem;">🔊</button>
+                let item = items[Math.floor(Math.random() * items.length)];
+                function renderGender() {
+                    // Determine articles for the language
+                    let articles = [];
+                    switch(language) {
+                        case 'COSYenglish': articles = ['he', 'she', 'it', "he/she"]; break;
+                        case 'COSYfrançais': articles = ['le', 'la', "l'", 'le/la']; break;
+                        case 'COSYitaliano': articles = ['il', 'la', 'lo', "l'"]; break;
+                        case 'COSYespañol': articles = ['el', 'la', 'el/la']; break;
+                        case 'COSYdeutsch': articles = ['der', 'die', 'das']; break;
+                        case 'COSYportuguês': articles = ['o', 'a', 'o/a']; break;
+                        case 'ТАКОЙрусский': articles = ['он', 'она', 'оно']; break;
+                        case 'COSYbrezhoneg': articles = ['ar', 'an']; break;
+                        case 'COSYtatarça': articles = ['ир-ат', 'хатын-кыз', 'әйбер']; break;
+                        case 'COSYbashkort': articles = ['ир-ат', 'ҡатын-ҡыҙ', 'әйбер']; break;
+                        case 'ԾՈՍՅհայկական': articles = ['արական', 'իգական', 'միջին']; break;
+                        case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'o/h']; break;
+                        default: articles = ['the', 'a', 'an']; break;
+                    }
+                    // Build visually appealing article buttons
+                    let articleOptions = articles.map((art, idx) =>
+                        `<button type='button' class='article-btn${idx===0 ? " selected" : ""}' data-article='${art}'>${art}</button>`
+                    ).join('');
+                    resultArea.innerHTML = `
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;">
+                            <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+                                <span id="gender-word" style="font-size:2rem; font-weight:600; cursor:pointer;">${item.word}</span>
+                                <button id="play-gender-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:1.5rem;">🔊</button>
+                            </div>
+                            <div id="article-options" style="margin-bottom:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">${articleOptions}</div>
+                            <button id="check-gender-btn" class="btn-secondary" style="min-width:120px; margin-bottom:10px;">Check</button>
+                            <div id="gender-feedback" style="margin-top:14px;"></div>
                         </div>
-                        <div id="article-options" style="margin-bottom:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">${articleOptions}</div>
-                        <button id="check-gender-btn" class="btn-secondary" style="min-width:120px; margin-bottom:10px;">Check</button>
-                        <div id="gender-feedback" style="margin-top:14px;"></div>
-                    </div>
-                `;
-                // Automatic pronunciation
-                pronounceWord(item.word, language);
-                setTimeout(() => {
-                    document.getElementById('play-gender-pronounce-btn').onclick = function() {
-                        pronounceWord(item.word, language);
-                    };
-                    // Replace article button logic in gender practice:
-                    let selectedArticle = articles[0];
-                    const articleBtns = document.querySelectorAll('#article-options .article-btn');
-                    articleBtns.forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            articleBtns.forEach(b => b.classList.remove('selected'));
-                            btn.classList.add('selected');
-                            selectedArticle = btn.getAttribute('data-article');
-                            // Immediately check answer when an article is clicked
+                    `;
+                    pronounceWord(item.word, language);
+                    setTimeout(() => {
+                        document.getElementById('play-gender-pronounce-btn').onclick = function() {
+                            pronounceWord(item.word, language);
+                        };
+                        document.getElementById('gender-word').onclick = function() {
+                            item = items[Math.floor(Math.random() * items.length)];
+                            renderGender();
+                        };
+                        // Replace article button logic in gender practice:
+                        let selectedArticle = articles[0];
+                        const articleBtns = document.querySelectorAll('#article-options .article-btn');
+                        articleBtns.forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                articleBtns.forEach(b => b.classList.remove('selected'));
+                                btn.classList.add('selected');
+                                selectedArticle = btn.getAttribute('data-article');
+                                let correct = false;
+                                if (Array.isArray(item.article)) {
+                                    correct = item.article.includes(selectedArticle);
+                                } else {
+                                    correct = selectedArticle && (selectedArticle === item.article);
+                                }
+                                let feedback = '';
+                                if (!selectedArticle) {
+                                    feedback = '<span style="color:#e67e22;">Please select an article.</span>';
+                                } else if (correct) {
+                                    feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                                } else {
+                                    feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct article is: <b>${Array.isArray(item.article) ? item.article.join(', ') : item.article}</b></span>`;
+                                }
+                                document.getElementById('gender-feedback').innerHTML = feedback;
+                            });
+                        });
+                        document.getElementById('check-gender-btn').onclick = function() {
                             let correct = false;
                             if (Array.isArray(item.article)) {
                                 correct = item.article.includes(selectedArticle);
@@ -1160,32 +1192,14 @@
                                 feedback = '<span style="color:#e67e22;">Please select an article.</span>';
                             } else if (correct) {
                                 feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
-                                setTimeout(() => practiceGrammar(type), 1200);
                             } else {
                                 feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct article is: <b>${Array.isArray(item.article) ? item.article.join(', ') : item.article}</b></span>`;
                             }
                             document.getElementById('gender-feedback').innerHTML = feedback;
-                        });
-                    });
-                    document.getElementById('check-gender-btn').onclick = function() {
-                        let correct = false;
-                        if (Array.isArray(item.article)) {
-                            correct = item.article.includes(selectedArticle);
-                        } else {
-                            correct = selectedArticle && (selectedArticle === item.article);
-                        }
-                        let feedback = '';
-                        if (!selectedArticle) {
-                            feedback = '<span style="color:#e67e22;">Please select an article.</span>';
-                        } else if (correct) {
-                            feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
-                            setTimeout(() => practiceGrammar(type), 1200);
-                        } else {
-                            feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct article is: <b>${Array.isArray(item.article) ? item.article.join(', ') : item.article}</b></span>`;
-                        }
-                        document.getElementById('gender-feedback').innerHTML = feedback;
-                    };
-                }, 0);
+                        };
+                    }, 0);
+                }
+                renderGender();
                 return;
             } else if (type === 'verbs') {
                 const items = await loadVerbGrammar(language, day);
@@ -1193,51 +1207,55 @@
                     resultArea.innerHTML = `<p style="text-align:center;">No verb data for this day/language.</p>`;
                     return;
                 }
-                const item = items[Math.floor(Math.random() * items.length)];
-                // UI: show prompt with listen button, ask for answer
-                let verbPrompt = '';
-                if (parseInt(day) === 2) {
-                    verbPrompt = `<div style=\"font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:8px;\">${(translations[language]||translations['COSYenglish']).verbDay2}</div>`;
-                } else if (parseInt(day) === 3) {
-                    verbPrompt = `<div style=\"font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:8px;\">${(translations[language]||translations['COSYenglish']).verbDay3}</div>`;
-                }
-                resultArea.innerHTML = `
-                    ${verbPrompt}
-                    <div style=\"display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;\">
-                        <div style=\"display:flex; align-items:center; gap:12px; margin-bottom:18px;\">
-                            <span id=\"verb-prompt\" style=\"font-size:2rem; font-weight:600;\">${item.prompt}</span>
-                            <button id=\"play-verb-pronounce-btn\" class=\"btn-secondary\" title=\"Hear pronunciation\" style=\"font-size:1.5rem;\">🔊</button>
+                let item = items[Math.floor(Math.random() * items.length)];
+                function renderVerb() {
+                    let verbPrompt = '';
+                    if (parseInt(day) === 2) {
+                        verbPrompt = `<div style=\"font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:8px;\">${(translations[language]||translations['COSYenglish']).verbDay2}</div>`;
+                    } else if (parseInt(day) === 3) {
+                        verbPrompt = `<div style=\"font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:8px;\">${(translations[language]||translations['COSYenglish']).verbDay3}</div>`;
+                    }
+                    resultArea.innerHTML = `
+                        ${verbPrompt}
+                        <div style=\"display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;\">
+                            <div style=\"display:flex; align-items:center; gap:12px; margin-bottom:18px;\">
+                                <span id=\"verb-prompt\" style=\"font-size:2rem; font-weight:600; cursor:pointer;\">${item.prompt}</span>
+                                <button id=\"play-verb-pronounce-btn\" class=\"btn-secondary\" title=\"Hear pronunciation\" style=\"font-size:1.5rem;\">🔊</button>
+                            </div>
+                            <input id=\"verb-answer-input\" type=\"text\" placeholder=\"Type the answer...\" style=\"font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;\">
+                            <button id=\"check-verb-answer-btn\" class=\"btn-secondary\" style=\"margin-bottom:18px; min-width:120px;\">Check</button>
+                            <div id=\"verb-answer-feedback\" style=\"margin-top:10px;\"></div>
                         </div>
-                        <input id=\"verb-answer-input\" type=\"text\" placeholder=\"Type the answer...\" style=\"font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;\">
-                        <button id=\"check-verb-answer-btn\" class=\"btn-secondary\" style=\"margin-bottom:18px; min-width:120px;\">Check</button>
-                        <div id=\"verb-answer-feedback\" style=\"margin-top:10px;\"></div>
-                    </div>
-                `;
-                // Automatic pronunciation
-                pronounceWord(item.prompt, language);
-                setTimeout(() => {
-                    document.getElementById('play-verb-pronounce-btn').onclick = function() {
-                        pronounceWord(item.prompt, language);
-                    };
-                    document.getElementById('check-verb-answer-btn').onclick = function() {
-                        const userInput = document.getElementById('verb-answer-input').value.trim().toLowerCase();
-                        const correct = item.answer.trim().toLowerCase();
-                        let feedback = '';
-                        if (!userInput) {
-                            feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
-                        } else if (userInput === correct) {
-                            feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
-                            setTimeout(() => practiceGrammar(type), 1200);
-                        } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
-                            feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
-                        } else {
-                            feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${item.answer}</b></span>`;
-                        }
-                        document.getElementById('verb-answer-feedback').innerHTML = feedback;
-                    };
-                    // Add Enter key support for verb answer
-                    addEnterKeySupport('verb-answer-input', 'check-verb-answer-btn');
-                }, 0);
+                    `;
+                    pronounceWord(item.prompt, language);
+                    setTimeout(() => {
+                        document.getElementById('play-verb-pronounce-btn').onclick = function() {
+                            pronounceWord(item.prompt, language);
+                        };
+                        document.getElementById('verb-prompt').onclick = function() {
+                            item = items[Math.floor(Math.random() * items.length)];
+                            renderVerb();
+                        };
+                        document.getElementById('check-verb-answer-btn').onclick = function() {
+                            const userInput = document.getElementById('verb-answer-input').value.trim().toLowerCase();
+                            const correct = item.answer.trim().toLowerCase();
+                            let feedback = '';
+                            if (!userInput) {
+                                feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
+                            } else if (userInput === correct) {
+                                feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                                setTimeout(() => practiceGrammar(type), 1200);
+                            } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
+                                feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
+                            } else {
+                                feedback = `<span style=\\\"color:#e74c3c;\\\">❌ Not quite. The correct answer is: <b>${item.answer}</b></span>`;
+                            }
+                            document.getElementById('verb-answer-feedback').innerHTML = feedback;
+                        };
+                        addEnterKeySupport('verb-answer-input', 'check-verb-answer-btn');
+                    }, 0);
+                }
+                renderVerb();
                 return;
             }
         }
