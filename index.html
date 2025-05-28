@@ -603,6 +603,8 @@
                         <div id=\"listening-answer-feedback\" style=\"margin-top:10px;\"></div>
                     </div>
                 `;
+                // Automatic pronunciation for listening
+                pronounceWord(word, language);
                 setTimeout(() => {
                     document.getElementById('play-listen-btn').onclick = function() {
                         pronounceWord(word, language);
@@ -617,7 +619,7 @@
                             feedback = '<span style=\"color:#27ae60;\">✅ Correct!</span>';
                             setTimeout(() => practiceVocabulary('listening'), 1200);
                         } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
-                            feedback = '<span style=\"color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
+                            feedback = '<span style=\"color:#f1c40f;\">🟡 Almost! Check your spelling.</span>';
                         } else {
                             feedback = `<span style=\\\"color:#e74c3c;\\\">❌ Not quite. The correct answer is: <b>${word}</b></span>`;
                         }
