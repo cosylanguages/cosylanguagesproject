@@ -245,63 +245,82 @@
             }
             // Use the first day in the range to determine which grammar options to show
             const day = parseInt(days[0]);
+            // Helper for toggle logic
+            function hideOtherGrammarOptionBtns(selectedBtn) {
+                const btns = grammarOptionsContainer.querySelectorAll('.grammar-option-btn');
+                btns.forEach(btn => {
+                    if (btn !== selectedBtn) {
+                        btn.style.display = 'none';
+                    } else {
+                        btn.classList.add('active-grammar-btn');
+                    }
+                });
+            }
+            function showAllGrammarOptionBtns() {
+                const btns = grammarOptionsContainer.querySelectorAll('.grammar-option-btn');
+                btns.forEach(btn => {
+                    btn.style.display = 'inline-block';
+                    btn.classList.remove('active-grammar-btn');
+                });
+            }
+            function makeToggleHandler(btn) {
+                return function() {
+                    const isActive = btn.classList.contains('active-grammar-btn');
+                    if (isActive) {
+                        showAllGrammarOptionBtns();
+                        document.getElementById('result').innerHTML = '';
+                    } else {
+                        hideOtherGrammarOptionBtns(btn);
+                        document.getElementById('result').innerHTML = '';
+                        // Optionally, you could trigger the practiceGrammar function here if you want auto-start
+                    }
+                };
+            }
             // Hide gender for English on day 1
             if (lang !== 'COSYenglish' && day >= 1) {
                 const genderBtn = document.createElement('button');
                 genderBtn.textContent = t.gender;
-                genderBtn.className = 'btn-secondary btn-small';
-                genderBtn.id = 'gender-btn';
-                genderBtn.onclick = function() {
-                    hideOtherGrammarOptions('gender-btn');
-                    practiceGrammar('gender');
-                };
+                genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                genderBtn.onclick = makeToggleHandler(genderBtn);
                 grammarOptionsContainer.appendChild(genderBtn);
             } else if (lang === 'COSYenglish' && day > 1) {
                 const genderBtn = document.createElement('button');
                 genderBtn.textContent = t.gender;
-                genderBtn.className = 'btn-secondary btn-small';
-                genderBtn.id = 'gender-btn';
-                genderBtn.onclick = function() {
-                    hideOtherGrammarOptions('gender-btn');
-                    practiceGrammar('gender');
-                };
+                genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                genderBtn.onclick = makeToggleHandler(genderBtn);
                 grammarOptionsContainer.appendChild(genderBtn);
             }
             if (day >= 2) {
                 const verbBtn = document.createElement('button');
                 verbBtn.textContent = t.verbs;
-                verbBtn.className = 'btn-secondary btn-small';
-                verbBtn.id = 'verbs-btn';
-                verbBtn.onclick = function() {
-                    hideOtherGrammarOptions('verbs-btn');
-                    practiceGrammar('verbs');
-                };
+                verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                verbBtn.onclick = makeToggleHandler(verbBtn);
                 grammarOptionsContainer.appendChild(verbBtn);
             }
             if (day >= 3) {
                 const adjBtn = document.createElement('button');
                 adjBtn.textContent = t.adjectives;
-                adjBtn.className = 'btn-secondary btn-small';
-                adjBtn.onclick = function() { practiceGrammar('adjectives'); };
+                adjBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                adjBtn.onclick = makeToggleHandler(adjBtn);
                 grammarOptionsContainer.appendChild(adjBtn);
                 const pluralBtn = document.createElement('button');
                 pluralBtn.textContent = t.plurals;
-                pluralBtn.className = 'btn-secondary btn-small';
-                pluralBtn.onclick = function() { practiceGrammar('plurals'); };
+                pluralBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                pluralBtn.onclick = makeToggleHandler(pluralBtn);
                 grammarOptionsContainer.appendChild(pluralBtn);
             }
             if (day >= 5) {
                 const pastBtn = document.createElement('button');
                 pastBtn.textContent = t.pastTense;
-                pastBtn.className = 'btn-secondary btn-small';
-                pastBtn.onclick = function() { practiceGrammar('past-tense'); };
+                pastBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                pastBtn.onclick = makeToggleHandler(pastBtn);
                 grammarOptionsContainer.appendChild(pastBtn);
             }
             if (day >= 7) {
                 const futureBtn = document.createElement('button');
                 futureBtn.textContent = t.futureTense;
-                futureBtn.className = 'btn-secondary btn-small';
-                futureBtn.onclick = function() { practiceGrammar('future-tense'); };
+                futureBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                futureBtn.onclick = makeToggleHandler(futureBtn);
                 grammarOptionsContainer.appendChild(futureBtn);
             }
         }
@@ -936,51 +955,82 @@
           }
           // Use the first day in the range to determine which grammar options to show
           const day = parseInt(days[0]);
+          // Helper for toggle logic
+          function hideOtherGrammarOptionBtns(selectedBtn) {
+            const btns = grammarOptionsContainer.querySelectorAll('.grammar-option-btn');
+            btns.forEach(btn => {
+              if (btn !== selectedBtn) {
+                btn.style.display = 'none';
+              } else {
+                btn.classList.add('active-grammar-btn');
+              }
+            });
+          }
+          function showAllGrammarOptionBtns() {
+            const btns = grammarOptionsContainer.querySelectorAll('.grammar-option-btn');
+            btns.forEach(btn => {
+              btn.style.display = 'inline-block';
+              btn.classList.remove('active-grammar-btn');
+            });
+          }
+          function makeToggleHandler(btn) {
+            return function() {
+              const isActive = btn.classList.contains('active-grammar-btn');
+              if (isActive) {
+                showAllGrammarOptionBtns();
+                document.getElementById('result').innerHTML = '';
+              } else {
+                hideOtherGrammarOptionBtns(btn);
+                document.getElementById('result').innerHTML = '';
+                // Optionally, you could trigger the practiceGrammar function here if you want auto-start
+              }
+            };
+          }
           // Hide gender for English on day 1
           if (lang !== 'COSYenglish' && day >= 1) {
             const genderBtn = document.createElement('button');
             genderBtn.textContent = t.gender;
-            genderBtn.className = 'btn-secondary btn-small';
-            genderBtn.onclick = function() { practiceGrammar('gender'); };
+            genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            genderBtn.onclick = makeToggleHandler(genderBtn);
             grammarOptionsContainer.appendChild(genderBtn);
           } else if (lang === 'COSYenglish' && day > 1) {
             const genderBtn = document.createElement('button');
             genderBtn.textContent = t.gender;
-            genderBtn.className = 'btn-secondary btn-small';
-            genderBtn.onclick = function() { practiceGrammar('gender'); };
+            genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            genderBtn.onclick = makeToggleHandler(genderBtn);
             grammarOptionsContainer.appendChild(genderBtn);
           }
           if (day >= 2) {
             const verbBtn = document.createElement('button');
             verbBtn.textContent = t.verbs;
-            verbBtn.className = 'btn-secondary btn-small';
-            verbBtn.onclick = function() { practiceGrammar('verbs'); };
+            verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            verbBtn.onclick = makeToggleHandler(verbBtn);
             grammarOptionsContainer.appendChild(verbBtn);
           }
           if (day >= 3) {
             const adjBtn = document.createElement('button');
             adjBtn.textContent = t.adjectives;
-            adjBtn.className = 'btn-secondary btn-small';
-            adjBtn.onclick = function() { practiceGrammar('adjectives'); };
+            adjBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            adjBtn.onclick = makeToggleHandler(adjBtn);
             grammarOptionsContainer.appendChild(adjBtn);
             const pluralBtn = document.createElement('button');
             pluralBtn.textContent = t.plurals;
-            pluralBtn.className = 'btn-secondary btn-small';
-            pluralBtn.onclick = function() { practiceGrammar('plurals'); };
+            pluralBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            pluralBtn.onclick = makeToggleHandler(pluralBtn);
             grammarOptionsContainer.appendChild(pluralBtn);
           }
           if (day >= 5) {
             const pastBtn = document.createElement('button');
             pastBtn.textContent = t.pastTense;
-            pastBtn.className = 'btn-secondary btn-small';
-            pastBtn.onclick = function() { practiceGrammar('past-tense'); };
+            pastBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            pastBtn.onclick = makeToggleHandler(pastBtn);
             grammarOptionsContainer.appendChild(pastBtn);
           }
           if (day >= 7) {
             const futureBtn = document.createElement('button');
             futureBtn.textContent = t.futureTense;
-            futureBtn.className = 'btn-secondary btn-small';
-            futureBtn.onclick = function() { practiceGrammar('future-tense'); };
+            futureBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            futureBtn.onclick = makeToggleHandler(futureBtn);
             grammarOptionsContainer.appendChild(futureBtn);
           }
         }
