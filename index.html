@@ -646,13 +646,13 @@
             recognition = new SpeechRecognition();
             recognition.lang = (function(lang) {
                 switch(lang) {
-                    case 'COSYenglish': return 'en-US';
+                    case 'COSYenglish': return 'en-UK';
                     case 'COSYfrançais': return 'fr-FR';
                     case 'COSYespañol': return 'es-ES';
                     case 'COSYitaliano': return 'it-IT';
                     case 'COSYdeutsch': return 'de-DE';
                     case 'COSYportuguês': return 'pt-PT';
-                    default: return 'en-US';
+                    default: return 'en-UK';
                 }
             })(language);
             recognition.interimResults = false;
