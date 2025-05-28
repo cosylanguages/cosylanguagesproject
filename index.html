@@ -148,6 +148,18 @@
             });
         }
 
+        // Helper: show/hide main practice type buttons
+        function hideOtherMainPracticeTypes(selectedId) {
+            [vocabularyBtn, grammarBtn, speakingBtn].forEach(btn => {
+                if (btn.id !== selectedId) btn.style.display = 'none';
+            });
+        }
+        function showAllMainPracticeTypes() {
+            [vocabularyBtn, grammarBtn, speakingBtn].forEach(btn => {
+                btn.style.display = '';
+            });
+        }
+
         // Attach to vocabulary option buttons
         document.getElementById('random-word-btn').addEventListener('click', function() {
             hideOtherVocabularyOptions('random-word-btn');
@@ -167,7 +179,11 @@
         function attachGrammarOptionHiders() {
             document.querySelectorAll('#grammar-options button').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    hideOtherGrammarOptions(btn.id);
+                    document.querySelectorAll('#grammar-options button').forEach(otherBtn => {
+                        if (otherBtn !== btn) {
+                            otherBtn.style.display = 'none';
+                        }
+                    });
                 });
             });
         }
@@ -213,6 +229,7 @@
             vocabularyBtn.classList.remove('btn-primary');
             vocabularyBtn.classList.add('btn-secondary');
             updatePracticeAllVisibility();
+            hideOtherMainPracticeTypes('vocabulary-btn');
         });
         
         // Grammar button click
@@ -237,6 +254,7 @@
             grammarBtn.classList.remove('btn-primary');
             grammarBtn.classList.add('btn-secondary');
             updatePracticeAllVisibility();
+            hideOtherMainPracticeTypes('grammar-btn');
         });
         
         // Speaking button click
@@ -258,6 +276,7 @@
             speakingBtn.classList.remove('btn-primary');
             speakingBtn.classList.add('btn-secondary');
             updatePracticeAllVisibility();
+            hideOtherMainPracticeTypes('speaking-btn');
         });
         
         // Update grammar options based on selected day or range
@@ -1265,6 +1284,49 @@
           // Update grammar options if visible
           if (document.getElementById('grammar-options').style.display === 'block') updateGrammarOptions();
         }
+
+        // Restore all main practice type buttons when returning to menu
+        function restoreMenu() {
+            showAllMainPracticeTypes();
+            showAllVocabularyOptions();
+            showAllGrammarOptions();
+            vocabularyOptions.style.display = 'none';
+            grammarOptions.style.display = 'none';
+            speakingOptions.style.display = 'none';
+            practiceAllBtn.style.display = 'block';
+            // Optionally clear result area
+            document.getElementById('result').innerHTML = '';
+        }
+        // Attach restoreMenu to a suitable place, e.g., clicking the active main button again
+        vocabularyBtn.addEventListener('dblclick', restoreMenu);
+        grammarBtn.addEventListener('dblclick', restoreMenu);
+        speakingBtn.addEventListener('dblclick', restoreMenu);
+
+        // --- Hide/show day and day-from/day-to options depending on selection ---
+function updateDaySelectors() {
+    const day = daySelect.value;
+    const dayFrom = dayFromSelect.value;
+    const dayTo = dayToSelect.value;
+    if (day) {
+        // Hide range selectors
+        dayFromSelect.parentElement.style.display = 'none';
+        dayToSelect.parentElement.style.display = 'none';
+    } else if (dayFrom || dayTo) {
+        // Hide single day selector
+        daySelect.style.display = 'none';
+        dayFromSelect.parentElement.style.display = '';
+        dayToSelect.parentElement.style.display = '';
+    } else {
+        // Show all
+        daySelect.style.display = '';
+        dayFromSelect.parentElement.style.display = '';
+        dayToSelect.parentElement.style.display = '';
+    }
+}
+
+daySelect.addEventListener('change', updateDaySelectors);
+dayFromSelect.addEventListener('change', updateDaySelectors);
+dayToSelect.addEventListener('change', updateDaySelectors);
     </script>
     <!-- Sound effects -->
     <audio id="click-sound" src="sounds/click.mp3" preload="auto"></audio>
