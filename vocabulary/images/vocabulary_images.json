@@ -5,8 +5,8 @@
             "alt": "Hello",
             "translations": {
                 "COSYenglish": "Hello",
-                "COSYfrançais": "Bonjour",
-                "COSYitaliano": "Buongiorno",
+                "COSYfrançais": "Bonjour, Salut",
+                "COSYitaliano": "Buongiorno, Ciao",
                 "COSYespañol": "Hola",
                 "COSYportuguês": "Olá",
                 "COSYdeutsch": "Hallo",
@@ -22,8 +22,8 @@
             "alt": "Goodbye",
             "translations": {
                 "COSYenglish": "Goodbye",
-                "COSYfrançais": "Au revoir",
-                "COSYitaliano": "Arrivederci",
+                "COSYfrançais": "Au revoir, Salut",
+                "COSYitaliano": "Arrivederci, Ciao",
                 "COSYespañol": "Adiós",
                 "COSYportuguês": "Adeus",
                 "COSYdeutsch": "Auf Wiedersehen",

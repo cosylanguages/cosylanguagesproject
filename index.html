@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSYlanguages</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00bdbd">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('service-worker.js');
+        });
+      }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -546,6 +555,7 @@
         // Load verb grammar data for a given language and day
         async function loadVerbGrammar(language, day) {
             const fileMap = {
+                'COSYenglish': 'grammar/verbs/grammar_verbs_english.json',
                 'COSYitaliano': 'grammar/verbs/grammar_verbs_italian.json',
                 'COSYfrançais': 'grammar/verbs/grammar_verbs_french.json',
                 'COSYespañol': 'grammar/verbs/grammar_verbs_spanish.json',
@@ -1114,6 +1124,7 @@ async function practiceGrammar(type) {
         // Determine articles for the language
         let articles = [];
         switch(language) {
+            case 'COSYenglish': articles = ['he', 'she', 'it']; break;
             case 'COSYfrançais': articles = ['le', 'la', "l'"]; break;
             case 'COSYitaliano': articles = ['il', 'la', 'lo', "l'"]; break;
             case 'COSYespañol': articles = ['el', 'la']; break;
