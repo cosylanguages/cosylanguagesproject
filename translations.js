@@ -33,7 +33,24 @@ const translations = {
     correct: 'Correct!',
     wrong: 'Wrong!',
     means: 'means',
-    chooseCorrect: 'Which is correct?'
+    chooseCorrect: 'Which is correct?',
+    listen: 'Listen',
+    noImages: 'No images available!',
+    chooseVerbForm: 'Choose the correct verb form:',
+    chooseGender: 'Choose the word for the article:',
+    noVerbs: 'No verbs available!',
+    noVerbForms: 'No verb forms!',
+    noGender: 'No gender data!',
+    funFacts: [
+      'Did you know? Spaced repetition boosts memory! 🧠',
+      'Mnemonic: Make a silly story with your word!',
+      'Practice a little every day for best results!',
+      'Visualize the word in a funny scene!',
+      'Say it out loud with a different accent!',
+      'Teach the word to someone else!',
+      'Use gestures or draw the word!',
+      'Recall is stronger if you test yourself after a break!'
+    ]
   },
   COSYitaliano: {
     title: 'COSYlanguages',
@@ -69,7 +86,24 @@ const translations = {
     correct: 'Corretto!',
     wrong: 'Sbagliato!',
     means: 'significa',
-    chooseCorrect: 'Qual è corretto?'
+    chooseCorrect: 'Qual è corretto?',
+    listen: 'Ascolta',
+    noImages: 'Nessuna immagine disponibile!',
+    chooseVerbForm: 'Scegli la forma verbale corretta:',
+    chooseGender: 'Scegli la parola per l’articolo:',
+    noVerbs: 'Nessun verbo disponibile!',
+    noVerbForms: 'Nessuna forma verbale!',
+    noGender: 'Nessun dato sul genere!',
+    funFacts: [
+      'Lo sapevi? La ripetizione dilazionata migliora la memoria! 🧠',
+      'Usa una storia buffa per ricordare la parola!',
+      'Pratica un po’ ogni giorno per i migliori risultati!',
+      'Visualizza la parola in una scena divertente!',
+      'Dilla ad alta voce con un accento diverso!',
+      'Insegna la parola a qualcun altro!',
+      'Fai un gesto o disegna la parola!',
+      'Ricordare è più facile se ti testi dopo una pausa!'
+    ]
   },
   COSYfrançais: {
     title: 'COSYlanguages',
@@ -105,7 +139,24 @@ const translations = {
     correct: 'Correct !',
     wrong: 'Faux !',
     means: 'veut dire',
-    chooseCorrect: 'Lequel est correct ?'
+    chooseCorrect: 'Lequel est correct ?',
+    listen: 'Écoute',
+    noImages: 'Pas d’images disponibles !',
+    chooseVerbForm: 'Choisis la bonne forme du verbe :',
+    chooseGender: 'Choisis le mot pour l’article :',
+    noVerbs: 'Aucun verbe disponible !',
+    noVerbForms: 'Aucune forme de verbe !',
+    noGender: 'Aucune donnée de genre !',
+    funFacts: [
+      'Le savais-tu ? La répétition espacée améliore la mémoire ! 🧠',
+      'Astuce : invente une histoire drôle avec ton mot !',
+      'Pratique un peu chaque jour pour de meilleurs résultats !',
+      'Visualise le mot dans une scène amusante !',
+      'Dis-le à voix haute avec un accent différent !',
+      'Enseigne le mot à quelqu’un d’autre !',
+      'Fais un geste ou dessine le mot !',
+      'On retient mieux si on se teste après une pause !'
+    ]
   },
   COSYespañol: {
     title: 'COSYlanguages',
@@ -141,7 +192,24 @@ const translations = {
     correct: '¡Correcto! ',
     wrong: '¡Incorrecto!',
     means: 'significa',
-    chooseCorrect: '¿Cuál es correcto?'
+    chooseCorrect: '¿Cuál es correcto?',
+    listen: 'Escuchar',
+    noImages: '¡No hay imágenes disponibles!',
+    chooseVerbForm: 'Elige la forma verbal correcta:',
+    chooseGender: 'Elige la palabra para el artículo:',
+    noVerbs: '¡No hay verbos disponibles!',
+    noVerbForms: '¡No hay formas verbales!',
+    noGender: '¡No hay datos de género!',
+    funFacts: [
+      '¿Sabías que la repetición espaciada mejora la memoria? 🧠',
+      'Haz una historia divertida con tu palabra.',
+      '¡Practica un poco cada día para mejores resultados!',
+      '¡Visualiza la palabra en una escena graciosa!',
+      '¡Dila en voz alta con otro acento!',
+      '¡Enseña la palabra a otra persona!',
+      '¡Haz un gesto o dibuja la palabra!',
+      '¡Recuerdas mejor si te pruebas después de una pausa!'
+    ]
   },
   COSYdeutsch: {
     title: 'COSYlanguages',
@@ -177,7 +245,24 @@ const translations = {
     correct: 'Richtig!',
     wrong: 'Falsch!',
     means: 'bedeutet',
-    chooseCorrect: 'Was ist richtig?'
+    chooseCorrect: 'Was ist richtig?',
+    listen: 'Anhören',
+    noImages: 'Keine Bilder verfügbar!',
+    chooseVerbForm: 'Wähle die richtige Verbform:',
+    chooseGender: 'Wähle das Wort zum Artikel:',
+    noVerbs: 'Keine Verben verfügbar!',
+    noVerbForms: 'Keine Verbformen!',
+    noGender: 'Keine Genusdaten!',
+    funFacts: [
+      'Wusstest du? Spaced Repetition stärkt das Gedächtnis! 🧠',
+      'Merktipp: Erfinde eine lustige Geschichte mit dem Wort!',
+      'Übe jeden Tag ein bisschen für beste Ergebnisse!',
+      'Stell dir das Wort in einer lustigen Szene vor!',
+      'Sag es laut mit einem anderen Akzent!',
+      'Erkläre das Wort jemand anderem!',
+      'Benutze Gesten oder zeichne das Wort!',
+      'Du merkst es dir besser, wenn du dich nach einer Pause testest!'
+    ]
   },
   COSYportuguês: {
     title: 'COSYlanguages',
@@ -213,7 +298,24 @@ const translations = {
     correct: 'Correto!',
     wrong: 'Errado!',
     means: 'significa',
-    chooseCorrect: 'Qual é o correto?'
+    chooseCorrect: 'Qual é o correto?',
+    listen: 'Ouvir',
+    noImages: 'Sem imagens disponíveis!',
+    chooseVerbForm: 'Escolha a forma verbal correta:',
+    chooseGender: 'Escolha a palavra para o artigo:',
+    noVerbs: 'Sem verbos disponíveis!',
+    noVerbForms: 'Sem formas verbais!',
+    noGender: 'Sem dados de gênero!',
+    funFacts: [
+      'Você sabia? Repetição espaçada melhora a memória! 🧠',
+      'Dica: Crie uma história engraçada com a palavra!',
+      'Pratique um pouco todos os dias para melhores resultados!',
+      'Visualize a palavra em uma cena divertida!',
+      'Fale em voz alta com outro sotaque!',
+      'Ensine a palavra para outra pessoa!',
+      'Use gestos ou desenhe a palavra!',
+      'Você lembra melhor se se testar após uma pausa!'
+    ]
   },
   ΚΟΖΥελληνικά: {
     title: 'COSYlanguages',
@@ -249,7 +351,24 @@ const translations = {
     correct: 'Σωστό!',
     wrong: 'Λάθος!',
     means: 'σημαίνει',
-    chooseCorrect: 'Ποιο είναι σωστό;'
+    chooseCorrect: 'Ποιο είναι σωστό;',
+    listen: 'Άκου',
+    noImages: 'Δεν υπάρχουν διαθέσιμες εικόνες!',
+    chooseVerbForm: 'Επίλεξε τη σωστή μορφή του ρήματος:',
+    chooseGender: 'Επίλεξε τη λέξη για το άρθρο:',
+    noVerbs: 'Δεν υπάρχουν διαθέσιμα ρήματα!',
+    noVerbForms: 'Δεν υπάρχουν μορφές ρήματος!',
+    noGender: 'Δεν υπάρχουν δεδομένα γένους!',
+    funFacts: [
+      'Ήξερες ότι η επανάληψη βοηθά τη μνήμη; 🧠',
+      'Φτιάξε μια αστεία ιστορία με τη λέξη!',
+      'Κάνε λίγη εξάσκηση κάθε μέρα για καλύτερα αποτελέσματα!',
+      'Φαντάσου τη λέξη σε αστεία σκηνή!',
+      'Πες τη δυνατά με άλλη προφορά!',
+      'Δίδαξε τη λέξη σε κάποιον άλλο!',
+      'Χρησιμοποίησε χειρονομίες ή ζωγράφισε τη λέξη!',
+      'Θυμάσαι καλύτερα αν δοκιμάσεις τον εαυτό σου μετά από διάλειμμα!'
+    ]
   },
   ТАКОЙрусский: {
     title: 'COSYlanguages',
@@ -285,7 +404,24 @@ const translations = {
     correct: 'Верно!',
     wrong: 'Неверно!',
     means: 'значит',
-    chooseCorrect: 'Что правильно?'
+    chooseCorrect: 'Что правильно?',
+    listen: 'Слушать',
+    noImages: 'Нет доступных изображений!',
+    chooseVerbForm: 'Выбери правильную форму глагола:',
+    chooseGender: 'Выбери слово для артикля:',
+    noVerbs: 'Нет доступных глаголов!',
+    noVerbForms: 'Нет форм глагола!',
+    noGender: 'Нет данных о роде!',
+    funFacts: [
+      'Знаешь ли ты? Интервальное повторение улучшает память! 🧠',
+      'Придумай смешную историю со словом!',
+      'Практикуйся каждый день для лучшего результата!',
+      'Представь слово в забавной сцене!',
+      'Произнеси слово с другим акцентом!',
+      'Научи слову другого человека!',
+      'Используй жесты или нарисуй слово!',
+      'Лучше запоминается, если проверить себя после перерыва!'
+    ]
   },
   ԾՈՍՅհայկական: {
     title: 'COSYlanguages',
@@ -321,7 +457,24 @@ const translations = {
     correct: 'Ճիշտ է!',
     wrong: 'Սխալ է!',
     means: 'նշանակում է',
-    chooseCorrect: 'Ո՞րն է ճիշտ:'
+    chooseCorrect: 'Ո՞րն է ճիշտ:',
+    listen: 'Լսել',
+    noImages: 'Պատկերներ չկան:',
+    chooseVerbForm: 'Ընտրիր ճիշտ բայաձևը:',
+    chooseGender: 'Ընտրիր բառը հոդվածի համար:',
+    noVerbs: 'Բայեր չկան:',
+    noVerbForms: 'Բայաձևեր չկան:',
+    noGender: 'Սեռի տվյալներ չկան:',
+    funFacts: [
+      'Գիտե՞ս, որ կրկնությունը լավացնում է հիշողությունը։ 🧠',
+      'Հորինիր զվարճալի պատմություն բառի համար։',
+      'Ամեն օր մի քիչ պարապիր՝ լավագույն արդյունքի համար։',
+      'Պատկերացրու բառը զվարճալի տեսարանում։',
+      'Ասա բարձրաձայն՝ այլ արտասանությամբ։',
+      'Սովորեցրու բառը մեկ ուրիշին։',
+      'Օգտագործիր ժեստեր կամ նկարիր բառը։',
+      'Ավելի լավ ես հիշում, եթե փորձարկես քեզ դադարից հետո։'
+    ]
   },
   COSYbrezhoneg: {
     title: 'COSYlanguages',
@@ -357,7 +510,24 @@ const translations = {
     correct: 'Reizh!',
     wrong: 'Faziek!',
     means: 'a dalv',
-    chooseCorrect: 'Piv eo ar reizh?'
+    chooseCorrect: 'Piv eo ar reizh?',
+    listen: 'Selaou',
+    noImages: 'Skeudennoù ebet da gaout!',
+    chooseVerbForm: 'Dibab ar stumm verb reizh:',
+    chooseGender: 'Dibab ar ger evit an arroud:',
+    noVerbs: 'Verb ebet da gaout!',
+    noVerbForms: 'Stumm verb ebet!',
+    noGender: 'Roadennoù reizh ebet!',
+    funFacts: [
+      'Gouzout a rez? An adlenn a sikour da soñj! 🧠',
+      'Gra ur gontadenn fentus gant ar ger!',
+      'Pleustr un tammig bemdez evit ar gwellañ disoc’hoù!',
+      'Imajin ar ger e-barzh ur skeudenn fentus!',
+      'Lavar ar ger gant un ton disheñvel!',
+      'Deskomp ar ger d’unan all!',
+      'Implij jestroù pe tres ar ger!',
+      'Gwelloc’h e teu da soñj pa glaskes da-unan goude un ehan!'
+    ]
   },
   COSYtatarça: {
     title: 'COSYlanguages',
@@ -393,7 +563,24 @@ const translations = {
     correct: 'Дөрес!',
     wrong: 'Ялгыш!',
     means: 'дими',
-    chooseCorrect: 'Дөресе кайсы?'
+    chooseCorrect: 'Дөресе кайсы?',
+    listen: 'Тыңла',
+    noImages: 'Рәсемнәр юк!',
+    chooseVerbForm: 'Дөрес фигыль формасын сайла:',
+    chooseGender: 'Артикль өчен сүзне сайла:',
+    noVerbs: 'Фигыльләр юк!',
+    noVerbForms: 'Фигыль формалары юк!',
+    noGender: 'Җенес турында мәгълүмат юк!',
+    funFacts: [
+      'Беләсеңме? Аралы кабатлау хәтерне яхшырта! 🧠',
+      'Сүз белән кызыклы хикәя уйлап тап!',
+      'Иң яхшы нәтиҗә өчен көн саен шөгыльлән!',
+      'Сүзне кызыклы күренештә күз алдына китер!',
+      'Башка акцент белән кычкырып әйт!',
+      'Сүзне бүтән кешегә өйрәт!',
+      'Гестлар куллан яки сүзне рәсемлә!',
+      'Тәнәфестән соң үзеңне тикшерсәң, яхшырак истә кала!'
+    ]
   },
   COSYbashkort: {
     title: 'COSYlanguages',
@@ -423,13 +610,30 @@ const translations = {
     randomImageQ2b: '❓ Был нимә?',
     verbDay2: '✨ Булырға',
     verbDay3: '✨ Ия булырға',
-    practiceAll: 'Барысын да күнек',
+    practiceAll: 'Барыһын да күнек',
     true: 'Дөрөҫ',
     false: 'Ялған',
     correct: 'Дөрөҫ!',
     wrong: 'Ялгыш!',
     means: 'тигәнде аңлата',
-    chooseCorrect: 'Дөрөҫө ҡайһы?'
+    chooseCorrect: 'Дөрөҫө ҡайһы?',
+    listen: 'Тыңлағыҙ',
+    noImages: 'Рәсемдәр юҡ!',
+    chooseVerbForm: 'Дөрөҫ фиғел формаһын һайлағыҙ:',
+    chooseGender: 'Артикль өсөн һүҙҙе һайлағыҙ:',
+    noVerbs: 'Фигыльдәр юҡ!',
+    noVerbForms: 'Фигыль формалары юҡ!',
+    noGender: 'Енес тураһында мәғлүмәт юҡ!',
+    funFacts: [
+      'Беләһеңме? Аралы ҡабатлау хәтерҙе яҡшырта! 🧠',
+      'Һүҙ менән ҡыҙыҡлы тарих уйлап тап!',
+      'Иң яҡшы һөҙөмтә өсөн көн һайын шөғөллән!',
+      'Һүҙҙе ҡыҙыҡлы күренештә күҙ алдына килтер!',
+      'Башҡа акцент менән ҡысҡырып әйт!',
+      'Һүҙҙе икенсе кешегә өйрәт!',
+      'Гесттар ҡуллан йәки һүҙҙе һүрәтлә!',
+      'Тәнәфестән һуң үҙеңде тикшерһәң, яҡшыраҡ иҫтә ҡала!'
+    ]
   }
   // Add more languages as needed
 };

@@ -162,15 +162,16 @@ button.btn-secondary:hover {
 }
 
 .result-area {
-    background: rgba(255,255,255,0.22);
+    border: 2.5px solid #e0f7fa;
+    background: rgba(255,255,255,0.28);
     color: #006666;
-    border-radius: 16px;
-    padding: 24px 18px;
-    margin-top: 28px;
-    box-shadow: 0 4px 18px rgba(0,189,189,0.10);
+    border-radius: 18px;
+    padding: 28px 18px;
+    margin-top: 32px;
+    box-shadow: 0 6px 22px rgba(0,189,189,0.13);
     text-align: center;
     font-size: 1.18rem;
-    min-height: 80px;
+    min-height: 90px;
     animation: popIn 0.5s cubic-bezier(.23,1.01,.32,1) 0.1s both;
 }
 
@@ -397,4 +398,65 @@ body .cosy-toast {
 }
 #tf-feedback {
   margin-top: 10px;
+}
+
+/* --- UI/UX Tweaks for Accessibility and Modern Look --- */
+input[type="text"] {
+  min-width: 220px;
+  text-align: center;
+  font-size: 1.13rem;
+  margin-top: 6px;
+}
+
+.result-area input[type="text"] {
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 2px solid #00bdbd;
+  padding: 10px 16px;
+  font-size: 1.08rem;
+  background: #f8ffff;
+  color: #009999;
+  box-shadow: 0 2px 8px rgba(0,189,189,0.07);
+}
+
+.result-area input[type="text"]:focus {
+  border: 2.5px solid #1de9b6;
+  box-shadow: 0 0 0 2px #b2ebf2;
+}
+
+/* Add spacing and highlight for feedback */
+#tf-feedback, #choose4-feedback, #match-feedback {
+  margin-top: 14px;
+  font-size: 1.13em;
+  font-weight: 500;
+  min-height: 32px;
+  letter-spacing: 0.5px;
+}
+
+/* Add a subtle hover for all .result-area buttons */
+.result-area button:hover {
+  filter: brightness(1.09);
+  box-shadow: 0 4px 16px 0 rgba(0, 189, 189, 0.13);
+}
+
+/* Add a little bounce to correct/incorrect feedback */
+#tf-feedback span, #choose4-feedback span, #match-feedback span {
+  animation: bounceIn 0.5s cubic-bezier(.23,1.01,.32,1);
+}
+@keyframes bounceIn {
+  0% { transform: scale(0.8); opacity: 0.2; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Make .choose4-options stack on mobile */
+@media (max-width: 500px) {
+  .choose4-options {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .choose4-container .choose4-btn {
+    min-width: 90vw;
+    font-size: 1em;
+  }
 }

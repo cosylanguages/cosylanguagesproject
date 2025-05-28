@@ -223,18 +223,10 @@ function showEmojiFeedback(correct) {
   showToast(correct ? '🎉 Great! That sticks!' : '🤔 Try again, you can do it!');
 }
 // 2. Add random fun fact or mnemonic
-const funFacts = [
-  'Did you know? Spaced repetition boosts memory! 🧠',
-  'Mnemonic: Make a silly story with your word!',
-  'Practice a little every day for best results!',
-  'Visualize the word in a funny scene!',
-  'Say it out loud with a different accent!',
-  'Teach the word to someone else!',
-  'Use gestures or draw the word!',
-  'Recall is stronger if you test yourself after a break!'
-];
-function showFunFact() {
-  showToast(funFacts[Math.floor(Math.random()*funFacts.length)]);
+function showFunFact(language) {
+  const t = translations[language] || translations['COSYenglish'];
+  const facts = t.funFacts || translations['COSYenglish'].funFacts;
+  showToast(facts[Math.floor(Math.random()*facts.length)]);
 }
 // 3. Add confetti for level up
 function confetti() {
@@ -268,7 +260,8 @@ window.practiceAllTypes = [
   'speaking',
   'match',
   'truefalse',
-  'choose4',
+  'choose4audio',
+  'choose4image',
 ];
 
 // Helper: get all words/images for current language/day
@@ -355,11 +348,11 @@ async function practiceMatch(language, days) {
           document.getElementById('match-feedback').innerHTML = '<span style="color:#27ae60;">✅ Matched!</span>';
           awardCorrectAnswer();
           scheduleReview(language, 'match', leftId, true);
-          showFunFact();
+          showFunFact(language);
         } else {
           document.getElementById('match-feedback').innerHTML = '<span style="color:#e74c3c;">❌ Not a match!</span>';
           scheduleReview(language, 'match', leftId, false);
-          showFunFact();
+          showFunFact(language);
         }
       }
     });
@@ -390,7 +383,7 @@ async function practiceTrueFalse(language, days) {
     document.getElementById('tf-feedback').innerHTML = correct ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'}</span>`;
     scheduleReview(language, 'truefalse', word, correct);
     if (correct) awardCorrectAnswer();
-    showFunFact();
+    showFunFact(language);
     nextExercise();
   };
   document.getElementById('false-btn').onclick = () => {
@@ -398,13 +391,16 @@ async function practiceTrueFalse(language, days) {
     document.getElementById('tf-feedback').innerHTML = correct ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'}</span>`;
     scheduleReview(language, 'truefalse', word, correct);
     if (correct) awardCorrectAnswer();
-    showFunFact();
+    showFunFact(language);
     nextExercise();
   };
 }
 
 // --- Choose from 4 options ---
-async function practiceChoose4(language, days) {
+// (This exercise is now deprecated and not used in practiceAll or menu)
+// function practiceChoose4(language, days) { ... }
+// --- Choose the Pronounced Word (Audio) ---
+async function practiceChoosePronounced(language, days) {
   const t = translations[language] || translations['COSYenglish'];
   const { vocab } = await getAllPracticeItems(language, days);
   let correct = vocab[Math.floor(Math.random()*vocab.length)];
@@ -415,22 +411,206 @@ async function practiceChoose4(language, days) {
   }
   options = options.sort(() => Math.random() - 0.5);
   let html = `<div class="choose4-container">
-    <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">❓ ${t['chooseCorrect'] ? t['chooseCorrect'] : 'Which is correct?'}</div>
+    <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">🔊 ${t['chooseCorrect'] ? t['chooseCorrect'] : 'Which is correct?'}</div>
+    <button id="pronounce-btn" class="btn-secondary" style="margin-bottom:14px;">🔊 ${t['listen'] ? t['listen'] : 'Listen'}</button>
     <div class="choose4-options">`;
   options.forEach(opt => {
     html += `<button class="choose4-btn btn-secondary">${opt}</button>`;
   });
   html += '</div><div id="choose4-feedback" style="margin-top:10px;"></div></div>';
   document.getElementById('result').innerHTML = html;
-  const nextExercise = () => setTimeout(() => practiceChoose4(language, days), 1200);
+  // Speech synthesis
+  function pronounce(word) {
+    if ('speechSynthesis' in window) {
+      const utter = new SpeechSynthesisUtterance(word);
+      utter.lang = getLangCode(language);
+      window.speechSynthesis.speak(utter);
+    }
+  }
+  document.getElementById('pronounce-btn').onclick = () => pronounce(correct);
+  // Auto-pronounce on load
+  pronounce(correct);
+  const nextExercise = () => setTimeout(() => practiceChoosePronounced(language, days), 1200);
   document.querySelectorAll('.choose4-btn').forEach(btn => {
     btn.onclick = () => {
       let isCorrect = btn.textContent === correct;
       btn.classList.add(isCorrect ? 'correct' : 'incorrect');
       document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct}</span>`;
-      scheduleReview(language, 'choose4', correct, isCorrect);
+      scheduleReview(language, 'choose4audio', correct, isCorrect);
       if (isCorrect) awardCorrectAnswer();
-      showFunFact();
+      showFunFact(language);
+      setTimeout(() => {
+        document.querySelectorAll('.choose4-btn').forEach(b => b.disabled = true);
+        nextExercise();
+      }, 400);
+    };
+  });
+}
+
+// Helper: get language code for speech synthesis
+function getLangCode(language) {
+  switch(language) {
+    case 'COSYenglish': return 'en';
+    case 'COSYitaliano': return 'it';
+    case 'COSYfrançais': return 'fr';
+    case 'COSYespañol': return 'es';
+    case 'COSYdeutsch': return 'de';
+    case 'COSYportuguês': return 'pt';
+    case 'ΚΟΖΥελληνικά': return 'el';
+    case 'ТАКОЙрусский': return 'ru';
+    case 'ԾՈՍՅհայկական': return 'hy';
+    case 'COSYbrezhoneg': return 'br';
+    case 'COSYtatarça': return 'tt';
+    case 'COSYbashkort': return 'ba';
+    default: return 'en';
+  }
+}
+
+// --- Choose the Word for the Image ---
+async function practiceChooseImage(language, days) {
+  const t = translations[language] || translations['COSYenglish'];
+  const { images } = await getAllPracticeItems(language, days);
+  if (!images.length) return showToast(t['noImages'] || 'No images available!');
+  let correct = images[Math.floor(Math.random()*images.length)];
+  let options = [correct.translations[language]];
+  while (options.length < 4) {
+    let w = images[Math.floor(Math.random()*images.length)].translations[language];
+    if (!options.includes(w)) options.push(w);
+  }
+  options = options.sort(() => Math.random() - 0.5);
+  let html = `<div class="choose4-container">
+    <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">🖼️ ${t['chooseCorrect'] ? t['chooseCorrect'] : 'Which is correct?'}</div>
+    <img src="${correct.src}" alt="" class="vocabulary-image" style="margin-bottom:18px;max-width:120px;max-height:120px;"/>
+    <div class="choose4-options">`;
+  options.forEach(opt => {
+    html += `<button class="choose4-btn btn-secondary">${opt}</button>`;
+  });
+  html += '</div><div id="choose4-feedback" style="margin-top:10px;"></div></div>';
+  document.getElementById('result').innerHTML = html;
+  const nextExercise = () => setTimeout(() => practiceChooseImage(language, days), 1200);
+  document.querySelectorAll('.choose4-btn').forEach(btn => {
+    btn.onclick = () => {
+      let isCorrect = btn.textContent === correct.translations[language];
+      btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct.translations[language]}</span>`;
+      scheduleReview(language, 'choose4image', correct.src, isCorrect);
+      if (isCorrect) awardCorrectAnswer();
+      showFunFact(language);
+      setTimeout(() => {
+        document.querySelectorAll('.choose4-btn').forEach(b => b.disabled = true);
+        nextExercise();
+      }, 400);
+    };
+  });
+}
+
+// --- Choose the Correct Verb Form ---
+async function practiceChooseVerbForm(language, days) {
+  const t = translations[language] || translations['COSYenglish'];
+  // Fetch verbs for the language
+  let verbs = [];
+  try {
+    const file = `grammar/verbs/grammar_verbs_${getLangFileName(language)}.json`;
+    const response = await fetch(file);
+    if (response.ok) {
+      verbs = await response.json();
+    }
+  } catch {}
+  if (!verbs.length) return showToast(t['noVerbs'] || 'No verbs available!');
+  // Pick a random verb and form
+  let verb = verbs[Math.floor(Math.random()*verbs.length)];
+  let forms = verb.forms || [];
+  if (!forms.length) return showToast(t['noVerbForms'] || 'No verb forms!');
+  let correct = forms[Math.floor(Math.random()*forms.length)];
+  let options = [correct];
+  while (options.length < 4) {
+    let f = forms[Math.floor(Math.random()*forms.length)];
+    if (!options.includes(f)) options.push(f);
+  }
+  options = options.sort(() => Math.random() - 0.5);
+  let html = `<div class="choose4-container">
+    <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">⚡ ${t['chooseVerbForm'] || 'Choose the correct verb form:'} <b>${verb.infinitive}</b></div>
+    <div class="choose4-options">`;
+  options.forEach(opt => {
+    html += `<button class="choose4-btn btn-secondary">${opt}</button>`;
+  });
+  html += '</div><div id="choose4-feedback" style="margin-top:10px;"></div></div>';
+  document.getElementById('result').innerHTML = html;
+  const nextExercise = () => setTimeout(() => practiceChooseVerbForm(language, days), 1200);
+  document.querySelectorAll('.choose4-btn').forEach(btn => {
+    btn.onclick = () => {
+      let isCorrect = btn.textContent === correct;
+      btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct}</span>`;
+      scheduleReview(language, 'choose4verb', verb.infinitive + ':' + correct, isCorrect);
+      if (isCorrect) awardCorrectAnswer();
+      showFunFact(language);
+      setTimeout(() => {
+        document.querySelectorAll('.choose4-btn').forEach(b => b.disabled = true);
+        nextExercise();
+      }, 400);
+    };
+  });
+}
+
+// Helper: get language file name for verbs/gender
+function getLangFileName(language) {
+  switch(language) {
+    case 'COSYenglish': return 'english';
+    case 'COSYitaliano': return 'italian';
+    case 'COSYfrançais': return 'french';
+    case 'COSYespañol': return 'spanish';
+    case 'COSYdeutsch': return 'german';
+    case 'COSYportuguês': return 'portuguese';
+    case 'ΚΟΖΥελληνικά': return 'greek';
+    case 'ТАКОЙрусский': return 'russian';
+    case 'ԾՈՍՅհայկական': return 'armenian';
+    case 'COSYbrezhoneg': return 'breton';
+    case 'COSYtatarça': return 'tatar';
+    case 'COSYbashkort': return 'bashkir';
+    default: return 'english';
+  }
+}
+
+// --- Choose the Word for the Article (Gender) ---
+async function practiceChooseGender(language, days) {
+  const t = translations[language] || translations['COSYenglish'];
+  // Fetch gender data for the language
+  let genderData = [];
+  try {
+    const file = `grammar/gender/grammar_gender_${getLangFileName(language)}.json`;
+    const response = await fetch(file);
+    if (response.ok) {
+      genderData = await response.json();
+    }
+  } catch {}
+  if (!genderData.length) return showToast(t['noGender'] || 'No gender data!');
+  // Pick a random article and its correct word
+  let item = genderData[Math.floor(Math.random()*genderData.length)];
+  let correct = item.word;
+  let options = [correct];
+  while (options.length < 4) {
+    let w = genderData[Math.floor(Math.random()*genderData.length)].word;
+    if (!options.includes(w)) options.push(w);
+  }
+  options = options.sort(() => Math.random() - 0.5);
+  let html = `<div class="choose4-container">
+    <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">⚖️ ${t['chooseGender'] || 'Choose the word for the article:'} <b>${item.article}</b></div>
+    <div class="choose4-options">`;
+  options.forEach(opt => {
+    html += `<button class="choose4-btn btn-secondary">${opt}</button>`;
+  });
+  html += '</div><div id="choose4-feedback" style="margin-top:10px;"></div></div>';
+  document.getElementById('result').innerHTML = html;
+  const nextExercise = () => setTimeout(() => practiceChooseGender(language, days), 1200);
+  document.querySelectorAll('.choose4-btn').forEach(btn => {
+    btn.onclick = () => {
+      let isCorrect = btn.textContent === correct;
+      btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct}</span>`;
+      scheduleReview(language, 'choose4gender', item.article + ':' + correct, isCorrect);
+      if (isCorrect) awardCorrectAnswer();
+      showFunFact(language);
       setTimeout(() => {
         document.querySelectorAll('.choose4-btn').forEach(b => b.disabled = true);
         nextExercise();
@@ -452,6 +632,7 @@ document.getElementById('practice-all-btn').onclick = async function() {
   else if (type === 'speaking') await practiceSpeaking();
   else if (type === 'match') await practiceMatch(language, days);
   else if (type === 'truefalse') await practiceTrueFalse(language, days);
-  else if (type === 'choose4') await practiceChoose4(language, days);
+  else if (type === 'choose4audio') await practiceChoosePronounced(language, days);
+  else if (type === 'choose4image') await practiceChooseImage(language, days);
   else if (origPracticeAll) origPracticeAll();
 };
