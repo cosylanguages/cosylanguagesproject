@@ -1,0 +1,18 @@
+{
+  "2": [
+    { "prompt": "ես", "answer": "եմ" },
+    { "prompt": "դու", "answer": "ես" },
+    { "prompt": "նա", "answer": "է" },
+    { "prompt": "եմ", "answer": "ես" },
+    { "prompt": "ես", "answer": "դու" },
+    { "prompt": "է", "answer": "նա" }
+  ],
+  "3": [
+    { "prompt": "ես", "answer": "ունեմ" },
+    { "prompt": "դու", "answer": "ունես" },
+    { "prompt": "նա", "answer": "ունի" },
+    { "prompt": "ունեմ", "answer": "ես" },
+    { "prompt": "ունես", "answer": "դու" },
+    { "prompt": "ունի", "answer": "նա" }
+  ]
+}

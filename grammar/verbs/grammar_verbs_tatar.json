@@ -1,0 +1,13 @@
+{
+  "2": [
+    { "prompt": "мин", "answer": "мин" },
+    { "prompt": "син", "answer": "син" },
+    { "prompt": "ул", "answer": "ул" }
+  ],
+  "3": [
+    { "prompt": "мин", "answer": "бар" },
+    { "prompt": "син", "answer": "бар" },
+    { "prompt": "ул", "answer": "бар" },
+    { "prompt": "бар", "answer": "мин/син/ул" }
+  ]
+}

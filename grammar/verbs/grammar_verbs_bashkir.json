@@ -1,0 +1,16 @@
+{
+  "2": [
+    { "prompt": "мин", "answer": "булам" },
+    { "prompt": "һин", "answer": "булаһың" },
+    { "prompt": "ул", "answer": "була" },
+    { "prompt": "булам", "answer": "мин" },
+    { "prompt": "булаһың", "answer": "һин" },
+    { "prompt": "була", "answer": "ул" }
+  ],
+  "3": [
+    { "prompt": "мин", "answer": "бар" },
+    { "prompt": "һин", "answer": "бар" },
+    { "prompt": "ул", "answer": "бар" },
+    { "prompt": "бар", "answer": "мин/һин/ул" }
+  ]
+}

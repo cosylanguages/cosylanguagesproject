@@ -360,7 +360,7 @@
             recognition = new SpeechRecognition();
             recognition.lang = (function(lang) {
                 switch(lang) {
-                    case 'COSYenglish': return 'en-US';
+                    case 'COSYenglish': return 'en-UK';
                     case 'COSYfrançais': return 'fr-FR';
                     case 'COSYespañol': return 'es-ES';
                     case 'COSYitaliano': return 'it-IT';
@@ -371,7 +371,7 @@
                     case 'COSYtatarça': return 'tt-RU';
                     case 'COSYbashkort': return 'ba-RU';
                     case 'ԾՈՍՅհայկական': return 'hy-AM';
-                    default: return 'en-US';
+                    default: return 'en-UK';
                 }
             })(language);
             recognition.interimResults = false;
@@ -520,6 +520,8 @@
                         }
                         document.getElementById('image-answer-feedback').innerHTML = feedback;
                     };
+                    // Add Enter key support for image answer
+                    addEnterKeySupport('image-answer-input', 'check-image-answer-btn');
                 }, 0);
                 return;
             }
@@ -646,13 +648,13 @@
             recognition = new SpeechRecognition();
             recognition.lang = (function(lang) {
                 switch(lang) {
-                    case 'COSYenglish': return 'en-UK';
+                    case 'COSYenglish': return 'en-US';
                     case 'COSYfrançais': return 'fr-FR';
                     case 'COSYespañol': return 'es-ES';
                     case 'COSYitaliano': return 'it-IT';
                     case 'COSYdeutsch': return 'de-DE';
                     case 'COSYportuguês': return 'pt-PT';
-                    default: return 'en-UK';
+                    default: return 'en-US';
                 }
             })(language);
             recognition.interimResults = false;
@@ -714,6 +716,20 @@
             practiceVocabulary('random-image');
         });
         
+        // Add Enter key support for practice check buttons
+        function addEnterKeySupport(inputId, checkBtnId) {
+            const input = document.getElementById(inputId);
+            const checkBtn = document.getElementById(checkBtnId);
+            if (input && checkBtn) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        checkBtn.click();
+                    }
+                });
+            }
+        }
+
         // Adventure-style translations for UI
         const translations = {
   COSYenglish: {
@@ -1140,9 +1156,9 @@ async function practiceGrammar(type) {
             case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το']; break;
             default: articles = ['the', 'a', 'an']; break;
         }
-        // Build radio buttons for articles
+        // Build visually appealing article buttons
         let articleOptions = articles.map((art, idx) =>
-            `<label style='margin:0 10px; font-size:1.1rem;'><input type='radio' name='article' value='${art}' ${idx===0?'checked':''}> ${art}</label>`
+            `<button type='button' class='article-btn${idx===0 ? " selected" : ""}' data-article='${art}'>${art}</button>`
         ).join('');
         resultArea.innerHTML = `
             <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;">
@@ -1179,6 +1195,16 @@ async function practiceGrammar(type) {
                 }
                 document.getElementById('gender-feedback').innerHTML = feedback;
             };
+            // Add JS logic for button selection
+            const articleBtns = document.querySelectorAll('#article-options .article-btn');
+            let selectedArticle = articles[0];
+            articleBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    articleBtns.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedArticle = btn.getAttribute('data-article');
+                });
+            });
         }, 0);
         return;
     } else if (type === 'verbs') {
@@ -1221,10 +1247,41 @@ async function practiceGrammar(type) {
                 }
                 document.getElementById('verb-answer-feedback').innerHTML = feedback;
             };
+            // Add Enter key support for verb answer
+            addEnterKeySupport('verb-answer-input', 'check-verb-answer-btn');
         }, 0);
         return;
     }
 }
+
+// --- Remember language and day selection using localStorage ---
+function saveUserSelection() {
+    localStorage.setItem('cosy_language', document.getElementById('language').value);
+    localStorage.setItem('cosy_day', document.getElementById('day').value);
+}
+function restoreUserSelection() {
+    const savedLang = localStorage.getItem('cosy_language');
+    const savedDay = localStorage.getItem('cosy_day');
+    if (savedLang) {
+        document.getElementById('language').value = savedLang;
+        // Trigger change event to update UI/flag
+        document.getElementById('language').dispatchEvent(new Event('change'));
+    }
+    if (savedDay) {
+        document.getElementById('day').value = savedDay;
+        // Optionally trigger change event if needed
+        document.getElementById('day').dispatchEvent(new Event('change'));
+    }
+}
+// Attach save on change
+if (document.getElementById('language')) {
+    document.getElementById('language').addEventListener('change', saveUserSelection);
+}
+if (document.getElementById('day')) {
+    document.getElementById('day').addEventListener('change', saveUserSelection);
+}
+// Restore on page load
+window.addEventListener('DOMContentLoaded', restoreUserSelection);
     </script>
 </body>
 </html>
