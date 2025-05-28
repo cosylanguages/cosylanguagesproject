@@ -346,10 +346,11 @@
                 case 'COSYdeutsch': langCode = 'de-DE'; break;
                 case 'COSYportuguês': langCode = 'pt-PT'; break;
                 case 'ТАКОЙрусский': langCode = 'ru-RU'; break;
-                case 'COSYbrezhoneg': langCode = 'br-FR'; break;
-                case 'COSYtatarça': langCode = 'tt-RU'; break;
-                case 'COSYbashkort': langCode = 'ba-RU'; break;
-                case 'ԾՈՍՅհայկական': langCode = 'hy-AM'; break;
+                case 'COSYbrezhoneg': langCode = 'br-FR'; break; // Breton, fallback to French
+                case 'COSYtatarça': langCode = 'tt-RU'; break; // Tatar, fallback to Russian
+                case 'COSYbashkort': langCode = 'ba-RU'; break; // Bashkir, fallback to Russian
+                case 'ԾՈՍՅհայկական': langCode = 'hy-AM'; break; // Armenian
+                case 'ΚΟΖΥελληνικά': langCode = 'el-GR'; break; // Greek
                 default: langCode = 'en-GB';
             }
             if ('speechSynthesis' in window) {
@@ -359,12 +360,18 @@
                     utter.lang = langCode;
                     utter.rate = 1;
                     utter.pitch = 1;
-                    // Try to select a matching voice
+                    // Try to select a matching voice (prefer exact match, then partial, then fallback)
                     const voices = window.speechSynthesis.getVoices();
+                    let match = null;
                     if (voices && voices.length) {
-                        const match = voices.find(v => v.lang === langCode);
-                        if (match) utter.voice = match;
-                        else utter.voice = voices[0]; // fallback
+                        match = voices.find(v => v.lang === langCode);
+                        if (!match) {
+                            // Try partial match (e.g., 'el' for Greek)
+                            const base = langCode.split('-')[0];
+                            match = voices.find(v => v.lang.startsWith(base));
+                        }
+                        if (!match) match = voices[0]; // fallback
+                        utter.voice = match;
                     }
                     window.speechSynthesis.speak(utter);
                 }, 200); // Slightly longer delay for mobile
