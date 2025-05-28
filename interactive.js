@@ -370,30 +370,42 @@ async function practiceMatch(language, days) {
 // --- True or False ---
 async function practiceTrueFalse(language, days) {
   const { vocab } = await getAllPracticeItems(language, days);
+  const t = translations[language] || translations['COSYenglish'];
   let word = vocab[Math.floor(Math.random()*vocab.length)];
   let isTrue = Math.random() > 0.5;
   let fake = vocab[Math.floor(Math.random()*vocab.length)];
-  let statement = isTrue ? `${word} means <b>${word}</b>` : `${word} means <b>${fake}</b>`;
-  let html = `<div class="tf-container"><div class="tf-statement">${statement}</div><div class="tf-btns"><button id="true-btn" class="btn-secondary">True</button><button id="false-btn" class="btn-secondary">False</button></div><div id="tf-feedback"></div></div>`;
+  let statement = isTrue ? `${word} ${t['means'] ? t['means'] : 'means'} <b>${word}</b>` : `${word} ${t['means'] ? t['means'] : 'means'} <b>${fake}</b>`;
+  let html = `<div class="tf-container">
+    <div class="tf-statement" style="font-size:1.2em;margin-bottom:18px;">${statement}</div>
+    <div class="tf-btns" style="display:flex;gap:22px;justify-content:center;margin-bottom:12px;">
+      <button id="true-btn" class="btn-secondary" style="min-width:90px;font-size:1.1em;">✅ ${t['true'] ? t['true'] : 'True'}</button>
+      <button id="false-btn" class="btn-secondary" style="min-width:90px;font-size:1.1em;">❌ ${t['false'] ? t['false'] : 'False'}</button>
+    </div>
+    <div id="tf-feedback" style="margin-top:10px;"></div>
+  </div>`;
   document.getElementById('result').innerHTML = html;
+  const nextExercise = () => setTimeout(() => practiceTrueFalse(language, days), 1200);
   document.getElementById('true-btn').onclick = () => {
     let correct = isTrue;
-    document.getElementById('tf-feedback').innerHTML = correct ? '<span style="color:#27ae60;">✅ Correct!</span>' : '<span style="color:#e74c3c;">❌ Wrong!</span>';
+    document.getElementById('tf-feedback').innerHTML = correct ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'}</span>`;
     scheduleReview(language, 'truefalse', word, correct);
     if (correct) awardCorrectAnswer();
     showFunFact();
+    nextExercise();
   };
   document.getElementById('false-btn').onclick = () => {
     let correct = !isTrue;
-    document.getElementById('tf-feedback').innerHTML = correct ? '<span style="color:#27ae60;">✅ Correct!</span>' : '<span style="color:#e74c3c;">❌ Wrong!</span>';
+    document.getElementById('tf-feedback').innerHTML = correct ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'}</span>`;
     scheduleReview(language, 'truefalse', word, correct);
     if (correct) awardCorrectAnswer();
     showFunFact();
+    nextExercise();
   };
 }
 
 // --- Choose from 4 options ---
 async function practiceChoose4(language, days) {
+  const t = translations[language] || translations['COSYenglish'];
   const { vocab } = await getAllPracticeItems(language, days);
   let correct = vocab[Math.floor(Math.random()*vocab.length)];
   let options = [correct];
@@ -402,22 +414,26 @@ async function practiceChoose4(language, days) {
     if (!options.includes(w)) options.push(w);
   }
   options = options.sort(() => Math.random() - 0.5);
-  let html = `<div class="choose4-container"><div class="choose4-question">Which is correct?</div><div class="choose4-options">`;
+  let html = `<div class="choose4-container">
+    <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">❓ ${t['chooseCorrect'] ? t['chooseCorrect'] : 'Which is correct?'}</div>
+    <div class="choose4-options">`;
   options.forEach(opt => {
     html += `<button class="choose4-btn btn-secondary">${opt}</button>`;
   });
-  html += '</div><div id="choose4-feedback"></div></div>';
+  html += '</div><div id="choose4-feedback" style="margin-top:10px;"></div></div>';
   document.getElementById('result').innerHTML = html;
+  const nextExercise = () => setTimeout(() => practiceChoose4(language, days), 1200);
   document.querySelectorAll('.choose4-btn').forEach(btn => {
     btn.onclick = () => {
       let isCorrect = btn.textContent === correct;
       btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-      document.getElementById('choose4-feedback').innerHTML = isCorrect ? '<span style="color:#27ae60;">✅ Correct!</span>' : `<span style=\"color:#e74c3c;\">❌ Wrong! Correct: ${correct}</span>`;
+      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct}</span>`;
       scheduleReview(language, 'choose4', correct, isCorrect);
       if (isCorrect) awardCorrectAnswer();
       showFunFact();
       setTimeout(() => {
         document.querySelectorAll('.choose4-btn').forEach(b => b.disabled = true);
+        nextExercise();
       }, 400);
     };
   });

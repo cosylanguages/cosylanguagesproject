@@ -27,7 +27,13 @@ const translations = {
     randomImageQ2b: '❓ What is it?',
     verbDay2: '✨ To be',
     verbDay3: '✨ To have',
-    practiceAll: 'Practice All'
+    practiceAll: 'Practice All',
+    true: 'True',
+    false: 'False',
+    correct: 'Correct!',
+    wrong: 'Wrong!',
+    means: 'means',
+    chooseCorrect: 'Which is correct?'
   },
   COSYitaliano: {
     title: 'COSYlanguages',
@@ -57,7 +63,13 @@ const translations = {
     randomImageQ2b: '❓ Cosa è?',
     verbDay2: '✨ Essere',
     verbDay3: '✨ Avere',
-    practiceAll: 'Pratica tutto'
+    practiceAll: 'Pratica tutto',
+    true: 'Vero',
+    false: 'Falso',
+    correct: 'Corretto!',
+    wrong: 'Sbagliato!',
+    means: 'significa',
+    chooseCorrect: 'Qual è corretto?'
   },
   COSYfrançais: {
     title: 'COSYlanguages',
@@ -87,7 +99,13 @@ const translations = {
     randomImageQ2b: '❓ C’est quoi ?',
     verbDay2: '✨ Être',
     verbDay3: '✨ Avoir',
-    practiceAll: 'Tout pratiquer'
+    practiceAll: 'Tout pratiquer',
+    true: 'Vrai',
+    false: 'Faux',
+    correct: 'Correct !',
+    wrong: 'Faux !',
+    means: 'veut dire',
+    chooseCorrect: 'Lequel est correct ?'
   },
   COSYespañol: {
     title: 'COSYlanguages',
@@ -117,7 +135,13 @@ const translations = {
     randomImageQ2b: '❓ ¿Qué es?',
     verbDay2: '✨ Ser',
     verbDay3: '✨ Tener',
-    practiceAll: 'Practica todo'
+    practiceAll: 'Practica todo',
+    true: 'Verdadero',
+    false: 'Falso',
+    correct: '¡Correcto! ',
+    wrong: '¡Incorrecto!',
+    means: 'significa',
+    chooseCorrect: '¿Cuál es correcto?'
   },
   COSYdeutsch: {
     title: 'COSYlanguages',
@@ -147,7 +171,13 @@ const translations = {
     randomImageQ2b: '❓ Was ist das?',
     verbDay2: '✨ Sein',
     verbDay3: '✨ Haben',
-    practiceAll: 'Übe alles'
+    practiceAll: 'Übe alles',
+    true: 'Wahr',
+    false: 'Falsch',
+    correct: 'Richtig!',
+    wrong: 'Falsch!',
+    means: 'bedeutet',
+    chooseCorrect: 'Was ist richtig?'
   },
   COSYportuguês: {
     title: 'COSYlanguages',
@@ -177,7 +207,13 @@ const translations = {
     randomImageQ2b: '❓ O que é?',
     verbDay2: '✨ Ser',
     verbDay3: '✨ Ter',
-    practiceAll: 'Praticar tudo'
+    practiceAll: 'Praticar tudo',
+    true: 'Verdadeiro',
+    false: 'Falso',
+    correct: 'Correto!',
+    wrong: 'Errado!',
+    means: 'significa',
+    chooseCorrect: 'Qual é o correto?'
   },
   ΚΟΖΥελληνικά: {
     title: 'COSYlanguages',
@@ -207,7 +243,13 @@ const translations = {
     randomImageQ2b: '❓ Τι είναι;',
     verbDay2: '✨ Είμαι',
     verbDay3: '✨ Έχω',
-    practiceAll: 'Πρακτική όλα'
+    practiceAll: 'Πρακτική όλα',
+    true: 'Σωστό',
+    false: 'Λάθος',
+    correct: 'Σωστό!',
+    wrong: 'Λάθος!',
+    means: 'σημαίνει',
+    chooseCorrect: 'Ποιο είναι σωστό;'
   },
   ТАКОЙрусский: {
     title: 'COSYlanguages',
@@ -237,7 +279,13 @@ const translations = {
     randomImageQ2b: '❓ Что это?',
     verbDay2: '✨ Быть',
     verbDay3: '✨ Иметь',
-    practiceAll: 'Практиковать всё'
+    practiceAll: 'Практиковать всё',
+    true: 'Правда',
+    false: 'Ложь',
+    correct: 'Верно!',
+    wrong: 'Неверно!',
+    means: 'значит',
+    chooseCorrect: 'Что правильно?'
   },
   ԾՈՍՅհայկական: {
     title: 'COSYlanguages',
@@ -267,7 +315,13 @@ const translations = {
     randomImageQ2b: '❓ Ի՞նչ է սա:',
     verbDay2: '✨ Եղել',
     verbDay3: '✨ Ունենալ',
-    practiceAll: 'Պրակտիկա բոլորը'
+    practiceAll: 'Պրակտիկա բոլորը',
+    true: 'Ճիշտ է',
+    false: 'Սխալ է',
+    correct: 'Ճիշտ է!',
+    wrong: 'Սխալ է!',
+    means: 'նշանակում է',
+    chooseCorrect: 'Ո՞րն է ճիշտ:'
   },
   COSYbrezhoneg: {
     title: 'COSYlanguages',
@@ -297,7 +351,13 @@ const translations = {
     randomImageQ2b: '❓ Petra eo?',
     verbDay2: '✨ Bezhañ',
     verbDay3: '✨ Ouzhpennañ',
-    practiceAll: 'Pleustr tout'
+    practiceAll: 'Pleustr tout',
+    true: 'Gwir',
+    false: 'Fals',
+    correct: 'Reizh!',
+    wrong: 'Faziek!',
+    means: 'a dalv',
+    chooseCorrect: 'Piv eo ar reizh?'
   },
   COSYtatarça: {
     title: 'COSYlanguages',
@@ -327,7 +387,13 @@ const translations = {
     randomImageQ2b: '❓ Бу нәрсә?',
     verbDay2: '✨ Булу',
     verbDay3: '✨ Ия булу',
-    practiceAll: 'Барыһын да күнек'
+    practiceAll: 'Барыһын да күнек',
+    true: 'Дөрес',
+    false: 'Ялган',
+    correct: 'Дөрес!',
+    wrong: 'Ялгыш!',
+    means: 'дими',
+    chooseCorrect: 'Дөресе кайсы?'
   },
   COSYbashkort: {
     title: 'COSYlanguages',
@@ -357,7 +423,13 @@ const translations = {
     randomImageQ2b: '❓ Был нимә?',
     verbDay2: '✨ Булырға',
     verbDay3: '✨ Ия булырға',
-    practiceAll: 'Барысын да күнек'
+    practiceAll: 'Барысын да күнек',
+    true: 'Дөрөҫ',
+    false: 'Ялған',
+    correct: 'Дөрөҫ!',
+    wrong: 'Ялгыш!',
+    means: 'тигәнде аңлата',
+    chooseCorrect: 'Дөрөҫө ҡайһы?'
   }
   // Add more languages as needed
 };

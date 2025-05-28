@@ -352,15 +352,14 @@ body .cosy-toast {
   margin: 24px 0 12px 0;
 }
 .tf-statement {
-  font-size: 1.3rem;
-  color: #009999;
-  font-weight: 500;
-  margin-bottom: 8px;
+  font-size: 1.2em;
+  margin-bottom: 18px;
 }
-.tf-btns button {
-  margin: 0 12px;
-  min-width: 90px;
-  font-size: 1.1rem;
+.tf-btns {
+  display: flex;
+  gap: 22px;
+  justify-content: center;
+  margin-bottom: 12px;
 }
 .choose4-container {
   display: flex;
@@ -375,6 +374,13 @@ body .cosy-toast {
   font-weight: 500;
   margin-bottom: 8px;
 }
+.choose4-container .choose4-btn {
+  margin: 0 12px 12px 0;
+  min-width: 110px;
+  font-size: 1.1em;
+  padding: 10px 0;
+  border-radius: 8px;
+}
 .choose4-options {
   display: flex;
   gap: 18px;
@@ -388,4 +394,7 @@ body .cosy-toast {
 .choose4-btn.incorrect {
   background: #e74c3c !important;
   color: #fff !important;
+}
+#tf-feedback {
+  margin-top: 10px;
 }
