@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSYlanguages</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#00bdbd">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
@@ -15,6 +14,7 @@
       }
     </script>
     <script src="translations.js"></script>
+    <script src="interactive.js"></script>
 </head>
 <body>
     <div class="container">
@@ -88,7 +88,7 @@
                 <button id="speaking-practice-btn" class="btn-primary">Get Speaking Prompt</button>
             </div>
             
-            <button id="practice-all-btn" class="btn-primary" style="margin-top:12px;">Practice All</button>
+            <button id="practice-all-btn" class="btn-primary">Practice All</button>
         </div>
         
         <div id="result" class="result-area"></div>
@@ -1201,5 +1201,10 @@
           if (document.getElementById('grammar-options').style.display === 'block') updateGrammarOptions();
         }
     </script>
+    <!-- Sound effects -->
+    <audio id="click-sound" src="sounds/click.mp3" preload="auto"></audio>
+    <audio id="select-sound" src="sounds/select.mp3" preload="auto"></audio>
+    <audio id="error-sound" src="sounds/error.mp3" preload="auto"></audio>
+    <audio id="success-sound" src="sounds/success.mp3" preload="auto"></audio>
 </body>
 </html>
