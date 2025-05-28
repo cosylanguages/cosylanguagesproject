@@ -319,6 +319,7 @@
                 case 'COSYtatarça': langCode = 'tt-RU'; break;
                 case 'COSYbashkort': langCode = 'ba-RU'; break;
                 case 'ԾՈՍՅհայկական': langCode = 'hy-AM'; break;
+                case 'ΚΟΖΥελληνικά': langCode = 'el-GR'; break;
                 default: langCode = 'en-UK';
             }
             // iOS/Android: require user gesture, so always call from a button or setTimeout after interaction
@@ -379,6 +380,7 @@
                     case 'COSYtatarça': return 'tt-RU';
                     case 'COSYbashkort': return 'ba-RU';
                     case 'ԾՈՍՅհայկական': return 'hy-AM';
+                    case 'ΚΟΖΥελληνικά': return 'el-GR';
                     default: return 'en-UK';
                 }
             })(language);
@@ -708,12 +710,18 @@
             recognition = new SpeechRecognition();
             recognition.lang = (function(lang) {
                 switch(lang) {
-                    case 'COSYenglish': return 'en-US';
+                    case 'COSYenglish': return 'en-US', 'en-UK';
                     case 'COSYfrançais': return 'fr-FR';
                     case 'COSYespañol': return 'es-ES';
                     case 'COSYitaliano': return 'it-IT';
                     case 'COSYdeutsch': return 'de-DE';
                     case 'COSYportuguês': return 'pt-PT';
+                    case 'ТАКОЙрусский': return 'ru-RU';
+                    case 'COSYbrezhoneg': return 'br-FR';
+                    case 'COSYtatarça': return 'tt-RU';
+                    case 'COSYbashkort': return 'ba-RU';
+                    case 'ԾՈՍՅհայկական': return 'hy-AM';
+                    case 'ΚΟΖΥελληνικά': return 'el-GR';
                     default: return 'en-US';
                 }
             })(language);
@@ -1279,7 +1287,7 @@ async function practiceGrammar(type) {
             case 'COSYtatarça': articles = ['ир-ат', 'хатын-кыз', 'әйбер']; break;
             case 'COSYbashkort': articles = ['ир-ат', 'ҡатын-ҡыҙ', 'әйбер']; break;
             case 'ԾՈՍՅհայկական': articles = ['արական', 'իգական', 'միջին']; break;
-            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'o/h']; break;
+            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'o/η']; break;
             default: articles = ['the', 'a', 'an']; break;
         }
         // Build visually appealing article buttons
