@@ -1279,6 +1279,45 @@ function updateDaySelectors() {
 daySelect.addEventListener('change', updateDaySelectors);
 dayFromSelect.addEventListener('change', updateDaySelectors);
 dayToSelect.addEventListener('change', updateDaySelectors);
+
+// --- Toggle logic for secondary practice options (Random Word, Random Image, Listening) ---
+function hideOtherVocabularyModes(selectedId) {
+    ['random-word-btn', 'random-image-btn', 'listening-btn'].forEach(id => {
+        if (id !== selectedId) {
+            document.getElementById(id).style.display = 'none';
+        } else {
+            document.getElementById(id).classList.add('active-vocab-btn');
+        }
+    });
+}
+function showAllVocabularyModes() {
+    ['random-word-btn', 'random-image-btn', 'listening-btn'].forEach(id => {
+        document.getElementById(id).style.display = 'inline-block';
+        document.getElementById(id).classList.remove('active-vocab-btn');
+    });
+}
+function toggleVocabularyMode(selectedId) {
+    const btn = document.getElementById(selectedId);
+    const isActive = btn.classList.contains('active-vocab-btn');
+    if (isActive) {
+        showAllVocabularyModes();
+        document.getElementById('result').innerHTML = '';
+    } else {
+        hideOtherVocabularyModes(selectedId);
+        document.getElementById('result').innerHTML = '';
+        // Optionally, you could trigger the practice function here if you want auto-start
+    }
+}
+
+document.getElementById('random-word-btn').addEventListener('click', function() {
+    toggleVocabularyMode('random-word-btn');
+});
+document.getElementById('random-image-btn').addEventListener('click', function() {
+    toggleVocabularyMode('random-image-btn');
+});
+document.getElementById('listening-btn').addEventListener('click', function() {
+    toggleVocabularyMode('listening-btn');
+});
     </script>
     <!-- Sound effects -->
     <audio id="click-sound" src="sounds/click.mp3" preload="auto"></audio>
