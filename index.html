@@ -178,8 +178,14 @@
             if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
         }
 
-        // On page load, always restore main menu
-        window.addEventListener('DOMContentLoaded', goBackToMainMenu);
+        // On page load, always restore main menu and update grammar options if grammar is visible
+        window.addEventListener('DOMContentLoaded', function() {
+            goBackToMainMenu();
+            // If grammar options are visible, update them
+            if (grammarOptions && grammarOptions.style.display === 'block') {
+                updateGrammarOptions();
+            }
+        });
 
         // --- Toggle logic for main practice type buttons ---
         function toggleMainPracticeType(selectedId) {
@@ -218,12 +224,15 @@
 
         // Vocabulary button click
         vocabularyBtn.addEventListener('click', function() {
+            // Only go back to main menu, do not randomize
             toggleMainPracticeType('vocabulary-btn');
         });
         
         // Grammar button click
         grammarBtn.addEventListener('click', function() {
             toggleMainPracticeType('grammar-btn');
+            grammarOptions.style.display = 'block';
+            updateGrammarOptions();
         });
         
         // Speaking button click
@@ -283,18 +292,16 @@
                     }
                 };
             }
-            // Hide gender for English on day 1
-            if (lang !== 'COSYenglish' && day >= 1) {
+            // In updateGrammarOptions, always show gender button for day 1+ for all languages
+            if (day >= 1) {
                 const genderBtn = document.createElement('button');
                 genderBtn.textContent = t.gender;
                 genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                genderBtn.onclick = makeToggleHandler(genderBtn);
-                grammarOptionsContainer.appendChild(genderBtn);
-            } else if (lang === 'COSYenglish' && day > 1) {
-                const genderBtn = document.createElement('button');
-                genderBtn.textContent = t.gender;
-                genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                genderBtn.onclick = makeToggleHandler(genderBtn);
+                genderBtn.onclick = function() {
+                    hideOtherGrammarOptionBtns(genderBtn);
+                    document.getElementById('result').innerHTML = '';
+                    practiceGrammar('gender');
+                };
                 grammarOptionsContainer.appendChild(genderBtn);
             }
             if (day >= 2) {
@@ -576,29 +583,33 @@
                     resultArea.innerHTML = `<p style="text-align:center;">No vocabulary found for this day.</p>`;
                     return;
                 }
-                const word = words[Math.floor(Math.random() * words.length)];
-                // Modern, centered, minimal UI for random word
-                resultArea.innerHTML = `
-                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
-                        <div id="vocab-word" style="font-size:2.2rem; font-weight:600; margin-bottom:18px; text-align:center;">${word}</div>
-                        <div style="display:flex; gap:24px; justify-content:center; align-items:center;">
-                            <button id="play-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:2rem;">🔊</button>
-                            <button id="check-pronounce-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:2rem;">🎤</button>
+                let word = words[Math.floor(Math.random() * words.length)];
+                function renderWord() {
+                    resultArea.innerHTML = `
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
+                            <div id="vocab-word" style="font-size:2.2rem; font-weight:600; margin-bottom:18px; text-align:center; cursor:pointer;">${word}</div>
+                            <div style="display:flex; gap:24px; justify-content:center; align-items:center;">
+                                <button id="play-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:2rem;">🔊</button>
+                                <button id="check-pronounce-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:2rem;">🎤</button>
+                            </div>
+                            <div id="pronunciation-feedback" style="margin-top:18px;"></div>
                         </div>
-                        <div id="pronunciation-feedback" style="margin-top:18px;"></div>
-                    </div>
-                `;
-                // Automatic pronunciation
-                pronounceWord(word, language);
-                setTimeout(() => {
-                    document.getElementById('play-pronounce-btn').onclick = function() {
-                        pronounceWord(word, language);
-                    };
-                    document.getElementById('check-pronounce-btn').onclick = function() {
-                        startPronunciationCheck(word, language);
-                    };
-                    // Add auto-next for correct answer in input (if any input is used in future)
-                }, 0);
+                    `;
+                    pronounceWord(word, language);
+                    setTimeout(() => {
+                        document.getElementById('play-pronounce-btn').onclick = function() {
+                            pronounceWord(word, language);
+                        };
+                        document.getElementById('check-pronounce-btn').onclick = function() {
+                            startPronunciationCheck(word, language);
+                        };
+                        document.getElementById('vocab-word').onclick = function() {
+                            word = words[Math.floor(Math.random() * words.length)];
+                            renderWord();
+                        };
+                    }, 0);
+                }
+                renderWord();
                 return;
             } else if (type === 'random-image') {
                 const images = await loadImageVocabulary(day);
@@ -606,56 +617,60 @@
                     resultArea.innerHTML = `<p style="text-align:center;">No images found for this day.</p>`;
                     return;
                 }
-                const item = images[Math.floor(Math.random() * images.length)];
+                let item = images[Math.floor(Math.random() * images.length)];
                 const answer = item.translations[language] || '[No translation]';
-                // Modern, centered, minimal UI for random image
-                let questionBlock = '';
-                if (parseInt(day) === 1) {
-                    questionBlock = `<div style="font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:10px;">${(translations[language]||translations['COSYenglish']).randomImageQ1}</div>`;
-                } else if (parseInt(day) === 2) {
-                    const t = translations[language]||translations['COSYenglish'];
-                    questionBlock = `<div style="font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:2px;">${t.randomImageQ2a}</div><div style="font-size:1.1rem; font-weight:400; color:#009999; margin-bottom:8px;">${t.randomImageQ2b}</div>`;
-                }
-                resultArea.innerHTML = `
-                    ${questionBlock}
-                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px;">
-                        <img src="${item.src}" alt="${item.alt}" class="vocabulary-image" style="max-width:180px; max-height:180px; margin-bottom:18px; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.10);">
-                        <input id="image-answer-input" type="text" placeholder="Type your answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
-                        <button id="check-image-answer-btn" class="btn-secondary" style="margin-bottom:18px; min-width:120px;">Check</button>
-                        <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-bottom:0;">
-                            <button id="play-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:2rem;">🔊</button>
-                            <button id="check-pronounce-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:2rem;">🎤</button>
+                function renderImage() {
+                    let questionBlock = '';
+                    if (parseInt(day) === 1) {
+                        questionBlock = `<div style="font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:10px;">${(translations[language]||translations['COSYenglish']).randomImageQ1}</div>`;
+                    } else if (parseInt(day) === 2) {
+                        const t = translations[language]||translations['COSYenglish'];
+                        questionBlock = `<div style="font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:2px;">${t.randomImageQ2a}</div><div style="font-size:1.1rem; font-weight:400; color:#009999; margin-bottom:8px;">${t.randomImageQ2b}</div>`;
+                    }
+                    resultArea.innerHTML = `
+                        ${questionBlock}
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px;">
+                            <img id="vocab-image" src="${item.src}" alt="${item.alt}" class="vocabulary-image" style="max-width:180px; max-height:180px; margin-bottom:18px; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.10); cursor:pointer;">
+                            <input id="image-answer-input" type="text" placeholder="Type your answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
+                            <button id="check-image-answer-btn" class="btn-secondary" style="margin-bottom:18px; min-width:120px;">Check</button>
+                            <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-bottom:0;">
+                                <button id="play-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:2rem;">🔊</button>
+                                <button id="check-pronounce-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:2rem;">🎤</button>
+                            </div>
+                            <div id="pronunciation-feedback" style="margin-top:18px;"></div>
+                            <div id="image-answer-feedback" style="margin-top:10px;"></div>
                         </div>
-                        <div id="pronunciation-feedback" style="margin-top:18px;"></div>
-                        <div id="image-answer-feedback" style="margin-top:10px;"></div>
-                    </div>
-                `;
-                setTimeout(() => {
-                    document.getElementById('play-pronounce-btn').onclick = function() {
-                        pronounceWord(answer, language);
-                    };
-                    document.getElementById('check-pronounce-btn').onclick = function() {
-                        startPronunciationCheck(answer, language);
-                    };
-                    document.getElementById('check-image-answer-btn').onclick = function() {
-                        const userInput = document.getElementById('image-answer-input').value.trim().toLowerCase();
-                        const correct = answer.trim().toLowerCase();
-                        let feedback = '';
-                        if (!userInput) {
-                            feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
-                        } else if (userInput === correct) {
-                            feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
-                            setTimeout(() => practiceVocabulary('random-image'), 1200);
-                        } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
-                            feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
-                        } else {
-                            feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${answer}</b></span>`;
-                        }
-                        document.getElementById('image-answer-feedback').innerHTML = feedback;
-                    };
-                    // Add Enter key support for image answer
-                    addEnterKeySupport('image-answer-input', 'check-image-answer-btn');
-                }, 0);
+                    `;
+                    setTimeout(() => {
+                        document.getElementById('play-pronounce-btn').onclick = function() {
+                            pronounceWord(answer, language);
+                        };
+                        document.getElementById('check-pronounce-btn').onclick = function() {
+                            startPronunciationCheck(answer, language);
+                        };
+                        document.getElementById('check-image-answer-btn').onclick = function() {
+                            const userInput = document.getElementById('image-answer-input').value.trim().toLowerCase();
+                            const correct = answer.trim().toLowerCase();
+                            let feedback = '';
+                            if (!userInput) {
+                                feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
+                            } else if (userInput === correct) {
+                                feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                            } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
+                                feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
+                            } else {
+                                feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${answer}</b></span>`;
+                            }
+                            document.getElementById('image-answer-feedback').innerHTML = feedback;
+                        };
+                        document.getElementById('vocab-image').onclick = function() {
+                            item = images[Math.floor(Math.random() * images.length)];
+                            renderImage();
+                        };
+                        addEnterKeySupport('image-answer-input', 'check-image-answer-btn');
+                    }, 0);
+                }
+                renderImage();
                 return;
             } else if (type === 'listening') {
                 const words = await loadVocabulary(language, day);
@@ -1000,18 +1015,16 @@
               }
             };
           }
-          // Hide gender for English on day 1
-          if (lang !== 'COSYenglish' && day >= 1) {
+          // In updateGrammarOptions, always show gender button for day 1+ for all languages
+          if (day >= 1) {
             const genderBtn = document.createElement('button');
             genderBtn.textContent = t.gender;
             genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
-            genderBtn.onclick = makeToggleHandler(genderBtn);
-            grammarOptionsContainer.appendChild(genderBtn);
-          } else if (lang === 'COSYenglish' && day > 1) {
-            const genderBtn = document.createElement('button');
-            genderBtn.textContent = t.gender;
-            genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
-            genderBtn.onclick = makeToggleHandler(genderBtn);
+            genderBtn.onclick = function() {
+                hideOtherGrammarOptionBtns(genderBtn);
+                document.getElementById('result').innerHTML = '';
+                practiceGrammar('gender');
+            };
             grammarOptionsContainer.appendChild(genderBtn);
           }
           if (day >= 2) {
