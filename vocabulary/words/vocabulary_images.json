@@ -525,6 +525,120 @@
                 "COSYtatarça": "Äti"
                 ,"COSYbashkort": "Атай"
             }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/660be33b-2b87-4767-a278-6211a3aea007.jpg",
+            "alt": "Mother",
+            "translations": {
+                "COSYenglish": "Mother",
+                "COSYfrançais": "La mère",
+                "COSYitaliano": "La madre",
+                "COSYespañol": "La madre",
+                "COSYportuguês": "A mãe",
+                "COSYdeutsch": "Die Mutter",
+                "ΚΟΖΥελληνικά": "η μητέρα",
+                "ТАКОЙрусский": "Мать",
+                "ԾՈՍՅհայկական": "Մայր",
+                "COSYbrezhoneg": "Mam",
+                "COSYtatarça": "Änä",
+                "COSYbashkort": "Әсәй"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/d3c1f8e0-8b01-4ca1-bd75-3b4970c0f410.jpg",
+            "alt": "Brother",
+            "translations": {
+                "COSYenglish": "Brother",
+                "COSYfrançais": "Le frère",
+                "COSYitaliano": "Il fratello",
+                "COSYespañol": "El hermano",
+                "COSYportuguês": "O irmão",
+                "COSYdeutsch": "Der Bruder",
+                "ΚΟΖΥελληνικά": "ο αδελφός",
+                "ТАКОЙрусский": "Брат",
+                "ԾՈՍՅհայկական": "Աղբայր",
+                "COSYbrezhoneg": "Breur",
+                "COSYtatarça": "Abıy",
+                "COSYbashkort": "Ағай"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/f26e041b-67e6-451b-9f01-516ed04487a1.jpg",
+            "alt": "Sister",
+            "translations": {
+                "COSYenglish": "Sister",
+                "COSYfrançais": "La sœur",
+                "COSYitaliano": "La sorella",
+                "COSYespañol": "La hermana",
+                "COSYportuguês": "A irmã",
+                "COSYdeutsch": "Die Schwester",
+                "ΚΟΖΥελληνικά": "η αδελφή",
+                "ТАКОЙрусский": "Сестра",
+                "ԾՈՍՅհայկական": "Քույր",
+                "COSYbrezhoneg": "C'hoz",
+                "COSYtatarça": "Sıñlı",
+                "COSYbashkort": "Сеңлеләр"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/bd589817-37a1-4de0-969c-45e32859eed4.jpg",
+            "alt": "Son",
+            "translations": {
+                "COSYenglish": "Son",
+                "COSYfrançais": "Le fils",
+                "COSYitaliano": "Il figlio",
+                "COSYespañol": "El hijo",
+                "COSYportuguês": "O filho",
+                "COSYdeutsch": "Der Sohn",
+                "ΚΟΖΥελληνικά": "ο γιος",
+                "ТАКОЙрусский": "Сын",
+                "ԾՈՍՅհայկական": "Որդի",
+                "COSYbrezhoneg": "Mab",
+                "COSYtatarça": "Ul",
+                "COSYbashkort": "Улы"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/e3cff6ca-2edd-4bb5-b998-fd649f1fa9e8.jpg",
+            "alt": "Daughter",
+            "translations": {
+                "COSYenglish": "Daughter",
+                "COSYfrançais": "La fille",
+                "COSYitaliano": "La figlia",
+                "COSYespañol": "La hija",
+                "COSYportuguês": "A filha",
+                "COSYdeutsch": "Die Tochter",
+                "ΚΟΖΥελληνικά": "η κόρη",
+                "ТАКОЙрусский": "Дочь",
+                "ԾՈՍՅհայկական": "Կրտսեր",
+                "COSYbrezhoneg": "Merc'h",
+                "COSYtatarça": "Qızı",
+                "COSYbashkort": "Ҡыҙ"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/0a635fd6-1abf-4397-a953-22424d838fa9.jpg",
+            "alt": "Husband and wife",
+            "translations": {
+                "COSYenglish": "Husband and wife",
+                "COSYfrançais": "Le mari et la femme",
+                "COSYitaliano": "Il marito e la moglie",
+                "COSYespañol": "El marido y la mujer",
+                "COSYportuguês": "O marido e a mulher",
+                "COSYdeutsch": "Der Ehemann und die Ehefrau",
+                "ΚΟΖΥελληνικά": "ο σύζυγος και η σύζυγος",
+                "ТАКОЙрусский": "Муж и жена",
+                "ԾՈՍՅհայկական": "Ամուսին և կին",
+                "COSYbrezhoneg": "Gouarnamant ha gwreg",
+                "COSYtatarça": "İr häm xatın",
+                "COSYbashkort": "Ир һәм ҡатын"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/0a635fd6-1abf-4397-a953-22424d838fa9.jpg",
+            "alt": "Husband and wife",
+            "translations": {
+            }
         }
     ]
 }
