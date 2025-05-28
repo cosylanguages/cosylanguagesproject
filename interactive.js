@@ -636,3 +636,98 @@ document.getElementById('practice-all-btn').onclick = async function() {
   else if (type === 'choose4image') await practiceChooseImage(language, days);
   else if (origPracticeAll) origPracticeAll();
 };
+
+// --- Translation Helper Feature ---
+async function showTranslationHelper(text, contextType = 'word', originalLang = null) {
+  // Try to detect user's country/language
+  let userLang = null;
+  let countryLang = null;
+  let countryName = null;
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    const data = await res.json();
+    userLang = (navigator.language || navigator.userLanguage || '').split('-')[0];
+    countryLang = data.languages ? data.languages.split(',')[0] : null;
+    countryName = data.country_name;
+  } catch {}
+  // Map ISO to COSYlanguage key
+  function isoToCosyLang(iso) {
+    switch(iso) {
+      case 'en': return 'COSYenglish';
+      case 'it': return 'COSYitaliano';
+      case 'fr': return 'COSYfrançais';
+      case 'es': return 'COSYespañol';
+      case 'de': return 'COSYdeutsch';
+      case 'pt': return 'COSYportuguês';
+      case 'el': return 'ΚΟΖΥελληνικά';
+      case 'ru': return 'ТАКОЙрусский';
+      case 'hy': return 'ԾՈՍՅհայկական';
+      case 'br': return 'COSYbrezhoneg';
+      case 'tt': return 'COSYtatarça';
+      case 'ba': return 'COSYbashkort';
+      default: return 'COSYenglish';
+    }
+  }
+  const detectedLang = isoToCosyLang(countryLang || userLang);
+  const t = translations[detectedLang] || translations['COSYenglish'];
+  // UI: Ask if user wants translation in detected language
+  let container = document.createElement('div');
+  container.className = 'translation-helper-popup';
+  container.style.position = 'fixed';
+  container.style.left = '50%';
+  container.style.top = '50%';
+  container.style.transform = 'translate(-50%,-50%)';
+  container.style.background = '#fff';
+  container.style.color = '#009999';
+  container.style.padding = '28px 24px 18px 24px';
+  container.style.borderRadius = '16px';
+  container.style.boxShadow = '0 4px 32px #00bdbd33';
+  container.style.zIndex = '99999';
+  container.style.textAlign = 'center';
+  container.innerHTML = `<div style="font-size:1.2em;margin-bottom:18px;">🌍 ${countryName ? countryName + ': ' : ''}${t.title || 'Translation'}<br><b>${text}</b></div>
+    <button id="show-translation-btn" class="btn-secondary" style="font-size:1.1em;min-width:120px;margin:8px 8px 0 0;">${t.title || 'Translation'} (${detectedLang.replace('COSY','')})</button>
+    <button id="no-translation-btn" class="btn-secondary" style="background:#e74c3c;color:#fff;font-size:1.1em;min-width:90px;margin:8px 0 0 8px;">❌ No</button>
+    <div id="translation-dropdown-area" style="margin-top:18px;display:none;"></div>`;
+  document.body.appendChild(container);
+  // Show translation in detected language
+  document.getElementById('show-translation-btn').onclick = () => {
+    let translated = getTranslationForText(text, detectedLang, contextType, originalLang);
+    container.innerHTML = `<div style='font-size:1.2em;margin-bottom:18px;'>${translated}</div><button class='btn-secondary' onclick='this.parentNode.remove()'>OK</button>`;
+  };
+  // Show dropdown for other language
+  document.getElementById('no-translation-btn').onclick = () => {
+    let area = document.getElementById('translation-dropdown-area');
+    area.style.display = 'block';
+    let select = document.createElement('select');
+    select.style.fontSize = '1.1em';
+    select.innerHTML = Object.keys(translations).map(key => `<option value='${key}'>${translations[key].title || key}</option>`).join('');
+    area.innerHTML = `<div style='margin-bottom:8px;'>🌐 Choose language:</div>`;
+    area.appendChild(select);
+    let btn = document.createElement('button');
+    btn.className = 'btn-secondary';
+    btn.style.marginLeft = '12px';
+    btn.textContent = 'Show';
+    area.appendChild(btn);
+    btn.onclick = () => {
+      let lang = select.value;
+      let translated = getTranslationForText(text, lang, contextType, originalLang);
+      container.innerHTML = `<div style='font-size:1.2em;margin-bottom:18px;'>${translated}</div><button class='btn-secondary' onclick='this.parentNode.remove()'>OK</button>`;
+    };
+  };
+}
+
+// Helper: get translation for a word, popup, fun fact, etc.
+function getTranslationForText(text, lang, contextType, originalLang) {
+  // Try to find translation in translations.js for popups, fun facts, etc.
+  if (contextType === 'funFact') {
+    const t = translations[lang] || translations['COSYenglish'];
+    const idx = (translations[originalLang]?.funFacts || translations['COSYenglish'].funFacts).indexOf(text);
+    if (idx !== -1 && t.funFacts && t.funFacts[idx]) return t.funFacts[idx];
+  }
+  // For words, try to find in vocabulary files (not implemented here, placeholder)
+  if (contextType === 'word') {
+    return `<b>${text}</b> → <i>(translation in ${lang.replace('COSY','')})</i>`;
+  }
+  // Default: just show the text
+  return text;
+}

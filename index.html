@@ -125,7 +125,61 @@
         // Show Practice All button on load
         const practiceAllBtn = document.getElementById('practice-all-btn');
         practiceAllBtn.style.display = 'block';
+
+        // --- Hide other options when one is selected ---
+        function hideOtherVocabularyOptions(selectedId) {
+            document.querySelectorAll('#vocabulary-options button').forEach(btn => {
+                if (btn.id !== selectedId) btn.style.display = 'none';
+            });
+        }
+        function showAllVocabularyOptions() {
+            document.querySelectorAll('#vocabulary-options button').forEach(btn => {
+                btn.style.display = '';
+            });
+        }
+        function hideOtherGrammarOptions(selectedId) {
+            document.querySelectorAll('#grammar-options button').forEach(btn => {
+                if (btn.id !== selectedId) btn.style.display = 'none';
+            });
+        }
+        function showAllGrammarOptions() {
+            document.querySelectorAll('#grammar-options button').forEach(btn => {
+                btn.style.display = '';
+            });
+        }
+
+        // Attach to vocabulary option buttons
+        document.getElementById('random-word-btn').addEventListener('click', function() {
+            hideOtherVocabularyOptions('random-word-btn');
+        });
+        document.getElementById('random-image-btn').addEventListener('click', function() {
+            hideOtherVocabularyOptions('random-image-btn');
+        });
+        document.getElementById('listening-btn').addEventListener('click', function() {
+            hideOtherVocabularyOptions('listening-btn');
+        });
+        // Show all options again when returning to menu
+        vocabularyBtn.addEventListener('click', function() {
+            showAllVocabularyOptions();
+        });
+
+        // Attach to grammar option buttons (dynamically created)
+        function attachGrammarOptionHiders() {
+            document.querySelectorAll('#grammar-options button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    hideOtherGrammarOptions(btn.id);
+                });
+            });
+        }
+        // Call after grammar options are updated
+        const origUpdateGrammarOptions = updateGrammarOptions;
+        updateGrammarOptions = function() {
+            origUpdateGrammarOptions();
+            attachGrammarOptionHiders();
+        };
+        // --- End of hide/show options code ---
         
+
         // Helper to check visible practice types
         function updatePracticeAllVisibility() {
             let visibleCount = 0;
@@ -225,20 +279,32 @@
                 const genderBtn = document.createElement('button');
                 genderBtn.textContent = t.gender;
                 genderBtn.className = 'btn-secondary btn-small';
-                genderBtn.onclick = function() { practiceGrammar('gender'); };
+                genderBtn.id = 'gender-btn';
+                genderBtn.onclick = function() {
+                    hideOtherGrammarOptions('gender-btn');
+                    practiceGrammar('gender');
+                };
                 grammarOptionsContainer.appendChild(genderBtn);
             } else if (lang === 'COSYenglish' && day > 1) {
                 const genderBtn = document.createElement('button');
                 genderBtn.textContent = t.gender;
                 genderBtn.className = 'btn-secondary btn-small';
-                genderBtn.onclick = function() { practiceGrammar('gender'); };
+                genderBtn.id = 'gender-btn';
+                genderBtn.onclick = function() {
+                    hideOtherGrammarOptions('gender-btn');
+                    practiceGrammar('gender');
+                };
                 grammarOptionsContainer.appendChild(genderBtn);
             }
             if (day >= 2) {
                 const verbBtn = document.createElement('button');
                 verbBtn.textContent = t.verbs;
                 verbBtn.className = 'btn-secondary btn-small';
-                verbBtn.onclick = function() { practiceGrammar('verbs'); };
+                verbBtn.id = 'verbs-btn';
+                verbBtn.onclick = function() {
+                    hideOtherGrammarOptions('verbs-btn');
+                    practiceGrammar('verbs');
+                };
                 grammarOptionsContainer.appendChild(verbBtn);
             }
             if (day >= 3) {
