@@ -150,133 +150,85 @@
 
         // Helper: show/hide main practice type buttons
         function hideOtherMainPracticeTypes(selectedId) {
-            [vocabularyBtn, grammarBtn, speakingBtn].forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
+            // Hide all except the selected one
+            ['vocabulary-btn', 'grammar-btn', 'speaking-btn'].forEach(id => {
+                if (id !== selectedId) {
+                    document.getElementById(id).style.display = 'none';
+                } else {
+                    document.getElementById(id).classList.add('active-main-btn');
+                }
             });
         }
         function showAllMainPracticeTypes() {
-            [vocabularyBtn, grammarBtn, speakingBtn].forEach(btn => {
-                btn.style.display = '';
+            ['vocabulary-btn', 'grammar-btn', 'speaking-btn'].forEach(id => {
+                document.getElementById(id).style.display = 'inline-block';
+                document.getElementById(id).classList.remove('active-main-btn');
             });
         }
 
-        // Attach to vocabulary option buttons
-        document.getElementById('random-word-btn').addEventListener('click', function() {
-            hideOtherVocabularyOptions('random-word-btn');
-        });
-        document.getElementById('random-image-btn').addEventListener('click', function() {
-            hideOtherVocabularyOptions('random-image-btn');
-        });
-        document.getElementById('listening-btn').addEventListener('click', function() {
-            hideOtherVocabularyOptions('listening-btn');
-        });
-        // Show all options again when returning to menu
-        vocabularyBtn.addEventListener('click', function() {
-            showAllVocabularyOptions();
-        });
-
-        // Attach to grammar option buttons (dynamically created)
-        function attachGrammarOptionHiders() {
-            document.querySelectorAll('#grammar-options button').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('#grammar-options button').forEach(otherBtn => {
-                        if (otherBtn !== btn) {
-                            otherBtn.style.display = 'none';
-                        }
-                    });
-                });
-            });
+        // Helper: go back to main menu
+        function goBackToMainMenu() {
+            showAllMainPracticeTypes();
+            showAllVocabularyOptions && showAllVocabularyOptions();
+            showAllGrammarOptions && showAllGrammarOptions();
+            if (vocabularyOptions) vocabularyOptions.style.display = 'none';
+            if (grammarOptions) grammarOptions.style.display = 'none';
+            if (speakingOptions) speakingOptions.style.display = 'none';
+            if (practiceAllBtn) practiceAllBtn.style.display = 'block';
+            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
         }
-        // Call after grammar options are updated
-        const origUpdateGrammarOptions = updateGrammarOptions;
-        updateGrammarOptions = function() {
-            origUpdateGrammarOptions();
-            attachGrammarOptionHiders();
-        };
-        // --- End of hide/show options code ---
-        
 
-        // Helper to check visible practice types
-        function updatePracticeAllVisibility() {
-            let visibleCount = 0;
-            if (vocabularyOptions.style.display === 'block') visibleCount++;
-            if (grammarOptions.style.display === 'block') visibleCount++;
-            if (speakingOptions.style.display === 'block') visibleCount++;
-            // Hide if only one is visible
-            if (visibleCount === 1) {
-                practiceAllBtn.style.display = 'none';
-            } else {
+        // On page load, always restore main menu
+        window.addEventListener('DOMContentLoaded', goBackToMainMenu);
+
+        // --- Toggle logic for main practice type buttons ---
+        function toggleMainPracticeType(selectedId) {
+            const btn = document.getElementById(selectedId);
+            const isActive = btn.classList.contains('active-main-btn');
+            if (isActive) {
+                // Restore all if already active
+                showAllMainPracticeTypes();
+                showAllVocabularyOptions();
+                showAllGrammarOptions();
+                vocabularyOptions.style.display = 'none';
+                grammarOptions.style.display = 'none';
+                speakingOptions.style.display = 'none';
                 practiceAllBtn.style.display = 'block';
+                document.getElementById('result').innerHTML = '';
+            } else {
+                hideOtherMainPracticeTypes(selectedId);
+                // Show the relevant options
+                if (selectedId === 'vocabulary-btn') {
+                    vocabularyOptions.style.display = 'block';
+                    grammarOptions.style.display = 'none';
+                    speakingOptions.style.display = 'none';
+                } else if (selectedId === 'grammar-btn') {
+                    grammarOptions.style.display = 'block';
+                    vocabularyOptions.style.display = 'none';
+                    speakingOptions.style.display = 'none';
+                } else if (selectedId === 'speaking-btn') {
+                    speakingOptions.style.display = 'block';
+                    vocabularyOptions.style.display = 'none';
+                    grammarOptions.style.display = 'none';
+                }
+                practiceAllBtn.style.display = 'none';
+                document.getElementById('result').innerHTML = '';
             }
         }
-        
+
         // Vocabulary button click
         vocabularyBtn.addEventListener('click', function() {
-            // Reset all buttons
-            vocabularyBtn.classList.add('btn-primary');
-            vocabularyBtn.classList.remove('btn-secondary');
-            grammarBtn.classList.add('btn-primary');
-            grammarBtn.classList.remove('btn-secondary');
-            speakingBtn.classList.add('btn-primary');
-            speakingBtn.classList.remove('btn-secondary');
-            
-            // Toggle vocabulary options
-            vocabularyOptions.style.display = vocabularyOptions.style.display === 'none' ? 'block' : 'none';
-            grammarOptions.style.display = 'none';
-            speakingOptions.style.display = 'none';
-            
-            // Style the active button
-            vocabularyBtn.classList.remove('btn-primary');
-            vocabularyBtn.classList.add('btn-secondary');
-            updatePracticeAllVisibility();
-            hideOtherMainPracticeTypes('vocabulary-btn');
+            toggleMainPracticeType('vocabulary-btn');
         });
         
         // Grammar button click
         grammarBtn.addEventListener('click', function() {
-            // Reset all buttons
-            vocabularyBtn.classList.add('btn-primary');
-            vocabularyBtn.classList.remove('btn-secondary');
-            grammarBtn.classList.add('btn-primary');
-            grammarBtn.classList.remove('btn-secondary');
-            speakingBtn.classList.add('btn-primary');
-            speakingBtn.classList.remove('btn-secondary');
-            
-            // Update grammar options based on day
-            updateGrammarOptions();
-            
-            // Toggle grammar options
-            grammarOptions.style.display = grammarOptions.style.display === 'none' ? 'block' : 'none';
-            vocabularyOptions.style.display = 'none';
-            speakingOptions.style.display = 'none';
-            
-            // Style the active button
-            grammarBtn.classList.remove('btn-primary');
-            grammarBtn.classList.add('btn-secondary');
-            updatePracticeAllVisibility();
-            hideOtherMainPracticeTypes('grammar-btn');
+            toggleMainPracticeType('grammar-btn');
         });
         
         // Speaking button click
         speakingBtn.addEventListener('click', function() {
-            // Reset all buttons
-            vocabularyBtn.classList.add('btn-primary');
-            vocabularyBtn.classList.remove('btn-secondary');
-            grammarBtn.classList.add('btn-primary');
-            grammarBtn.classList.remove('btn-secondary');
-            speakingBtn.classList.add('btn-primary');
-            speakingBtn.classList.remove('btn-secondary');
-            
-            // Toggle speaking options
-            speakingOptions.style.display = speakingOptions.style.display === 'none' ? 'block' : 'none';
-            vocabularyOptions.style.display = 'none';
-            grammarOptions.style.display = 'none';
-            
-            // Style the active button
-            speakingBtn.classList.remove('btn-primary');
-            speakingBtn.classList.add('btn-secondary');
-            updatePracticeAllVisibility();
-            hideOtherMainPracticeTypes('speaking-btn');
+            toggleMainPracticeType('speaking-btn');
         });
         
         // Update grammar options based on selected day or range
@@ -1297,10 +1249,10 @@
             // Optionally clear result area
             document.getElementById('result').innerHTML = '';
         }
-        // Attach restoreMenu to a suitable place, e.g., clicking the active main button again
-        vocabularyBtn.addEventListener('dblclick', restoreMenu);
-        grammarBtn.addEventListener('dblclick', restoreMenu);
-        speakingBtn.addEventListener('dblclick', restoreMenu);
+        // Remove double-click restoreMenu listeners (no longer needed)
+        // vocabularyBtn.addEventListener('dblclick', restoreMenu);
+        // grammarBtn.addEventListener('dblclick', restoreMenu);
+        // speakingBtn.addEventListener('dblclick', restoreMenu);
 
         // --- Hide/show day and day-from/day-to options depending on selection ---
 function updateDaySelectors() {
