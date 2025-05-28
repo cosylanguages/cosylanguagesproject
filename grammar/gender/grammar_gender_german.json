@@ -9,12 +9,12 @@
     { "word": "Karte", "article": "die" }
   ],
   "2": [
-    { "word": "Professor", "article": "der" },
+    { "word": "Lehrer", "article": "der" },
+    { "word": "Lehrerin", "article": "die" },
     { "word": "Student", "article": "der" },
     { "word": "Mann", "article": "der" },
     { "word": "Junge", "article": "der" },
     { "word": "Frau", "article": "die" },
-    { "word": "Professorin", "article": "die" },
     { "word": "Studentin", "article": "die" },
     { "word": "Mädchen", "article": "das" },
     { "word": "Sache", "article": "die" },

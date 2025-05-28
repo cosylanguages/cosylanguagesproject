@@ -86,6 +86,8 @@
             <div id="speaking-options" class="practice-options">
                 <button id="speaking-practice-btn" class="btn-primary">Get Speaking Prompt</button>
             </div>
+            
+            <button id="practice-all-btn" class="btn-primary" style="margin-top:12px;">Practice All</button>
         </div>
         
         <div id="result" class="result-area"></div>
@@ -319,7 +321,6 @@
                 case 'COSYtatarça': langCode = 'tt-RU'; break;
                 case 'COSYbashkort': langCode = 'ba-RU'; break;
                 case 'ԾՈՍՅհայկական': langCode = 'hy-AM'; break;
-                case 'ΚΟΖΥελληνικά': langCode = 'el-GR'; break;
                 default: langCode = 'en-UK';
             }
             // iOS/Android: require user gesture, so always call from a button or setTimeout after interaction
@@ -380,7 +381,6 @@
                     case 'COSYtatarça': return 'tt-RU';
                     case 'COSYbashkort': return 'ba-RU';
                     case 'ԾՈՍՅհայկական': return 'hy-AM';
-                    case 'ΚΟΖΥελληνικά': return 'el-GR';
                     default: return 'en-UK';
                 }
             })(language);
@@ -710,18 +710,12 @@
             recognition = new SpeechRecognition();
             recognition.lang = (function(lang) {
                 switch(lang) {
-                    case 'COSYenglish': return 'en-US', 'en-UK';
+                    case 'COSYenglish': return 'en-US';
                     case 'COSYfrançais': return 'fr-FR';
                     case 'COSYespañol': return 'es-ES';
                     case 'COSYitaliano': return 'it-IT';
                     case 'COSYdeutsch': return 'de-DE';
                     case 'COSYportuguês': return 'pt-PT';
-                    case 'ТАКОЙрусский': return 'ru-RU';
-                    case 'COSYbrezhoneg': return 'br-FR';
-                    case 'COSYtatarça': return 'tt-RU';
-                    case 'COSYbashkort': return 'ba-RU';
-                    case 'ԾՈՍՅհայկական': return 'hy-AM';
-                    case 'ΚΟΖΥελληνικά': return 'el-GR';
                     default: return 'en-US';
                 }
             })(language);
@@ -785,6 +779,47 @@
         });
         document.getElementById('listening-btn').addEventListener('click', function() {
             practiceVocabulary('listening');
+        });
+        
+        // Practice All button logic
+        document.getElementById('practice-all-btn').addEventListener('click', async function() {
+            const types = ['vocabulary', 'grammar', 'speaking'];
+            // Only include types that are available for the selected day(s)
+            const days = getSelectedDays();
+            if (!days.length) {
+                alert('Please select a day or a range of days first');
+                return;
+            }
+            const language = document.getElementById('language').value;
+            if (!language) {
+                alert('Please select a language first');
+                return;
+            }
+            // Randomly pick a type
+            const availableTypes = [];
+            // Vocabulary always available
+            availableTypes.push('vocabulary');
+            // Grammar only if grammar options exist for the day
+            if (parseInt(days[0]) >= 1) availableTypes.push('grammar');
+            // Speaking always available
+            availableTypes.push('speaking');
+            const type = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+            if (type === 'vocabulary') {
+                // Randomly pick a vocabulary mode
+                const vocabModes = ['random-word', 'random-image', 'listening'];
+                const mode = vocabModes[Math.floor(Math.random() * vocabModes.length)];
+                await practiceVocabulary(mode);
+            } else if (type === 'grammar') {
+                // Randomly pick a grammar type available for the day
+                const grammarTypes = [];
+                if (parseInt(days[0]) >= 1) grammarTypes.push('gender');
+                if (parseInt(days[0]) >= 2) grammarTypes.push('verbs');
+                // Add more grammar types as needed
+                const gType = grammarTypes[Math.floor(Math.random() * grammarTypes.length)];
+                await practiceGrammar(gType);
+            } else if (type === 'speaking') {
+                await practiceSpeaking();
+            }
         });
         
         // Add Enter key support for practice check buttons
@@ -1287,7 +1322,7 @@ async function practiceGrammar(type) {
             case 'COSYtatarça': articles = ['ир-ат', 'хатын-кыз', 'әйбер']; break;
             case 'COSYbashkort': articles = ['ир-ат', 'ҡатын-ҡыҙ', 'әйбер']; break;
             case 'ԾՈՍՅհայկական': articles = ['արական', 'իգական', 'միջին']; break;
-            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'o/η']; break;
+            case 'ΚΟΖΥελληνικά': articles = ['ο', 'η', 'το', 'o/h']; break;
             default: articles = ['the', 'a', 'an']; break;
         }
         // Build visually appealing article buttons
@@ -1443,7 +1478,7 @@ function restoreUserSelection() {
         document.getElementById('language').value = savedLang;
         // Trigger change event to update UI/flag
         document.getElementById('language').dispatchEvent(new Event('change'));
-    }
+       }
     if (savedDay) {
         document.getElementById('day').value = savedDay;
         // Optionally trigger change event if needed
