@@ -3,9 +3,12 @@
     "Hello", "Goodbye", "Yes", "No", "Thank you", "You're welcome"
   ],
   "2": [
-    "Boy", "Girl", "Teacher", "Student", "Woman", "Man"
+    "The boy", "The girl", "The teacher", "The student", "The woman", "The man"
   ],
   "3": [
-    "Mother", "Father", "Son", "Daughter", "Sister", "Brother", "Husband", "Wife"
+    "The mother", "The father", "The son", "The daughter", "The sister", "The brother", "The husband", "The wife", "The friend (m)", "The friend (f)"
+  ],
+  "4": [
+    "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"
   ]
 }
