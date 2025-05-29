@@ -41,6 +41,7 @@ const translations = {
     noVerbs: 'No verbs available!',
     noVerbForms: 'No verb forms!',
     noGender: 'No gender data!',
+    possessives: '🧑‍🤝‍🧑 Possessives',
     funFacts: [
       'Did you know? Spaced repetition boosts memory! 🧠',
       'Mnemonic: Make a silly story with your word!',
@@ -94,6 +95,7 @@ const translations = {
     noVerbs: 'Nessun verbo disponibile!',
     noVerbForms: 'Nessuna forma verbale!',
     noGender: 'Nessun dato sul genere!',
+    possessives: '🧑‍🤝‍🧑 Possessivi',
     funFacts: [
       'Lo sapevi? La ripetizione dilazionata migliora la memoria! 🧠',
       'Usa una storia buffa per ricordare la parola!',
@@ -147,6 +149,7 @@ const translations = {
     noVerbs: 'Aucun verbe disponible !',
     noVerbForms: 'Aucune forme de verbe !',
     noGender: 'Aucune donnée de genre !',
+    possessives: '🧑‍🤝‍🧑 Possessifs',
     funFacts: [
       'Le savais-tu ? La répétition espacée améliore la mémoire ! 🧠',
       'Astuce : invente une histoire drôle avec ton mot !',
@@ -200,6 +203,7 @@ const translations = {
     noVerbs: '¡No hay verbos disponibles!',
     noVerbForms: '¡No hay formas verbales!',
     noGender: '¡No hay datos de género!',
+    possessives: '🧑‍🤝‍🧑 Posesivos',
     funFacts: [
       '¿Sabías que la repetición espaciada mejora la memoria? 🧠',
       'Haz una historia divertida con tu palabra.',
@@ -253,6 +257,7 @@ const translations = {
     noVerbs: 'Keine Verben verfügbar!',
     noVerbForms: 'Keine Verbformen!',
     noGender: 'Keine Genusdaten!',
+    possessives: '🧑‍🤝‍🧑 Possessivartikel',
     funFacts: [
       'Wusstest du? Spaced Repetition stärkt das Gedächtnis! 🧠',
       'Merktipp: Erfinde eine lustige Geschichte mit dem Wort!',
@@ -306,6 +311,7 @@ const translations = {
     noVerbs: 'Sem verbos disponíveis!',
     noVerbForms: 'Sem formas verbais!',
     noGender: 'Sem dados de gênero!',
+    possessives: '🧑‍🤝‍🧑 Possessives',
     funFacts: [
       'Você sabia? Repetição espaçada melhora a memória! 🧠',
       'Dica: Crie uma história engraçada com a palavra!',
@@ -359,6 +365,7 @@ const translations = {
     noVerbs: 'Δεν υπάρχουν διαθέσιμα ρήματα!',
     noVerbForms: 'Δεν υπάρχουν μορφές ρήματος!',
     noGender: 'Δεν υπάρχουν δεδομένα γένους!',
+    possessives: '🧑‍🤝‍🧑 Κτητικές',
     funFacts: [
       'Ήξερες ότι η επανάληψη βοηθά τη μνήμη; 🧠',
       'Φτιάξε μια αστεία ιστορία με τη λέξη!',
@@ -412,6 +419,7 @@ const translations = {
     noVerbs: 'Нет доступных глаголов!',
     noVerbForms: 'Нет форм глагола!',
     noGender: 'Нет данных о роде!',
+    possessives: '🧑‍🤝‍🧑 Притяжательные',
     funFacts: [
       'Знаешь ли ты? Интервальное повторение улучшает память! 🧠',
       'Придумай смешную историю со словом!',
@@ -465,6 +473,7 @@ const translations = {
     noVerbs: 'Բայեր չկան:',
     noVerbForms: 'Բայաձևեր չկան:',
     noGender: 'Սեռի տվյալներ չկան:',
+    possessives: '🧑‍🤝‍🧑 Սեփականական',
     funFacts: [
       'Գիտե՞ս, որ կրկնությունը լավացնում է հիշողությունը։ 🧠',
       'Հորինիր զվարճալի պատմություն բառի համար։',
@@ -518,6 +527,7 @@ const translations = {
     noVerbs: 'Verb ebet da gaout!',
     noVerbForms: 'Stumm verb ebet!',
     noGender: 'Roadennoù reizh ebet!',
+    possessives: '🧑‍🤝‍🧑 Percʼhennel',
     funFacts: [
       'Gouzout a rez? An adlenn a sikour da soñj! 🧠',
       'Gra ur gontadenn fentus gant ar ger!',
@@ -571,6 +581,7 @@ const translations = {
     noVerbs: 'Фигыльләр юк!',
     noVerbForms: 'Фигыль формалары юк!',
     noGender: 'Җенес турында мәгълүмат юк!',
+    possessives: '🧑‍🤝‍🧑 Иялык',
     funFacts: [
       'Беләсеңме? Аралы кабатлау хәтерне яхшырта! 🧠',
       'Сүз белән кызыклы хикәя уйлап тап!',
@@ -624,6 +635,7 @@ const translations = {
     noVerbs: 'Фигыльдәр юҡ!',
     noVerbForms: 'Фигыль формалары юҡ!',
     noGender: 'Енес тураһында мәғлүмәт юҡ!',
+    possessives: '🧑‍🤝‍🧑 Эйәлек',
     funFacts: [
       'Беләһеңме? Аралы ҡабатлау хәтерҙе яҡшырта! 🧠',
       'Һүҙ менән ҡыҙыҡлы тарих уйлап тап!',

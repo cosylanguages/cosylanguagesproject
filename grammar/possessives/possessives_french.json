@@ -1,0 +1,20 @@
+{
+  "3": [
+    { "prompt": "J'ai une mère", "answer": "ma mère" },
+    { "prompt": "Ma sœur", "answer": "J'ai une sœur" },
+    { "prompt": "Tu as un père", "answer": "ton père" },
+    { "prompt": "Ton frère", "answer": "Tu as un frère" },
+    { "prompt": "Il a une femme", "answer": "sa femme" },
+    { "prompt": "Sa fille", "answer": "Il a une fille" },
+    { "prompt": "Elle a un mari", "answer": "son mari" },
+    { "prompt": "Son fils", "answer": "Elle a un fils" },
+    { "prompt": "J'ai un ami", "answer": "mon ami" },
+    { "prompt": "Mon vin", "answer": "J'ai du vin" },
+    { "prompt": "Tu as de la bière", "answer": "ta bière" },
+    { "prompt": "Ta boisson", "answer": "Tu as une boisson" },
+    { "prompt": "Il a de l'eau", "answer": "son eau" },
+    { "prompt": "Son café", "answer": "Il a du café" },
+    { "prompt": "Elle a un professeur", "answer": "son professeur" },
+    { "prompt": "Son étudiant", "answer": "Elle a un étudiant" }
+  ]
+}

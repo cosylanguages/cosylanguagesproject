@@ -292,6 +292,37 @@
                     }
                 };
             }
+            // Fix: For day 3, ONLY show gender, verbs, possessives (no duplicates)
+            if (day === 3) {
+                const genderBtn = document.createElement('button');
+                genderBtn.textContent = t.gender;
+                genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                genderBtn.onclick = function() {
+                    hideOtherGrammarOptionBtns(genderBtn);
+                    document.getElementById('result').innerHTML = '';
+                    practiceGrammar('gender');
+                };
+                grammarOptionsContainer.appendChild(genderBtn);
+                const verbBtn = document.createElement('button');
+                verbBtn.textContent = t.verbs;
+                verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                verbBtn.onclick = function() {
+                    hideOtherGrammarOptionBtns(verbBtn);
+                    document.getElementById('result').innerHTML = '';
+                    practiceGrammar('verbs');
+                };
+                grammarOptionsContainer.appendChild(verbBtn);
+                const possBtn = document.createElement('button');
+                possBtn.textContent = t.possessives;
+                possBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                possBtn.onclick = function() {
+                    hideOtherGrammarOptionBtns(possBtn);
+                    document.getElementById('result').innerHTML = '';
+                    practiceGrammar('possessives');
+                };
+                grammarOptionsContainer.appendChild(possBtn);
+                return;
+            }
             // In updateGrammarOptions, always show gender button for day 1+ for all languages
             if (day >= 1) {
                 const genderBtn = document.createElement('button');
@@ -316,18 +347,6 @@
                     practiceGrammar('verbs');
                 };
                 grammarOptionsContainer.appendChild(verbBtn);
-            }
-            if (day >= 3) {
-                const adjBtn = document.createElement('button');
-                adjBtn.textContent = t.adjectives;
-                adjBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                adjBtn.onclick = makeToggleHandler(adjBtn);
-                grammarOptionsContainer.appendChild(adjBtn);
-                const pluralBtn = document.createElement('button');
-                pluralBtn.textContent = t.plurals;
-                pluralBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                pluralBtn.onclick = makeToggleHandler(pluralBtn);
-                grammarOptionsContainer.appendChild(pluralBtn);
             }
             if (day >= 5) {
                 const pastBtn = document.createElement('button');
@@ -773,6 +792,34 @@
             }
         }
 
+        // Load possessives grammar data for a given language and day
+        async function loadPossessivesGrammar(language, day) {
+            const fileMap = {
+                'COSYenglish': 'grammar/possessives/possessives_english.json',
+                'COSYitaliano': 'grammar/possessives/possessives_italian.json',
+                'COSYfrançais': 'grammar/possessives/possessives_french.json',
+                'COSYespañol': 'grammar/possessives/possessives_spanish.json',
+                'COSYdeutsch': 'grammar/possessives/possessives_german.json',
+                'COSYportuguês': 'grammar/possessives/possessives_portuguese.json',
+                'ТАКОЙрусский': 'grammar/possessives/possessives_russian.json',
+                'COSYbrezhoneg': 'grammar/possessives/possessives_breton.json',
+                'COSYtatarça': 'grammar/possessives/possessives_tatar.json',
+                'COSYbashkort': 'grammar/possessives/possessives_bashkir.json',
+                'ԾՈՍՅհայկական': 'grammar/possessives/possessives_armenian.json',
+                'ΚΟΖΥελληνικά': 'grammar/possessives/possessives_greek.json'
+            };
+            const file = fileMap[language];
+            if (!file) return [];
+            try {
+                const response = await fetch(file);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data[day] || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
         // Update all fetch paths in scripts to use the new folder structure: vocabulary/, grammar/, speaking/. For example, fetch('vocabulary/vocabulary_english.json'), fetch('grammar/grammar_gender_french.json'), fetch('speaking/prompts/speaking_french.json'), etc.
         async function loadSpeakingPrompts(language, day) {
             const fileMap = {
@@ -1021,6 +1068,37 @@
               }
             };
           }
+          // Fix: For day 3, ONLY show gender, verbs, possessives (no duplicates)
+          if (day === 3) {
+            const genderBtn = document.createElement('button');
+            genderBtn.textContent = t.gender;
+            genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            genderBtn.onclick = function() {
+                hideOtherGrammarOptionBtns(genderBtn);
+                document.getElementById('result').innerHTML = '';
+                practiceGrammar('gender');
+            };
+            grammarOptionsContainer.appendChild(genderBtn);
+            const verbBtn = document.createElement('button');
+            verbBtn.textContent = t.verbs;
+            verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            verbBtn.onclick = function() {
+                hideOtherGrammarOptionBtns(verbBtn);
+                document.getElementById('result').innerHTML = '';
+                practiceGrammar('verbs');
+            };
+            grammarOptionsContainer.appendChild(verbBtn);
+            const possBtn = document.createElement('button');
+            possBtn.textContent = t.possessives;
+            possBtn.className = 'btn-secondary btn-small grammar-option-btn';
+            possBtn.onclick = function() {
+                hideOtherGrammarOptionBtns(possBtn);
+                document.getElementById('result').innerHTML = '';
+                practiceGrammar('possessives');
+            };
+            grammarOptionsContainer.appendChild(possBtn);
+            return;
+          }
           // In updateGrammarOptions, always show gender button for day 1+ for all languages
           if (day >= 1) {
             const genderBtn = document.createElement('button');
@@ -1045,18 +1123,6 @@
                 practiceGrammar('verbs');
             };
             grammarOptionsContainer.appendChild(verbBtn);
-          }
-          if (day >= 3) {
-            const adjBtn = document.createElement('button');
-            adjBtn.textContent = t.adjectives;
-            adjBtn.className = 'btn-secondary btn-small grammar-option-btn';
-            adjBtn.onclick = makeToggleHandler(adjBtn);
-            grammarOptionsContainer.appendChild(adjBtn);
-            const pluralBtn = document.createElement('button');
-            pluralBtn.textContent = t.plurals;
-            pluralBtn.className = 'btn-secondary btn-small grammar-option-btn';
-            pluralBtn.onclick = makeToggleHandler(pluralBtn);
-            grammarOptionsContainer.appendChild(pluralBtn);
           }
           if (day >= 5) {
             const pastBtn = document.createElement('button');
@@ -1256,6 +1322,62 @@
                     }, 0);
                 }
                 renderVerb();
+                return;
+            } else if (type === 'possessives') {
+                const items = await loadPossessivesGrammar(language, day);
+                if (!items.length) {
+                    resultArea.innerHTML = `<p style="text-align:center;">No possessives data for this day/language.</p>`;
+                    return;
+                }
+                let item = items[Math.floor(Math.random() * items.length)];
+                function renderPossessive() {
+                    resultArea.innerHTML = `
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;">
+                            <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+                                <span id="poss-prompt" style="font-size:2rem; font-weight:600; cursor:pointer;">${item.prompt}</span>
+                                <button id="play-poss-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:1.5rem;">🔊</button>
+                            </div>
+                            <input id="poss-answer-input" type="text" placeholder="Type the answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
+                            <div style="display:flex; gap:16px; justify-content:center; align-items:center; margin-bottom:10px;">
+                                <button id="check-poss-answer-btn" class="btn-secondary" style="min-width:100px;">Check</button>
+                                <button id="poss-record-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:1.3rem;">🎤</button>
+                            </div>
+                            <div id="poss-answer-feedback" style="margin-top:10px;"></div>
+                            <div id="poss-pronunciation-feedback" style="margin-top:10px;"></div>
+                        </div>
+                    `;
+                    pronounceWord(item.prompt, language);
+                    setTimeout(() => {
+                        document.getElementById('play-poss-pronounce-btn').onclick = function() {
+                            pronounceWord(item.prompt, language);
+                        };
+                        document.getElementById('poss-prompt').onclick = function() {
+                            item = items[Math.floor(Math.random() * items.length)];
+                            renderPossessive();
+                        };
+                        document.getElementById('check-poss-answer-btn').onclick = function() {
+                            const userInput = document.getElementById('poss-answer-input').value.trim().toLowerCase();
+                            const correct = item.answer.trim().toLowerCase();
+                            let feedback = '';
+                            if (!userInput) {
+                                feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
+                            } else if (userInput === correct) {
+                                feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                                setTimeout(() => practiceGrammar(type), 1200);
+                            } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
+                                feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
+                            } else {
+                                feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${item.answer}</b></span>`;
+                            }
+                            document.getElementById('poss-answer-feedback').innerHTML = feedback;
+                        };
+                        document.getElementById('poss-record-btn').onclick = function() {
+                            startPronunciationCheck(item.answer, language);
+                        };
+                        addEnterKeySupport('poss-answer-input', 'check-poss-answer-btn');
+                    }, 0);
+                }
+                renderPossessive();
                 return;
             }
         }

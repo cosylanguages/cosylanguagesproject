@@ -1,0 +1,20 @@
+{
+  "3": [
+    { "prompt": "Ich habe eine Mutter", "answer": "meine Mutter" },
+    { "prompt": "Mein Bruder", "answer": "Ich habe einen Bruder" },
+    { "prompt": "Du hast einen Vater", "answer": "dein Vater" },
+    { "prompt": "Deine Schwester", "answer": "Du hast eine Schwester" },
+    { "prompt": "Er hat eine Frau", "answer": "seine Frau" },
+    { "prompt": "Sein Sohn", "answer": "Er hat einen Sohn" },
+    { "prompt": "Sie hat einen Mann", "answer": "ihr Mann" },
+    { "prompt": "Ihre Tochter", "answer": "Sie hat eine Tochter" },
+    { "prompt": "Ich habe einen Freund", "answer": "mein Freund" },
+    { "prompt": "Mein Wein", "answer": "Ich habe Wein" },
+    { "prompt": "Du hast Bier", "answer": "dein Bier" },
+    { "prompt": "Dein Saft", "answer": "Du hast Saft" },
+    { "prompt": "Er hat Wasser", "answer": "sein Wasser" },
+    { "prompt": "Sein Kaffee", "answer": "Er hat Kaffee" },
+    { "prompt": "Sie hat einen Lehrer", "answer": "ihr Lehrer" },
+    { "prompt": "Ihr Schüler", "answer": "Sie hat einen Schüler" }
+  ]
+}
