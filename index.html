@@ -629,7 +629,6 @@
                             <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
-                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:18px;"></div>
                             <div id="hint-area" style="margin-top:10px;"></div>
@@ -677,10 +676,10 @@
                             <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
-                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:10px;"></div>
                             <div id="opposite-feedback" style="margin-top:10px;"></div>
+                            <div id="hint-area" style="margin-top:10px;"></div>
                         </div>
                     `;
                     let recording = false;
@@ -709,20 +708,20 @@
                         };
                         document.getElementById('help-btn').onclick = function() {
                             const hintArea = document.getElementById('hint-area');
-                            function shuffle(str) {
-                                const arr = str.split('');
-                                for (let i = arr.length - 1; i > 0; i--) {
-                                    const j = Math.floor(Math.random() * (i + 1));
-                                    [arr[i], arr[j]] = [arr[j], arr[i]];
-                                }
-                                return arr.join('');
+                            if (opposite && opposite.length > 1) {
+                                hintArea.innerHTML = `<span style='color:#2980b9;'>💡 Hint: First letter <b>${opposite[0]}</b>, last letter <b>${opposite[opposite.length-1]}</b></span>`;
+                            } else if (opposite) {
+                                hintArea.innerHTML = `<span style='color:#2980b9;'>💡 Hint: First letter <b>${opposite[0]}</b></span>`;
+                            } else {
+                                hintArea.innerHTML = `<span style='color:#2980b9;'>💡 No hint available.</span>`;
                             }
-                            hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: The opposite is <b>${shuffle(opposite)}</b> (shuffled letters).</span>`;
                         };
                         addEnterKeySupport('opposite-input', 'check-opposite-btn');
                     }, 0);
                 }
                 function renderMakeWordPractice() {
+                    // All letters lowercase
+                    let lowerWord = word.toLowerCase();
                     function shuffle(str) {
                         const arr = str.split('');
                         for (let i = arr.length - 1; i > 0; i--) {
@@ -731,24 +730,38 @@
                         }
                         return arr.join('');
                     }
-                    let shuffled = shuffle(word);
-                    while (shuffled === word && word.length > 1) {
-                        shuffled = shuffle(word);
+                    let shuffled = shuffle(lowerWord);
+                    while (shuffled === lowerWord && lowerWord.length > 1) {
+                        shuffled = shuffle(lowerWord);
                     }
+                    let answerArr = Array(lowerWord.length).fill('');
+                    let revealedHint = false;
                     resultArea.innerHTML = `
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
-                            <div id="makeword-letters" style="font-size:1.5rem; font-weight:600; letter-spacing:0.2em; margin-bottom:10px; cursor:pointer;">${shuffled.split('').join(' ')}</div>
-                            <input id="makeword-input" type="text" placeholder="Type the word..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:10px; width:220px; text-align:center;">
+                            <div id="makeword-letters" style="display:flex; gap:8px; margin-bottom:10px;">
+                                ${shuffled.split('').map((ch, i) => `<div class="letter-box" data-idx="${i}" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid #bbb;border-radius:6px;font-size:1.3rem;cursor:pointer;background:#f8f8f8;user-select:none;">${ch}</div>`).join('')}
+                            </div>
+                            <div id="makeword-answer" style="display:flex; gap:8px; margin-bottom:10px;">
+                                ${answerArr.map(() => `<div class="letter-box answer-box" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid #bbb;border-radius:6px;font-size:1.3rem;background:#fff;user-select:none;"> </div>`).join('')}
+                            </div>
                             <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
-                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:10px;"></div>
                             <div id="makeword-feedback" style="margin-top:10px;"></div>
+                            <div id="hint-area" style="margin-top:10px;"></div>
                         </div>
                     `;
                     let recording = false;
+                    let used = Array(shuffled.length).fill(false);
+                    let answerPos = 0;
+                    function updateAnswerBoxes() {
+                        const answerBoxes = document.querySelectorAll('.answer-box');
+                        answerBoxes.forEach((box, i) => {
+                            box.textContent = answerArr[i] ? answerArr[i] : ' ';
+                        });
+                    }
                     setTimeout(() => {
                         document.getElementById('play-pronounce-btn').onclick = function() {
                             pronounceWord(word, language);
@@ -764,22 +777,59 @@
                                 this.classList.remove('recording');
                             }
                         };
-                        document.getElementById('makeword-letters').onclick = function() {
-                            word = words[Math.floor(Math.random() * words.length)];
-                            mode = modes[Math.floor(Math.random() * modes.length)];
-                            if (mode === 'opposite' && !opposites[word.trim()]) {
-                                mode = Math.random() < 0.5 ? 'show' : 'makeword';
-                            }
-                            rerender();
-                        };
+                        // Letter click logic
+                        document.querySelectorAll('#makeword-letters .letter-box').forEach((el, idx) => {
+                            el.onclick = function() {
+                                if (used[idx] || answerPos >= lowerWord.length) return;
+                                answerArr[answerPos] = el.textContent;
+                                used[idx] = true;
+                                el.style.opacity = 0.4;
+                                answerPos++;
+                                updateAnswerBoxes();
+                                // Check if complete
+                                if (answerArr.join('') === lowerWord) {
+                                    document.getElementById('makeword-feedback').innerHTML = '<span style="color:#27ae60;">✅ Correct!</span>';
+                                    setTimeout(rerender, 1200);
+                                } else if (answerPos === lowerWord.length) {
+                                    document.getElementById('makeword-feedback').innerHTML = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${lowerWord}</b></span>`;
+                                }
+                            };
+                        });
+                        // Allow to clear answer by clicking answer boxes
+                        document.querySelectorAll('#makeword-answer .answer-box').forEach((el, idx) => {
+                            el.onclick = function() {
+                                if (answerArr[idx]) {
+                                    // Find which letter in shuffled this was
+                                    const letter = answerArr[idx];
+                                    for (let i = 0; i < shuffled.length; i++) {
+                                        if (shuffled[i] === letter && used[i]) {
+                                            used[i] = false;
+                                            document.querySelectorAll('#makeword-letters .letter-box')[i].style.opacity = 1;
+                                            break;
+                                        }
+                                    }
+                                    answerArr[idx] = '';
+                                    if (idx < answerPos) answerPos = idx;
+                                    updateAnswerBoxes();
+                                    document.getElementById('makeword-feedback').innerHTML = '';
+                                }
+                            };
+                        });
                         document.getElementById('help-btn').onclick = function() {
-                            const hintArea = document.getElementById('hint-area');
-                            let reveal = word.split('').map((ch, i) => (i === 0 || i === word.length-1) ? ch : '_').join(' ');
-                            hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: <b>${reveal}</b></span>`;
-                            document.getElementById('makeword-letters').style.animation = 'bounce 0.5s';
-                            setTimeout(() => { document.getElementById('makeword-letters').style.animation = ''; }, 500);
+                            if (revealedHint) return;
+                            revealedHint = true;
+                            // Reveal first or last letter in answer
+                            const revealFirst = Math.random() < 0.5;
+                            if (revealFirst) {
+                                answerArr[0] = lowerWord[0];
+                                answerPos = Math.max(answerPos, 1);
+                            } else {
+                                answerArr[lowerWord.length-1] = lowerWord[lowerWord.length-1];
+                                answerPos = Math.max(answerPos, lowerWord.length);
+                            }
+                            updateAnswerBoxes();
+                            document.getElementById('hint-area').innerHTML = `<span style='color:#2980b9;'>💡 Hint: ${revealFirst ? 'First' : 'Last'} letter revealed!</span>`;
                         };
-                        addEnterKeySupport('makeword-input', 'check-makeword-btn');
                     }, 0);
                 }
                 rerender();
@@ -808,7 +858,6 @@
                             <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
-                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:18px;"></div>
                             <div id="image-answer-feedback" style="margin-top:10px;"></div>
@@ -1740,6 +1789,26 @@ async function loadOpposites(language, day) {
     } catch (e) {
         return {};
     }
+}
+
+// After progress stats rendering (wherever progress stats are shown):
+const statsContainer = document.getElementById('progress-stats-container');
+if (statsContainer && !document.getElementById('reset-progress-btn')) {
+  const resetBtn = document.createElement('button');
+  resetBtn.id = 'reset-progress-btn';
+  resetBtn.className = 'btn-secondary';
+  resetBtn.style.display = 'block';
+  resetBtn.style.margin = '18px auto 0 auto';
+  resetBtn.style.textAlign = 'center';
+  resetBtn.style.fontSize = '1.1em';
+  resetBtn.textContent = (translations[lang]||translations['COSYenglish']).resetProgress || 'Reset Progress';
+  resetBtn.onclick = function() {
+    if (confirm((translations[lang]||translations['COSYenglish']).resetConfirm || 'Are you sure you want to reset your progress?')) {
+      localStorage.clear();
+      location.reload();
+    }
+  };
+  statsContainer.appendChild(resetBtn);
 }
     </script>
     <!-- Sound effects -->

@@ -51,7 +51,9 @@ const translations = {
       'Teach the word to someone else!',
       'Use gestures or draw the word!',
       'Recall is stronger if you test yourself after a break!'
-    ]
+    ],
+    resetProgress: 'Reset Progress',
+    resetConfirm: 'Are you sure you want to reset your progress?'
   },
   COSYitaliano: {
     title: 'COSYlanguages',
@@ -105,7 +107,9 @@ const translations = {
       'Insegna la parola a qualcun altro!',
       'Fai un gesto o disegna la parola!',
       'Ricordare è più facile se ti testi dopo una pausa!'
-    ]
+    ],
+    resetProgress: 'Ripristina i progressi',
+    resetConfirm: 'Sei sicuro di voler ripristinare i tuoi progressi?'
   },
   COSYfrançais: {
     title: 'COSYlanguages',
@@ -159,7 +163,9 @@ const translations = {
       'Enseigne le mot à quelqu’un d’autre !',
       'Fais un geste ou dessine le mot !',
       'On retient mieux si on se teste après une pause !'
-    ]
+    ],
+    resetProgress: 'Réinitialiser les progrès',
+    resetConfirm: 'Es-tu sûr de vouloir réinitialiser tes progrès ?'
   },
   COSYespañol: {
     title: 'COSYlanguages',
@@ -213,7 +219,9 @@ const translations = {
       '¡Enseña la palabra a otra persona!',
       '¡Haz un gesto o dibuja la palabra!',
       '¡Recuerdas mejor si te pruebas después de una pausa!'
-    ]
+    ],
+    resetProgress: 'Restablecer progreso',
+    resetConfirm: '¿Estás seguro de que deseas restablecer tu progreso?'
   },
   COSYdeutsch: {
     title: 'COSYlanguages',
@@ -267,7 +275,9 @@ const translations = {
       'Erkläre das Wort jemand anderem!',
       'Benutze Gesten oder zeichne das Wort!',
       'Du merkst es dir besser, wenn du dich nach einer Pause testest!'
-    ]
+    ],
+    resetProgress: 'Fortschritt zurücksetzen',
+    resetConfirm: 'Bist du sicher, dass du deinen Fortschritt zurücksetzen möchtest?'
   },
   COSYportuguês: {
     title: 'COSYlanguages',
@@ -321,7 +331,9 @@ const translations = {
       'Ensine a palavra para outra pessoa!',
       'Use gestos ou desenhe a palavra!',
       'Você lembra melhor se se testar após uma pausa!'
-    ]
+    ],
+    resetProgress: 'Redefinir progresso',
+    resetConfirm: 'Tem certeza de que deseja redefinir seu progresso?'
   },
   ΚΟΖΥελληνικά: {
     title: 'COSYlanguages',
@@ -375,7 +387,9 @@ const translations = {
       'Δίδαξε τη λέξη σε κάποιον άλλο!',
       'Χρησιμοποίησε χειρονομίες ή ζωγράφισε τη λέξη!',
       'Θυμάσαι καλύτερα αν δοκιμάσεις τον εαυτό σου μετά από διάλειμμα!'
-    ]
+    ],
+    resetProgress: 'Επαναφορά προόδου',
+    resetConfirm: 'Είσαι σίγουρος ότι θέλεις να επαναφέρεις την πρόοδό σου;'
   },
   ТАКОЙрусский: {
     title: 'COSYlanguages',
@@ -429,7 +443,9 @@ const translations = {
       'Научи слову другого человека!',
       'Используй жесты или нарисуй слово!',
       'Лучше запоминается, если проверить себя после перерыва!'
-    ]
+    ],
+    resetProgress: 'Сбросить прогресс',
+    resetConfirm: 'Вы уверены, что хотите сбросить свой прогресс?'
   },
   ԾՈՍՅհայկական: {
     title: 'COSYlanguages',
@@ -483,7 +499,9 @@ const translations = {
       'Սովորեցրու բառը մեկ ուրիշին։',
       'Օգտագործիր ժեստեր կամ նկարիր բառը։',
       'Ավելի լավ ես հիշում, եթե փորձարկես քեզ դադարից հետո։'
-    ]
+    ],
+    resetProgress: 'Վերականգնել առաջընթացը',
+    resetConfirm: 'Արդյո՞ք վստահ եք, որ ցանկանում եք վերականգնել ձեր առաջընթացը։'
   },
   COSYbrezhoneg: {
     title: 'COSYlanguages',
@@ -537,7 +555,9 @@ const translations = {
       'Deskomp ar ger d’unan all!',
       'Implij jestroù pe tres ar ger!',
       'Gwelloc’h e teu da soñj pa glaskes da-unan goude un ehan!'
-    ]
+    ],
+    resetProgress: 'Reset ar prantad',
+    resetConfirm: 'Are you sure you want to reset your progress?'
   },
   COSYtatarça: {
     title: 'COSYlanguages',
@@ -586,12 +606,14 @@ const translations = {
       'Беләсеңме? Аралы кабатлау хәтерне яхшырта! 🧠',
       'Сүз белән кызыклы хикәя уйлап тап!',
       'Иң яхшы нәтиҗә өчен көн саен шөгыльлән!',
-      'Сүзне кызыклы күренештә күз алдына китер!',
+      'Сүзне кызыклы күренештә күз алдына китեր!',
       'Башка акцент белән кычкырып әйт!',
       'Сүзне бүтән кешегә өйрәт!',
       'Гестлар куллан яки сүзне рәсемлә!',
       'Тәнәфестән соң үзеңне тикшерсәң, яхшырак истә кала!'
-    ]
+    ],
+    resetProgress: 'Прогрессны яңадан башлау',
+    resetConfirm: 'Сез чыннан да прогрессны яңадан башларга телиме?'
   },
   COSYbashkort: {
     title: 'COSYlanguages',
