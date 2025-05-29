@@ -6,5 +6,27 @@
     "No": "Yes",
     "Thank you": "You're welcome",
     "You're welcome": "Thank you"
+  },
+  "2": {
+    "Boy": "Girl",
+    "Girl": "Boy",
+    "Woman": "Man",
+    "Man": "Woman",
+    "Person": "Thing",
+    "Thing": "Person",
+    "Student": "Teacher",
+    "Teacher": "Student",
+    "He": "She",
+    "She": "He"
+  },
+  "3": {
+    "Mother": "Father",
+    "Father": "Mother",
+    "Brother": "Sister",
+    "Sister": "Brother",
+    "Son": "Daughter",
+    "Daughter": "Son",
+    "Husband": "Wife",
+    "Wife": "Husband"
   }
 }

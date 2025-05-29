@@ -626,21 +626,31 @@
                     resultArea.innerHTML = `
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
                             <div id="vocab-word" style="font-size:2.2rem; font-weight:600; margin-bottom:18px; text-align:center; cursor:pointer;">${word}</div>
-                            <div style="display:flex; gap:24px; justify-content:center; align-items:center;">
+                            <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
-                                <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
+                                <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
+                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:18px;"></div>
                             <div id="hint-area" style="margin-top:10px;"></div>
                         </div>
                     `;
                     pronounceWord(word, language);
+                    let recording = false;
                     setTimeout(() => {
                         document.getElementById('play-pronounce-btn').onclick = function() {
                             pronounceWord(word, language);
                         };
-                        document.getElementById('check-pronounce-btn').onclick = function() {
-                            startPronunciationCheck(word, language);
+                        document.getElementById('say-btn').onclick = function() {
+                            if (!recording) {
+                                startPronunciationCheck(word, language);
+                                recording = true;
+                                this.classList.add('recording');
+                            } else {
+                                if (recognition && recognition.stop) recognition.stop();
+                                recording = false;
+                                this.classList.remove('recording');
+                            }
                         };
                         document.getElementById('vocab-word').onclick = function() {
                             word = words[Math.floor(Math.random() * words.length)];
@@ -652,9 +662,7 @@
                         };
                         document.getElementById('help-btn').onclick = function() {
                             const hintArea = document.getElementById('hint-area');
-                            // Show first letter and length as a hint
                             hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: The word starts with <b>${word[0]}</b> and has ${word.length} letters.</span>`;
-                            // Animate the word (e.g., shake)
                             document.getElementById('vocab-word').style.animation = 'shake 0.4s';
                             setTimeout(() => { document.getElementById('vocab-word').style.animation = ''; }, 400);
                         };
@@ -666,22 +674,30 @@
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
                             <div id="opposite-word" style="font-size:1.5rem; font-weight:600; margin-bottom:8px; cursor:pointer;">${word} ≠ ?</div>
                             <input id="opposite-input" type="text" placeholder="Type the opposite..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:10px; width:220px; text-align:center;">
-                            <button id="check-opposite-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
-                            <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-top:8px;">
+                            <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
-                                <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
+                                <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
+                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:10px;"></div>
                             <div id="opposite-feedback" style="margin-top:10px;"></div>
                         </div>
                     `;
-                    pronounceWord(word, language);
+                    let recording = false;
                     setTimeout(() => {
                         document.getElementById('play-pronounce-btn').onclick = function() {
                             pronounceWord(word, language);
                         };
-                        document.getElementById('check-pronounce-btn').onclick = function() {
-                            startPronunciationCheck(word, language);
+                        document.getElementById('say-btn').onclick = function() {
+                            if (!recording) {
+                                startPronunciationCheck(word, language);
+                                recording = true;
+                                this.classList.add('recording');
+                            } else {
+                                if (recognition && recognition.stop) recognition.stop();
+                                recording = false;
+                                this.classList.remove('recording');
+                            }
                         };
                         document.getElementById('opposite-word').onclick = function() {
                             word = words[Math.floor(Math.random() * words.length)];
@@ -691,22 +707,8 @@
                             }
                             rerender();
                         };
-                        document.getElementById('check-opposite-btn').onclick = function() {
-                            const userInput = document.getElementById('opposite-input').value.trim();
-                            let feedback = '';
-                            if (!userInput) {
-                                feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
-                            } else if (userInput === opposite) {
-                                feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
-                                setTimeout(rerender, 1200);
-                            } else {
-                                feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${opposite}</b></span>`;
-                            }
-                            document.getElementById('opposite-feedback').innerHTML = feedback;
-                        };
                         document.getElementById('help-btn').onclick = function() {
                             const hintArea = document.getElementById('hint-area');
-                            // Show shuffled letters of the opposite as a hint
                             function shuffle(str) {
                                 const arr = str.split('');
                                 for (let i = arr.length - 1; i > 0; i--) {
@@ -737,21 +739,30 @@
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
                             <div id="makeword-letters" style="font-size:1.5rem; font-weight:600; letter-spacing:0.2em; margin-bottom:10px; cursor:pointer;">${shuffled.split('').join(' ')}</div>
                             <input id="makeword-input" type="text" placeholder="Type the word..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:10px; width:220px; text-align:center;">
-                            <button id="check-makeword-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
-                            <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-top:8px;">
+                            <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
-                                <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
+                                <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
+                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:10px;"></div>
                             <div id="makeword-feedback" style="margin-top:10px;"></div>
                         </div>
                     `;
+                    let recording = false;
                     setTimeout(() => {
                         document.getElementById('play-pronounce-btn').onclick = function() {
                             pronounceWord(word, language);
                         };
-                        document.getElementById('check-pronounce-btn').onclick = function() {
-                            startPronunciationCheck(word, language);
+                        document.getElementById('say-btn').onclick = function() {
+                            if (!recording) {
+                                startPronunciationCheck(word, language);
+                                recording = true;
+                                this.classList.add('recording');
+                            } else {
+                                if (recognition && recognition.stop) recognition.stop();
+                                recording = false;
+                                this.classList.remove('recording');
+                            }
                         };
                         document.getElementById('makeword-letters').onclick = function() {
                             word = words[Math.floor(Math.random() * words.length)];
@@ -761,25 +772,10 @@
                             }
                             rerender();
                         };
-                        document.getElementById('check-makeword-btn').onclick = function() {
-                            const userInput = document.getElementById('makeword-input').value.trim();
-                            let feedback = '';
-                            if (!userInput) {
-                                feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
-                            } else if (userInput === word.trim()) {
-                                feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
-                                setTimeout(rerender, 1200);
-                            } else {
-                                feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${word}</b></span>`;
-                            }
-                            document.getElementById('makeword-feedback').innerHTML = feedback;
-                        };
                         document.getElementById('help-btn').onclick = function() {
                             const hintArea = document.getElementById('hint-area');
-                            // Show one or two correct letters in place
                             let reveal = word.split('').map((ch, i) => (i === 0 || i === word.length-1) ? ch : '_').join(' ');
                             hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: <b>${reveal}</b></span>`;
-                            // Animate the letters
                             document.getElementById('makeword-letters').style.animation = 'bounce 0.5s';
                             setTimeout(() => { document.getElementById('makeword-letters').style.animation = ''; }, 500);
                         };
@@ -809,10 +805,10 @@
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px;">
                             <img id="vocab-image" src="${item.src}" alt="${item.alt}" class="vocabulary-image" style="max-width:180px; max-height:180px; margin-bottom:18px; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.10); cursor:pointer;">
                             <input id="image-answer-input" type="text" placeholder="Type your answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
-                            <button id="check-image-answer-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
-                            <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-bottom:0;">
+                            <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
-                                <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
+                                <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
+                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:18px;"></div>
                             <div id="image-answer-feedback" style="margin-top:10px;"></div>
@@ -822,8 +818,16 @@
                         document.getElementById('play-pronounce-btn').onclick = function() {
                             pronounceWord(answer, language);
                         };
-                        document.getElementById('check-pronounce-btn').onclick = function() {
-                            startPronunciationCheck(answer, language);
+                        document.getElementById('say-btn').onclick = function() {
+                            if (!recording) {
+                                startPronunciationCheck(answer, language);
+                                recording = true;
+                                this.classList.add('recording');
+                            } else {
+                                if (recognition && recognition.stop) recognition.stop();
+                                recording = false;
+                                this.classList.remove('recording');
+                            }
                         };
                         document.getElementById('check-image-answer-btn').onclick = function() {
                             const userInput = document.getElementById('image-answer-input').value.trim().toLowerCase();
@@ -1489,7 +1493,7 @@
                                 feedback = `<span style=\\\"color:#e74c3c;\\\">❌ Not quite. The correct answer is: <b>${item.answer}</b></span>`;
                             }
                             document.getElementById('verb-answer-feedback').innerHTML = feedback;
-                        };
+                                               };
                         addEnterKeySupport('verb-answer-input', 'check-verb-answer-btn');
                     }, 0);
                 }
@@ -1510,7 +1514,7 @@
                                 <button id="play-poss-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                             </div>
                             <input id="poss-answer-input" type="text" placeholder="Type the answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
-                            <div style="display:flex; gap:16px; justify-content:center; align-items:center; margin-bottom:10px;">
+                            <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
                                 <button id="check-poss-answer-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                                 <button id="poss-record-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
                             </div>

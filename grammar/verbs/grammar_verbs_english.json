@@ -17,5 +17,14 @@
     { "prompt": "it", "answer": "has" },
     { "prompt": "have", "answer": "I/you" },
     { "prompt": "has", "answer": "he/she/it" }
+  ],
+  "9": [
+    { "prompt": "I", "answer": "go" },
+    { "prompt": "you", "answer": "go" },
+    { "prompt": "he", "answer": "goes" },
+    { "prompt": "she", "answer": "goes" },
+    { "prompt": "it", "answer": "goes" },
+    { "prompt": "go", "answer": "I/you" },
+    { "prompt": "goes", "answer": "he/she/it" }
   ]
 }
