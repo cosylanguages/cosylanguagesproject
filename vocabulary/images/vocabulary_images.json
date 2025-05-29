@@ -635,9 +635,21 @@
             }
         },
         {
-            "src": "https://knowt-user-attachments.s3.amazonaws.com/0a635fd6-1abf-4397-a953-22424d838fa9.jpg",
-            "alt": "Husband and wife",
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/0250ba7c-0298-40c5-b335-d2be1ddc98ee.png",
+            "alt": "Friend",
             "translations": {
+                "COSYenglish": "Friend",
+                "COSYfrançais": "L'ami.e",
+                "COSYitaliano": "L'amico.a",
+                "COSYespañol": "El.la amigo.a",
+                "COSYportuguês": "O.a amigo.a",
+                "COSYdeutsch": "Der.die Freund.in",
+                "ΚΟΖΥελληνικά": "ο.η φίλος.η",
+                "ТАКОЙрусский": "Друг.подруга",
+                "COSYtatarça": "Dus",
+                "COSYbashkort": "Dost",
+                "ԾՈՍՅհայկական": "Ընկեր.ընկերուհի",
+                "COSYbrezhoneg": "Mignon.mignone",
             }
         }
     ]
