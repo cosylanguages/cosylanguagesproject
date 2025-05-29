@@ -626,20 +626,25 @@
                 const modes = ['show', 'opposite', 'makeword'];
                 let mode = modes[Math.floor(Math.random() * modes.length)];
                 let word = words[Math.floor(Math.random() * words.length)];
-                // If mode is 'opposite' but no opposite exists, fallback to 'show' or 'makeword'
                 if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
                     mode = Math.random() < 0.5 ? 'show' : 'makeword';
                 }
-                // --- Renderers ---
+                function rerender() {
+                    if (mode === 'show') renderShowWord();
+                    else if (mode === 'opposite') renderOppositePractice();
+                    else renderMakeWordPractice();
+                }
                 function renderShowWord() {
                     resultArea.innerHTML = `
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
                             <div id="vocab-word" style="font-size:2.2rem; font-weight:600; margin-bottom:18px; text-align:center; cursor:pointer;">${word}</div>
                             <div style="display:flex; gap:24px; justify-content:center; align-items:center;">
-                                <button id="play-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:2rem;">🔊</button>
-                                <button id="check-pronounce-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:2rem;">🎤</button>
+                                <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
+                                <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
+                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:18px;"></div>
+                            <div id="hint-area" style="margin-top:10px;"></div>
                         </div>
                     `;
                     pronounceWord(word, language);
@@ -658,6 +663,14 @@
                             }
                             rerender();
                         };
+                        document.getElementById('help-btn').onclick = function() {
+                            const hintArea = document.getElementById('hint-area');
+                            // Show first letter and length as a hint
+                            hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: The word starts with <b>${word[0]}</b> and has ${word.length} letters.</span>`;
+                            // Animate the word (e.g., shake)
+                            document.getElementById('vocab-word').style.animation = 'shake 0.4s';
+                            setTimeout(() => { document.getElementById('vocab-word').style.animation = ''; }, 400);
+                        };
                     }, 0);
                 }
                 function renderOppositePractice() {
@@ -665,13 +678,33 @@
                     const opposite = opposites[lower];
                     resultArea.innerHTML = `
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
-                            <div style="font-size:1.5rem; margin-bottom:8px; font-weight:600;">${word} ≠ ?</div>
+                            <div id="opposite-word" style="font-size:1.5rem; font-weight:600; margin-bottom:8px; cursor:pointer;">${word} ≠ ?</div>
                             <input id="opposite-input" type="text" placeholder="Type the opposite..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:10px; width:220px; text-align:center;">
-                            <button id="check-opposite-btn" class="btn-secondary" style="min-width:120px;">Check</button>
+                            <button id="check-opposite-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
+                            <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-top:8px;">
+                                <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
+                                <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
+                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
+                            </div>
+                            <div id="pronunciation-feedback" style="margin-top:10px;"></div>
                             <div id="opposite-feedback" style="margin-top:10px;"></div>
                         </div>
                     `;
                     setTimeout(() => {
+                        document.getElementById('play-pronounce-btn').onclick = function() {
+                            pronounceWord(word, language);
+                        };
+                        document.getElementById('check-pronounce-btn').onclick = function() {
+                            startPronunciationCheck(word, language);
+                        };
+                        document.getElementById('opposite-word').onclick = function() {
+                            word = words[Math.floor(Math.random() * words.length)];
+                            mode = modes[Math.floor(Math.random() * modes.length)];
+                            if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
+                                mode = Math.random() < 0.5 ? 'show' : 'makeword';
+                            }
+                            rerender();
+                        };
                         document.getElementById('check-opposite-btn').onclick = function() {
                             const userInput = document.getElementById('opposite-input').value.trim().toLowerCase();
                             let feedback = '';
@@ -679,11 +712,26 @@
                                 feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
                             } else if (userInput === opposite) {
                                 feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                                setTimeout(rerender, 1200);
                             } else {
                                 feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${opposite}</b></span>`;
                             }
                             document.getElementById('opposite-feedback').innerHTML = feedback;
                         };
+                        document.getElementById('help-btn').onclick = function() {
+                            const hintArea = document.getElementById('hint-area');
+                            // Show shuffled letters of the opposite as a hint
+                            function shuffle(str) {
+                                const arr = str.split('');
+                                for (let i = arr.length - 1; i > 0; i--) {
+                                    const j = Math.floor(Math.random() * (i + 1));
+                                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                                }
+                                return arr.join('');
+                            }
+                            hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: The opposite is <b>${shuffle(opposite)}</b> (shuffled letters).</span>`;
+                        };
+                        addEnterKeySupport('opposite-input', 'check-opposite-btn');
                     }, 0);
                 }
                 function renderMakeWordPractice() {
@@ -701,14 +749,33 @@
                     }
                     resultArea.innerHTML = `
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
-                            <div style="font-size:1.1rem; margin-bottom:8px;">Make the word from these letters:</div>
-                            <div style="font-size:1.5rem; font-weight:600; letter-spacing:0.2em; margin-bottom:10px;">${shuffled.split('').join(' ')}</div>
+                            <div id="makeword-letters" style="font-size:1.5rem; font-weight:600; letter-spacing:0.2em; margin-bottom:10px; cursor:pointer;">${shuffled.split('').join(' ')}</div>
                             <input id="makeword-input" type="text" placeholder="Type the word..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:10px; width:220px; text-align:center;">
-                            <button id="check-makeword-btn" class="btn-secondary" style="min-width:120px;">Check</button>
+                            <button id="check-makeword-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
+                            <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-top:8px;">
+                                <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
+                                <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
+                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
+                            </div>
+                            <div id="pronunciation-feedback" style="margin-top:10px;"></div>
                             <div id="makeword-feedback" style="margin-top:10px;"></div>
                         </div>
                     `;
                     setTimeout(() => {
+                        document.getElementById('play-pronounce-btn').onclick = function() {
+                            pronounceWord(word, language);
+                        };
+                        document.getElementById('check-pronounce-btn').onclick = function() {
+                            startPronunciationCheck(word, language);
+                        };
+                        document.getElementById('makeword-letters').onclick = function() {
+                            word = words[Math.floor(Math.random() * words.length)];
+                            mode = modes[Math.floor(Math.random() * modes.length)];
+                            if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
+                                mode = Math.random() < 0.5 ? 'show' : 'makeword';
+                            }
+                            rerender();
+                        };
                         document.getElementById('check-makeword-btn').onclick = function() {
                             const userInput = document.getElementById('makeword-input').value.trim().toLowerCase();
                             let feedback = '';
@@ -716,17 +783,23 @@
                                 feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
                             } else if (userInput === word.trim().toLowerCase()) {
                                 feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                                setTimeout(rerender, 1200);
                             } else {
                                 feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${word}</b></span>`;
                             }
                             document.getElementById('makeword-feedback').innerHTML = feedback;
                         };
+                        document.getElementById('help-btn').onclick = function() {
+                            const hintArea = document.getElementById('hint-area');
+                            // Show one or two correct letters in place
+                            let reveal = word.split('').map((ch, i) => (i === 0 || i === word.length-1) ? ch : '_').join(' ');
+                            hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: <b>${reveal}</b></span>`;
+                            // Animate the letters
+                            document.getElementById('makeword-letters').style.animation = 'bounce 0.5s';
+                            setTimeout(() => { document.getElementById('makeword-letters').style.animation = ''; }, 500);
+                        };
+                        addEnterKeySupport('makeword-input', 'check-makeword-btn');
                     }, 0);
-                }
-                function rerender() {
-                    if (mode === 'show') renderShowWord();
-                    else if (mode === 'opposite') renderOppositePractice();
-                    else renderMakeWordPractice();
                 }
                 rerender();
                 return;
@@ -751,10 +824,11 @@
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px;">
                             <img id="vocab-image" src="${item.src}" alt="${item.alt}" class="vocabulary-image" style="max-width:180px; max-height:180px; margin-bottom:18px; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.10); cursor:pointer;">
                             <input id="image-answer-input" type="text" placeholder="Type your answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
-                            <button id="check-image-answer-btn" class="btn-secondary" style="margin-bottom:18px; min-width:120px;">Check</button>
+                            <button id="check-image-answer-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-bottom:0;">
-                                <button id="play-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:2rem;">🔊</button>
-                                <button id="check-pronounce-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:2rem;">🎤</button>
+                                <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
+                                <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
+                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:18px;"></div>
                             <div id="image-answer-feedback" style="margin-top:10px;"></div>
@@ -786,6 +860,19 @@
                             item = images[Math.floor(Math.random() * images.length)];
                             renderImage();
                         };
+                        document.getElementById('help-btn').onclick = function() {
+                            const hintArea = document.getElementById('hint-area');
+                            // Show shuffled letters of the opposite as a hint
+                            function shuffle(str) {
+                                const arr = str.split('');
+                                for (let i = arr.length - 1; i > 0; i--) {
+                                    const j = Math.floor(Math.random() * (i + 1));
+                                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                                }
+                                return arr.join('');
+                            }
+                            hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: The opposite is <b>${shuffle(opposite)}</b> (shuffled letters).</span>`;
+                        };
                         addEnterKeySupport('image-answer-input', 'check-image-answer-btn');
                     }, 0);
                 }
@@ -800,7 +887,7 @@
                 const word = words[Math.floor(Math.random() * words.length)];
                 resultArea.innerHTML = `
                     <div style=\"display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;\">
-                        <button id=\"play-listen-btn\" class=\"btn-secondary\" title=\"Hear word\" style=\"font-size:2rem; margin-bottom:18px;\">🔊</button>
+                        <button id=\"play-listen-btn\" class=\"btn-secondary btn-emoji\" title=\"Hear word\">🔊</button>
                         <input id=\"listening-answer-input\" type=\"text\" placeholder=\"Type what you hear...\" style=\"font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;\">
                         <button id=\"check-listening-answer-btn\" class=\"btn-secondary\" style=\"margin-bottom:18px; min-width:120px;\">Check</button>
                         <div id=\"listening-answer-feedback\" style=\"margin-top:10px;\"></div>
@@ -961,7 +1048,7 @@
             const prompt = prompts[Math.floor(Math.random() * prompts.length)];
             resultArea.innerHTML = `
                 <div style="font-size:1.3rem; margin:20px 0;">${prompt}</div>
-                <button id="start-record-btn" class="btn-secondary">🎤 Record & Check</button>
+                <button id="start-record-btn" class="btn-secondary btn-emoji" title="Record your answer">🎤</button>
                 <div id="speaking-feedback" style="margin-top:16px;"></div>
             `;
             setTimeout(() => {
@@ -1299,10 +1386,10 @@
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;">
                             <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
                                 <span id="gender-word" style="font-size:2rem; font-weight:600; cursor:pointer;">${item.word}</span>
-                                <button id="play-gender-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:1.5rem;">🔊</button>
+                                <button id="play-gender-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                             </div>
                             <div id="article-options" style="margin-bottom:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">${articleOptions}</div>
-                            <button id="check-gender-btn" class="btn-secondary" style="min-width:120px; margin-bottom:10px;">Check</button>
+                            <button id="check-gender-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             <div id="gender-feedback" style="margin-top:14px;"></div>
                         </div>
                     `;
@@ -1357,6 +1444,12 @@
                             }
                             document.getElementById('gender-feedback').innerHTML = feedback;
                         };
+                        document.getElementById('help-gender-btn').onclick = function() {
+                            const hintArea = document.getElementById('gender-hint-area');
+                            // Show the correct article's first letter
+                            let correct = Array.isArray(item.article) ? item.article[0] : item.article;
+                            hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: The article starts with <b>${correct[0]}</b>.</span>`;
+                        };
                     }, 0);
                 }
                 renderGender();
@@ -1377,14 +1470,15 @@
                     }
                     resultArea.innerHTML = `
                         ${verbPrompt}
-                        <div style=\"display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;\">
+                        <div style=\"display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px\">
+
                             <div style=\"display:flex; align-items:center; gap:12px; margin-bottom:18px;\">
                                 <span id=\"verb-prompt\" style=\"font-size:2rem; font-weight:600; cursor:pointer;\">${item.prompt}</span>
-                                <button id=\"play-verb-pronounce-btn\" class=\"btn-secondary\" title=\"Hear pronunciation\" style=\"font-size:1.5rem;\">🔊</button>
+                                <button id=\"play-verb-pronounce-btn\" class=\"btn-secondary btn-emoji\" title=\"Hear pronunciation\">🔊</button>
                             </div>
                             <input id=\"verb-answer-input\" type=\"text\" placeholder=\"Type the answer...\" style=\"font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;\">
-                            <button id=\"check-verb-answer-btn\" class=\"btn-secondary\" style=\"margin-bottom:18px; min-width:120px;\">Check</button>
-                            <div id=\"verb-answer-feedback\" style=\"margin-top:10px;\"></div>
+                            <button id="check-verb-answer-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
+                            <div id="verb-answer-feedback" style="margin-top:10px;"></div>
                         </div>
                     `;
                     pronounceWord(item.prompt, language);
@@ -1429,12 +1523,12 @@
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px;">
                             <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
                                 <span id="poss-prompt" style="font-size:2rem; font-weight:600; cursor:pointer;">${item.prompt}</span>
-                                <button id="play-poss-pronounce-btn" class="btn-secondary" title="Hear pronunciation" style="font-size:1.5rem;">🔊</button>
+                                <button id="play-poss-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                             </div>
                             <input id="poss-answer-input" type="text" placeholder="Type the answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
                             <div style="display:flex; gap:16px; justify-content:center; align-items:center; margin-bottom:10px;">
-                                <button id="check-poss-answer-btn" class="btn-secondary" style="min-width:100px;">Check</button>
-                                <button id="poss-record-btn" class="btn-secondary" title="Check your pronunciation" style="font-size:1.3rem;">🎤</button>
+                                <button id="check-poss-answer-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
+                                <button id="poss-record-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
                             </div>
                             <div id="poss-answer-feedback" style="margin-top:10px;"></div>
                             <div id="poss-pronunciation-feedback" style="margin-top:10px;"></div>
@@ -1516,6 +1610,11 @@
         // Removed event listener for day
         // Restore on page load
         window.addEventListener('DOMContentLoaded', restoreUserSelection);
+
+        // Helper: Remove accents/diacritics for comparison
+        function removeAccents(str) {
+            return str.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/’/g, "'");
+        }
 
         function updateUIForLanguage(lang) {
           const t = translations[lang] || translations['COSYenglish'];
