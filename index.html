@@ -608,8 +608,30 @@
                     resultArea.innerHTML = `<p style="text-align:center;">No vocabulary found for this day.</p>`;
                     return;
                 }
+                // --- Opposites dictionary (expand as needed) ---
+                const opposites = {
+                    'hello': 'goodbye', 'goodbye': 'hello',
+                    'yes': 'no', 'no': 'yes',
+                    'up': 'down', 'down': 'up',
+                    'left': 'right', 'right': 'left',
+                    'big': 'small', 'small': 'big',
+                    'hot': 'cold', 'cold': 'hot',
+                    'open': 'closed', 'closed': 'open',
+                    'happy': 'sad', 'sad': 'happy',
+                    'demat': 'kenavo', 'kenavo': 'demat', // Breton
+                    'ya': 'ket', 'ket': 'ya',
+                    'trugarez': 'netra', 'netra': 'trugarez'
+                };
+                // --- Randomly pick a mode: show word, match opposite, or make word ---
+                const modes = ['show', 'opposite', 'makeword'];
+                let mode = modes[Math.floor(Math.random() * modes.length)];
                 let word = words[Math.floor(Math.random() * words.length)];
-                function renderWord() {
+                // If mode is 'opposite' but no opposite exists, fallback to 'show' or 'makeword'
+                if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
+                    mode = Math.random() < 0.5 ? 'show' : 'makeword';
+                }
+                // --- Renderers ---
+                function renderShowWord() {
                     resultArea.innerHTML = `
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
                             <div id="vocab-word" style="font-size:2.2rem; font-weight:600; margin-bottom:18px; text-align:center; cursor:pointer;">${word}</div>
@@ -630,11 +652,83 @@
                         };
                         document.getElementById('vocab-word').onclick = function() {
                             word = words[Math.floor(Math.random() * words.length)];
-                            renderWord();
+                            mode = modes[Math.floor(Math.random() * modes.length)];
+                            if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
+                                mode = Math.random() < 0.5 ? 'show' : 'makeword';
+                            }
+                            rerender();
                         };
                     }, 0);
                 }
-                renderWord();
+                function renderOppositePractice() {
+                    const lower = word.trim().toLowerCase();
+                    const opposite = opposites[lower];
+                    resultArea.innerHTML = `
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
+                            <div style="font-size:1.5rem; margin-bottom:8px; font-weight:600;">${word} ≠ ?</div>
+                            <input id="opposite-input" type="text" placeholder="Type the opposite..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:10px; width:220px; text-align:center;">
+                            <button id="check-opposite-btn" class="btn-secondary" style="min-width:120px;">Check</button>
+                            <div id="opposite-feedback" style="margin-top:10px;"></div>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        document.getElementById('check-opposite-btn').onclick = function() {
+                            const userInput = document.getElementById('opposite-input').value.trim().toLowerCase();
+                            let feedback = '';
+                            if (!userInput) {
+                                feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
+                            } else if (userInput === opposite) {
+                                feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                            } else {
+                                feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${opposite}</b></span>`;
+                            }
+                            document.getElementById('opposite-feedback').innerHTML = feedback;
+                        };
+                    }, 0);
+                }
+                function renderMakeWordPractice() {
+                    function shuffle(str) {
+                        const arr = str.split('');
+                        for (let i = arr.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [arr[i], arr[j]] = [arr[j], arr[i]];
+                        }
+                        return arr.join('');
+                    }
+                    let shuffled = shuffle(word);
+                    while (shuffled === word && word.length > 1) {
+                        shuffled = shuffle(word);
+                    }
+                    resultArea.innerHTML = `
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
+                            <div style="font-size:1.1rem; margin-bottom:8px;">Make the word from these letters:</div>
+                            <div style="font-size:1.5rem; font-weight:600; letter-spacing:0.2em; margin-bottom:10px;">${shuffled.split('').join(' ')}</div>
+                            <input id="makeword-input" type="text" placeholder="Type the word..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:10px; width:220px; text-align:center;">
+                            <button id="check-makeword-btn" class="btn-secondary" style="min-width:120px;">Check</button>
+                            <div id="makeword-feedback" style="margin-top:10px;"></div>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        document.getElementById('check-makeword-btn').onclick = function() {
+                            const userInput = document.getElementById('makeword-input').value.trim().toLowerCase();
+                            let feedback = '';
+                            if (!userInput) {
+                                feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
+                            } else if (userInput === word.trim().toLowerCase()) {
+                                feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                            } else {
+                                feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${word}</b></span>`;
+                            }
+                            document.getElementById('makeword-feedback').innerHTML = feedback;
+                        };
+                    }, 0);
+                }
+                function rerender() {
+                    if (mode === 'show') renderShowWord();
+                    else if (mode === 'opposite') renderOppositePractice();
+                    else renderMakeWordPractice();
+                }
+                rerender();
                 return;
             } else if (type === 'random-image') {
                 const images = await loadImageVocabulary(day);
