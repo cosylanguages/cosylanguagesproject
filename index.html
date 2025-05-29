@@ -608,25 +608,13 @@
                     resultArea.innerHTML = `<p style="text-align:center;">No vocabulary found for this day.</p>`;
                     return;
                 }
-                // --- Opposites dictionary (expand as needed) ---
-                const opposites = {
-                    'hello': 'goodbye', 'goodbye': 'hello',
-                    'yes': 'no', 'no': 'yes',
-                    'up': 'down', 'down': 'up',
-                    'left': 'right', 'right': 'left',
-                    'big': 'small', 'small': 'big',
-                    'hot': 'cold', 'cold': 'hot',
-                    'open': 'closed', 'closed': 'open',
-                    'happy': 'sad', 'sad': 'happy',
-                    'demat': 'kenavo', 'kenavo': 'demat', // Breton
-                    'ya': 'ket', 'ket': 'ya',
-                    'trugarez': 'netra', 'netra': 'trugarez'
-                };
+                // Load opposites for this language and day
+                const opposites = await loadOpposites(language, day);
                 // --- Randomly pick a mode: show word, match opposite, or make word ---
                 const modes = ['show', 'opposite', 'makeword'];
                 let mode = modes[Math.floor(Math.random() * modes.length)];
                 let word = words[Math.floor(Math.random() * words.length)];
-                if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
+                if (mode === 'opposite' && !opposites[word.trim()]) {
                     mode = Math.random() < 0.5 ? 'show' : 'makeword';
                 }
                 function rerender() {
@@ -641,7 +629,6 @@
                             <div style="display:flex; gap:24px; justify-content:center; align-items:center;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
-                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:18px;"></div>
                             <div id="hint-area" style="margin-top:10px;"></div>
@@ -658,7 +645,7 @@
                         document.getElementById('vocab-word').onclick = function() {
                             word = words[Math.floor(Math.random() * words.length)];
                             mode = modes[Math.floor(Math.random() * modes.length)];
-                            if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
+                            if (mode === 'opposite' && !opposites[word.trim()]) {
                                 mode = Math.random() < 0.5 ? 'show' : 'makeword';
                             }
                             rerender();
@@ -674,8 +661,7 @@
                     }, 0);
                 }
                 function renderOppositePractice() {
-                    const lower = word.trim().toLowerCase();
-                    const opposite = opposites[lower];
+                    const opposite = opposites[word.trim()];
                     resultArea.innerHTML = `
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
                             <div id="opposite-word" style="font-size:1.5rem; font-weight:600; margin-bottom:8px; cursor:pointer;">${word} ≠ ?</div>
@@ -684,12 +670,12 @@
                             <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-top:8px;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
-                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:10px;"></div>
                             <div id="opposite-feedback" style="margin-top:10px;"></div>
                         </div>
                     `;
+                    pronounceWord(word, language);
                     setTimeout(() => {
                         document.getElementById('play-pronounce-btn').onclick = function() {
                             pronounceWord(word, language);
@@ -700,13 +686,13 @@
                         document.getElementById('opposite-word').onclick = function() {
                             word = words[Math.floor(Math.random() * words.length)];
                             mode = modes[Math.floor(Math.random() * modes.length)];
-                            if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
+                            if (mode === 'opposite' && !opposites[word.trim()]) {
                                 mode = Math.random() < 0.5 ? 'show' : 'makeword';
                             }
                             rerender();
                         };
                         document.getElementById('check-opposite-btn').onclick = function() {
-                            const userInput = document.getElementById('opposite-input').value.trim().toLowerCase();
+                            const userInput = document.getElementById('opposite-input').value.trim();
                             let feedback = '';
                             if (!userInput) {
                                 feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
@@ -755,7 +741,6 @@
                             <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-top:8px;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
-                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:10px;"></div>
                             <div id="makeword-feedback" style="margin-top:10px;"></div>
@@ -771,17 +756,17 @@
                         document.getElementById('makeword-letters').onclick = function() {
                             word = words[Math.floor(Math.random() * words.length)];
                             mode = modes[Math.floor(Math.random() * modes.length)];
-                            if (mode === 'opposite' && !opposites[word.trim().toLowerCase()]) {
+                            if (mode === 'opposite' && !opposites[word.trim()]) {
                                 mode = Math.random() < 0.5 ? 'show' : 'makeword';
                             }
                             rerender();
                         };
                         document.getElementById('check-makeword-btn').onclick = function() {
-                            const userInput = document.getElementById('makeword-input').value.trim().toLowerCase();
+                            const userInput = document.getElementById('makeword-input').value.trim();
                             let feedback = '';
                             if (!userInput) {
                                 feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
-                            } else if (userInput === word.trim().toLowerCase()) {
+                            } else if (userInput === word.trim()) {
                                 feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
                                 setTimeout(rerender, 1200);
                             } else {
@@ -828,7 +813,6 @@
                             <div style="display:flex; gap:24px; justify-content:center; align-items:center; margin-bottom:0;">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="check-pronounce-btn" class="btn-secondary btn-emoji" title="Check your pronunciation">🎤</button>
-                                <button id="help-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             </div>
                             <div id="pronunciation-feedback" style="margin-top:18px;"></div>
                             <div id="image-answer-feedback" style="margin-top:10px;"></div>
@@ -1720,6 +1704,39 @@ document.getElementById('random-image-btn').addEventListener('click', function()
 document.getElementById('listening-btn').addEventListener('click', function() {
     toggleVocabularyMode('listening-btn');
 });
+
+// Helper: map language select value to opposites file (now in vocabulary/opposites/)
+function getOppositesFile(language) {
+    switch(language) {
+        case 'COSYenglish': return 'vocabulary/opposites/opposites_english.json';
+        case 'COSYfrançais': return 'vocabulary/opposites/opposites_french.json';
+        case 'COSYespañol': return 'vocabulary/opposites/opposites_spanish.json';
+        case 'COSYitaliano': return 'vocabulary/opposites/opposites_italian.json';
+        case 'COSYdeutsch': return 'vocabulary/opposites/opposites_german.json';
+        case 'COSYportuguês': return 'vocabulary/opposites/opposites_portuguese.json';
+        case 'ΚΟΖΥελληνικά': return 'vocabulary/opposites/opposites_greek.json';
+        case 'COSYbrezhoneg': return 'vocabulary/opposites/opposites_breton.json';
+        case 'ԾՈՍՅհայկական': return 'vocabulary/opposites/opposites_armenian.json';
+        case 'ТАКОЙрусский': return 'vocabulary/opposites/opposites_russian.json';
+        case 'COSYtatarça': return 'vocabulary/opposites/opposites_tatar.json';
+        case 'COSYbashkort': return 'vocabulary/opposites/opposites_bashkir.json';
+        default: return null;
+    }
+}
+
+// Load opposites for a given language and day
+async function loadOpposites(language, day) {
+    const file = getOppositesFile(language);
+    if (!file) return {};
+    try {
+        const response = await fetch(file);
+        if (!response.ok) return {};
+        const data = await response.json();
+        return data[day] || {};
+    } catch (e) {
+        return {};
+    }
+}
     </script>
     <!-- Sound effects -->
     <audio id="click-sound" src="sounds/click.mp3" preload="auto"></audio>

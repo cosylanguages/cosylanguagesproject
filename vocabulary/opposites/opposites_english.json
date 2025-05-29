@@ -1,0 +1,10 @@
+{
+  "1": {
+    "Hello": "Goodbye",
+    "Goodbye": "Hello",
+    "Yes": "No",
+    "No": "Yes",
+    "Thank you": "You're welcome",
+    "You're welcome": "Thank you"
+  }
+}
