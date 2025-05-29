@@ -1,8 +1,8 @@
 {
   "3": [
-    { "prompt": "I have a mother", "answer": "my mother" },
-    { "prompt": "My brother", "answer": "I have a brother" },
-    { "prompt": "You have a father", "answer": "your father" },
+    { "prompt": "I have a mother", "answer": "my mother", "my" },
+    { "prompt": "My brother", "answer": "I have a brother", "I" },
+    { "prompt": "You have a father", "answer": "your father", "your" },
     { "prompt": "Your sister", "answer": "You have a sister" },
     { "prompt": "He has a wife", "answer": "his wife" },
     { "prompt": "His son", "answer": "He has a son" },

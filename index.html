@@ -74,12 +74,14 @@
                     <button id="random-word-btn" class="btn-secondary">🔮 Random Word</button>
                     <button id="random-image-btn" class="btn-secondary">🖼️ Random Image</button>
                     <button id="listening-btn" class="btn-secondary">🎧 Listening</button>
+                    <button id="practice-all-vocab-btn" class="btn-primary">Practice All Vocabulary</button>
                 </div>
             </div>
             
             <div id="grammar-options" class="practice-options">
                 <div class="grammar-options">
                     <!-- Grammar buttons will be populated by JavaScript -->
+                    <button id="practice-all-grammar-btn" class="btn-primary">Practice All Grammar</button>
                 </div>
             </div>
             
@@ -176,6 +178,7 @@
             if (speakingOptions) speakingOptions.style.display = 'none';
             if (practiceAllBtn) practiceAllBtn.style.display = 'block';
             if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
+            showPracticeAllButtons();
         }
 
         // On page load, always restore main menu and update grammar options if grammar is visible
@@ -738,7 +741,7 @@
                     let revealedHint = false;
                     resultArea.innerHTML = `
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
-                            <div id="makeword-letters" style="display:flex; gap:8px; margin-bottom:10px;">
+                            <div id="makeword-letters" style="display:flex; gap:8px; margin-bottom:10px; cursor:pointer;">
                                 ${shuffled.split('').map((ch, i) => `<div class="letter-box" data-idx="${i}" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid #bbb;border-radius:6px;font-size:1.3rem;cursor:pointer;background:#f8f8f8;user-select:none;">${ch}</div>`).join('')}
                             </div>
                             <div id="makeword-answer" style="display:flex; gap:8px; margin-bottom:10px;">
@@ -777,7 +780,7 @@
                                 this.classList.remove('recording');
                             }
                         };
-                        // Letter click logic
+                        // Letter click logic (move to answer)
                         document.querySelectorAll('#makeword-letters .letter-box').forEach((el, idx) => {
                             el.onclick = function() {
                                 if (used[idx] || answerPos >= lowerWord.length) return;
@@ -786,7 +789,6 @@
                                 el.style.opacity = 0.4;
                                 answerPos++;
                                 updateAnswerBoxes();
-                                // Check if complete
                                 if (answerArr.join('') === lowerWord) {
                                     document.getElementById('makeword-feedback').innerHTML = '<span style="color:#27ae60;">✅ Correct!</span>';
                                     setTimeout(rerender, 1200);
@@ -795,7 +797,7 @@
                                 }
                             };
                         });
-                        // Allow to clear answer by clicking answer boxes
+                        // Answer box click logic (return letter to pool)
                         document.querySelectorAll('#makeword-answer .answer-box').forEach((el, idx) => {
                             el.onclick = function() {
                                 if (answerArr[idx]) {
@@ -815,6 +817,10 @@
                                 }
                             };
                         });
+                        document.getElementById('makeword-letters').onclick = function(e) {
+                            if (e.target.classList.contains('letter-box')) return;
+                            rerender();
+                        };
                         document.getElementById('help-btn').onclick = function() {
                             if (revealedHint) return;
                             revealedHint = true;
@@ -941,12 +947,12 @@
                         const correct = word.trim().toLowerCase();
                         let feedback = '';
                         if (!userInput) {
-                            feedback = '<span style=\"color:#e67e22;\">Please type your answer above.</span>';
+                            feedback = '<span style="color:#e67e22;\">Please type your answer above.</span>';
                         } else if (userInput === correct) {
-                            feedback = '<span style=\"color:#27ae60;\">✅ Correct!</span>';
+                            feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
                             setTimeout(() => practiceVocabulary('listening'), 1200);
                         } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
-                            feedback = '<span style=\"color:#f1c40f;\">🟡 Almost! Check your spelling.</span>';
+                            feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
                         } else {
                             feedback = `<span style=\\\"color:#e74c3c;\\\">❌ Not quite. The correct answer is: <b>${word}</b></span>`;
                         }
@@ -1220,6 +1226,47 @@
             }
         });
         
+        document.getElementById('practice-all-vocab-btn').addEventListener('click', async function() {
+            const days = getSelectedDays();
+            if (!days.length) {
+                alert('Please select a day or a range of days first');
+                return;
+            }
+            const language = document.getElementById('language').value;
+            if (!language) {
+                alert('Please select a language first');
+                return;
+            }
+            // Only vocabulary activities
+            const vocabModes = ['random-word', 'random-image', 'listening'];
+            // Shuffle and practice all modes in sequence
+            for (let mode of vocabModes) {
+                await practiceVocabulary(mode);
+            }
+        });
+
+        document.getElementById('practice-all-grammar-btn').addEventListener('click', async function() {
+            const days = getSelectedDays();
+            if (!days.length) {
+                alert('Please select a day or a range of days first');
+                return;
+            }
+            const language = document.getElementById('language').value;
+            if (!language) {
+                alert('Please select a language first');
+                return;
+            }
+            // Only grammar activities available for the day
+            const grammarTypes = [];
+            if (parseInt(days[0]) >= 1) grammarTypes.push('gender');
+            if (parseInt(days[0]) >= 2) grammarTypes.push('verbs');
+            if (parseInt(days[0]) === 3) grammarTypes.push('possessives');
+            // Add more grammar types as needed for higher days
+            for (let type of grammarTypes) {
+                await practiceGrammar(type);
+            }
+        });
+        
         // Add Enter key support for practice check buttons
         function addEnterKeySupport(inputId, checkBtnId) {
             const input = document.getElementById(inputId);
@@ -1426,7 +1473,6 @@
                                 <button id="play-gender-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                             </div>
                             <div id="article-options" style="margin-bottom:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">${articleOptions}</div>
-                            <button id="check-gender-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             <div id="gender-feedback" style="margin-top:14px;"></div>
                         </div>
                     `;
@@ -1464,23 +1510,6 @@
                                 document.getElementById('gender-feedback').innerHTML = feedback;
                             });
                         });
-                        document.getElementById('check-gender-btn').onclick = function() {
-                            let correct = false;
-                            if (Array.isArray(item.article)) {
-                                correct = item.article.includes(selectedArticle);
-                            } else {
-                                correct = selectedArticle && (selectedArticle === item.article);
-                            }
-                            let feedback = '';
-                            if (!selectedArticle) {
-                                feedback = '<span style="color:#e67e22;">Please select an article.</span>';
-                            } else if (correct) {
-                                feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
-                            } else {
-                                feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct article is: <b>${Array.isArray(item.article) ? item.article.join(', ') : item.article}</b></span>`;
-                            }
-                            document.getElementById('gender-feedback').innerHTML = feedback;
-                        };
                         document.getElementById('help-gender-btn').onclick = function() {
                             const hintArea = document.getElementById('gender-hint-area');
                             // Show the correct article's first letter
@@ -1494,6 +1523,7 @@
             } else if (type === 'verbs') {
                 const items = await loadVerbGrammar(language, day);
                 if (!items.length) {
+                   
                     resultArea.innerHTML = `<p style="text-align:center;">No verb data for this day/language.</p>`;
                     return;
                 }
@@ -1514,7 +1544,6 @@
                                 <button id=\"play-verb-pronounce-btn\" class=\"btn-secondary btn-emoji\" title=\"Hear pronunciation\">🔊</button>
                             </div>
                             <input id=\"verb-answer-input\" type=\"text\" placeholder=\"Type the answer...\" style=\"font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;\">
-                            <button id="check-verb-answer-btn" class="btn-secondary btn-emoji" title="Get a hint">💡</button>
                             <div id="verb-answer-feedback" style="margin-top:10px;"></div>
                         </div>
                     `;
