@@ -1,9 +1,9 @@
 // Sound effects for UI interactions
 // Preload audio
-const clickSound = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3'); // click
-const selectSound = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3'); // select (reuse click)
-const successSound = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3'); // success (placeholder)
-const errorSound = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3'); // error (placeholder)
+const clickSound = new Audio('assets/sounds/click.mp3'); // click
+const selectSound = new Audio('assets/sounds/select.mp3'); // select (reuse click)
+const successSound = new Audio('assets/sounds/success.mp3'); // success (placeholder)
+const errorSound = new Audio('assets/sounds/error.mp3'); // error (placeholder)
 
 // Play sound helpers
 function playClick() { clickSound.currentTime = 0; clickSound.play(); }
