@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSYlanguages</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="src/css/styles.css">
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
     <script>
       if ('serviceWorker' in navigator) {
@@ -401,18 +401,18 @@
         // Helper: map language select value to vocabulary file
         function getVocabularyFile(language) {
             switch(language) {
-                case 'COSYenglish': return 'vocabulary/words/vocabulary_english.json';
-                case 'COSYfrançais': return 'vocabulary/words/vocabulary_french.json';
-                case 'COSYespañol': return 'vocabulary/words/vocabulary_spanish.json';
-                case 'COSYitaliano': return 'vocabulary/words/vocabulary_italian.json';
-                case 'COSYdeutsch': return 'vocabulary/words/vocabulary_german.json';
-                case 'COSYportuguês': return 'vocabulary/words/vocabulary_portuguese.json';
-                case 'ТАКОЙрусский': return 'vocabulary/words/vocabulary_russian.json';
-                case 'COSYbrezhoneg': return 'vocabulary/words/vocabulary_breton.json';
-                case 'COSYtatarça': return 'vocabulary/words/vocabulary_tatar.json';
-                case 'COSYbashkort': return 'vocabulary/words/vocabulary_bashkir.json';
-                case 'ԾՈՍՅհայկական': return 'vocabulary/words/vocabulary_armenian.json';
-                case 'ΚΟΖΥελληνικά': return 'vocabulary/words/vocabulary_greek.json';
+                case 'COSYenglish': return 'data/vocabulary/words/vocabulary_english.json';
+                case 'COSYfrançais': return 'data/vocabulary/words/vocabulary_french.json';
+                case 'COSYespañol': return 'data/vocabulary/words/vocabulary_spanish.json';
+                case 'COSYitaliano': return 'data/vocabulary/words/vocabulary_italian.json';
+                case 'COSYdeutsch': return 'data/vocabulary/words/vocabulary_german.json';
+                case 'COSYportuguês': return 'data/vocabulary/words/vocabulary_portuguese.json';
+                case 'ТАКОЙрусский': return 'data/vocabulary/words/vocabulary_russian.json';
+                case 'COSYbrezhoneg': return 'data/vocabulary/words/vocabulary_breton.json';
+                case 'COSYtatarça': return 'data/vocabulary/words/vocabulary_tatar.json';
+                case 'COSYbashkort': return 'data/vocabulary/words/vocabulary_bashkir.json';
+                case 'ԾՈՍՅհայկական': return 'data/vocabulary/words/vocabulary_armenian.json';
+                case 'ΚΟΖΥελληνικά': return 'data/vocabulary/words/vocabulary_greek.json';
                 default: return null;
             }
         }
@@ -431,13 +431,14 @@
             }
         }
 
-        // Load random image data for a given day
-        async function loadImageVocabulary(day) {
+        // Load random image data for a given language and day
+        async function loadImageVocabulary(language, day) {
             try {
-                const response = await fetch('vocabulary/images/vocabulary_images.json');
+                const response = await fetch('data/vocabulary/images/vocabulary_images.json');
                 if (!response.ok) return [];
                 const data = await response.json();
-                return data[day] || [];
+                // Only return images that have a translation for the selected language
+                return (data[day] || []).filter(item => item.translations && item.translations[language]);
             } catch (e) {
                 return [];
             }
@@ -853,9 +854,9 @@
                 rerender();
                 return;
             } else if (type === 'random-image') {
-                const images = await loadImageVocabulary(day);
+                const images = await loadImageVocabulary(language, day);
                 if (!images.length) {
-                    resultArea.innerHTML = `<p style="text-align:center;">No images found for this day.</p>`;
+                    resultArea.innerHTML = `<p style="text-align:center;">No images found for this day/language.</p>`;
                     return;
                 }
                 let item = images[Math.floor(Math.random() * images.length)];
@@ -886,15 +887,11 @@
                             pronounceWord(answer, language);
                         };
                         document.getElementById('say-btn').onclick = function() {
-                            if (!recording) {
-                                startPronunciationCheck(answer, language);
-                                recording = true;
-                                this.classList.add('recording');
-                            } else {
-                                if (recognition && recognition.stop) recognition.stop();
-                                recording = false;
-                                this.classList.remove('recording');
-                            }
+                            startPronunciationCheck(answer, language);
+                        };
+                        document.getElementById('vocab-image').onclick = function() {
+                            item = images[Math.floor(Math.random() * images.length)];
+                            renderImage();
                         };
                         document.getElementById('check-image-answer-btn').onclick = function() {
                             const userInput = document.getElementById('image-answer-input').value.trim().toLowerCase();
@@ -904,29 +901,13 @@
                                 feedback = '<span style="color:#e67e22;">Please type your answer above.</span>';
                             } else if (userInput === correct) {
                                 feedback = '<span style="color:#27ae60;">✅ Correct!</span>';
+                                setTimeout(() => practiceVocabulary('random-image'), 1200);
                             } else if (userInput && correct && (userInput.includes(correct) || correct.includes(userInput))) {
                                 feedback = '<span style="color:#f1c40f;">🟡 Almost! Check your spelling.</span>';
                             } else {
                                 feedback = `<span style=\"color:#e74c3c;\">❌ Not quite. The correct answer is: <b>${answer}</b></span>`;
                             }
                             document.getElementById('image-answer-feedback').innerHTML = feedback;
-                        };
-                        document.getElementById('vocab-image').onclick = function() {
-                            item = images[Math.floor(Math.random() * images.length)];
-                            renderImage();
-                        };
-                        document.getElementById('help-btn').onclick = function() {
-                            const hintArea = document.getElementById('hint-area');
-                            // Show shuffled letters of the opposite as a hint
-                            function shuffle(str) {
-                                const arr = str.split('');
-                                for (let i = arr.length - 1; i > 0; i--) {
-                                    const j = Math.floor(Math.random() * (i + 1));
-                                    [arr[i], arr[j]] = [arr[j], arr[i]];
-                                }
-                                return arr.join('');
-                            }
-                            hintArea.innerHTML = `<span style='color:#2980b9;'>Hint: The opposite is <b>${shuffle(opposite)}</b> (shuffled letters).</span>`;
                         };
                         addEnterKeySupport('image-answer-input', 'check-image-answer-btn');
                     }, 0);
@@ -980,18 +961,18 @@
         // Load gender grammar data for a given language and day
         async function loadGenderGrammar(language, day) {
             const fileMap = {
-                'COSYenglish': 'grammar/gender/grammar_gender_english.json',
-                'COSYitaliano': 'grammar/gender/grammar_gender_italian.json',
-                'COSYfrançais': 'grammar/gender/grammar_gender_french.json',
-                'COSYespañol': 'grammar/gender/grammar_gender_spanish.json',
-                'COSYdeutsch': 'grammar/gender/grammar_gender_german.json',
-                'COSYportuguês': 'grammar/gender/grammar_gender_portuguese.json',
-                'ТАКОЙрусский': 'grammar/gender/grammar_gender_russian.json',
-                'COSYbrezhoneg': 'grammar/gender/grammar_gender_breton.json',
-                'COSYtatarça': 'grammar/gender/grammar_gender_tatar.json',
-                'COSYbashkort': 'grammar/gender/grammar_gender_bashkir.json',
-                'ԾՈՍՅհայկական': 'grammar/gender/grammar_gender_armenian.json',
-                'ΚΟΖΥελληνικά': 'grammar/gender/grammar_gender_greek.json'
+                'COSYenglish': 'data/grammar/gender/grammar_gender_english.json',
+                'COSYitaliano': 'data/grammar/gender/grammar_gender_italian.json',
+                'COSYfrançais': 'data/grammar/gender/grammar_gender_french.json',
+                'COSYespañol': 'data/grammar/gender/grammar_gender_spanish.json',
+                'COSYdeutsch': 'data/grammar/gender/grammar_gender_german.json',
+                'COSYportuguês': 'data/grammar/gender/grammar_gender_portuguese.json',
+                'ТАКОЙрусский': 'data/grammar/gender/grammar_gender_russian.json',
+                'COSYbrezhoneg': 'data/grammar/gender/grammar_gender_breton.json',
+                'COSYtatarça': 'data/grammar/gender/grammar_gender_tatar.json',
+                'COSYbashkort': 'data/grammar/gender/grammar_gender_bashkir.json',
+                'ԾՈՍՅհայկական': 'data/grammar/gender/grammar_gender_armenian.json',
+                'ΚΟΖΥελληνικά': 'data/grammar/gender/grammar_gender_greek.json'
             };
             const file = fileMap[language];
             if (!file) return [];
@@ -1008,13 +989,17 @@
         // Load verb grammar data for a given language and day
         async function loadVerbGrammar(language, day) {
             const fileMap = {
-                'COSYenglish': 'grammar/verbs/grammar_verbs_english.json',
-                'COSYitaliano': 'grammar/verbs/grammar_verbs_italian.json',
-                'COSYfrançais': 'grammar/verbs/grammar_verbs_french.json',
-                'COSYespañol': 'grammar/verbs/grammar_verbs_spanish.json',
-                'COSYdeutsch': 'grammar/verbs/grammar_verbs_german.json',
-                'COSYportuguês': 'grammar/verbs/grammar_verbs_portuguese.json',
-                'ΚΟΖΥελληνικά': 'grammar/verbs/grammar_verbs_greek.json'
+                'COSYenglish': 'data/grammar/verbs/grammar_verbs_english.json',
+                'COSYitaliano': 'data/grammar/verbs/grammar_verbs_italian.json',
+                'COSYfrançais': 'data/grammar/verbs/grammar_verbs_french.json',
+                'COSYespañol': 'data/grammar/verbs/grammar_verbs_spanish.json',
+                'COSYdeutsch': 'data/grammar/verbs/grammar_verbs_german.json',
+                'COSYportuguês': 'data/grammar/verbs/grammar_verbs_portuguese.json',
+                'ΚΟΖΥελληνικά': 'data/grammar/verbs/grammar_verbs_greek.json',
+                'ТАКОЙрусский': 'data/grammar/verbs/grammar_verbs_russian.json',
+                'COSYbrezhoneg': 'data/grammar/verbs/grammar_verbs_breton.json',
+                'COSYtatarça': 'data/grammar/verbs/grammar_verbs_tatar.json',
+                'COSYbashkort': 'data/grammar/verbs/grammar_verbs_bashkir.json',
             };
             const file = fileMap[language];
             if (!file) return [];
@@ -1031,18 +1016,18 @@
         // Load possessives grammar data for a given language and day
         async function loadPossessivesGrammar(language, day) {
             const fileMap = {
-                'COSYenglish': 'grammar/possessives/possessives_english.json',
-                'COSYitaliano': 'grammar/possessives/possessives_italian.json',
-                'COSYfrançais': 'grammar/possessives/possessives_french.json',
-                'COSYespañol': 'grammar/possessives/possessives_spanish.json',
-                'COSYdeutsch': 'grammar/possessives/possessives_german.json',
-                'COSYportuguês': 'grammar/possessives/possessives_portuguese.json',
-                'ТАКОЙрусский': 'grammar/possessives/possessives_russian.json',
-                'COSYbrezhoneg': 'grammar/possessives/possessives_breton.json',
-                'COSYtatarça': 'grammar/possessives/possessives_tatar.json',
-                'COSYbashkort': 'grammar/possessives/possessives_bashkir.json',
-                'ԾՈՍՅհայկական': 'grammar/possessives/possessives_armenian.json',
-                'ΚΟΖΥελληνικά': 'grammar/possessives/possessives_greek.json'
+                'COSYenglish': 'data/grammar/possessives/possessives_english.json',
+                'COSYitaliano': 'data/grammar/possessives/possessives_italian.json',
+                'COSYfrançais': 'data/grammar/possessives/possessives_french.json',
+                'COSYespañol': 'data/grammar/possessives/possessives_spanish.json',
+                'COSYdeutsch': 'data/grammar/possessives/possessives_german.json',
+                'COSYportuguês': 'data/grammar/possessives/possessives_portuguese.json',
+                'ТАКОЙрусский': 'data/grammar/possessives/possessives_russian.json',
+                'COSYbrezhoneg': 'data/grammar/possessives/possessives_breton.json',
+                'COSYtatarça': 'data/grammar/possessives/possessives_tatar.json',
+                'COSYbashkort': 'data/grammar/possessives/possessives_bashkir.json',
+                'ԾՈՍՅհայկական': 'data/grammar/possessives/possessives_armenian.json',
+                'ΚΟΖΥελληνικά': 'data/grammar/possessives/possessives_greek.json'
             };
             const file = fileMap[language];
             if (!file) return [];
@@ -1059,18 +1044,18 @@
         // Update all fetch paths in scripts to use the new folder structure: vocabulary/, grammar/, speaking/. For example, fetch('vocabulary/vocabulary_english.json'), fetch('grammar/grammar_gender_french.json'), fetch('speaking/prompts/speaking_french.json'), etc.
         async function loadSpeakingPrompts(language, day) {
             const fileMap = {
-                'COSYenglish': 'speaking/prompts/speaking_english.json',
-                'COSYfrançais': 'speaking/prompts/speaking_french.json',
-                'COSYespañol': 'speaking/prompts/speaking_spanish.json',
-                'COSYitaliano': 'speaking/prompts/speaking_italian.json',
-                'COSYdeutsch': 'speaking/prompts/speaking_german.json',
-                'COSYportuguês': 'speaking/prompts/speaking_portuguese.json',
-                'ΚΟΖΥελληνικά': 'speaking/prompts/speaking_greek.json',
-                'COSYbrezhoneg': 'speaking/prompts/speaking_breton.json',
-                'ТАКОЙрусский': 'speaking/prompts/speaking_russian.json',
-                'ԾՈՍՅհայկական': 'speaking/prompts/speaking_armenian.json',
-                'COSYtatarça': 'speaking/prompts/speaking_tatar.json',
-                'COSYbashkort': 'speaking/prompts/speaking_bashkir.json'
+                'COSYenglish': 'data/speaking/prompts/speaking_english.json',
+                'COSYfrançais': 'data/speaking/prompts/speaking_french.json',
+                'COSYespañol': 'data/speaking/prompts/speaking_spanish.json',
+                'COSYitaliano': 'data/speaking/prompts/speaking_italian.json',
+                'COSYdeutsch': 'data/speaking/prompts/speaking_german.json',
+                'COSYportuguês': 'data/speaking/prompts/speaking_portuguese.json',
+                'ΚΟΖΥελληνικά': 'data/speaking/prompts/speaking_greek.json',
+                'COSYbrezhoneg': 'data/speaking/prompts/speaking_breton.json',
+                'ТАКОЙрусский': 'data/speaking/prompts/speaking_russian.json',
+                'ԾՈՍՅհայկական': 'data/speaking/prompts/speaking_armenian.json',
+                'COSYtatarça': 'data/speaking/prompts/speaking_tatar.json',
+                'COSYbashkort': 'data/speaking/prompts/speaking_bashkir.json'
             };
             const file = fileMap[language];
             if (!file) return [];
@@ -1132,6 +1117,12 @@
                     case 'COSYitaliano': return 'it-IT';
                     case 'COSYdeutsch': return 'de-DE';
                     case 'COSYportuguês': return 'pt-PT';
+                    case 'ΚΟΖΥελληνικά': return 'el-GR';
+                    case 'ТАКОЙрусский': return 'ru-RU';
+                    case 'COSYbrezhoneg': return 'br-FR';
+                    case 'ԾՈՍՅհայկական': return 'hy-AM';
+                    case 'COSYtatarça': return 'tt-RU';
+                    case 'COSYbashkort': return 'ba-RU';
                     default: return 'en-US';
                 }
             })(language);
@@ -1802,18 +1793,18 @@ document.getElementById('listening-btn').addEventListener('click', function() {
 // Helper: map language select value to opposites file (now in vocabulary/opposites/)
 function getOppositesFile(language) {
     switch(language) {
-        case 'COSYenglish': return 'vocabulary/opposites/opposites_english.json';
-        case 'COSYfrançais': return 'vocabulary/opposites/opposites_french.json';
-        case 'COSYespañol': return 'vocabulary/opposites/opposites_spanish.json';
-        case 'COSYitaliano': return 'vocabulary/opposites/opposites_italian.json';
-        case 'COSYdeutsch': return 'vocabulary/opposites/opposites_german.json';
-        case 'COSYportuguês': return 'vocabulary/opposites/opposites_portuguese.json';
-        case 'ΚΟΖΥελληνικά': return 'vocabulary/opposites/opposites_greek.json';
-        case 'COSYbrezhoneg': return 'vocabulary/opposites/opposites_breton.json';
-        case 'ԾՈՍՅհայկական': return 'vocabulary/opposites/opposites_armenian.json';
-        case 'ТАКОЙрусский': return 'vocabulary/opposites/opposites_russian.json';
-        case 'COSYtatarça': return 'vocabulary/opposites/opposites_tatar.json';
-        case 'COSYbashkort': return 'vocabulary/opposites/opposites_bashkir.json';
+        case 'COSYenglish': return 'data/vocabulary/opposites/opposites_english.json';
+        case 'COSYfrançais': return 'data/vocabulary/opposites/opposites_french.json';
+        case 'COSYespañol': return 'data/vocabulary/opposites/opposites_spanish.json';
+        case 'COSYitaliano': return 'data/vocabulary/opposites/opposites_italian.json';
+        case 'COSYdeutsch': return 'data/vocabulary/opposites/opposites_german.json';
+        case 'COSYportuguês': return 'data/vocabulary/opposites/opposites_portuguese.json';
+        case 'ΚΟΖΥελληνικά': return 'data/vocabulary/opposites/opposites_greek.json';
+        case 'COSYbrezhoneg': return 'data/vocabulary/opposites/opposites_breton.json';
+        case 'ԾՈՍՅհայկական': return 'data/vocabulary/opposites/opposites_armenian.json';
+        case 'ТАКОЙрусский': return 'data/vocabulary/opposites/opposites_russian.json';
+        case 'COSYtatarça': return 'data/vocabulary/opposites/opposites_tatar.json';
+        case 'COSYbashkort': return 'data/vocabulary/opposites/opposites_bashkir.json';
         default: return null;
     }
 }
@@ -1853,10 +1844,10 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
 }
     </script>
     <!-- Sound effects -->
-    <audio id="click-sound" src="sounds/click.mp3" preload="auto"></audio>
-    <audio id="select-sound" src="sounds/select.mp3" preload="auto"></audio>
-    <audio id="error-sound" src="sounds/error.mp3" preload="auto"></audio>
-    <audio id="success-sound" src="sounds/success.mp3" preload="auto"></audio>
+    <audio id="click-sound" src="assets/sounds/click.mp3" preload="auto"></audio>
+    <audio id="select-sound" src="assets/sounds/select.mp3" preload="auto"></audio>
+    <audio id="error-sound" src="assets/sounds/error.mp3" preload="auto"></audio>
+    <audio id="success-sound" src="assets/sounds/success.mp3" preload="auto"></audio>
     <script src="interactive.js"></script>
 </body>
 </html>
