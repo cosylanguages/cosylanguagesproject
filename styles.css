@@ -523,3 +523,190 @@ input[type="text"] {
   background: #fffde7;
   color: #e67e22;
 }
+
+/* Floating Help Button */
+#floating-help-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 10010;
+  background: #ffe082;
+  color: #009999;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 2.2rem;
+  box-shadow: 0 4px 24px 0 #00bdbd44;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 3px solid #fffde7;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.18s;
+  animation: bounceIn 0.7s cubic-bezier(.23,1.01,.32,1);
+}
+#floating-help-btn:hover {
+  background: #fffde7;
+  color: #e67e22;
+  transform: scale(1.08) rotate(-8deg);
+  box-shadow: 0 8px 32px 0 #ffe08299;
+}
+
+/* Fun Fact / Tip Popup */
+#floating-tip-popup {
+  position: fixed;
+  bottom: 110px;
+  right: 36px;
+  z-index: 10011;
+  background: #fffde7;
+  color: #009999;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 #00bdbd33;
+  padding: 18px 28px 18px 22px;
+  font-size: 1.13rem;
+  font-weight: 500;
+  min-width: 220px;
+  max-width: 340px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  animation: popIn 0.5s cubic-bezier(.23,1.01,.32,1);
+  border: 2.5px solid #ffe082;
+}
+#floating-tip-popup[style*="display: flex"] {
+  display: flex !important;
+}
+#floating-tip-popup .close-tip {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: #e67e22;
+  font-size: 1.5rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.18s;
+}
+#floating-tip-popup .close-tip:hover {
+  color: #d35400;
+}
+
+/* Translation Popup */
+#translation-popup {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10012;
+  background: #fff;
+  color: #009999;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px 0 #00bdbd33;
+  padding: 18px 28px 18px 22px;
+  font-size: 1.13rem;
+  font-weight: 500;
+  min-width: 220px;
+  max-width: 340px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  border: 2.5px solid #00bdbd;
+}
+#translation-popup[style*="display: flex"] {
+  display: flex !important;
+}
+#translation-popup .close-translation {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: #e67e22;
+  font-size: 1.5rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.18s;
+}
+#translation-popup .close-translation:hover {
+  color: #d35400;
+}
+
+/* Playful animated background sparkles */
+@keyframes sparkleFloat {
+  0% { opacity: 0.7; transform: translateY(0) scale(1); }
+  50% { opacity: 1; transform: translateY(-18px) scale(1.15); }
+  100% { opacity: 0.7; transform: translateY(0) scale(1); }
+}
+.bg-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  animation: sparkleFloat 3.5s infinite ease-in-out;
+  opacity: 0.7;
+}
+
+/* Add a little pop to all main buttons */
+button.btn-primary, button.btn-secondary {
+  transition: box-shadow 0.18s, transform 0.18s, background 0.18s, color 0.18s;
+}
+button.btn-primary:active, button.btn-secondary:active {
+  transform: scale(0.97) rotate(-2deg);
+  box-shadow: 0 2px 12px #ffe08299;
+}
+
+/* Add a fun shadow to the result area */
+.result-area {
+  box-shadow: 0 6px 22px 0 #ffe08255, 0 2px 8px rgba(0,189,189,0.13);
+  border: 2.5px solid #ffe082;
+}
+
+/* Add a little wiggle to the floating help button on page load */
+@keyframes wiggle {
+  0% { transform: rotate(-8deg) scale(1.08); }
+  20% { transform: rotate(8deg) scale(1.08); }
+  40% { transform: rotate(-8deg) scale(1.08); }
+  60% { transform: rotate(8deg) scale(1.08); }
+  80% { transform: rotate(-8deg) scale(1.08); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+#floating-help-btn.wiggle {
+  animation: wiggle 1.2s 1;
+}
+
+/* Utility classes for layout and spacing */
+.flex-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.flex-row-center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.gap-8 { gap: 8px; }
+.gap-10 { gap: 10px; }
+.gap-12 { gap: 12px; }
+.gap-14 { gap: 14px; }
+.gap-18 { gap: 18px; }
+.gap-22 { gap: 22px; }
+.gap-24 { gap: 24px; }
+.margin-bottom-8 { margin-bottom: 8px; }
+.margin-bottom-10 { margin-bottom: 10px; }
+.margin-bottom-14 { margin-bottom: 14px; }
+.margin-bottom-18 { margin-bottom: 18px; }
+.margin-bottom-24 { margin-bottom: 24px; }
+.margin-top-10 { margin-top: 10px; }
+.margin-top-14 { margin-top: 14px; }
+.margin-top-16 { margin-top: 16px; }
+.margin-top-18 { margin-top: 18px; }
+.margin-top-24 { margin-top: 24px; }
+.min-width-220 { min-width: 220px; }
+.max-width-340 { max-width: 340px; }
+.text-center { text-align: center; }
+.font-size-13 { font-size: 1.3rem; }
+.font-size-12 { font-size: 1.2rem; }
+.font-size-11 { font-size: 1.1rem; }
+.font-weight-500 { font-weight: 500; }
+.font-weight-600 { font-weight: 600; }
+.border-radius-16 { border-radius: 16px; }
+.border-radius-18 { border-radius: 18px; }
+.box-shadow-light { box-shadow: 0 2px 12px rgba(0,0,0,0.10); }

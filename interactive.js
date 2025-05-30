@@ -731,3 +731,92 @@ function getTranslationForText(text, lang, contextType, originalLang) {
   // Default: just show the text
   return text;
 }
+
+// --- Floating Help Button, Tip Popup, and Translation Popup Logic ---
+window.addEventListener('DOMContentLoaded', function() {
+  const helpBtn = document.getElementById('floating-help-btn');
+  const tipPopup = document.getElementById('floating-tip-popup');
+  const tipText = document.getElementById('floating-tip-text');
+  const closeTipBtn = tipPopup.querySelector('.close-tip');
+  const translateTipBtn = tipPopup.querySelector('.translate-tip');
+  const translationPopup = document.getElementById('translation-popup');
+  const translationText = document.getElementById('translation-popup-text');
+  const closeTranslationBtn = translationPopup.querySelector('.close-translation');
+
+  // Helper: get a random fun fact or tip for the current language
+  function getRandomTip() {
+    const lang = document.getElementById('language').value || 'COSYenglish';
+    const t = translations[lang] || translations['COSYenglish'];
+    const facts = t.funFacts || translations['COSYenglish'].funFacts;
+    return facts[Math.floor(Math.random() * facts.length)];
+  }
+
+  // Show tip popup
+  function showTipPopup(tip) {
+    tipText.textContent = tip;
+    tipPopup.style.display = 'flex';
+    tipPopup.setAttribute('aria-live', 'polite');
+    tipPopup.focus && tipPopup.focus();
+  }
+  // Hide tip popup
+  function hideTipPopup() {
+    tipPopup.style.display = 'none';
+  }
+  // Show translation popup
+  function showTranslationPopup(text) {
+    translationText.textContent = text;
+    translationPopup.style.display = 'flex';
+    translationPopup.setAttribute('aria-live', 'polite');
+    translationPopup.focus && translationPopup.focus();
+  }
+  // Hide translation popup
+  function hideTranslationPopup() {
+    translationPopup.style.display = 'none';
+  }
+
+  // Help button click: show a random tip/fun fact
+  helpBtn.onclick = function(e) {
+    e.stopPropagation();
+    showTipPopup(getRandomTip());
+  };
+  // Close tip popup
+  closeTipBtn.onclick = function(e) {
+    e.stopPropagation();
+    hideTipPopup();
+  };
+  // Translate tip
+  translateTipBtn.onclick = function(e) {
+    e.stopPropagation();
+    const tip = tipText.textContent;
+    // Use English as fallback translation
+    const lang = document.getElementById('language').value || 'COSYenglish';
+    let translated = tip;
+    // Try to find translation in translations.js for fun facts
+    for (const key in translations) {
+      if (translations[key].funFacts && translations[key].funFacts.includes(tip)) {
+        const idx = translations[key].funFacts.indexOf(tip);
+        const t = translations[lang] || translations['COSYenglish'];
+        if (t.funFacts && t.funFacts[idx]) translated = t.funFacts[idx];
+        break;
+      }
+    }
+    showTranslationPopup(translated);
+  };
+  // Close translation popup
+  closeTranslationBtn.onclick = function(e) {
+    e.stopPropagation();
+    hideTranslationPopup();
+  };
+  // Hide popups on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      hideTipPopup();
+      hideTranslationPopup();
+    }
+  });
+  // Hide popups if clicking outside
+  document.body.addEventListener('click', function(e) {
+    if (tipPopup.style.display === 'flex' && !tipPopup.contains(e.target) && e.target !== helpBtn) hideTipPopup();
+    if (translationPopup.style.display === 'flex' && !translationPopup.contains(e.target)) hideTranslationPopup();
+  });
+});
