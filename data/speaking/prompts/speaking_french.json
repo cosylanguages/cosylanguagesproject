@@ -1,0 +1,14 @@
+{
+  "1": ["Un café ou un thé ? Espèces ou carte ?"],
+  "2": [
+    "Qui es-tu ?\n<em>Ton nom.</em>\n<em>Es-tu un homme ou une femme ?</em>\n<em>Es-tu étudiant ou professeur ?</em>",
+    "Nomme 3 personnes célèbres.\n<em>Leur nom.</em>\n<em>Est-ce un homme ou une femme ?</em>",
+    "Nomme 3 personnes.\n<em>Leur nom.</em>\n<em>Est-ce un homme ou une femme ?</em>"
+  ],
+  "3": [
+    "Ta famille",
+    "Ton ami et sa famille",
+    "Boissons que tu as et que tu n'as pas",
+    "Boissons que ton ami a et qu'il/elle n'a pas"
+  ]
+}
