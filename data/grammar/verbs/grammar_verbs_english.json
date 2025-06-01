@@ -1,0 +1,21 @@
+{
+  "2": [
+    { "prompt": "I", "answer": "am" },
+    { "prompt": "you", "answer": "are" },
+    { "prompt": "he", "answer": "is" },
+    { "prompt": "she", "answer": "is" },
+    { "prompt": "it", "answer": "is" },
+    { "prompt": "am", "answer": "I" },
+    { "prompt": "are", "answer": "you" },
+    { "prompt": "is", "answer": "he/she/it" }
+  ],
+  "3": [
+    { "prompt": "I", "answer": "have" },
+    { "prompt": "you", "answer": "have" },
+    { "prompt": "he", "answer": "has" },
+    { "prompt": "she", "answer": "has" },
+    { "prompt": "it", "answer": "has" },
+    { "prompt": "have", "answer": "I/you" },
+    { "prompt": "has", "answer": "he/she/it" }
+  ]
+}

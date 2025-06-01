@@ -686,10 +686,10 @@
                 function renderOppositePractice() {
                     const opposite = opposites[word.trim()];
                     resultArea.innerHTML = `
-                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
-                            <div id="opposite-word" style="font-size:1.5rem; font-weight:600; margin-bottom:8px; cursor:pointer;">${word} ≠ ?</div>
-                            <input id="opposite-input" type="text" placeholder="Type the opposite..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:10px; width:220px; text-align:center;">
-                            <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
+                        <div class="flex-col-center min-height-180">
+                            <div id="opposite-word" class="font-size-15 font-weight-600 margin-bottom-8 cursor-pointer">${word} ≠ ?</div>
+                            <input id="opposite-input" type="text" placeholder="Type the opposite..." class="font-size-11 padding-8-14 border-radius-8 border-bbb margin-bottom-10 min-width-220 text-center">
+                            <div class="flex-row-center gap-18 justify-content-center align-items-center">
                                 <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
                                 <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
                             </div>
@@ -753,20 +753,20 @@
                     let answerArr = Array(lowerWord.length).fill('');
                     let revealedHint = false;
                     resultArea.innerHTML = `
-                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;">
-                            <div id="makeword-letters" style="display:flex; gap:8px; margin-bottom:10px; cursor:pointer;">
-                                ${shuffled.split('').map((ch, i) => `<div class="letter-box" data-idx="${i}" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid #bbb;border-radius:6px;font-size:1.3rem;cursor:pointer;background:#f8f8f8;user-select:none;">${ch}</div>`).join('')}
-                            </div>
-                            <div id="makeword-answer" style="display:flex; gap:8px; margin-bottom:10px;">
-                                ${answerArr.map(() => `<div class="letter-box answer-box" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid #bbb;border-radius:6px;font-size:1.3rem;background:#fff;user-select:none;"> </div>`).join('')}
-                            </div>
-                            <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
-                                <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
-                                <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
-                            </div>
-                            <div id="pronunciation-feedback" style="margin-top:10px;"></div>
-                            <div id="makeword-feedback" style="margin-top:10px;"></div>
-                            <div id="hint-area" style="margin-top:10px;"></div>
+                        <div class="flex-col-center min-height-180">
+                          <div id="makeword-letters" class="flex-row-center gap-8 margin-bottom-10 cursor-pointer">
+                            ${shuffled.split('').map((ch, i) => `<div class="letter-box border-bbb border-radius-6 font-size-13 cursor-pointer bg-f8 user-select-none" data-idx="${i}">${ch}</div>`).join('')}
+                          </div>
+                          <div id="makeword-answer" class="flex-row-center gap-8 margin-bottom-10">
+                            ${answerArr.map(() => `<div class="letter-box answer-box" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid #bbb;border-radius:6px;font-size:1.3rem;background:#fff;user-select:none;"> </div>`).join('')}
+                          </div>
+                          <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
+                            <button id="play-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
+                            <button id="say-btn" class="btn-secondary btn-emoji" title="Say it">🎤</button>
+                          </div>
+                          <div id="pronunciation-feedback" style="margin-top:10px;"></div>
+                          <div id="makeword-feedback" style="margin-top:10px;"></div>
+                          <div id="hint-area" style="margin-top:10px;"></div>
                         </div>
                     `;
                     let recording = false;
@@ -863,15 +863,15 @@
                 const answer = item.translations[language] || '[No translation]';
                 function renderImage() {
                     let questionBlock = '';
-                    if (parseInt(day) === 1) {
-                        questionBlock = `<div style="font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:10px;">${(translations[language]||translations['COSYenglish']).randomImageQ1}</div>`;
-                    } else if (parseInt(day) === 2) {
-                        const t = translations[language]||translations['COSYenglish'];
-                        questionBlock = `<div style="font-size:1.2rem; font-weight:500; color:#00bdbd; margin-bottom:2px;">${t.randomImageQ2a}</div><div style="font-size:1.1rem; font-weight:400; color:#009999; margin-bottom:8px;">${t.randomImageQ2b}</div>`;
-                    }
-                    resultArea.innerHTML = `
-                        ${questionBlock}
-                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px;">
+                    if (!p.img) {
+      questionBlock = `<div class="font-size-12 font-weight-500 color-bdbd margin-bottom-10">${(translations[language]||translations['COSYenglish']).randomImageQ1}</div>`;
+    } else if (parseInt(day) === 2) {
+      const t = translations[language]||translations['COSYenglish'];
+      questionBlock = `<div class="font-size-12 font-weight-500 color-bdbd margin-bottom-2">${t.randomImageQ2a}</div><div class="font-size-11 font-weight-400 color-bdbd margin-bottom-8">${t.randomImageQ2b}</div>`;
+    }
+    resultArea.innerHTML = `
+      ${questionBlock}
+      <div class="flex-col-center min-height-220">
                             <img id="vocab-image" src="${item.src}" alt="${item.alt}" class="vocabulary-image" style="max-width:180px; max-height:180px; margin-bottom:18px; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.10); cursor:pointer;">
                             <input id="image-answer-input" type="text" placeholder="Type your answer..." style="font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;">
                             <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-direction:row;">
@@ -1151,7 +1151,7 @@
             };
             recognition.onerror = function(event) {
                 document.getElementById('speaking-feedback').innerHTML =
-                    `<p style='color:red;'>Error: ${event.error}</p>`;
+                    `<p class="color-red">Error: ${event.error}</p>`;
                 try { recognition.stop(); } catch(e) {}
             };
             recognition.onend = function() {};
@@ -1526,7 +1526,6 @@
             } else if (type === 'verbs') {
                 const items = await loadVerbGrammar(language, day);
                 if (!items.length) {
-                   
                     resultArea.innerHTML = `<p style="text-align:center;">No verb data for this day/language.</p>`;
                     return;
                 }
@@ -1828,11 +1827,7 @@ const statsContainer = document.getElementById('progress-stats-container');
 if (statsContainer && !document.getElementById('reset-progress-btn')) {
   const resetBtn = document.createElement('button');
   resetBtn.id = 'reset-progress-btn';
-  resetBtn.className = 'btn-secondary';
-  resetBtn.style.display = 'block';
-  resetBtn.style.margin = '18px auto 0 auto';
-  resetBtn.style.textAlign = 'center';
-  resetBtn.style.fontSize = '1.1em';
+  resetBtn.className = 'btn-secondary margin-top-18 margin-bottom-8 font-size-11 text-center';
   resetBtn.textContent = (translations[lang]||translations['COSYenglish']).resetProgress || 'Reset Progress';
   resetBtn.onclick = function() {
     if (confirm((translations[lang]||translations['COSYenglish']).resetConfirm || 'Are you sure you want to reset your progress?')) {

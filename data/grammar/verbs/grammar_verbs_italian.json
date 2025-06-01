@@ -1,0 +1,20 @@
+{
+  "2": [
+    { "prompt": "io", "answer": "sono" },
+    { "prompt": "tu", "answer": "sei" },
+    { "prompt": "lui", "answer": "è" },
+    { "prompt": "lei", "answer": "è" },
+    { "prompt": "sono", "answer": "io/loro" },
+    { "prompt": "sei", "answer": "tu" },
+    { "prompt": "è", "answer": "lui/lei" }
+  ],
+  "3": [
+    { "prompt": "io", "answer": "ho" },
+    { "prompt": "tu", "answer": "hai" },
+    { "prompt": "lui", "answer": "ha" },
+    { "prompt": "lei", "answer": "ha" },
+    { "prompt": "ho", "answer": "io" },
+    { "prompt": "hai", "answer": "tu" },
+    { "prompt": "ha", "answer": "lui/lei" }
+  ]
+}

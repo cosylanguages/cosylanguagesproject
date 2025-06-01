@@ -1,0 +1,39 @@
+{
+  "1": [
+    { "word": "νερό", "article": "το" },
+    { "word": "χυμός", "article": "ο" },
+    { "word": "μπύρα", "article": "η" },
+    { "word": "κρασί", "article": "το" },
+    { "word": "καφές", "article": "ο" },
+    { "word": "τσάι", "article": "το" },
+    { "word": "κάρτα", "article": "η" }
+
+  ],
+  "2": [
+    { "word": "δάσκαλος", "article": "ο" },
+    { "word": "μαθητής", "article": "ο" },
+    { "word": "μαθήτρια", "article": "η" },
+    { "word": "κορίτσι", "article": "το" },
+    { "word": "αγόρι", "article": "το" },
+    { "word": "άντρας", "article": "ο" },
+    { "word": "γυναίκα", "article": "η" },
+    { "word": "δασκάλα", "article": "η" },
+    { "word": "πράγμα", "article": "το" },
+    { "word": "άτομο", "article": "το" },
+    { "word": "ποτό", "article": "το" },
+    { "word": "προβλήμα", "article": "το" }
+
+  ],
+  "3": [
+    { "word": "μητέρα", "article": "η" },
+    { "word": "πατέρας", "article": "ο" },
+    { "word": "αδελφός", "article": "ο" },
+    { "word": "αδελφή", "article": "η" },
+    { "word": "γιός", "article": "ο" },
+    { "word": "κόρη", "article": "η" },
+    { "word": "σύζυγος", "article": "ο/η" },
+    { "word": "φίλος", "article": "ο" },
+    { "word": "οικογένεια", "article": "η" }
+  
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "1": [
+    { "word": "água", "article": "a" },
+    { "word": "sumo", "article": "o" },
+    { "word": "cerveja", "article": "a" },
+    { "word": "vinho", "article": "o" },
+    { "word": "café", "article": "o" },
+    { "word": "chá", "article": "o" },
+    { "word": "cartão", "article": "o" }
+  ],
+  "2": [
+    { "word": "professor", "article": "o"},
+    { "word": "estudante", "article": "o/a"},
+    { "word": "homem", "article": "o"},
+    { "word": "garoto", "article": "o"},
+    { "word": "mulher", "article": "a"},
+    { "word": "professora", "article": "a"},
+    { "word": "estudante", "article": "a"},
+    { "word": "garota", "article": "a"},
+    { "word": "coisa", "article": "a"},
+    { "word": "pessoa", "article": "a"},
+    { "word": "bebida", "article": "a"},
+    { "word": "problema", "article": "o"}
+
+  ],
+  "3": [
+    { "word": "mãe", "article": "a" },
+    { "word": "pai", "article": "o" },
+    { "word": "irmão", "article": "o" },
+    { "word": "irmã", "article": "a" },
+    { "word": "filho", "article": "o" },
+    { "word": "filha", "article": "a" },
+    { "word": "esposo", "article": "o" },
+    { "word": "esposa", "article": "a" },
+    { "word": "amigo", "article": "o" },
+    { "word": "amiga", "article": "a" },
+    { "word": "família", "article": "a" }
+  ]
+}

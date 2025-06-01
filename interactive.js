@@ -48,16 +48,11 @@ function updateGameStats() {
   if (!stats) {
     stats = document.createElement('div');
     stats.id = 'cosy-gamestats';
+    stats.className = 'box-shadow-strong bg-bdbd color-white border-radius-12 font-weight-bold';
     stats.style.position = 'fixed';
     stats.style.top = '10px';
     stats.style.right = '10px';
-    stats.style.background = 'rgba(0,189,189,0.92)';
-    stats.style.color = '#fff';
-    stats.style.padding = '10px 18px';
-    stats.style.borderRadius = '12px';
-    stats.style.fontWeight = 'bold';
     stats.style.zIndex = '9999';
-    stats.style.boxShadow = '0 2px 12px rgba(0,0,0,0.13)';
     document.body.appendChild(stats);
   }
   stats.innerHTML = `XP: ${cosyXP} | Level: ${cosyLevel} | Streak: ${cosyStreak}`;
@@ -65,19 +60,12 @@ function updateGameStats() {
 function showToast(msg) {
   let toast = document.createElement('div');
   toast.textContent = msg;
-  toast.className = 'cosy-toast';
+  toast.className = 'cosy-toast box-shadow-strong bg-bdbd color-white border-radius-10 font-weight-bold';
   toast.style.position = 'fixed';
   toast.style.bottom = '30px';
   toast.style.left = '50%';
   toast.style.transform = 'translateX(-50%)';
-  toast.style.background = '#00bdbd';
-  toast.style.color = '#fff';
-  toast.style.padding = '12px 24px';
-  toast.style.borderRadius = '10px';
-  toast.style.fontWeight = 'bold';
-  toast.style.fontSize = '1.1rem';
   toast.style.zIndex = '9999';
-  toast.style.boxShadow = '0 2px 12px rgba(0,0,0,0.13)';
   document.body.appendChild(toast);
   setTimeout(() => { toast.remove(); }, 1800);
 }
@@ -234,10 +222,10 @@ function confetti() {
   for (let i=0; i<30; i++) {
     let c = document.createElement('div');
     c.textContent = '🎊';
+    c.className = 'font-size-15';
     c.style.position = 'fixed';
     c.style.left = Math.random()*100+'vw';
     c.style.top = '-40px';
-    c.style.fontSize = '2rem';
     c.style.zIndex = '9999';
     c.style.transition = 'top 1.2s cubic-bezier(.23,1.01,.32,1)';
     document.body.appendChild(c);
@@ -317,14 +305,14 @@ async function practiceMatch(language, days) {
   html += '<div class="match-col match-right">';
   right.forEach((p, i) => {
     if (p.img) {
-      html += `<div class="match-item match-right-item" data-id="${p.id}" tabindex="0"><img src="${p.img}" alt="" style="max-width:80px;max-height:80px;border-radius:10px;box-shadow:0 2px 8px #00bdbd33;"></div>`;
+      html += `<div class="match-item match-right-item" data-id="${p.id}" tabindex="0"><img src="${p.img}" alt="" class="max-width-80 max-height-80 border-radius-10 box-shadow-light"></div>`;
     } else {
       html += `<div class="match-item match-right-item" data-id="${p.id}" tabindex="0">${p.word}</div>`;
     }
   });
   html += '</div>';
   html += '</div>';
-  html += '<div id="match-feedback" style="margin-top:18px;"></div>';
+  html += '<div id="match-feedback" class="margin-top-18"></div>';
   document.getElementById('result').innerHTML = html;
   // Drag and drop logic
   let selected = null;
@@ -411,8 +399,8 @@ async function practiceChoosePronounced(language, days) {
   }
   options = options.sort(() => Math.random() - 0.5);
   let html = `<div class="choose4-container">
-    <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">🔊 ${t['chooseCorrect'] ? t['chooseCorrect'] : 'Which is correct?'}</div>
-    <button id="pronounce-btn" class="btn-secondary" style="margin-bottom:14px;">🔊 ${t['listen'] ? t['listen'] : 'Listen'}</button>
+    <div class="choose4-question font-size-12 margin-bottom-18">🔊 ${t['chooseCorrect'] ? t['chooseCorrect'] : 'Which is correct?'}</div>
+    <button id="pronounce-btn" class="btn-secondary margin-bottom-14">🔊 ${t['listen'] ? t['listen'] : 'Listen'}</button>
     <div class="choose4-options">`;
   options.forEach(opt => {
     html += `<button class="choose4-btn btn-secondary">${opt}</button>`;
@@ -435,7 +423,7 @@ async function practiceChoosePronounced(language, days) {
     btn.onclick = () => {
       let isCorrect = btn.textContent === correct;
       btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct}</span>`;
+      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span class="color-green">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span class="color-red">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct}</span>`;
       scheduleReview(language, 'choose4audio', correct, isCorrect);
       if (isCorrect) awardCorrectAnswer();
       showFunFact(language);
@@ -480,7 +468,7 @@ async function practiceChooseImage(language, days) {
   options = options.sort(() => Math.random() - 0.5);
   let html = `<div class="choose4-container">
     <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">🖼️ ${t['chooseCorrect'] ? t['chooseCorrect'] : 'Which is correct?'}</div>
-    <img src="${correct.src}" alt="" class="vocabulary-image" style="margin-bottom:18px;max-width:120px;max-height:120px;"/>
+    <img src="${correct.src}" alt="" class="vocabulary-image margin-bottom-18 max-width-120 max-height-120"/>
     <div class="choose4-options">`;
   options.forEach(opt => {
     html += `<button class="choose4-btn btn-secondary">${opt}</button>`;
@@ -492,7 +480,7 @@ async function practiceChooseImage(language, days) {
     btn.onclick = () => {
       let isCorrect = btn.textContent === correct.translations[language];
       btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct.translations[language]}</span>`;
+      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span class="color-green">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span class="color-red">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct.translations[language]}</span>`;
       scheduleReview(language, 'choose4image', correct.src, isCorrect);
       if (isCorrect) awardCorrectAnswer();
       showFunFact(language);
@@ -541,7 +529,7 @@ async function practiceChooseVerbForm(language, days) {
     btn.onclick = () => {
       let isCorrect = btn.textContent === correct;
       btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct}</span>`;
+      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span class="color-green">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span class="color-red">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'}</span>`;
       scheduleReview(language, 'choose4verb', verb.infinitive + ':' + correct, isCorrect);
       if (isCorrect) awardCorrectAnswer();
       showFunFact(language);
@@ -595,19 +583,19 @@ async function practiceChooseGender(language, days) {
   }
   options = options.sort(() => Math.random() - 0.5);
   let html = `<div class="choose4-container">
-    <div class="choose4-question" style="font-size:1.2em;margin-bottom:18px;">⚖️ ${t['chooseGender'] || 'Choose the word for the article:'} <b>${item.article}</b></div>
+    <div class="choose4-question font-size-12 margin-bottom-18">⚖️ ${t['chooseGender'] || 'Choose the word for the article:'} <b>${item.article}</b></div>
     <div class="choose4-options">`;
   options.forEach(opt => {
     html += `<button class="choose4-btn btn-secondary">${opt}</button>`;
   });
-  html += '</div><div id="choose4-feedback" style="margin-top:10px;"></div></div>';
+  html += '</div><div id="choose4-feedback" class="margin-top-10"></div></div>';
   document.getElementById('result').innerHTML = html;
   const nextExercise = () => setTimeout(() => practiceChooseGender(language, days), 1200);
   document.querySelectorAll('.choose4-btn').forEach(btn => {
     btn.onclick = () => {
       let isCorrect = btn.textContent === correct;
       btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span style=\"color:#27ae60;\">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span style=\"color:#e74c3c;\">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'} ${t['correct'] ? t['correct'] : 'Correct:'} ${correct}</span>`;
+      document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span class="color-green">✅ ${t['correct'] ? t['correct'] : 'Correct!'}</span>` : `<span class="color-red">❌ ${t['wrong'] ? t['wrong'] : 'Wrong!'}</span>`;
       scheduleReview(language, 'choose4gender', item.article + ':' + correct, isCorrect);
       if (isCorrect) awardCorrectAnswer();
       showFunFact(language);
@@ -677,17 +665,11 @@ async function showTranslationHelper(text, contextType = 'word', originalLang = 
   container.style.left = '50%';
   container.style.top = '50%';
   container.style.transform = 'translate(-50%,-50%)';
-  container.style.background = '#fff';
-  container.style.color = '#009999';
-  container.style.padding = '28px 24px 18px 24px';
-  container.style.borderRadius = '16px';
-  container.style.boxShadow = '0 4px 32px #00bdbd33';
-  container.style.zIndex = '99999';
-  container.style.textAlign = 'center';
-  container.innerHTML = `<div style="font-size:1.2em;margin-bottom:18px;">🌍 ${countryName ? countryName + ': ' : ''}${t.title || 'Translation'}<br><b>${text}</b></div>
-    <button id="show-translation-btn" class="btn-secondary" style="font-size:1.1em;min-width:120px;margin:8px 8px 0 0;">${t.title || 'Translation'} (${detectedLang.replace('COSY','')})</button>
-    <button id="no-translation-btn" class="btn-secondary" style="background:#e74c3c;color:#fff;font-size:1.1em;min-width:90px;margin:8px 0 0 8px;">❌ No</button>
-    <div id="translation-dropdown-area" style="margin-top:18px;display:none;"></div>`;
+  container.className = 'bg-white color-009999 padding-28-24 border-radius-16 box-shadow-strong z-index-99999 text-center';
+  container.innerHTML = `<div class="font-size-12 margin-bottom-18">🌍 ${countryName ? countryName + ': ' : ''}${t.title || 'Translation'}<br><b>${text}</b></div>
+      <button id="show-translation-btn" class="btn-secondary font-size-11 min-width-120 margin-8">${t.title || 'Translation'} (${detectedLang.replace('COSY','')})</button>
+      <button id="no-translation-btn" class="btn-secondary bg-red font-size-11 min-width-90 margin-8">❌ No</button>
+      <div id="translation-dropdown-area" class="margin-top-18" style="display:none;"></div>`;
   document.body.appendChild(container);
   // Show translation in detected language
   document.getElementById('show-translation-btn').onclick = () => {

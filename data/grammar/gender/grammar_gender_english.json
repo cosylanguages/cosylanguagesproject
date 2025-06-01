@@ -1,0 +1,33 @@
+{
+  "2": [
+    {"word": "teacher", "article": "he/she"},
+    {"word": "student", "article": "he/she"},
+    {"word": "man", "article": "he"},
+    {"word": "woman", "article": "she"},
+    {"word": "boy", "article": "he"},
+    {"word": "girl", "article": "she"},
+    {"word": "thing", "article": "it"},
+    {"word": "person", "article": "he/she"},
+    {"word": "drink", "article": "it"},
+    {"word": "problem", "article": "it"},
+    {"word": "water", "article": "it"},
+    {"word": "juice", "article": "it"},
+    {"word": "beer", "article": "it"},
+    {"word": "wine", "article": "it"},
+    {"word": "coffee", "article": "it"},
+    {"word": "tea", "article": "it"},
+    {"word": "card", "article": "it"}
+  ],
+  "3": [
+    {"word": "mother", "article": "she"},
+    {"word": "father", "article": "he"},
+    {"word": "brother", "article": "he"},
+    {"word": "sister", "article": "she"},
+    {"word": "son", "article": "he"},
+    {"word": "daughter", "article": "she"},
+    {"word": "husband", "article": "he"},
+    {"word": "wife", "article": "she"},
+    {"word": "friend", "article": "he/she"},
+    {"word": "family", "article": "it"}
+  ]
+}

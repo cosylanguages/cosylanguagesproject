@@ -1,0 +1,25 @@
+{
+  "2": [
+    { "prompt": "я", "answer": "есть" },
+    { "prompt": "ты", "answer": "есть" },
+    { "prompt": "он", "answer": "есть" },
+    { "prompt": "она", "answer": "есть" },
+    { "prompt": "оно", "answer": "есть" },
+    { "prompt": "есть", "answer": "я/ты/он/она/оно" }
+  ],
+  "3": [
+    { "prompt": "я", "answer": "имею" },
+    { "prompt": "ты", "answer": "имеешь" },
+    { "prompt": "он", "answer": "имеет" },
+    { "prompt": "она", "answer": "имеет" },
+    { "prompt": "мы", "answer": "имеем" },
+    { "prompt": "вы", "answer": "имеете" },
+    { "prompt": "они", "answer": "имеют" },
+    { "prompt": "имею", "answer": "я" },
+    { "prompt": "имеешь", "answer": "ты" },
+    { "prompt": "имеет", "answer": "он/она" },
+    { "prompt": "имеем", "answer": "мы" },
+    { "prompt": "имеете", "answer": "вы" },
+    { "prompt": "имеют", "answer": "они" }
+  ]
+}
