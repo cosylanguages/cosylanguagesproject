@@ -67,29 +67,40 @@
                 <button id="vocabulary-btn" class="btn-primary">Vocabulary</button>
                 <button id="grammar-btn" class="btn-primary">Grammar</button>
                 <button id="speaking-btn" class="btn-primary">Speaking</button>
+                <button id="writting-btn" class="btn-primary">Writting</button>
+                <button id="practice-all-btn" class="btn-primary">Practice All</button>
             </div>
             
             <div id="vocabulary-options" class="practice-options">
                 <div class="vocabulary-options">
+                    <button id="daily-word-btn" class="btn-secondary">Daily Word</button>
                     <button id="random-word-btn" class="btn-secondary">🔮 Random Word</button>
                     <button id="random-image-btn" class="btn-secondary">🖼️ Random Image</button>
                     <button id="listening-btn" class="btn-secondary">🎧 Listening</button>
-                    <button id="practice-all-vocab-btn" class="btn-primary">Practice All</button>
+                    <button id="practice-all-vocab-btn" class="btn-secondary">Practice All</button>
                 </div>
             </div>
             
             <div id="grammar-options" class="practice-options">
                 <div class="grammar-options">
                     <!-- Grammar buttons will be populated by JavaScript -->
-                    <button id="practice-all-grammar-btn" class="btn-primary">Practice All</button>
+                     <button id="daily-grammar-btn" class="btn-secondary">Daily Grammar</button>
+                    <button id="practice-all-grammar-btn" class="btn-secondary">Practice All</button>
                 </div>
             </div>
             
             <div id="speaking-options" class="practice-options">
-                <button id="speaking-practice-btn" class="btn-primary">Get Speaking Prompt</button>
+                <button id="daily-speaking-btn" class="btn-secondary">Daily Speaking</button>
+                <button id="question-practice-btn" class="btn-secondary">Question</button>
+                <button id="dialogue-translate-btn" class="btn-secondary">Dialogue</button>
+                <button id="role-play-btn" class="btn-secondary">Role Play</button>
+                <button id="practice-all-speaking-btn" class="btn-secondary">Practice All</button>
             </div>
-            
-            <button id="practice-all-btn" class="btn-primary">Practice All</button>
+            <div id="writting-options" class="practice-options">
+                <button id="daily-writting-btn" class="btn-primary">Daily writting</button>
+                <button id="story-btn" class="btn-primary">Story</button>
+                <button id="letter-btn" class="btn-primary">Letter</button>
+            </div>  
         </div>
         
         <div id="result" class="result-area flex-center"></div>
@@ -126,16 +137,19 @@
         const vocabularyBtn = document.getElementById('vocabulary-btn');
         const grammarBtn = document.getElementById('grammar-btn');
         const speakingBtn = document.getElementById('speaking-btn');
+        const writtingBtn = document.getElementById('writting-btn');
         
         const vocabularyOptions = document.getElementById('vocabulary-options');
         const grammarOptions = document.getElementById('grammar-options');
         const grammarOptionsContainer = grammarOptions.querySelector('.grammar-options');
         const speakingOptions = document.getElementById('speaking-options');
+        const writtingOptions = document.getElementById('writting-options');
         
         // Hide all options initially
         vocabularyOptions.style.display = 'none';
         grammarOptions.style.display = 'none';
         speakingOptions.style.display = 'none';
+        writtingOptions.style.display = 'none';
         // Show Practice All button on load
         const practiceAllBtn = document.getElementById('practice-all-btn');
         practiceAllBtn.style.display = 'block';
