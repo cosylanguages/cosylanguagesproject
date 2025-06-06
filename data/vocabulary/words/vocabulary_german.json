@@ -10,5 +10,8 @@
   ],
   "4": [
     "Null", "Eins", "Zwei", "Drei", "Vier", "Fünf", "Sechs", "Sieben", "Acht", "Neun"
+  ],
+  "5": [
+    "Gut", "Schlecht", "Groß", "Klein", "Einfach", "Schwierig", "Interessant", "Langweilig", "Kalt", "Heiß", "Teuer", "Billig"
   ]
 }

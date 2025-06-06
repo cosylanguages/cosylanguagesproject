@@ -10,5 +10,8 @@
   ],
   "4": [
     "Zéro", "Un", "Deux", "Trois", "Quatre", "Cinq", "Six", "Sept", "Huit", "Neuf"
+  ],
+  "5": [
+    "Bon.ne", "Mauvais.e", "Grand.e", "Petit.e", "Facile", "Difficile", "Intéressant.e", "Ennuyeux.se", "Froid.e", "Chaud.e", "Cher.ère", "Bon marché"
   ]
 }

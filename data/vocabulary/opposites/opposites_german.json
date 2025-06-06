@@ -6,5 +6,27 @@
     "Nein": "Ja",
     "Danke": "Bitte",
     "Bitte": "Danke"
+  },
+  "4": {
+    "0": "Null",
+    "Null": "0",
+    "1": "Eins",
+    "Eins": "1",
+    "2": "Zwei",
+    "Zwei": "2",
+    "3": "Drei",
+    "Drei": "3",
+    "4": "Vier",
+    "Vier": "4",
+    "5": "Fünf",
+    "Fünf": "5",
+    "6": "Sechs",
+    "Sechs": "6",
+    "7": "Sieben",
+    "Sieben": "7",
+    "8": "Acht",
+    "Acht": "8",
+    "9": "Neun",
+    "Neun": "9"
   }
 }

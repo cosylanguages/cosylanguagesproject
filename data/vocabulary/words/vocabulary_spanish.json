@@ -10,5 +10,8 @@
   ],
   "4": [
     "Cero", "Uno", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve"
+  ],
+  "5":[
+    "Bueno.a", "Malo.a", "Grande", "Pequeño.a", "Fácil", "Difícil", "Interesante", "Aburrido.a", "Frío.a", "Caliente.a", "Caro.a", "Barato.a"
   ]
 }

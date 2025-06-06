@@ -6,5 +6,39 @@
     "Non": "Oui",
     "Merci": "De rien",
     "De rien": "Merci"
+  },
+  "2": {
+    "Boy": "Girl",
+    "Girl": "Boy",
+    "Woman": "Man",
+    "Man": "Woman",
+    "Person": "Thing",
+    "Thing": "Person",
+    "Student": "Teacher",
+    "Teacher": "Student",
+    "He": "She",
+    "She": "He"
+  },
+  "4": {
+    "0": "Zéro",
+    "Zéro": "0",
+    "1": "Un",
+    "Un": "1",
+    "2": "Deux",
+    "Deux": "2",
+    "3": "Trois",
+    "Trois": "3",
+    "4": "Quatre",
+    "Quatre": "4",
+    "5": "Cinq",
+    "Cinq": "5",
+    "6": "Six",
+    "Six": "6",
+    "7": "Sept",
+    "Sept": "7",
+    "8": "Huit",
+    "Huit": "8",
+    "9": "Neuf",
+    "Neuf": "9"
   }
 }

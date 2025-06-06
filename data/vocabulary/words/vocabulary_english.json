@@ -11,6 +11,9 @@
   "4": [
     "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"
   ],
+  "5": [
+    "Good", "Bad", "Big", "Small", "Easy", "Difficult", "Interesting", "Boring", "Cold", "Hot", "Expensive", "Cheap"
+  ],
   "10": [
     "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
   ]

@@ -28,5 +28,27 @@
     "Daughter": "Son",
     "Husband": "Wife",
     "Wife": "Husband"
+  },
+  "4": {
+    "0": "Zero",
+    "Zero": "0",
+    "1": "One",
+    "One": "1",
+    "2": "Two",
+    "Two": "2",
+    "3": "Three",
+    "Three": "3",
+    "4": "Four",
+    "Four": "4",
+    "5": "Five",
+    "Five": "5",
+    "6": "Six",
+    "Six": "6",
+    "7": "Seven",
+    "Seven": "7",
+    "8": "Eight",
+    "Eight": "8",
+    "9": "Nine",
+    "Nine": "9"
   }
 }

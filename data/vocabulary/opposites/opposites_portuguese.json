@@ -6,5 +6,27 @@
     "Não": "Sim",
     "Obrigado": "De nada",
     "De nada": "Obrigado"
+  },
+  "4": {
+    "0": "Zero",
+    "Zero": "0",
+    "1": "Um",
+    "Um": "1",
+    "2": "Dois",
+    "Dois": "2",
+    "3": "Três",
+    "Três": "3",
+    "4": "Quatro",
+    "Quatro": "4",
+    "5": "Cinco",
+    "Cinco": "5",
+    "6": "Seis",
+    "Seis": "6",
+    "7": "Sete",
+    "Sete": "7",
+    "8": "Oito",
+    "Oito": "8",
+    "9": "Nove",
+    "Nove": "9"
   }
 }
