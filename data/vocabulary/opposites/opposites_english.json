@@ -50,5 +50,19 @@
     "Eight": "8",
     "9": "Nine",
     "Nine": "9"
+  },
+  "5": {
+    "Good": "Bad",
+    "Bad": "Good",
+    "Big": "Small",
+    "Small": "Big",
+    "Easy": "Difficult",
+    "Difficult": "Easy",
+    "Interesting": "Boring",
+    "Boring": "Interesting",
+    "Cold": "Hot",
+    "Hot": "Cold",
+    "Expensive": "Cheap",
+    "Cheap": "Expensive"
   }
 }

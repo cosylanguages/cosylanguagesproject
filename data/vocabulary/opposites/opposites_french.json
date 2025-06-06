@@ -40,5 +40,19 @@
     "Huit": "8",
     "9": "Neuf",
     "Neuf": "9"
+  },
+  "5": {
+    "Bon": "Mauvais",
+    "Mauvais": "Bon",
+    "Grand": "Petit",
+    "Petit": "Grand",
+    "Facile": "Difficile",
+    "Difficile": "Facile",
+    "Intéressant": "Ennuyeux",
+    "Ennuyeux": "Intéressant",
+    "Froid": "Chaud",
+    "Chaud": "Froid",
+    "Cher": "Pas cher",
+    "Pas cher": "Cher" 
   }
 }

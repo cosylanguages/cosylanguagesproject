@@ -28,5 +28,19 @@
     "Ocho": "8",
     "9": "Nueve",
     "Nueve": "9"
+  },
+  "5": {
+    "Bueno": "Malo",
+    "Malo": "Bueno",
+    "Grande": "Pequeño",
+    "Pequeño": "Grande",
+    "Fácil": "Difícil",
+    "Difícil": "Fácil",
+    "Interesante": "Aburrido",
+    "Aburrido": "Interesante",
+    "Frío": "Caliente",
+    "Caliente": "Frío",
+    "Caro": "Barato",
+    "Barato": "Caro"
   }
 }

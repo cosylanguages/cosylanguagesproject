@@ -28,5 +28,19 @@
     "Acht": "8",
     "9": "Neun",
     "Neun": "9"
+  },
+  "5": {
+    "Gut": "Schlecht",
+    "Schlecht": "Gut",
+    "Groß": "Klein",
+    "Klein": "Groß",
+    "Einfach": "Schwierig",
+    "Schwierig": "Einfach",
+    "Interessant": "Langweilig",
+    "Langweilig": "Interessant",
+    "Kalt": "Heiß",
+    "Heiß": "Kalt",
+    "Teuer": "Billig",
+    "Billig": "Teuer"
   }
 }
