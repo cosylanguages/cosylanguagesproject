@@ -13,5 +13,8 @@
   ],
   "5": [
     "Gut", "Schlecht", "Groß", "Klein", "Einfach", "Schwierig", "Interessant", "Langweilig", "Kalt", "Heiß", "Teuer", "Billig"
+  ],
+  "10": [
+    "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"
   ]
 }

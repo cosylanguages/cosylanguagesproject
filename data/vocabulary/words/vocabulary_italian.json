@@ -13,5 +13,8 @@
   ],
   "5": [
     "Buono.a", "Cattivo.a", "Grande", "Piccolo.a", "Facile", "Difficile", "Interessante", "Noioso.a", "Freddo.a", "Caldo.a", "Costoso.a", "Economico.a"
+  ],
+  "10": [
+    "Il lunedi", "Il martedì", "Il mercoledì", "Il giovedì", "Il venerdì", "Il sabato", "La domenica"
   ]
 }

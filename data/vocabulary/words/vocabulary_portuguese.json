@@ -13,5 +13,8 @@
   ],
   "5": [
     "Bom.a", "Mau.a", "Grande", "Pequeno.a", "Fácil", "Difícil", "Interessante", "Chato.a", "Frio.a", "Quente", "Caro.a", "Barato.a"
+  ],
+  "10": [
+    "A segunda-feira", "A terça-feira", "A quarta-feira", "A quinta-feira", "A sexta-feira", "O sábado", "O domingo"
   ]
 }
