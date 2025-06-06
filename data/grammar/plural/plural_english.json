@@ -1,0 +1,37 @@
+{
+  "4": [
+    { "prompt": "1 coffee", "answer": "one coffee" },
+    { "prompt": "2 juice", "answer": "two juices" },
+    { "prompt": "3 card", "answer": "three cards" },
+    { "prompt": "4 beer", "answer": "four beers" },
+    { "prompt": "5 tea", "answer": "five teas" },
+    { "prompt": "6 water", "answer": "six waters" },
+    { "prompt": "7 wine", "answer": "seven wines" },
+    { "prompt": "8 day", "answer": "eight days" },
+    { "prompt": "9 teacher", "answer": "nine teachers" },
+    { "prompt": "1 problem", "answer": "one problem" },
+    { "prompt": "2 student", "answer": "two students" },
+    { "prompt": "3 student", "answer": "three students" },
+    { "prompt": "4 man", "answer": "four men" },
+    { "prompt": "5 woman", "answer": "five women" },
+    { "prompt": "6 boy", "answer": "six boys" },
+    { "prompt": "7 girl", "answer": "seven girls"},
+    { "prompt": "8 thing", "answer": "eight things" },
+    { "prompt": "9 person", "answer": "nine people" },
+    { "prompt": "1 drink", "answer": "one drink" },
+    { "prompt": "2 problem", "answer": "two problems" },
+    { "prompt": "3 family", "answer": "three families" },
+    { "prompt": "4 father", "answer": "four fathers" },
+    { "prompt": "5 mother", "answer": "five mothers" },
+    { "prompt": "6 brother", "answer": "six brothers" },
+    { "prompt": "7 sister", "answer": "seven sisters" },
+    { "prompt": "8 son", "answer": "eight sons" },
+    { "prompt": "9 daughter", "answer": "nine daughters" },
+    { "prompt": "1 friend", "answer": "one friend" },
+    { "prompt": "2 girlfriend", "answer": "two girlfriends" },
+    { "prompt": "3 parent", "answer": "three parents" },
+    { "prompt": "4 child", "answer": "four children"}
+  ]
+  }
+
+  

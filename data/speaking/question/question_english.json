@@ -1,0 +1,14 @@
+{
+  "1": ["One coffee or one tea? Cash or card?"],
+  "2": [
+    "Who are you?\n<em>Your name.</em>\n<em>Are you man or a woman?</em>\n<em>Are you a student or a teacher?</em>",
+    "Name 3 popular people.\n<em>His/her name.</em>\n<em>Is he/she a woman or a man?</em>",
+    "Name 3 people.\n<em>His/her name.</em>\n<em>Is he/she a woman or a man?</em>"
+  ],
+  "3": [
+    "Your family",
+    "Your friend and his/her family",
+    "Drinks you have and drinks you don't have",
+    "Drinks your friend has and drinks he/she doesn't have"
+  ]
+}
