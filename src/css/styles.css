@@ -43,8 +43,8 @@ h1 {
     align-items: center;
     justify-content: center;
     animation: fadeInUp 0.7s cubic-bezier(.23,1.01,.32,1) 0.1s both;
-    max-width: 98vw;
-    width: 50%;
+    max-width: 100vw;
+    width: 65%;
     min-width: 0;
     margin: 0 auto;
     box-sizing: border-box;
@@ -239,9 +239,9 @@ body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'), lin
 body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
 body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
 body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
-body.flag-COSYbrezhoneg { background-image: url('assets/icons/Flag_of_Brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
-body.flag-COSYtatarça { background-image: url('assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
-body.flag-COSYbashkort { background-image: url('assets/icons/Flag_of_Bashkortostan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYbrezhoneg { background-image: url('/assets/icons/Flag_of_Brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYtatarça { background-image: url('/assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
+body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; }
 
 @media (max-width: 900px) {
     .container {
@@ -270,10 +270,6 @@ body.flag-COSYbashkort { background-image: url('assets/icons/Flag_of_Bashkortost
     .result-area {
         font-size: 1rem;
         padding: 10px 4px;
-    }
-    .practice-types {
-        flex-direction: column;
-        gap: 8px;
     }
 }
 
