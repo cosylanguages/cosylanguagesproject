@@ -82,19 +82,23 @@
             </div>
             
             <div id="speaking-options" class="practice-options">
-                <button id="daily-speaking-btn" class="btn-secondary">✨ Daily Speaking</button>
-                <button id="question-practice-btn" class="btn-secondary">❓ Question</button>
-                <button id="dialogue-translate-btn" class="btn-secondary">💬 Monologue</button>
-                <button id="role-play-btn" class="btn-secondary">🎭 Role Play</button>
-                <button id="practice-all-speaking-btn" class="btn-secondary">🔄 Practice All</button>
+                <div class="speaking-options">
+                    <button id="daily-speaking-btn" class="btn-secondary">✨ Daily Speaking</button>
+                    <button id="question-btn" class="btn-secondary">❓ Question</button>
+                    <button id="monologue-btn" class="btn-secondary">💬 Monologue</button>
+                    <button id="role-play-btn" class="btn-secondary">🎭 Role Play</button>
+                    <button id="practice-all-speaking-btn" class="btn-secondary">🔄 Practice All</button>
+                </div>
             </div>
+            
             <div id="writing-options" class="practice-options">
-                <button id="daily-writing-btn" class="btn-secondary">✨ Daily writing</button>
-                <button id="story-btn" class="btn-secondary">📜 Story</button>
-                <button id="letter-btn" class="btn-secondary">✉️ Letter</button>
-            </div>  
-        </div>
-        
+                <div class="writing-options">
+                    <button id="daily-writing-btn" class="btn-secondary">✨ Daily writing</button>
+                    <button id="story-btn" class="btn-secondary">📜 Story</button>
+                    <button id="letter-btn" class="btn-secondary">✉️ Letter</button>
+                </div>  
+            </div>
+
         <div id="result" class="result-area flex-center"></div>
     </div>
 
@@ -153,7 +157,6 @@
             if (writingOptions) writingOptions.style.display = 'none';
             if (practiceAllBtn) practiceAllBtn.style.display = 'block';
             if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
-            showPracticeAllButtons();
         }
 
         // On page load, always restore main menu and update grammar options if grammar is visible
@@ -317,38 +320,7 @@
             }
         });
         
-        // Helper: map language select value to vocabulary file
-        function getVocabularyFile(language) {
-            switch(language) {
-                case 'COSYenglish': return 'data/vocabulary/words/vocabulary_english.json';
-                case 'COSYfrançais': return 'data/vocabulary/words/vocabulary_french.json';
-                case 'COSYespañol': return 'data/vocabulary/words/vocabulary_spanish.json';
-                case 'COSYitaliano': return 'data/vocabulary/words/vocabulary_italian.json';
-                case 'COSYdeutsch': return 'data/vocabulary/words/vocabulary_german.json';
-                case 'COSYportuguês': return 'data/vocabulary/words/vocabulary_portuguese.json';
-                case 'ТАКОЙрусский': return 'data/vocabulary/words/vocabulary_russian.json';
-                case 'COSYbrezhoneg': return 'data/vocabulary/words/vocabulary_breton.json';
-                case 'COSYtatarça': return 'data/vocabulary/words/vocabulary_tatar.json';
-                case 'COSYbashkort': return 'data/vocabulary/words/vocabulary_bashkir.json';
-                case 'ԾՈՍՅհայկական': return 'data/vocabulary/words/vocabulary_armenian.json';
-                case 'ΚΟΖΥελληνικά': return 'data/vocabulary/words/vocabulary_greek.json';
-                default: return null;
-            }
-        }
 
-        // New: Load vocabulary for selected language and day
-        async function loadVocabulary(language, day) {
-            const file = getVocabularyFile(language);
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
-            }
-        }
 
         // Load random image data for a given language and day
         async function loadImageVocabulary(language, day) {
@@ -877,116 +849,7 @@
             }
         }
         
-        // Load gender grammar data for a given language and day
-        async function loadGenderGrammar(language, day) {
-            const fileMap = {
-                'COSYenglish': 'data/grammar/gender/grammar_gender_english.json',
-                'COSYitaliano': 'data/grammar/gender/grammar_gender_italian.json',
-                'COSYfrançais': 'data/grammar/gender/grammar_gender_french.json',
-                'COSYespañol': 'data/grammar/gender/grammar_gender_spanish.json',
-                'COSYdeutsch': 'data/grammar/gender/grammar_gender_german.json',
-                'COSYportuguês': 'data/grammar/gender/grammar_gender_portuguese.json',
-                'ТАКОЙрусский': 'data/grammar/gender/grammar_gender_russian.json',
-                'COSYbrezhoneg': 'data/grammar/gender/grammar_gender_breton.json',
-                'COSYtatarça': 'data/grammar/gender/grammar_gender_tatar.json',
-                'COSYbashkort': 'data/grammar/gender/grammar_gender_bashkir.json',
-                'ԾՈՍՅհայկական': 'data/grammar/gender/grammar_gender_armenian.json',
-                'ΚΟΖΥελληνικά': 'data/grammar/gender/grammar_gender_greek.json'
-            };
-            const file = fileMap[language];
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
-            }
-        }
 
-        // Load verb grammar data for a given language and day
-        async function loadVerbGrammar(language, day) {
-            const fileMap = {
-                'COSYenglish': 'data/grammar/verbs/grammar_verbs_english.json',
-                'COSYitaliano': 'data/grammar/verbs/grammar_verbs_italian.json',
-                'COSYfrançais': 'data/grammar/verbs/grammar_verbs_french.json',
-                'COSYespañol': 'data/grammar/verbs/grammar_verbs_spanish.json',
-                'COSYdeutsch': 'data/grammar/verbs/grammar_verbs_german.json',
-                'COSYportuguês': 'data/grammar/verbs/grammar_verbs_portuguese.json',
-                'ΚΟΖΥελληνικά': 'data/grammar/verbs/grammar_verbs_greek.json',
-                'ТАКОЙрусский': 'data/grammar/verbs/grammar_verbs_russian.json',
-                'COSYbrezhoneg': 'data/grammar/verbs/grammar_verbs_breton.json',
-                'COSYtatarça': 'data/grammar/verbs/grammar_verbs_tatar.json',
-                'COSYbashkort': 'data/grammar/verbs/grammar_verbs_bashkir.json',
-            };
-            const file = fileMap[language];
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        // Load possessives grammar data for a given language and day
-        async function loadPossessivesGrammar(language, day) {
-            const fileMap = {
-                'COSYenglish': 'data/grammar/possessives/possessives_english.json',
-                'COSYitaliano': 'data/grammar/possessives/possessives_italian.json',
-                'COSYfrançais': 'data/grammar/possessives/possessives_french.json',
-                'COSYespañol': 'data/grammar/possessives/possessives_spanish.json',
-                'COSYdeutsch': 'data/grammar/possessives/possessives_german.json',
-                'COSYportuguês': 'data/grammar/possessives/possessives_portuguese.json',
-                'ТАКОЙрусский': 'data/grammar/possessives/possessives_russian.json',
-                'COSYbrezhoneg': 'data/grammar/possessives/possessives_breton.json',
-                'COSYtatarça': 'data/grammar/possessives/possessives_tatar.json',
-                'COSYbashkort': 'data/grammar/possessives/possessives_bashkir.json',
-                'ԾՈՍՅհայկական': 'data/grammar/possessives/possessives_armenian.json',
-                'ΚΟΖΥελληνικά': 'data/grammar/possessives/possessives_greek.json'
-            };
-            const file = fileMap[language];
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        // Update all fetch paths in scripts to use the new folder structure: vocabulary/, grammar/, speaking/. For example, fetch('vocabulary/vocabulary_english.json'), fetch('grammar/grammar_gender_french.json'), fetch('speaking/prompts/speaking_french.json'), etc.
-        async function loadSpeakingPrompts(language, day) {
-            const fileMap = {
-                'COSYenglish': 'data/speaking/prompts/speaking_english.json',
-                'COSYfrançais': 'data/speaking/prompts/speaking_french.json',
-                'COSYespañol': 'data/speaking/prompts/speaking_spanish.json',
-                'COSYitaliano': 'data/speaking/prompts/speaking_italian.json',
-                'COSYdeutsch': 'data/speaking/prompts/speaking_german.json',
-                'COSYportuguês': 'data/speaking/prompts/speaking_portuguese.json',
-                'ΚΟΖΥελληνικά': 'data/speaking/prompts/speaking_greek.json',
-                'COSYbrezhoneg': 'data/speaking/prompts/speaking_breton.json',
-                'ТАКОЙрусский': 'data/speaking/prompts/speaking_russian.json',
-                'ԾՈՍՅհայկական': 'data/speaking/prompts/speaking_armenian.json',
-                'COSYtatarça': 'data/speaking/prompts/speaking_tatar.json',
-                'COSYbashkort': 'data/speaking/prompts/speaking_bashkir.json'
-            };
-            const file = fileMap[language];
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
-            }
-        }
 
 
 
@@ -1527,7 +1390,7 @@
           document.getElementById('daily-speaking-btn').textContent = t.dailySpeaking;
           document.getElementById('question-btn').textContent = t.question;
           document.getElementById('monologue-btn').textContent = t.monologue;
-          document.getElementById('roleplay-btn').textContent = t.roleplay;
+          document.getElementById('role-play-btn').textContent = t.roleplay;
           document.getElementById('practice-all-speaking-btn').textContent = t.practiceAllSpeaking;
           document.getElementById('story-btn').textContent = t.story;
           document.getElementById('letter-btn').textContent = t.letter;
@@ -1539,7 +1402,7 @@
 
 // --- Toggle logic for secondary practice options (Random Word, Random Image, Listening) ---
 function hideOtherVocabularyModes(selectedId) {
-    ['random-word-btn', 'random-image-btn', 'listening-btn', ].forEach(id => {
+    ['daily-word-btn', 'random-word-btn', 'random-image-btn', 'listening-btn', 'practice-all-vocab-btn'].forEach(id => {
         if (id !== selectedId) {
             document.getElementById(id).style.display = 'none';
         } else {
@@ -1625,5 +1488,6 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/event-listeners.js"></script>
     <script src="src/js/async-function.js"></script>
     <script src="src/js/interactive.js"></script>
+    <script src="src/js/get-files.js"></script>
 </body>
 </html>

@@ -46,43 +46,63 @@ function toggleMainPracticeType(selectedId) {
     }
     }
         // --- Hide other options when one is selected ---
-        function hideOtherVocabularyOptions(selectedId) {
-            document.querySelectorAll('#vocabulary-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllVocabularyOptions() {
-            document.querySelectorAll('#vocabulary-options button').forEach(btn => {
-                btn.style.display = 'inline-block';
-            });
-        }
-        function hideOtherGrammarOptions(selectedId) {
-            document.querySelectorAll('#grammar-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllGrammarOptions() {
-            document.querySelectorAll('#grammar-options button').forEach(btn => {
-                btn.style.display = 'inline-block';
-            });
-        }
-        function hideOtherSpeakingOptions(selectedId) {
-            document.querySelectorAll('#speaking-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllSpeakingOptions() {
-            document.querySelectorAll('#speaking-options button').forEach(btn => {
-                btn.style.display = 'inline-block';
-            });
-        }
-        function hideOtherWritingOptions(selectedId) {
-            document.querySelectorAll('#writing-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllWritingOptions() {
-            document.querySelectorAll('#writing-options button').forEach(btn => {
-                btn.style.display = 'inline-block';
-            });
-        }
+function hideOtherVocabularyOptions(selectedId) {
+    document.querySelectorAll('#vocabulary-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllVocabularyOptions() {
+    document.querySelectorAll('#vocabulary-options button').forEach(btn => {
+    btn.style.display = 'inline-block';
+    });
+}
+function hideOtherGrammarOptions(selectedId) {
+    document.querySelectorAll('#grammar-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllGrammarOptions() {
+    document.querySelectorAll('#grammar-options button').forEach(btn => {
+    btn.style.display = 'inline-block';
+    });
+}
+function hideOtherSpeakingOptions(selectedId) {
+    document.querySelectorAll('#speaking-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllSpeakingOptions() {
+    document.querySelectorAll('#speaking-options button').forEach(btn => {
+    btn.style.display = 'inline-block';
+    });
+}
+function hideOtherWritingOptions(selectedId) {
+    document.querySelectorAll('#writing-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllWritingOptions() {
+    document.querySelectorAll('#writing-options button').forEach(btn => {
+    btn.style.display = 'inline-block';
+    });
+}
+        
+// --- Toggle logic for secondary practice options
+function showAllVocabularyModes() {
+    ['daily-word-btn', 'random-word-btn', 'random-image-btn', 'listening-btn', 'practice-all-vocab-btn'].forEach(id => {
+        document.getElementById(id).style.display = 'inline-block';
+        document.getElementById(id).classList.remove('active-vocab-btn');
+    });
+}
+function toggleVocabularyMode(selectedId) {
+    const btn = document.getElementById(selectedId);
+    const isActive = btn.classList.contains('active-vocab-btn');
+    if (isActive) {
+        showAllVocabularyModes();
+        document.getElementById('result').innerHTML = '';
+    } else {
+        hideOtherVocabularyModes(selectedId);
+        document.getElementById('result').innerHTML = '';
+        // Optionally, you could trigger the practice function here if you want auto-start
+    }
+}
