@@ -1509,10 +1509,6 @@
 
         function updateUIForLanguage(lang) {
           const t = translations[lang] || translations['COSYenglish'];
-          document.querySelector('label[for="language"]').textContent = t.chooseLanguage;
-          document.querySelector('label[for="day"]').textContent = t.chooseDay;
-          document.querySelector('label[for="day-from"]').textContent = t.dayFrom + ':';
-          document.querySelector('label[for="day-to"]').textContent = t.dayTo + ':';
           document.querySelector('.menu-section label[for="language"]').textContent = t.chooseLanguage;
           document.querySelector('.menu-section label[for="day"]').textContent = t.chooseDay;
           document.querySelector('.menu-section label[for="day-from"]').textContent = t.dayFrom + ':';
@@ -1523,6 +1519,18 @@
           document.getElementById('speaking-btn').textContent = t.speaking;
           document.getElementById('writing-btn').textContent = t.writing;
           document.getElementById('practice-all-btn').textContent = t.practiceAll;
+          document.getElementById('daily-word-btn').textContent = t.dailyWord;
+          document.getElementById('random-word-btn').textContent = t.randomWord;
+          document.getElementById('random-image-btn').textContent = t.randomImage;
+          document.getElementById('listening-btn').textContent = t.listening;
+          document.getElementById('practice-all-vocab-btn').textContent = t.practiceAllVocab;
+          document.getElementById('daily-speaking-btn').textContent = t.dailySpeaking;
+          document.getElementById('question-btn').textContent = t.question;
+          document.getElementById('monologue-btn').textContent = t.monologue;
+          document.getElementById('roleplay-btn').textContent = t.roleplay;
+          document.getElementById('practice-all-speaking-btn').textContent = t.practiceAllSpeaking;
+          document.getElementById('story-btn').textContent = t.story;
+          document.getElementById('letter-btn').textContent = t.letter;
 
           // Update grammar options if visible
           if (document.getElementById('grammar-options').style.display === 'block') updateGrammarOptions();
@@ -1615,7 +1623,7 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
 
     <script src="src/js/toggle-functions.js"></script>
     <script src="src/js/event-listeners.js"></script>
-    <script src="src\js\async-function.js"></script>
+    <script src="src/js/async-function.js"></script>
     <script src="src/js/interactive.js"></script>
 </body>
 </html>
