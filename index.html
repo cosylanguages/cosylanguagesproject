@@ -5,24 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSYlanguages</title>
     <link rel="stylesheet" href="src/css/styles.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('service-worker.js');
-        });
-      }
-    </script>
-    <script src="translations.js"></script>
+    <script src="src/js/translations.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>COSYlanguages</h1>
         
         <div class="menu-section">
-            <label for="language">Choose Language:</label>
+            <label for="language">🌎 Choose Your Language:</label>
             <select id="language">
-                <option value="">Select a language</option>
+                <option value="">Choose language</option>
                 <option value="COSYenglish" data-bg="COSYenglish">COSYenglish</option>
                 <option value="COSYfrançais" data-bg="COSYfrançais">COSYfrançais</option>
                 <option value="COSYitaliano" data-bg="COSYitaliano">COSYitaliano</option>
@@ -39,21 +31,21 @@
         </div>
         
         <div class="menu-section">
-            <label for="day">Choose Day:</label>
+            <label for="day">📅 Choose Your Day:</label>
             <select id="day">
-                <option value="">Select a day</option>
+                <option value="">Choose day</option>
                 <!-- Days will be populated by JavaScript -->
             </select>
             
             <div class="day-range">
                 <div>
-                    <label for="day-from">Day From:</label>
+                    <label for="day-from">From:</label>
                     <select id="day-from">
                         <option value="">From</option>
                     </select>
                 </div>
                 <div>
-                    <label for="day-to">Day To:</label>
+                    <label for="day-to">To:</label>
                     <select id="day-to">
                         <option value="">To</option>
                     </select>
@@ -62,44 +54,44 @@
         </div>
         
         <div class="menu-section">
-            <label>Select Practice Type:</label>
+            <label>🧭 Choose Your Practice:</label>
             <div class="practice-types">
-                <button id="vocabulary-btn" class="btn-primary">Vocabulary</button>
-                <button id="grammar-btn" class="btn-primary">Grammar</button>
-                <button id="speaking-btn" class="btn-primary">Speaking</button>
-                <button id="writting-btn" class="btn-primary">Writting</button>
-                <button id="practice-all-btn" class="btn-primary">Practice All</button>
+                <button id="vocabulary-btn" class="btn-primary">📖 Vocabulary</button>
+                <button id="grammar-btn" class="btn-primary">🧩 Grammar</button>
+                <button id="speaking-btn" class="btn-primary">🗣️ Speaking</button>
+                <button id="writing-btn" class="btn-primary">🖋️ Writing</button>
+                <button id="practice-all-btn" class="btn-primary">🔄 Practice All</button>
             </div>
             
             <div id="vocabulary-options" class="practice-options">
                 <div class="vocabulary-options">
-                    <button id="daily-word-btn" class="btn-secondary">Daily Word</button>
-                    <button id="random-word-btn" class="btn-secondary">🔮 Random Word</button>
+                    <button id="daily-word-btn" class="btn-secondary">✨ Daily Word</button>
+                    <button id="random-word-btn" class="btn-secondary">🔠 Random Word</button>
                     <button id="random-image-btn" class="btn-secondary">🖼️ Random Image</button>
                     <button id="listening-btn" class="btn-secondary">🎧 Listening</button>
-                    <button id="practice-all-vocab-btn" class="btn-secondary">Practice All</button>
+                    <button id="practice-all-vocab-btn" class="btn-secondary">🔄 Practice All</button>
                 </div>
             </div>
             
             <div id="grammar-options" class="practice-options">
                 <div class="grammar-options">
                     <!-- Grammar buttons will be populated by JavaScript -->
-                     <button id="daily-grammar-btn" class="btn-secondary">Daily Grammar</button>
-                    <button id="practice-all-grammar-btn" class="btn-secondary">Practice All</button>
+                    <button id="daily-grammar-btn" class="btn-secondary">✨ Daily Grammar</button>
+                    <button id="practice-all-grammar-btn" class="btn-secondary">🔄 Practice All</button>
                 </div>
             </div>
             
             <div id="speaking-options" class="practice-options">
-                <button id="daily-speaking-btn" class="btn-secondary">Daily Speaking</button>
-                <button id="question-practice-btn" class="btn-secondary">Question</button>
-                <button id="dialogue-translate-btn" class="btn-secondary">Dialogue</button>
-                <button id="role-play-btn" class="btn-secondary">Role Play</button>
-                <button id="practice-all-speaking-btn" class="btn-secondary">Practice All</button>
+                <button id="daily-speaking-btn" class="btn-secondary">✨ Daily Speaking</button>
+                <button id="question-practice-btn" class="btn-secondary">❓ Question</button>
+                <button id="dialogue-translate-btn" class="btn-secondary">💬 Monologue</button>
+                <button id="role-play-btn" class="btn-secondary">🎭 Role Play</button>
+                <button id="practice-all-speaking-btn" class="btn-secondary">🔄 Practice All</button>
             </div>
-            <div id="writting-options" class="practice-options">
-                <button id="daily-writting-btn" class="btn-primary">Daily writting</button>
-                <button id="story-btn" class="btn-primary">Story</button>
-                <button id="letter-btn" class="btn-primary">Letter</button>
+            <div id="writing-options" class="practice-options">
+                <button id="daily-writing-btn" class="btn-secondary">✨ Daily writing</button>
+                <button id="story-btn" class="btn-secondary">📜 Story</button>
+                <button id="letter-btn" class="btn-secondary">✉️ Letter</button>
             </div>  
         </div>
         
@@ -137,71 +129,28 @@
         const vocabularyBtn = document.getElementById('vocabulary-btn');
         const grammarBtn = document.getElementById('grammar-btn');
         const speakingBtn = document.getElementById('speaking-btn');
-        const writtingBtn = document.getElementById('writting-btn');
+        const writingBtn = document.getElementById('writing-btn');
+        const practiceAllBtn = document.getElementById('practice-all-btn');
         
         const vocabularyOptions = document.getElementById('vocabulary-options');
         const grammarOptions = document.getElementById('grammar-options');
         const grammarOptionsContainer = grammarOptions.querySelector('.grammar-options');
         const speakingOptions = document.getElementById('speaking-options');
-        const writtingOptions = document.getElementById('writting-options');
+        const writingOptions = document.getElementById('writing-options');
         
-        // Hide all options initially
-        vocabularyOptions.style.display = 'none';
-        grammarOptions.style.display = 'none';
-        speakingOptions.style.display = 'none';
-        writtingOptions.style.display = 'none';
-        // Show Practice All button on load
-        const practiceAllBtn = document.getElementById('practice-all-btn');
-        practiceAllBtn.style.display = 'block';
 
-        // --- Hide other options when one is selected ---
-        function hideOtherVocabularyOptions(selectedId) {
-            document.querySelectorAll('#vocabulary-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllVocabularyOptions() {
-            document.querySelectorAll('#vocabulary-options button').forEach(btn => {
-                btn.style.display = '';
-            });
-        }
-        function hideOtherGrammarOptions(selectedId) {
-            document.querySelectorAll('#grammar-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllGrammarOptions() {
-            document.querySelectorAll('#grammar-options button').forEach(btn => {
-                btn.style.display = '';
-            });
-        }
-
-        // Helper: show/hide main practice type buttons
-        function hideOtherMainPracticeTypes(selectedId) {
-            // Hide all except the selected one
-            ['vocabulary-btn', 'grammar-btn', 'speaking-btn'].forEach(id => {
-                if (id !== selectedId) {
-                    document.getElementById(id).style.display = 'none';
-                } else {
-                    document.getElementById(id).classList.add('active-main-btn');
-                }
-            });
-        }
-        function showAllMainPracticeTypes() {
-            ['vocabulary-btn', 'grammar-btn', 'speaking-btn'].forEach(id => {
-                document.getElementById(id).style.display = 'inline-block';
-                document.getElementById(id).classList.remove('active-main-btn');
-            });
-        }
 
         // Helper: go back to main menu
         function goBackToMainMenu() {
             showAllMainPracticeTypes();
             showAllVocabularyOptions && showAllVocabularyOptions();
             showAllGrammarOptions && showAllGrammarOptions();
+            showAllSpeakingOptions && showAllSpeakingOptions();
+            showAllWritingOptions && showAllWritingOptions();
             if (vocabularyOptions) vocabularyOptions.style.display = 'none';
             if (grammarOptions) grammarOptions.style.display = 'none';
             if (speakingOptions) speakingOptions.style.display = 'none';
+            if (writingOptions) writingOptions.style.display = 'none';
             if (practiceAllBtn) practiceAllBtn.style.display = 'block';
             if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
             showPracticeAllButtons();
@@ -216,59 +165,14 @@
             }
         });
 
-        // --- Toggle logic for main practice type buttons ---
-        function toggleMainPracticeType(selectedId) {
-            const btn = document.getElementById(selectedId);
-            const isActive = btn.classList.contains('active-main-btn');
-            if (isActive) {
-                // Restore all if already active
-                showAllMainPracticeTypes();
-                showAllVocabularyOptions();
-                showAllGrammarOptions();
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'none';
-                speakingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'block';
-                document.getElementById('result').innerHTML = '';
-            } else {
-                hideOtherMainPracticeTypes(selectedId);
-                // Show the relevant options
-                if (selectedId === 'vocabulary-btn') {
-                    vocabularyOptions.style.display = 'block';
-                    grammarOptions.style.display = 'none';
-                    speakingOptions.style.display = 'none';
-                } else if (selectedId === 'grammar-btn') {
-                    grammarOptions.style.display = 'block';
-                    vocabularyOptions.style.display = 'none';
-                    speakingOptions.style.display = 'none';
-                } else if (selectedId === 'speaking-btn') {
-                    speakingOptions.style.display = 'block';
-                    vocabularyOptions.style.display = 'none';
-                    grammarOptions.style.display = 'none';
-                }
-                practiceAllBtn.style.display = 'none'; // Hide Practice All when any variant is chosen
-                document.getElementById('result').innerHTML = '';
-            }
-        }
 
-        // Vocabulary button click
-        vocabularyBtn.addEventListener('click', function() {
-            // Only go back to main menu, do not randomize
-            toggleMainPracticeType('vocabulary-btn');
-        });
         
-        // Grammar button click
-        grammarBtn.addEventListener('click', function() {
-            toggleMainPracticeType('grammar-btn');
-            grammarOptions.style.display = 'block';
-            updateGrammarOptions();
-        });
+
         
-        // Speaking button click
-        speakingBtn.addEventListener('click', function() {
-            toggleMainPracticeType('speaking-btn');
-        });
-        
+
+
+
+
         // Update grammar options based on selected day or range
         function updateGrammarOptions() {
             const lang = document.getElementById('language').value;
@@ -321,7 +225,8 @@
                     }
                 };
             }
-            // Fix: For day 3, ONLY show gender, verbs, possessives (no duplicates)
+
+            // Fix: For day 3, ONLY show gender, verbs, possessives
             if (day === 3) {
                 const genderBtn = document.createElement('button');
                 genderBtn.textContent = t.gender;
@@ -616,7 +521,7 @@
             }
         }
 
-        // Vocabulary practice function (random word from file)
+        // Vocabulary practice function
         async function practiceVocabulary(type) {
             const language = document.getElementById('language').value;
             const days = getSelectedDays();
@@ -1083,34 +988,7 @@
             }
         }
 
-        // Speaking practice function
-        async function practiceSpeaking() {
-            const language = document.getElementById('language').value;
-            const days = getSelectedDays();
-            const resultArea = document.getElementById('result');
-            if (!language || !days.length) {
-                alert('Please select language and day or a range of days first');
-                return;
-            }
-            resultArea.style.display = 'block';
-            const day = days[Math.floor(Math.random() * days.length)];
-            const prompts = await loadSpeakingPrompts(language, day);
-            if (!prompts.length) {
-                resultArea.innerHTML = `<p>No prompts found for this day/language.</p>`;
-                return;
-            }
-            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
-            resultArea.innerHTML = `
-                <div style="font-size:1.3rem; margin:20px 0;">${prompt}</div>
-                <button id="start-record-btn" class="btn-secondary btn-emoji" title="Record your answer">🎤</button>
-                <div id="speaking-feedback" style="margin-top:16px;"></div>
-            `;
-            setTimeout(() => {
-                document.getElementById('start-record-btn').onclick = function() {
-                    startSpeakingCheck(prompt, language);
-                };
-            }, 0);
-        }
+
 
         // Accent-tolerant speaking check: does user say any word from the prompt?
         function startSpeakingCheck(prompt, language) {
@@ -1187,20 +1065,9 @@
             }
         });
         
-        // Speaking practice button
-        document.getElementById('speaking-practice-btn').addEventListener('click', function() {
-            practiceSpeaking();
-        });
+
         
-        document.getElementById('random-word-btn').addEventListener('click', function() {
-            practiceVocabulary('random-word');
-        });
-        document.getElementById('random-image-btn').addEventListener('click', function() {
-            practiceVocabulary('random-image');
-        });
-        document.getElementById('listening-btn').addEventListener('click', function() {
-            practiceVocabulary('listening');
-        });
+
         
         // Practice All button logic
         document.getElementById('practice-all-btn').addEventListener('click', async function() {
@@ -1227,9 +1094,7 @@
             const type = availableTypes[Math.floor(Math.random() * availableTypes.length)];
             if (type === 'vocabulary') {
                 // Randomly pick a vocabulary mode
-                const vocabModes = ['random-word', 'random-image', 'listening'];
-                const mode = vocabModes[Math.floor(Math.random() * vocabModes.length)];
-                await practiceVocabulary(mode);
+
             } else if (type === 'grammar') {
                 // Randomly pick a grammar type available for the day
                 const grammarTypes = [];
@@ -1243,47 +1108,7 @@
             }
         });
         
-        document.getElementById('practice-all-vocab-btn').addEventListener('click', async function() {
-            const days = getSelectedDays();
-            if (!days.length) {
-                alert('Please select a day or a range of days first');
-                return;
-            }
-            const language = document.getElementById('language').value;
-            if (!language) {
-                alert('Please select a language first');
-                return;
-            }
-            // Only vocabulary activities
-            const vocabModes = ['random-word', 'random-image', 'listening'];
-            // Shuffle and practice all modes in sequence
-            for (let mode of vocabModes) {
-                await practiceVocabulary(mode);
-            }
-        });
 
-        document.getElementById('practice-all-grammar-btn').addEventListener('click', async function() {
-            const days = getSelectedDays();
-            if (!days.length) {
-                alert('Please select a day or a range of days first');
-                return;
-            }
-            const language = document.getElementById('language').value;
-            if (!language) {
-                alert('Please select a language first');
-                return;
-            }
-            // Only grammar activities available for the day
-            const grammarTypes = [];
-            if (parseInt(days[0]) >= 1) grammarTypes.push('gender');
-            if (parseInt(days[0]) >= 2) grammarTypes.push('verbs');
-            if (parseInt(days[0]) === 3) grammarTypes.push('possessives');
-            // Add more grammar types as needed for higher days
-            for (let type of grammarTypes) {
-                await practiceGrammar(type);
-            }
-        });
-        
         // Add Enter key support for practice check buttons
         function addEnterKeySupport(inputId, checkBtnId) {
             const input = document.getElementById(inputId);
@@ -1345,8 +1170,6 @@
                 else if (type.includes('verb')) practiceGrammar('verbs');
                 else if (type.includes('adjective')) practiceGrammar('adjectives');
                 else if (type.includes('plural')) practiceGrammar('plurals');
-                else if (type.includes('past')) practiceGrammar('pastTense');
-                else if (type.includes('future')) practiceGrammar('futureTense');
               }
             };
           }
@@ -1405,20 +1228,6 @@
                 practiceGrammar('verbs');
             };
             grammarOptionsContainer.appendChild(verbBtn);
-          }
-          if (day >= 5) {
-            const pastBtn = document.createElement('button');
-            pastBtn.textContent = t.pastTense;
-            pastBtn.className = 'btn-secondary btn-small grammar-option-btn';
-            pastBtn.onclick = makeToggleHandler(pastBtn);
-            grammarOptionsContainer.appendChild(pastBtn);
-          }
-          if (day >= 7) {
-            const futureBtn = document.createElement('button');
-            futureBtn.textContent = t.futureTense;
-            futureBtn.className = 'btn-secondary btn-small grammar-option-btn';
-            futureBtn.onclick = makeToggleHandler(futureBtn);
-            grammarOptionsContainer.appendChild(futureBtn);
           }
         }
         
@@ -1553,7 +1362,7 @@
                     }
                     resultArea.innerHTML = `
                         ${verbPrompt}
-                        <div style=\"display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px\">
+                        <div style=\"display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px">
 
                             <div style=\"display:flex; align-items:center; gap:12px; margin-bottom:18px;\">
                                 <span id=\"verb-prompt\" style=\"font-size:2rem; font-weight:600; cursor:pointer;\">${item.prompt}</span>
@@ -1700,7 +1509,6 @@
 
         function updateUIForLanguage(lang) {
           const t = translations[lang] || translations['COSYenglish'];
-          document.querySelector('h1').textContent = 'COSYlanguages';
           document.querySelector('label[for="language"]').textContent = t.chooseLanguage;
           document.querySelector('label[for="day"]').textContent = t.chooseDay;
           document.querySelector('label[for="day-from"]').textContent = t.dayFrom + ':';
@@ -1713,60 +1521,17 @@
           document.getElementById('vocabulary-btn').textContent = t.vocabulary;
           document.getElementById('grammar-btn').textContent = t.grammar;
           document.getElementById('speaking-btn').textContent = t.speaking;
-          document.getElementById('random-word-btn').textContent = t.randomWord;
-          document.getElementById('random-image-btn').textContent = t.randomImage;
-          document.getElementById('speaking-practice-btn').textContent = t.getPrompt;
+          document.getElementById('writing-btn').textContent = t.writing;
           document.getElementById('practice-all-btn').textContent = t.practiceAll;
+
           // Update grammar options if visible
           if (document.getElementById('grammar-options').style.display === 'block') updateGrammarOptions();
         }
 
-        // Restore all main practice type buttons when returning to menu
-        function restoreMenu() {
-            showAllMainPracticeTypes();
-            showAllVocabularyOptions();
-            showAllGrammarOptions();
-            vocabularyOptions.style.display = 'none';
-            grammarOptions.style.display = 'none';
-            speakingOptions.style.display = 'none';
-            practiceAllBtn.style.display = 'block';
-            // Optionally clear result area
-            document.getElementById('result').innerHTML = '';
-        }
-        // Remove double-click restoreMenu listeners (no longer needed)
-        // vocabularyBtn.addEventListener('dblclick', restoreMenu);
-        // grammarBtn.addEventListener('dblclick', restoreMenu);
-        // speakingBtn.addEventListener('dblclick', restoreMenu);
-
-        // --- Hide/show day and day-from/day-to options depending on selection ---
-function updateDaySelectors() {
-    const day = daySelect.value;
-    const dayFrom = dayFromSelect.value;
-    const dayTo = dayToSelect.value;
-    if (day) {
-        // Hide range selectors
-        dayFromSelect.parentElement.style.display = 'none';
-        dayToSelect.parentElement.style.display = 'none';
-    } else if (dayFrom || dayTo) {
-        // Hide single day selector
-        daySelect.style.display = 'none';
-        dayFromSelect.parentElement.style.display = '';
-        dayToSelect.parentElement.style.display = '';
-    } else {
-        // Show all
-        daySelect.style.display = '';
-        dayFromSelect.parentElement.style.display = '';
-        dayToSelect.parentElement.style.display = '';
-    }
-}
-
-daySelect.addEventListener('change', updateDaySelectors);
-dayFromSelect.addEventListener('change', updateDaySelectors);
-dayToSelect.addEventListener('change', updateDaySelectors);
 
 // --- Toggle logic for secondary practice options (Random Word, Random Image, Listening) ---
 function hideOtherVocabularyModes(selectedId) {
-    ['random-word-btn', 'random-image-btn', 'listening-btn'].forEach(id => {
+    ['random-word-btn', 'random-image-btn', 'listening-btn', ].forEach(id => {
         if (id !== selectedId) {
             document.getElementById(id).style.display = 'none';
         } else {
@@ -1775,7 +1540,7 @@ function hideOtherVocabularyModes(selectedId) {
     });
 }
 function showAllVocabularyModes() {
-    ['random-word-btn', 'random-image-btn', 'listening-btn'].forEach(id => {
+    ['daily-word-btn', 'random-word-btn', 'random-image-btn', 'listening-btn'].forEach(id => {
         document.getElementById(id).style.display = 'inline-block';
         document.getElementById(id).classList.remove('active-vocab-btn');
     });
@@ -1792,16 +1557,6 @@ function toggleVocabularyMode(selectedId) {
         // Optionally, you could trigger the practice function here if you want auto-start
     }
 }
-
-document.getElementById('random-word-btn').addEventListener('click', function() {
-    toggleVocabularyMode('random-word-btn');
-});
-document.getElementById('random-image-btn').addEventListener('click', function() {
-    toggleVocabularyMode('random-image-btn');
-});
-document.getElementById('listening-btn').addEventListener('click', function() {
-    toggleVocabularyMode('listening-btn');
-});
 
 // Helper: map language select value to opposites file (now in vocabulary/opposites/)
 function getOppositesFile(language) {
@@ -1857,6 +1612,10 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <audio id="select-sound" src="assets/sounds/select.mp3" preload="auto"></audio>
     <audio id="error-sound" src="assets/sounds/error.mp3" preload="auto"></audio>
     <audio id="success-sound" src="assets/sounds/success.mp3" preload="auto"></audio>
-    <script src="interactive.js"></script>
+
+    <script src="src/js/toggle-functions.js"></script>
+    <script src="src/js/event-listeners.js"></script>
+    <script src="src\js\async-function.js"></script>
+    <script src="src/js/interactive.js"></script>
 </body>
 </html>
