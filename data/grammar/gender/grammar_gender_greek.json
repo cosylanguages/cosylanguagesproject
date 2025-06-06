@@ -7,7 +7,6 @@
     { "word": "καφές", "article": "ο" },
     { "word": "τσάι", "article": "το" },
     { "word": "κάρτα", "article": "η" }
-
   ],
   "2": [
     { "word": "δάσκαλος", "article": "ο" },
@@ -22,7 +21,6 @@
     { "word": "άτομο", "article": "το" },
     { "word": "ποτό", "article": "το" },
     { "word": "προβλήμα", "article": "το" }
-
   ],
   "3": [
     { "word": "μητέρα", "article": "η" },
@@ -34,6 +32,49 @@
     { "word": "σύζυγος", "article": "ο/η" },
     { "word": "φίλος", "article": "ο" },
     { "word": "οικογένεια", "article": "η" }
-  
+  ],
+  "5": [
+    { "word": "καλός", "article": "ο" },
+    { "word": "καλή", "article": "η" },
+    { "word": "καλό", "article": "το" },
+    { "word": "κακός", "article": "ο" },
+    { "word": "κακή", "article": "η" },
+    { "word": "κακό", "article": "το" },
+    { "word": "μεγάλος", "article": "ο" },
+    { "word": "μεγάλη", "article": "η" },
+    { "word": "μεγάλο", "article": "το" },
+    { "word": "μικρός", "article": "ο" },
+    { "word": "μικρή", "article": "η" },
+    { "word": "μικρό", "article": "το" },
+    { "word": "εύκολος", "article": "ο" },
+    { "word": "εύκολη", "article": "η" },
+    { "word": "εύκολο", "article": "το" },
+    { "word": "δύσκολος", "article": "ο" },
+    { "word": "δύσκολη", "article": "η" },
+    { "word": "δύσκολο", "article": "το" },
+    { "word": "σημαντικός", "article": "ο" },
+    { "word": "σημαντική", "article": "η" },
+    { "word": "σημαντικό", "article": "το" },
+    { "word": "ασήμαντος", "article": "ο" },
+    { "word": "ασήμαντη", "article": "η" },
+    { "word": "ασήμαντο", "article": "το" },
+    { "word": "βαρετός", "article": "ο" },
+    { "word": "βαρετή", "article": "η" },
+    { "word": "βαρετό", "article": "το" },
+    { "word": "ενδιαφέρων", "article": "ο" },
+    { "word": "ενδιαφέρουσα", "article": "η" },
+    { "word": "ενδιαφέρον", "article": "το" },
+    { "word": "κρύος", "article": "ο" },
+    { "word": "κρύα", "article": "η" },
+    { "word": "κρύο", "article": "το" },
+    { "word": "ζεστός", "article": "ο" },
+    { "word": "ζεστή", "article": "η" },
+    { "word": "ζεστό", "article": "το" },
+    { "word": "ακριβός", "article": "ο" },
+    { "word": "ακριβή", "article": "η" },
+    { "word": "ακριβό", "article": "το" },
+    { "word": "φθηνός", "article": "ο" },
+    { "word": "φθηνή", "article": "η" },
+    { "word": "φθηνό", "article": "το" }
   ]
 }

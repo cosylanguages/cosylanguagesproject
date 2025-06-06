@@ -35,5 +35,24 @@
     { "word": "amigo", "article": "o" },
     { "word": "amiga", "article": "a" },
     { "word": "família", "article": "a" }
+  ],
+  "5": [
+    { "word": "bom", "article": "o" },
+    { "word": "boa", "article": "a" },
+    { "word": "grande", "article": "o/a" },
+    { "word": "pequeno", "article": "o" },
+    { "word": "pequena", "article": "a" },
+    { "word": "difícil", "article": "o/a" },
+    { "word": "fácil", "article": "o/a" },
+    { "word": "interessante", "article": "o/a" },
+    { "word": "chato", "article": "o" },
+    { "word": "chata", "article": "a" },
+    { "word": "frio", "article": "o" },
+    { "word": "fria", "article": "a" },
+    { "word": "quente", "article": "o/a" },
+    { "word": "caro", "article": "o" },
+    { "word": "cara", "article": "a" },
+    { "word": "barato", "article": "o" },
+    { "word": "barata", "article": "a" }
   ]
 }

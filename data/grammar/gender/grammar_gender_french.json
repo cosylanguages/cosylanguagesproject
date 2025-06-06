@@ -34,5 +34,29 @@
     { "word": "ami", "article": "l'" },
     { "word": "amie", "article": "l'" },
     { "word": "famille", "article": "la" }
+  ],
+  "5": [
+    { "word": "bon", "article": "le" },
+    { "word": "bonne", "article": "la" },
+    { "word": "mauvais", "article": "le" },
+    { "word": "mauvaise", "article": "la" },
+    { "word": "grand", "article": "le" },
+    { "word": "grande", "article": "la" },
+    { "word": "petit", "article": "le" },
+    { "word": "petite", "article": "la" },
+    { "word": "facile", "article": "le/la" },
+    { "word": "difficile", "article": "le/la" },
+    { "word": "interessant", "article": "le" },
+    { "word": "intéressante", "article": "la" },
+    { "word": "ennuyeux", "article": "le" },
+    { "word": "ennuyeuse", "article": "la" },
+    { "word": "chaud", "article": "le" },
+    { "word": "chaude", "article": "la" },
+    { "word": "froid", "article": "le" },
+    { "word": "froide", "article": "la" },
+    { "word": "cher", "article": "le" },
+    { "word": "chère", "article": "la" },
+    { "word": "nouveau", "article": "le" },
+    { "word": "nouvelle", "article": "la" }
   ]
 }

@@ -34,5 +34,27 @@
     { "word": "amico", "article": "l" },
     { "word": "amica", "article": "l" },
     { "word": "famiglia", "article": "la" }
+  ],
+  "5": [
+    { "word": "buono", "article": "il" },
+    { "word": "buona", "article": "la" },
+    { "word": "cattivo", "article": "il" },
+    { "word": "cattiva", "article": "la" },
+    { "word": "grande", "article": "il/la" },
+    { "word": "piccolo", "article": "il" },
+    { "word": "piccola", "article": "la" },
+    { "word": "facile", "article": "il/la" },
+    { "word": "difficile", "article": "il/la" },
+    { "word": "interessante", "article": "il/la" },
+    { "word": "noioso", "article": "il" },
+    { "word": "noiosa", "article": "la" },
+    { "word": "freddo", "article": "il" },
+    { "word": "fredda", "article": "la" },
+    { "word": "caldo", "article": "il" },
+    { "word": "calda", "article": "la" },
+    { "word": "caro", "article": "il" },
+    { "word": "cara", "article": "la" },
+    { "word": "economico", "article": "il" },
+    { "word": "economica", "article": "la" }
   ]
 }
