@@ -62,7 +62,7 @@
                 <button id="writing-btn" class="btn-primary">🖋️ Writing</button>
                 <button id="practice-all-btn" class="btn-primary">🔄 Practice All</button>
             </div>
-            
+
             <div id="vocabulary-options" class="practice-options">
                 <div class="vocabulary-options">
                     <button id="daily-word-btn" class="btn-secondary">✨ Daily Word</button>
@@ -142,8 +142,6 @@
         const speakingOptions = document.getElementById('speaking-options');
         const writingOptions = document.getElementById('writing-options');
         
-
-
         // Helper: go back to main menu
         function goBackToMainMenu() {
             showAllMainPracticeTypes();
@@ -201,104 +199,7 @@
                     }
                 });
             }
-            function showAllGrammarOptionBtns() {
-                const btns = grammarOptionsContainer.querySelectorAll('.grammar-option-btn');
-                btns.forEach(btn => {
-                    btn.style.display = 'inline-block';
-                    btn.classList.remove('active-grammar-btn');
-                });
-            }
-            function makeToggleHandler(btn) {
-                return function() {
-                    const isActive = btn.classList.contains('active-grammar-btn');
-                    if (isActive) {
-                        showAllGrammarOptionBtns();
-                        document.getElementById('result').innerHTML = '';
-                    } else {
-                        hideOtherGrammarOptionBtns(btn);
-                        document.getElementById('result').innerHTML = '';
-                        // Auto-start practice for this grammar type
-                        const type = btn.textContent.trim().toLowerCase();
-                        if (type.includes('gender')) practiceGrammar('gender');
-                        else if (type.includes('verb')) practiceGrammar('verbs');
-                        else if (type.includes('adjective')) practiceGrammar('adjectives');
-                        else if (type.includes('plural')) practiceGrammar('plurals');
-                        else if (type.includes('past')) practiceGrammar('pastTense');
-                        else if (type.includes('future')) practiceGrammar('futureTense');
-                    }
-                };
-            }
 
-            // Fix: For day 3, ONLY show gender, verbs, possessives
-            if (day === 3) {
-                const genderBtn = document.createElement('button');
-                genderBtn.textContent = t.gender;
-                genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                genderBtn.onclick = function() {
-                    hideOtherGrammarOptionBtns(genderBtn);
-                    document.getElementById('result').innerHTML = '';
-                    practiceGrammar('gender');
-                };
-                grammarOptionsContainer.appendChild(genderBtn);
-                const verbBtn = document.createElement('button');
-                verbBtn.textContent = t.verbs;
-                verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                verbBtn.onclick = function() {
-                    hideOtherGrammarOptionBtns(verbBtn);
-                    document.getElementById('result').innerHTML = '';
-                    practiceGrammar('verbs');
-                };
-                grammarOptionsContainer.appendChild(verbBtn);
-                const possBtn = document.createElement('button');
-                possBtn.textContent = t.possessives;
-                possBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                possBtn.onclick = function() {
-                    hideOtherGrammarOptionBtns(possBtn);
-                    document.getElementById('result').innerHTML = '';
-                    practiceGrammar('possessives');
-                };
-                grammarOptionsContainer.appendChild(possBtn);
-                return;
-            }
-            // In updateGrammarOptions, always show gender button for day 1+ for all languages
-            if (day >= 1) {
-                const genderBtn = document.createElement('button');
-                genderBtn.textContent = t.gender;
-                genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                genderBtn.onclick = function() {
-                    // Start gender practice on single click
-                    hideOtherGrammarOptionBtns(genderBtn);
-                    document.getElementById('result').innerHTML = '';
-                    practiceGrammar('gender');
-                };
-                grammarOptionsContainer.appendChild(genderBtn);
-            }
-            if (day >= 2) {
-                const verbBtn = document.createElement('button');
-                verbBtn.textContent = t.verbs;
-                verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                verbBtn.onclick = function() {
-                    // Start verb practice on single click
-                    hideOtherGrammarOptionBtns(verbBtn);
-                    document.getElementById('result').innerHTML = '';
-                    practiceGrammar('verbs');
-                };
-                grammarOptionsContainer.appendChild(verbBtn);
-            }
-            if (day >= 5) {
-                const pastBtn = document.createElement('button');
-                pastBtn.textContent = t.pastTense;
-                pastBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                pastBtn.onclick = makeToggleHandler(pastBtn);
-                grammarOptionsContainer.appendChild(pastBtn);
-            }
-            if (day >= 7) {
-                const futureBtn = document.createElement('button');
-                futureBtn.textContent = t.futureTense;
-                futureBtn.className = 'btn-secondary btn-small grammar-option-btn';
-                futureBtn.onclick = makeToggleHandler(futureBtn);
-                grammarOptionsContainer.appendChild(futureBtn);
-            }
         }
         
         // Update grammar options when day changes
@@ -914,19 +815,7 @@
             document.getElementById('speaking-feedback').innerHTML = '<p>Listening...</p>';
         }
 
-        // Change background flag on language select
-        const languageSelect = document.getElementById('language');
-        languageSelect.addEventListener('change', function() {
-            const lang = languageSelect.value;
-            // Remove any previous flag class
-            document.body.className = document.body.className
-                .split(' ') // split classes
-                .filter(c => !c.startsWith('flag-')) // remove flag- classes
-                .join(' ');
-            if (lang) {
-                document.body.classList.add('flag-' + lang);
-            }
-        });
+
         
 
         
@@ -1094,7 +983,7 @@
           }
         }
         
-        // Update UI language on language change
+        
         languageSelect.addEventListener('change', function() {
           const lang = languageSelect.value;
           // Remove any previous flag class
@@ -1107,6 +996,7 @@
           }
           updateUIForLanguage(lang);
         });
+        
         
         // On page load, set UI to default language
         updateUIForLanguage(document.getElementById('language').value || 'COSYenglish');
@@ -1400,34 +1290,7 @@
         }
 
 
-// --- Toggle logic for secondary practice options (Random Word, Random Image, Listening) ---
-function hideOtherVocabularyModes(selectedId) {
-    ['daily-word-btn', 'random-word-btn', 'random-image-btn', 'listening-btn', 'practice-all-vocab-btn'].forEach(id => {
-        if (id !== selectedId) {
-            document.getElementById(id).style.display = 'none';
-        } else {
-            document.getElementById(id).classList.add('active-vocab-btn');
-        }
-    });
-}
-function showAllVocabularyModes() {
-    ['daily-word-btn', 'random-word-btn', 'random-image-btn', 'listening-btn'].forEach(id => {
-        document.getElementById(id).style.display = 'inline-block';
-        document.getElementById(id).classList.remove('active-vocab-btn');
-    });
-}
-function toggleVocabularyMode(selectedId) {
-    const btn = document.getElementById(selectedId);
-    const isActive = btn.classList.contains('active-vocab-btn');
-    if (isActive) {
-        showAllVocabularyModes();
-        document.getElementById('result').innerHTML = '';
-    } else {
-        hideOtherVocabularyModes(selectedId);
-        document.getElementById('result').innerHTML = '';
-        // Optionally, you could trigger the practice function here if you want auto-start
-    }
-}
+
 
 // Helper: map language select value to opposites file (now in vocabulary/opposites/)
 function getOppositesFile(language) {
