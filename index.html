@@ -815,7 +815,19 @@
             document.getElementById('speaking-feedback').innerHTML = '<p>Listening...</p>';
         }
 
-
+        // Change background flag on language select
+        const languageSelect = document.getElementById('language');
+        languageSelect.addEventListener('change', function() {
+            const lang = languageSelect.value;
+            // Remove any previous flag class
+            document.body.className = document.body.className
+                .split(' ') // split classes
+                .filter(c => !c.startsWith('flag-')) // remove flag- classes
+                .join(' ');
+            if (lang) {
+                document.body.classList.add('flag-' + lang);
+            }
+        });
         
 
         
@@ -983,20 +995,7 @@
           }
         }
         
-        
-        languageSelect.addEventListener('change', function() {
-          const lang = languageSelect.value;
-          // Remove any previous flag class
-          document.body.className = document.body.className
-            .split(' ')
-            .filter(c => !c.startsWith('flag-'))
-            .join(' ');
-          if (lang) {
-            document.body.classList.add('flag-' + lang);
-          }
-          updateUIForLanguage(lang);
-        });
-        
+  
         
         // On page load, set UI to default language
         updateUIForLanguage(document.getElementById('language').value || 'COSYenglish');
