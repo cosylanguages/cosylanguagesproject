@@ -16,5 +16,14 @@
     { "prompt": "ai", "answer": "je" },
     { "prompt": "as", "answer": "tu" },
     { "prompt": "a", "answer": "il/elle" }
+  ],
+  "6": [
+    { "prompt": "j'", "answer": "aime" },
+    { "prompt": "tu", "answer": "aimes" },
+    { "prompt": "il", "answer": "aime" },
+    { "prompt": "elle", "answer": "aime" },
+    { "prompt": "aime", "answer": "je" },
+    { "prompt": "aimes", "answer": "tu" },
+    { "prompt": "aime", "answer": ["il", "elle"] }
   ]
 }
