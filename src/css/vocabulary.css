@@ -1,0 +1,376 @@
+/* Vocabulary Exercise Styles */
+.daily-words-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.daily-word-level {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+}
+
+.daily-word-level.beginner {
+    background: rgba(178, 235, 242, 0.3);
+    border-left: 5px solid #00bdbd;
+}
+
+.daily-word-level.elementary {
+    background: rgba(178, 235, 242, 0.5);
+    border-left: 5px solid #1de9b6;
+}
+
+.daily-word-level.intermediate {
+    background: rgba(178, 235, 242, 0.7);
+    border-left: 5px solid #ffe082;
+}
+
+.daily-word-level.advanced {
+    background: rgba(178, 235, 242, 0.9);
+    border-left: 5px solid #ffb74d;
+}
+
+.example {
+    font-style: italic;
+    color: #666;
+    margin-left: 20px;
+}
+
+/* Word Display */
+.word-display-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.word-display {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #006666;
+}
+
+.word-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.word-exercise-options {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Opposites Exercise */
+.opposites-exercise {
+    text-align: center;
+    padding: 20px;
+}
+
+.word-pair {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.word-box {
+    padding: 15px 25px;
+    background: #e0f7fa;
+    color: #006666;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    min-width: 120px;
+}
+
+.opposite-arrow {
+    font-size: 2rem;
+    color: #006666;
+}
+
+.opposite-answer {
+    background: #f8ffff;
+    border: 2px dashed #00bdbd;
+}
+
+.exercise-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Match Exercise */
+.match-exercise {
+    text-align: center;
+    padding: 20px;
+}
+
+.match-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 30px 0;
+}
+
+.match-col {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.match-item {
+    padding: 12px 20px;
+    background: #e0f7fa;
+    color: #006666;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.match-item:hover {
+    background: #b2ebf2;
+}
+
+.match-item.selected {
+    background: #ffe082;
+    color: #006666;
+    transform: scale(1.05);
+}
+
+.match-item.matched {
+    background: #27ae60;
+    color: white;
+    cursor: default;
+}
+
+/* Build Word Exercise */
+.build-word-exercise {
+    text-align: center;
+    padding: 20px;
+}
+
+.letter-pool {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8ffff;
+    border-radius: 10px;
+}
+
+.letter-tile {
+    width: 40px;
+    height: 40px;
+    background: #e0f7fa;
+    color: #006666;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: move;
+    transition: all 0.2s;
+}
+
+.letter-tile.dragging {
+    opacity: 0.5;
+}
+
+.word-slots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 20px 0;
+}
+
+.letter-slot {
+    width: 40px;
+    height: 40px;
+    border: 2px dashed #00bdbd;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.letter-slot.hovered {
+    background: rgba(178, 235, 242, 0.3);
+}
+
+.build-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Image Exercises */
+.image-exercise {
+    text-align: center;
+    padding: 20px;
+}
+
+.vocabulary-image {
+    max-width: 200px;
+    max-height: 200px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.match-image-word-exercise {
+    text-align: center;
+    padding: 20px;
+}
+
+.match-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.match-item {
+    padding: 15px;
+    background: #e0f7fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.match-item:hover {
+    background: #b2ebf2;
+}
+
+.match-item.selected {
+    background: #ffe082;
+}
+
+.match-item.matched {
+    background: #27ae60;
+    color: white;
+}
+
+.image-item img {
+    max-width: 100%;
+    max-height: 100px;
+    border-radius: 8px;
+}
+
+.word-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    min-height: 60px;
+}
+
+/* Listening Exercises */
+.listening-exercise {
+    text-align: center;
+    padding: 20px;
+}
+
+.btn-emoji.large {
+    font-size: 2rem !important;
+    width: 80px;
+    height: 80px;
+    margin: 20px 0;
+}
+
+.word-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.word-option {
+    padding: 15px;
+    background: #e0f7fa;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.word-option:hover {
+    background: #b2ebf2;
+}
+
+.word-option.correct {
+    background: #27ae60;
+    color: white;
+}
+
+.word-option.incorrect {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Feedback Messages */
+.correct {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.incorrect {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.no-data {
+    color: #e67e22;
+    text-align: center;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    border: 4px solid rgba(0, 189, 189, 0.2);
+    border-radius: 50%;
+    border-top: 4px solid #00bdbd;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .word-display {
+        font-size: 2rem;
+    }
+    
+    .word-pair {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .match-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .match-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .word-options {
+        grid-template-columns: 1fr;
+    }
+}

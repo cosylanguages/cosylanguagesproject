@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSYlanguages</title>
     <link rel="stylesheet" href="src/css/styles.css">
+    <link rel="stylesheet" href="src/css/vocabulary.css">
     </script>
 </head>
 <body>
@@ -81,18 +82,32 @@
                     <button id="practice-all-grammar-btn" class="btn-secondary">🔄 Practice All</button>
                 </div>
             </div>
+
+            <div id="reading-options" class="practice-options">
+                <div class="reading-options">
+                    <button id="daily-reading-btn" class="btn-secondary">✨ Daily Reading</button>
+                    <button id="story-btn" class="btn-secondary">📖 Story</button>
+                    <button id="interesting-fact-btn" class="btn-secondary">🔄 Interesting facts</button>
+                </div>
+            </div>
             
             <div id="speaking-options" class="practice-options">
+                <div class="speaking-options">
                 <button id="daily-speaking-btn" class="btn-secondary">✨ Daily Speaking</button>
                 <button id="question-practice-btn" class="btn-secondary">❓ Question</button>
                 <button id="monologue-translate-btn" class="btn-secondary">💬 Monologue</button>
                 <button id="role-play-btn" class="btn-secondary">🎭 Role Play</button>
                 <button id="practice-all-speaking-btn" class="btn-secondary">🔄 Practice All</button>
+                </div>
             </div>
+
             <div id="writing-options" class="practice-options">
+                <div class="writing-options">
                 <button id="daily-writing-btn" class="btn-secondary">✨ Daily writing</button>
-                <button id="story-btn" class="btn-secondary">📜 Story</button>
-                <button id="letter-btn" class="btn-secondary">✉️ Letter</button>
+                <button id="question-btn" class="btn-secondary">❓ Question</button>
+                <button id="storytelling-btn" class="btn-secondary">📜 Storytelling</button>
+                <button id="diary-btn" class="btn-secondary">📔 Diary</button>
+                </div>
             </div>  
         </div>
         
@@ -255,9 +270,14 @@
                 showAllMainPracticeTypes();
                 showAllVocabularyOptions();
                 showAllGrammarOptions();
+                showAllReadingOptions ();
+                showAllSpeakingOptions ();
+                showAllWritingOptions ();
                 vocabularyOptions.style.display = 'none';
                 grammarOptions.style.display = 'none';
+                readingOptions.style.display = 'none';
                 speakingOptions.style.display = 'none';
+                writingOptions.style.display = 'none';
                 practiceAllBtn.style.display = 'block';
                 document.getElementById('result').innerHTML = '';
             } else {
@@ -266,15 +286,33 @@
                 if (selectedId === 'vocabulary-btn') {
                     vocabularyOptions.style.display = 'block';
                     grammarOptions.style.display = 'none';
+                    readingOptions.style.display = 'none';
                     speakingOptions.style.display = 'none';
+                    writingOptions.style.display = 'none';
                 } else if (selectedId === 'grammar-btn') {
                     grammarOptions.style.display = 'block';
                     vocabularyOptions.style.display = 'none';
+                    readingOptions.style.display = 'none';
                     speakingOptions.style.display = 'none';
+                    writingOptions.style.display = 'none';
+                } else if (selectedId === 'reading-btn') {
+                    readingOptions.style.display = 'block';
+                    vocabularyOptions.style.display = 'none';
+                    grammarOptions.style.display = 'none';
+                    speakingOptions.style.display = 'none';
+                    writingOptions.style.display = 'none';
                 } else if (selectedId === 'speaking-btn') {
                     speakingOptions.style.display = 'block';
                     vocabularyOptions.style.display = 'none';
                     grammarOptions.style.display = 'none';
+                    readingOptions.style.display = 'none';
+                    writingOptions.style.display = 'none';
+                } else if (selectedId === 'writing-btn') {
+                    writingOptions.style.display = 'block';
+                    vocabularyOptions.style.display = 'none';
+                    grammarOptions.style.display = 'none';
+                    readingOptions.style.display = 'none';
+                    speakingOptions.style.display = 'none';
                 }
                 practiceAllBtn.style.display = 'none'; // Hide Practice All when any variant is chosen
                 document.getElementById('result').innerHTML = '';
@@ -328,8 +366,6 @@
                         else if (type.includes('verb')) practiceGrammar('verbs');
                         else if (type.includes('adjective')) practiceGrammar('adjectives');
                         else if (type.includes('plural')) practiceGrammar('plurals');
-                        else if (type.includes('past')) practiceGrammar('pastTense');
-                        else if (type.includes('future')) practiceGrammar('futureTense');
                     }
                 };
             }
@@ -368,7 +404,7 @@
             if (day >= 1) {
                 const genderBtn = document.createElement('button');
                 genderBtn.textContent = t.gender;
-                genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                genderBtn.className = 'btn-secondary grammar-option-btn';
                 genderBtn.onclick = function() {
                     // Start gender practice on single click
                     hideOtherGrammarOptionBtns(genderBtn);
@@ -380,7 +416,7 @@
             if (day >= 2) {
                 const verbBtn = document.createElement('button');
                 verbBtn.textContent = t.verbs;
-                verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                verbBtn.className = 'btn-secondary grammar-option-btn';
                 verbBtn.onclick = function() {
                     // Start verb practice on single click
                     hideOtherGrammarOptionBtns(verbBtn);
@@ -392,14 +428,14 @@
             if (day >= 5) {
                 const pastBtn = document.createElement('button');
                 pastBtn.textContent = t.pastTense;
-                pastBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                pastBtn.className = 'btn-secondary grammar-option-btn';
                 pastBtn.onclick = makeToggleHandler(pastBtn);
                 grammarOptionsContainer.appendChild(pastBtn);
             }
             if (day >= 7) {
                 const futureBtn = document.createElement('button');
                 futureBtn.textContent = t.futureTense;
-                futureBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                futureBtn.className = 'btn-secondary grammar-option-btn';
                 futureBtn.onclick = makeToggleHandler(futureBtn);
                 grammarOptionsContainer.appendChild(futureBtn);
             }
@@ -1865,8 +1901,16 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
 }
     </script>
 
+    <script src="src/js/data-structure.js"></script> 
+    <script src="src/js/exercises/vocabulary.js"></script>
+    <script src="src/js/exercises/grammar.js"></script>
+    <script src="src/js/exercises/speaking.js"></script>
+    <script src="src/js/exercises/writing.js"></script>
+    <script src="src/js/exercises/reading.js"></script>
     <script src="src/js/interactive.js"></script>
     <script src="src/js/translations.js"></script>
     <script src="src/js/buttons.js"></script>
+
+
 </body>
 </html>

@@ -43,8 +43,8 @@ h1 {
     align-items: center;
     justify-content: center;
     animation: fadeInUp 0.7s cubic-bezier(.23,1.01,.32,1) 0.1s both;
-    max-width: 100vw;
-    width: 65%;
+    max-width: 98vw;
+    width: 50%;
     min-width: 0;
     margin: 0 auto;
     box-sizing: border-box;
@@ -270,6 +270,10 @@ body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Bashkortos
     .result-area {
         font-size: 1rem;
         padding: 10px 4px;
+    }
+    .practice-types {
+        flex-direction: column;
+        gap: 8px;
     }
 }
 
