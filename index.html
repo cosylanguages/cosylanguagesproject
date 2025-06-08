@@ -77,7 +77,7 @@
             <div id="grammar-options" class="practice-options">
                 <div class="grammar-options">
                     <!-- Grammar buttons will be populated by JavaScript -->
-                     <button id="daily-grammar-btn" class="btn-secondary">✨ Daily Grammar</button>
+                    <button id="daily-grammar-btn" class="btn-secondary">✨ Daily Grammar</button>
                     <button id="practice-all-grammar-btn" class="btn-secondary">🔄 Practice All</button>
                 </div>
             </div>
@@ -149,6 +149,24 @@
         const practiceAllBtn = document.getElementById('practice-all-btn');
         practiceAllBtn.style.display = 'block';
 
+
+        // Helper: show/hide main practice type buttons
+        function hideOtherMainPracticeTypes(selectedId) {
+        ['vocabulary-btn', 'grammar-btn', 'speaking-btn', 'reading-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
+            if (id !== selectedId) {
+                document.getElementById(id).style.display = 'none';
+            } else {
+                document.getElementById(id).classList.add('active-main-btn');
+            }
+        });
+        }
+        function showAllMainPracticeTypes() {
+         ['vocabulary-btn', 'grammar-btn', 'speaking-btn', 'reading-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
+            document.getElementById(id).style.display = 'inline-block';
+            document.getElementById(id).classList.remove('active-main-btn');
+            });
+        }
+
         // --- Hide other options when one is selected ---
         function hideOtherVocabularyOptions(selectedId) {
             document.querySelectorAll('#vocabulary-options button').forEach(btn => {
@@ -170,22 +188,34 @@
                 btn.style.display = '';
             });
         }
-
-        // Helper: show/hide main practice type buttons
-        function hideOtherMainPracticeTypes(selectedId) {
-            // Hide all except the selected one
-            ['vocabulary-btn', 'grammar-btn', 'speaking-btn'].forEach(id => {
-                if (id !== selectedId) {
-                    document.getElementById(id).style.display = 'none';
-                } else {
-                    document.getElementById(id).classList.add('active-main-btn');
-                }
+        function hideOtherReadingOptions(selectedId) {
+            document.querySelectorAll('#reading-options button').forEach(btn => {
+                if (btn.id !== selectedId) btn.style.display = 'none';
             });
         }
-        function showAllMainPracticeTypes() {
-            ['vocabulary-btn', 'grammar-btn', 'speaking-btn'].forEach(id => {
-                document.getElementById(id).style.display = 'inline-block';
-                document.getElementById(id).classList.remove('active-main-btn');
+        function showAllReadingOptions() {
+            document.querySelectorAll('#reading-options button').forEach(btn => {
+                btn.style.display = '';
+            });
+        }
+        function hideOtherSpeakingOptions(selectedId) {
+            document.querySelectorAll('#speaking-options button').forEach(btn => {
+                if (btn.id !== selectedId) btn.style.display = 'none';
+            });
+        }
+        function showAllSpeakingOptions() {
+            document.querySelectorAll('#speaking-options button').forEach(btn => {
+                btn.style.display = '';
+            });
+        }
+        function hideOtherWritingOptions(selectedId) {
+            document.querySelectorAll('#writing-options button').forEach(btn => {
+                if (btn.id !== selectedId) btn.style.display = 'none';
+            });
+        }
+        function showAllWritingOptions() {
+            document.querySelectorAll('#writing-options button').forEach(btn => {
+                btn.style.display = '';
             });
         }
 
@@ -194,9 +224,14 @@
             showAllMainPracticeTypes();
             showAllVocabularyOptions && showAllVocabularyOptions();
             showAllGrammarOptions && showAllGrammarOptions();
+            showAllReadingOptions && showAllReadingOptions();
+            showAllSpeakingOptions && showAllSpeakingOptions();
+            showAllWritingOptions && showAllWritingOptions();
             if (vocabularyOptions) vocabularyOptions.style.display = 'none';
             if (grammarOptions) grammarOptions.style.display = 'none';
+            if (readingOptions) readingOptions.style.display = 'none';
             if (speakingOptions) speakingOptions.style.display = 'none';
+            if (writingOptions) writingOptions.style.display = 'none';
             if (practiceAllBtn) practiceAllBtn.style.display = 'block';
             if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
             showPracticeAllButtons();
@@ -245,24 +280,6 @@
                 document.getElementById('result').innerHTML = '';
             }
         }
-
-        // Vocabulary button click
-        vocabularyBtn.addEventListener('click', function() {
-            // Only go back to main menu, do not randomize
-            toggleMainPracticeType('vocabulary-btn');
-        });
-        
-        // Grammar button click
-        grammarBtn.addEventListener('click', function() {
-            toggleMainPracticeType('grammar-btn');
-            grammarOptions.style.display = 'block';
-            updateGrammarOptions();
-        });
-        
-        // Speaking button click
-        speakingBtn.addEventListener('click', function() {
-            toggleMainPracticeType('speaking-btn');
-        });
         
         // Update grammar options based on selected day or range
         function updateGrammarOptions() {
@@ -1850,5 +1867,6 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
 
     <script src="src/js/interactive.js"></script>
     <script src="src/js/translations.js"></script>
+    <script src="src/js/buttons.js"></script>
 </body>
 </html>
