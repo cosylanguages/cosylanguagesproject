@@ -1746,29 +1746,6 @@
             return str.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/’/g, "'");
         }
 
-        function updateUIForLanguage(lang) {
-          const t = translations[lang] || translations['COSYenglish'];
-          document.querySelector('h1').textContent = 'COSYlanguages';
-          document.querySelector('label[for="language"]').textContent = t.chooseLanguage;
-          document.querySelector('label[for="day"]').textContent = t.chooseDay;
-          document.querySelector('label[for="day-from"]').textContent = t.dayFrom + ':';
-          document.querySelector('label[for="day-to"]').textContent = t.dayTo + ':';
-          document.querySelector('.menu-section label[for="language"]').textContent = t.chooseLanguage;
-          document.querySelector('.menu-section label[for="day"]').textContent = t.chooseDay;
-          document.querySelector('.menu-section label[for="day-from"]').textContent = t.dayFrom + ':';
-          document.querySelector('.menu-section label[for="day-to"]').textContent = t.dayTo + ':';
-          document.querySelector('.menu-section label:not([for])').textContent = t.selectPractice;
-          document.getElementById('vocabulary-btn').textContent = t.vocabulary;
-          document.getElementById('grammar-btn').textContent = t.grammar;
-          document.getElementById('speaking-btn').textContent = t.speaking;
-          document.getElementById('random-word-btn').textContent = t.randomWord;
-          document.getElementById('random-image-btn').textContent = t.randomImage;
-          document.getElementById('speaking-practice-btn').textContent = t.getPrompt;
-          document.getElementById('practice-all-btn').textContent = t.practiceAll;
-          // Update grammar options if visible
-          if (document.getElementById('grammar-options').style.display === 'block') updateGrammarOptions();
-        }
-
         // Restore all main practice type buttons when returning to menu
         function restoreMenu() {
             showAllMainPracticeTypes();
@@ -1901,7 +1878,6 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
 }
     </script>
 
-    <script src="src/js/data-structure.js"></script> 
     <script src="src/js/exercises/vocabulary.js"></script>
     <script src="src/js/exercises/grammar.js"></script>
     <script src="src/js/exercises/speaking.js"></script>
@@ -1910,6 +1886,7 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/interactive.js"></script>
     <script src="src/js/translations.js"></script>
     <script src="src/js/buttons.js"></script>
+    <script src="src/js/language-handler.js"></script>
 
 
 </body>
