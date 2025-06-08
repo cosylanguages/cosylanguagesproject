@@ -5,15 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSYlanguages</title>
     <link rel="stylesheet" href="src/css/styles.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('service-worker.js');
-        });
-      }
     </script>
-    <script src="translations.js"></script>
 </head>
 <body>
     <div class="container">
@@ -66,9 +58,9 @@
             <div class="practice-types">
                 <button id="vocabulary-btn" class="btn-primary">🔠 Vocabulary</button>
                 <button id="grammar-btn" class="btn-primary">🧩 Grammar</button>
-                <button id="grammar-btn" class="btn-primary">📚 Reading</button>
+                <button id="reading-btn" class="btn-primary">📚 Reading</button>
                 <button id="speaking-btn" class="btn-primary">🗣️ Speaking</button>
-                <button id="writting-btn" class="btn-primary">✍️ Writting</button>
+                <button id="writing-btn" class="btn-primary">✍️ Writing</button>
                 <button id="practice-all-btn" class="btn-primary">🔄 Practice All</button>
             </div>
             
@@ -98,9 +90,9 @@
                 <button id="practice-all-speaking-btn" class="btn-secondary">🔄 Practice All</button>
             </div>
             <div id="writting-options" class="practice-options">
-                <button id="daily-writting-btn" class="btn-primary">✨ Daily writting</button>
-                <button id="story-btn" class="btn-primary">📜 Story</button>
-                <button id="letter-btn" class="btn-primary">✉️ Letter</button>
+                <button id="daily-writing-btn" class="btn-secondary">✨ Daily writing</button>
+                <button id="story-btn" class="btn-secondary">📜 Story</button>
+                <button id="letter-btn" class="btn-secondary">✉️ Letter</button>
             </div>  
         </div>
         
@@ -137,20 +129,22 @@
         // Practice type buttons
         const vocabularyBtn = document.getElementById('vocabulary-btn');
         const grammarBtn = document.getElementById('grammar-btn');
+        const readingBtn = document.getElementById('reading-btn');
         const speakingBtn = document.getElementById('speaking-btn');
-        const writtingBtn = document.getElementById('writting-btn');
+        const writingBtn = document.getElementById('writing-btn');
         
         const vocabularyOptions = document.getElementById('vocabulary-options');
         const grammarOptions = document.getElementById('grammar-options');
         const grammarOptionsContainer = grammarOptions.querySelector('.grammar-options');
+        const readingOptions = document.getElementById('reading-options');
         const speakingOptions = document.getElementById('speaking-options');
-        const writtingOptions = document.getElementById('writting-options');
+        const writingOptions = document.getElementById('writing-options');
         
         // Hide all options initially
         vocabularyOptions.style.display = 'none';
         grammarOptions.style.display = 'none';
         speakingOptions.style.display = 'none';
-        writtingOptions.style.display = 'none';
+        writingOptions.style.display = 'none';
         // Show Practice All button on load
         const practiceAllBtn = document.getElementById('practice-all-btn');
         practiceAllBtn.style.display = 'block';
@@ -1853,11 +1847,8 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
   statsContainer.appendChild(resetBtn);
 }
     </script>
-    <!-- Sound effects -->
-    <audio id="click-sound" src="assets/sounds/click.mp3" preload="auto"></audio>
-    <audio id="select-sound" src="assets/sounds/select.mp3" preload="auto"></audio>
-    <audio id="error-sound" src="assets/sounds/error.mp3" preload="auto"></audio>
-    <audio id="success-sound" src="assets/sounds/success.mp3" preload="auto"></audio>
-    <script src="interactive.js"></script>
+
+    <script src="src/js/interactive.js"></script>
+    <script src="src/js/translations.js"></script>
 </body>
 </html>
