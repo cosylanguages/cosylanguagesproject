@@ -9,13 +9,13 @@
     </script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" role="main">
         <h1>COSYlanguages</h1>
         
-        <div class="menu-section">
+        <div class="menu-section" role="region" aria-label="Language selection">
             <label for="language">🌎 Choose Your Language:</label>
             <select id="language">
-                <option value="">Language</option>
+                <option value="">Your Language</option>
                 <option value="COSYenglish" data-bg="COSYenglish">COSYenglish</option>
                 <option value="COSYfrançais" data-bg="COSYfrançais">COSYfrançais</option>
                 <option value="COSYitaliano" data-bg="COSYitaliano">COSYitaliano</option>
@@ -95,7 +95,7 @@
                 <div class="speaking-options">
                 <button id="daily-speaking-btn" class="btn-secondary">✨ Daily Speaking</button>
                 <button id="question-practice-btn" class="btn-secondary">❓ Question</button>
-                <button id="monologue-translate-btn" class="btn-secondary">💬 Monologue</button>
+                <button id="monologue-btn" class="btn-secondary">💬 Monologue</button>
                 <button id="role-play-btn" class="btn-secondary">🎭 Role Play</button>
                 <button id="practice-all-speaking-btn" class="btn-secondary">🔄 Practice All</button>
                 </div>
@@ -165,22 +165,7 @@
         practiceAllBtn.style.display = 'block';
 
 
-        // Helper: show/hide main practice type buttons
-        function hideOtherMainPracticeTypes(selectedId) {
-        ['vocabulary-btn', 'grammar-btn', 'speaking-btn', 'reading-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
-            if (id !== selectedId) {
-                document.getElementById(id).style.display = 'none';
-            } else {
-                document.getElementById(id).classList.add('active-main-btn');
-            }
-        });
-        }
-        function showAllMainPracticeTypes() {
-         ['vocabulary-btn', 'grammar-btn', 'speaking-btn', 'reading-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
-            document.getElementById(id).style.display = 'inline-block';
-            document.getElementById(id).classList.remove('active-main-btn');
-            });
-        }
+
 
         // --- Hide other options when one is selected ---
         function hideOtherVocabularyOptions(selectedId) {
@@ -261,63 +246,7 @@
             }
         });
 
-        // --- Toggle logic for main practice type buttons ---
-        function toggleMainPracticeType(selectedId) {
-            const btn = document.getElementById(selectedId);
-            const isActive = btn.classList.contains('active-main-btn');
-            if (isActive) {
-                // Restore all if already active
-                showAllMainPracticeTypes();
-                showAllVocabularyOptions();
-                showAllGrammarOptions();
-                showAllReadingOptions ();
-                showAllSpeakingOptions ();
-                showAllWritingOptions ();
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'block';
-                document.getElementById('result').innerHTML = '';
-            } else {
-                hideOtherMainPracticeTypes(selectedId);
-                // Show the relevant options
-                if (selectedId === 'vocabulary-btn') {
-                    vocabularyOptions.style.display = 'block';
-                    grammarOptions.style.display = 'none';
-                    readingOptions.style.display = 'none';
-                    speakingOptions.style.display = 'none';
-                    writingOptions.style.display = 'none';
-                } else if (selectedId === 'grammar-btn') {
-                    grammarOptions.style.display = 'block';
-                    vocabularyOptions.style.display = 'none';
-                    readingOptions.style.display = 'none';
-                    speakingOptions.style.display = 'none';
-                    writingOptions.style.display = 'none';
-                } else if (selectedId === 'reading-btn') {
-                    readingOptions.style.display = 'block';
-                    vocabularyOptions.style.display = 'none';
-                    grammarOptions.style.display = 'none';
-                    speakingOptions.style.display = 'none';
-                    writingOptions.style.display = 'none';
-                } else if (selectedId === 'speaking-btn') {
-                    speakingOptions.style.display = 'block';
-                    vocabularyOptions.style.display = 'none';
-                    grammarOptions.style.display = 'none';
-                    readingOptions.style.display = 'none';
-                    writingOptions.style.display = 'none';
-                } else if (selectedId === 'writing-btn') {
-                    writingOptions.style.display = 'block';
-                    vocabularyOptions.style.display = 'none';
-                    grammarOptions.style.display = 'none';
-                    readingOptions.style.display = 'none';
-                    speakingOptions.style.display = 'none';
-                }
-                practiceAllBtn.style.display = 'none'; // Hide Practice All when any variant is chosen
-                document.getElementById('result').innerHTML = '';
-            }
-        }
+
         
         // Update grammar options based on selected day or range
         function updateGrammarOptions() {
@@ -594,6 +523,7 @@
                     case 'COSYtatarça': return 'tt-RU';
                     case 'COSYbashkort': return 'ba-RU';
                     case 'ԾՈՍՅհայկական': return 'hy-AM';
+                    case 'ΚΟΖΥελληνικά': return'el-GR'; 
                     default: return 'en-GB';
                 }
             })(language);
@@ -1240,16 +1170,7 @@
             practiceSpeaking();
         });
         
-        document.getElementById('random-word-btn').addEventListener('click', function() {
-            practiceVocabulary('random-word');
-        });
-        document.getElementById('random-image-btn').addEventListener('click', function() {
-            practiceVocabulary('random-image');
-        });
-        document.getElementById('listening-btn').addEventListener('click', function() {
-            practiceVocabulary('listening');
-        });
-        
+
         // Practice All button logic
         document.getElementById('practice-all-btn').addEventListener('click', async function() {
             const types = ['vocabulary', 'grammar', 'speaking'];
@@ -1789,44 +1710,9 @@ daySelect.addEventListener('change', updateDaySelectors);
 dayFromSelect.addEventListener('change', updateDaySelectors);
 dayToSelect.addEventListener('change', updateDaySelectors);
 
-// --- Toggle logic for secondary practice options (Random Word, Random Image, Listening) ---
-function hideOtherVocabularyModes(selectedId) {
-    ['random-word-btn', 'random-image-btn', 'listening-btn'].forEach(id => {
-        if (id !== selectedId) {
-            document.getElementById(id).style.display = 'none';
-        } else {
-            document.getElementById(id).classList.add('active-vocab-btn');
-        }
-    });
-}
-function showAllVocabularyModes() {
-    ['random-word-btn', 'random-image-btn', 'listening-btn'].forEach(id => {
-        document.getElementById(id).style.display = 'inline-block';
-        document.getElementById(id).classList.remove('active-vocab-btn');
-    });
-}
-function toggleVocabularyMode(selectedId) {
-    const btn = document.getElementById(selectedId);
-    const isActive = btn.classList.contains('active-vocab-btn');
-    if (isActive) {
-        showAllVocabularyModes();
-        document.getElementById('result').innerHTML = '';
-    } else {
-        hideOtherVocabularyModes(selectedId);
-        document.getElementById('result').innerHTML = '';
-        // Optionally, you could trigger the practice function here if you want auto-start
-    }
-}
 
-document.getElementById('random-word-btn').addEventListener('click', function() {
-    toggleVocabularyMode('random-word-btn');
-});
-document.getElementById('random-image-btn').addEventListener('click', function() {
-    toggleVocabularyMode('random-image-btn');
-});
-document.getElementById('listening-btn').addEventListener('click', function() {
-    toggleVocabularyMode('listening-btn');
-});
+
+
 
 // Helper: map language select value to opposites file (now in vocabulary/opposites/)
 function getOppositesFile(language) {
@@ -1879,6 +1765,7 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     </script>
 
     <script src="src/js/exercises/vocabulary.js"></script>
+    <script src="src/js/exercises/vocabulary_buttons.js"></script>
     <script src="src/js/exercises/grammar.js"></script>
     <script src="src/js/exercises/speaking.js"></script>
     <script src="src/js/exercises/writing.js"></script>
