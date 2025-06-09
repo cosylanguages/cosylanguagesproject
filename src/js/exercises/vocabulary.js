@@ -158,8 +158,8 @@ async function showRandomWord() {
                 <button id="next-word" class="btn-emoji">🔄</button>
             </div>
             <div class="word-exercise-options">
-                <button class="btn-secondary" id="practice-opposite">Find Opposite</button>
-                <button class="btn-secondary" id="practice-build">Build Word</button>
+                <button class="btn-tertiary" id="practice-opposite">Find Opposite</button>
+                <button class="btn-tertiary" id="practice-build">Build Word</button>
             </div>
         </div>
     `;
