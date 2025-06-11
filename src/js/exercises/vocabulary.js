@@ -1,3 +1,4 @@
+// Functions moved to utils.js: shuffleArray, showNoDataMessage, addRandomizeButton
 // Vocabulary Practice Types
 const VOCABULARY_PRACTICE_TYPES = {
     'random-word': {
@@ -50,11 +51,12 @@ function initVocabularyPractice() {
 // Show Daily Words from dictionaries
 async function showDailyWords() {
     const language = document.getElementById('language').value;
+    const currentTranslations = translations[language] || translations.COSYenglish;
     const container = document.getElementById('result');
-    container.innerHTML = `<div class="exercise-header daily-header">Daily Words</div><div class="daily-words-container" id="daily-words-list"><div class="loading-spinner"></div></div>`;
+    container.innerHTML = `<div class="exercise-header daily-header">${currentTranslations.dailyWord || 'Daily Words'}</div><div class="daily-words-container" id="daily-words-list"><div class="loading-spinner"></div></div>`;
     const list = document.getElementById('daily-words-list');
     try {
-        const dailyWords = await fetchDailyWordsFromDictionaries(language);
+        const dailyWords = await fetchDailyWordsFromDictionaries(language); // This function uses static examples
         list.innerHTML = dailyWords.map(level => `
             <div class="daily-word-level ${level.level}">
                 <b>${level.word}</b> <span>– ${level.definition}</span>
@@ -62,7 +64,7 @@ async function showDailyWords() {
             </div>
         `).join('');
     } catch (e) {
-        list.innerHTML = `<div class="incorrect">Could not fetch daily words. Try again later.</div>`;
+        list.innerHTML = `<div class="incorrect">${currentTranslations.couldNotFetchDailyWords || 'Could not fetch daily words. Try again later.'}</div>`;
     }
 }
 
