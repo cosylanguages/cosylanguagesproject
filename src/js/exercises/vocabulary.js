@@ -1,5 +1,3 @@
-// src/js/vocabulary.js
-
 // Vocabulary Practice Types
 const VOCABULARY_PRACTICE_TYPES = {
     'random-word': {
@@ -42,72 +40,129 @@ function initVocabularyPractice() {
     document.getElementById('practice-all-vocab-btn')?.addEventListener('click', () => {
         practiceAllVocabulary();
     });
+
+    // Add event listeners for daily reading, writing, and speaking buttons
+    document.getElementById('daily-reading-btn')?.addEventListener('click', showDailyReading);
+    document.getElementById('daily-writing-btn')?.addEventListener('click', showDailyWriting);
+    document.getElementById('daily-speaking-btn')?.addEventListener('click', showDailySpeaking);
 }
 
 // Show Daily Words from dictionaries
 async function showDailyWords() {
     const language = document.getElementById('language').value;
-    if (!language) {
-        alert('Please select a language first');
-        return;
-    }
-
-    const resultArea = document.getElementById('result');
-    resultArea.innerHTML = '<div class="loading-spinner"></div>';
-
+    const container = document.getElementById('result');
+    container.innerHTML = `<div class="exercise-header daily-header">Daily Words</div><div class="daily-words-container" id="daily-words-list"><div class="loading-spinner"></div></div>`;
+    const list = document.getElementById('daily-words-list');
     try {
-        const words = await fetchDailyWords(language);
-        resultArea.innerHTML = `
-            <div class="daily-words-container">
-                <div class="daily-word-level beginner">
-                    <h3>Beginner</h3>
-                    <p><strong>${words.beginner.word}</strong>: ${words.beginner.definition}</p>
-                    <p class="example">Example: ${words.beginner.example}</p>
-                </div>
-                <div class="daily-word-level elementary">
-                    <h3>Elementary</h3>
-                    <p><strong>${words.elementary.word}</strong>: ${words.elementary.definition}</p>
-                    <p class="example">Example: ${words.elementary.example}</p>
-                </div>
-                <div class="daily-word-level intermediate">
-                    <h3>Intermediate</h3>
-                    <p><strong>${words.intermediate.word}</strong>: ${words.intermediate.definition}</p>
-                    <p class="example">Example: ${words.intermediate.example}</p>
-                </div>
-                <div class="daily-word-level advanced">
-                    <h3>Advanced</h3>
-                    <p><strong>${words.advanced.word}</strong>: ${words.advanced.definition}</p>
-                    <p class="example">Example: ${words.advanced.example}</p>
-                </div>
-                <button id="pronounce-daily-words" class="btn-secondary">🔊 Pronounce All</button>
+        const dailyWords = await fetchDailyWordsFromDictionaries(language);
+        list.innerHTML = dailyWords.map(level => `
+            <div class="daily-word-level ${level.level}">
+                <b>${level.word}</b> <span>– ${level.definition}</span>
+                <div class="example">${level.example}</div>
             </div>
-        `;
-
-        document.getElementById('pronounce-daily-words').addEventListener('click', () => {
-            pronounceDailyWords(words, language);
-        });
-    } catch (error) {
-        resultArea.innerHTML = `<p class="error">Could not load daily words. Please try again later.</p>`;
+        `).join('');
+    } catch (e) {
+        list.innerHTML = `<div class="incorrect">Could not fetch daily words. Try again later.</div>`;
     }
 }
 
-// Fetch daily words from dictionary APIs
-async function fetchDailyWords(language) {
-    // This would actually call dictionary APIs in production
-    // For now, we'll use mock data
-    const dictionaries = {
-        'COSYenglish': {
-            beginner: {
-                word: 'hello',
-                definition: 'used as a greeting',
-                example: 'Hello, how are you?'
-            },
-            // ... other levels and languages
-        },
-        // ... other languages
+// Fetch daily words from online dictionaries (Cambridge, Oxford, etc.)
+async function fetchDailyWordsFromDictionaries(language) {
+    // This is a stub. In production, you would use real APIs or web scraping.
+    // For demo, we link to dictionary pages and use static examples.
+    // You can expand this with real API keys and fetch logic for each dictionary.
+    const levels = ['beginner','elementary','intermediate','advanced'];
+    const dictUrls = {
+        'english': 'https://dictionary.cambridge.org/dictionary/english/',
+        'french': 'https://www.larousse.fr/dictionnaires/francais-monolingue/',
+        'italian': 'https://dizionari.corriere.it/dizionario_italiano/',
+        'spanish': 'https://dle.rae.es/',
+        'portuguese': 'https://dicionario.priberam.org/',
+        'german': 'https://www.verbformen.de/',
+        'greek': 'https://www.greek-language.gr/greekLang/modern_greek/tools/lexica/triantafyllides/search.html?lq=',
+        'russian': 'https://gramota.ru/biblioteka/slovari/bolshoj-tolkovyj-slovar/',
+        'tatar': 'https://suzlek.antat.ru/',
+        'armenian': 'https://bararanonline.com/',
+        'bashkir': 'https://ru.wiktionary.org/wiki/'
     };
-
-    return dictionaries[language] || dictionaries['COSYenglish'];
+    // Example static words for demo
+    const demoWords = {
+        'english': [
+            {word:'cat',def:'a small animal kept as a pet',ex:'The cat is sleeping.'},
+            {word:'house',def:'a building for people to live in',ex:'They live in a big house.'},
+            {word:'discover',def:'to find something for the first time',ex:'She discovered a new planet.'},
+            {word:'resilient',def:'able to recover quickly',ex:'She is resilient in difficult times.'}
+        ],
+        'french': [
+            {word:'chat',def:'animal domestique félin',ex:'Le chat dort.'},
+            {word:'maison',def:'bâtiment pour habiter',ex:'Ils habitent une grande maison.'},
+            {word:'découvrir',def:'trouver pour la première fois',ex:'Elle a découvert une planète.'},
+            {word:'résilient',def:'qui résiste aux difficultés',ex:'Elle est très résiliente.'}
+        ],
+        'italian': [
+            {word:'gatto',def:'animale domestico felino',ex:'Il gatto dorme.'},
+            {word:'casa',def:'edificio in cui si abita',ex:'Vivono in una grande casa.'},
+            {word:'scoprire',def:'trovare per la prima volta',ex:'Ha scoperto un nuovo pianeta.'},
+            {word:'resiliente',def:'che resiste alle difficoltà',ex:'Lei è molto resiliente.'}
+        ],
+        'spanish': [
+            {word:'gato',def:'animal doméstico felino',ex:'El gato duerme.'},
+            {word:'casa',def:'edificio para vivir',ex:'Viven en una casa grande.'},
+            {word:'descubrir',def:'encontrar por primera vez',ex:'Ella descubrió un planeta.'},
+            {word:'resiliente',def:'que resiste las dificultades',ex:'Ella es muy resiliente.'}
+        ],
+        'portuguese': [
+            {word:'gato',def:'animal doméstico felino',ex:'O gato está dormindo.'},
+            {word:'casa',def:'edifício para morar',ex:'Eles moram em uma casa grande.'},
+            {word:'descobrir',def:'encontrar pela primeira vez',ex:'Ela descobriu um planeta.'},
+            {word:'resiliente',def:'que resiste às dificuldades',ex:'Ela é muito resiliente.'}
+        ],
+        'german': [
+            {word:'Katze',def:'ein kleines Haustier',ex:'Die Katze schläft.'},
+            {word:'Haus',def:'Gebäude zum Wohnen',ex:'Sie wohnen in einem großen Haus.'},
+            {word:'entdecken',def:'etwas zum ersten Mal finden',ex:'Sie hat einen neuen Planeten entdeckt.'},
+            {word:'resilient',def:'kann sich schnell erholen',ex:'Sie ist sehr resilient.'}
+        ],
+        'greek': [
+            {word:'γάτα',def:'οικόσιτη γάτα',ex:'Η γάτα κοιμάται.'},
+            {word:'σπίτι',def:'κτίριο για να ζεις',ex:'Μένουν σε ένα μεγάλο σπίτι.'},
+            {word:'ανακαλύπτω',def:'βρίσκω για πρώτη φορά',ex:'Ανακάλυψε έναν νέο πλανήτη.'},
+            {word:'ανθεκτικός',def:'που αντέχει στις δυσκολίες',ex:'Είναι πολύ ανθεκτική.'}
+        ],
+        'russian': [
+            {word:'кот',def:'домашнее животное',ex:'Кот спит.'},
+            {word:'дом',def:'здание для жилья',ex:'Они живут в большом доме.'},
+            {word:'открывать',def:'находить впервые',ex:'Она открыла новую планету.'},
+            {word:'устойчивый',def:'способен быстро восстанавливаться',ex:'Она очень устойчива.'}
+        ],
+        'tatar': [
+            {word:'песи',def:'өйдә яши торган хайван',ex:'Песи йоклый.'},
+            {word:'өй',def:'яшәү өчен бина',ex:'Алар зур өйдә яшиләр.'},
+            {word:'ачу',def:'беренче тапкыр табу',ex:'Ул яңа планета ачты.'},
+            {word:'түземле',def:'авырлыкларга чыдый',ex:'Ул бик түземле.'}
+        ]
+        // Add more languages as needed
+    };
+    // Map language select value to demoWords key
+    const langMap = {
+        'COSYenglish': 'english',
+        'COSYfrançais': 'french',
+        'COSYitaliano': 'italian',
+        'COSYespañol': 'spanish',
+        'COSYportuguês': 'portuguese',
+        'COSYdeutsch': 'german',
+        'ΚΟΖΥελληνικά': 'greek',
+        'ТАКОЙрусский': 'russian',
+        'COSYtatarça': 'tatar'
+    };
+    const langKey = langMap[language] || 'english';
+    const words = demoWords[langKey] || demoWords['english'];
+    return levels.map((level, i) => ({
+        level,
+        word: `<a href='${dictUrls[langKey] || dictUrls['english']}${encodeURIComponent(words[i]?.word||'')}' target='_blank'>${words[i]?.word||'-'}</a>`,
+        definition: words[i]?.def||'-',
+        example: words[i]?.ex||'-'
+    }));
 }
 
 // Start random word practice with random exercise type
@@ -151,15 +206,15 @@ async function showRandomWord() {
     const resultArea = document.getElementById('result');
     
     resultArea.innerHTML = `
-        <div class="word-display-container">
-            <div class="word-display" id="displayed-word">${word}</div>
+        <div class="word-display-container" role="region" aria-label="Random Word Exercise">
+            <div class="word-display" id="displayed-word" aria-label="Word to practice">🔤 <b>${word}</b></div>
             <div class="word-actions">
-                <button id="pronounce-word" class="btn-emoji">🔊</button>
-                <button id="next-word" class="btn-emoji">🔄</button>
+                <button id="pronounce-word" class="btn-emoji" aria-label="Pronounce word">🔊</button>
+                <button id="next-word" class="btn-emoji" aria-label="Next word">🔄</button>
             </div>
             <div class="word-exercise-options">
-                <button class="btn-tertiary" id="practice-opposite">Find Opposite</button>
-                <button class="btn-tertiary" id="practice-build">Build Word</button>
+                <button class="btn-secondary" id="practice-opposite" aria-label="Find Opposite">⇄ Find Opposite</button>
+                <button class="btn-secondary" id="practice-build" aria-label="Build Word">🔡 Build Word</button>
             </div>
         </div>
     `;
@@ -205,27 +260,29 @@ async function showOppositesExercise(baseWord = null) {
 
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
-        <div class="opposites-exercise">
-            <h3>Find the opposite of:</h3>
+        <div class="opposites-exercise" role="form" aria-label="Opposites Exercise">
             <div class="word-pair">
-                <div class="word-box">${word}</div>
-                <div class="opposite-arrow">⇄</div>
-                <div class="word-box opposite-answer" id="opposite-answer">?</div>
+                <div class="word-box" aria-label="Word">${word} 🔤</div>
+                <div class="opposite-arrow" aria-label="Opposite arrow">⇄</div>
+                <div class="word-box opposite-answer" id="opposite-answer" aria-label="Opposite">?</div>
             </div>
-            <input type="text" id="opposite-input" placeholder="Type the opposite...">
-            <button id="check-opposite" class="btn-primary">Check</button>
-            <div id="opposite-feedback"></div>
+            <input type="text" id="opposite-input" class="exercise-input" aria-label="Type the opposite" placeholder="Type the opposite...">
+            <button id="check-opposite" class="btn-primary" aria-label="Check answer">✅ ${translations[language]?.check || 'Check'}</button>
+            <div id="opposite-feedback" class="exercise-feedback" aria-live="polite"></div>
             <div class="exercise-actions">
-                <button id="reveal-opposite" class="btn-secondary">Reveal Answer</button>
-                <button id="new-opposite" class="btn-secondary">New Word</button>
+                <button id="reveal-opposite" class="btn-secondary" aria-label="Reveal Answer">👁️ Reveal Answer</button>
+                <button id="new-opposite" class="btn-secondary" aria-label="New Word">🔄 New Word</button>
             </div>
         </div>
     `;
+
+    addEnterKeySupport('opposite-input', 'check-opposite');
 
     // Add event listeners
     document.getElementById('check-opposite').addEventListener('click', () => {
         const userAnswer = document.getElementById('opposite-input').value.trim();
         const feedback = document.getElementById('opposite-feedback');
+        
         
         if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
             feedback.innerHTML = '<span class="correct">✅ Correct!</span>';
@@ -288,23 +345,22 @@ async function showMatchOpposites() {
 
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
-        <div class="match-exercise">
-            <h3>Match each word with its opposite</h3>
+        <div class="match-exercise" role="region" aria-label="Match Opposites Exercise">
             <div class="match-container">
-                <div class="match-col" id="words-col">
+                <div class="match-col" id="words-col" aria-label="Words column">
                     ${wordsColumn.map((pair, index) => `
-                        <div class="match-item" data-word="${pair.word}">${pair.word}</div>
+                        <div class="match-item" data-word="${pair.word}" role="button" tabindex="0" aria-label="Word: ${pair.word}">${pair.word} 🔤</div>
                     `).join('')}
                 </div>
-                <div class="match-col" id="opposites-col">
+                <div class="match-col" id="opposites-col" aria-label="Opposites column">
                     ${oppositesColumn.map((opposite, index) => `
-                        <div class="match-item" data-opposite="${opposite}">${opposite}</div>
+                        <div class="match-item" data-opposite="${opposite}" role="button" tabindex="0" aria-label="Opposite: ${opposite}">${opposite} ⇄</div>
                     `).join('')}
                 </div>
             </div>
-            <div id="match-feedback"></div>
-            <button id="check-matches" class="btn-primary">Check Matches</button>
-            <button id="new-match" class="btn-secondary">New Exercise</button>
+            <div id="match-feedback" class="exercise-feedback" aria-live="polite"></div>
+            <button id="check-matches" class="btn-primary" aria-label="Check Matches">✅ ${translations[language]?.check || 'Check'} Matches</button>
+            <button id="new-match" class="btn-secondary" aria-label="New Exercise">🔄 New Exercise</button>
         </div>
     `;
 
@@ -354,6 +410,10 @@ async function showMatchOpposites() {
             document.querySelector(`[data-word="${pair.word}"]`).classList.add('matched');
             document.querySelector(`[data-opposite="${pair.opposite}"]`).classList.add('matched');
         });
+
+        setTimeout(() => {
+            showMatchOpposites();
+        }, 2000);
     });
 
     document.getElementById('new-match').addEventListener('click', () => {
@@ -383,7 +443,6 @@ async function showBuildWord(baseWord = null) {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="build-word-exercise">
-            <h3>Build the word from these letters:</h3>
             <div class="letter-pool" id="letter-pool">
                 ${shuffledLetters.map((letter, index) => `
                     <div class="letter-tile" data-letter="${letter}" draggable="true">${letter}</div>
@@ -396,9 +455,9 @@ async function showBuildWord(baseWord = null) {
             </div>
             <div id="build-feedback"></div>
             <div class="build-actions">
-                <button id="check-build" class="btn-primary">Check</button>
-                <button id="reset-build" class="btn-secondary">Reset</button>
-                <button id="new-build" class="btn-secondary">New Word</button>
+                <button id="check-build" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
+                <button id="reset-build" class="btn-secondary">${translations[language]?.buttons?.reset || 'Reset'}</button>
+                <button id="new-build" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Word'}</button>
             </div>
         </div>
     `;
@@ -538,11 +597,13 @@ async function showIdentifyImage() {
             <h3>What is this?</h3>
             <img src="${imageItem.src}" alt="${imageItem.alt}" class="vocabulary-image">
             <input type="text" id="image-answer" placeholder="Type the word...">
-            <button id="check-image" class="btn-primary">Check</button>
+            <button id="check-image" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
             <div id="image-feedback"></div>
-            <button id="new-image" class="btn-secondary">New Image</button>
+            <button id="new-image" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Image'}</button>
         </div>
     `;
+
+    addEnterKeySupport('image-answer', 'check-image');
 
     document.getElementById('check-image').addEventListener('click', () => {
         const userAnswer = document.getElementById('image-answer').value.trim();
@@ -630,8 +691,8 @@ async function showMatchImageWord() {
                 `).join('')}
             </div>
             <div id="match-image-feedback"></div>
-            <button id="check-image-matches" class="btn-primary">Check Matches</button>
-            <button id="new-image-match" class="btn-secondary">New Exercise</button>
+            <button id="check-image-matches" class="btn-primary">${translations[language]?.buttons?.check || 'Check'} Matches</button>
+            <button id="new-image-match" class="btn-secondary" aria-label="New Exercise">🔄 New Exercise</button>
         </div>
     `;
 
@@ -681,6 +742,10 @@ async function showMatchImageWord() {
             document.querySelector(`[data-answer="${imageItem.answer}"]`).classList.add('matched');
             document.querySelector(`[data-word="${imageItem.answer}"]`)?.classList.add('matched');
         });
+
+        setTimeout(() => {
+            showMatchImageWord();
+        }, 2000);
     });
 
     document.getElementById('new-image-match').addEventListener('click', () => {
@@ -724,12 +789,11 @@ async function showTranscribeWord() {
     
     resultArea.innerHTML = `
         <div class="listening-exercise">
-            <h3>Listen and write what you hear:</h3>
-            <button id="play-word" class="btn-emoji">🔊 Play</button>
+            <button id="play-word" class="btn-emoji">🔊</button>
             <input type="text" id="transcription" placeholder="Type what you hear...">
-            <button id="check-transcription" class="btn-primary">Check</button>
+            <button id="check-transcription" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
             <div id="transcription-feedback"></div>
-            <button id="new-transcription" class="btn-secondary">New Word</button>
+            <button id="new-transcription" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Word'}</button>
         </div>
     `;
 
@@ -787,15 +851,14 @@ async function showMatchSoundWord() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="match-sound-exercise">
-            <h3>Listen and select the correct word:</h3>
-            <button id="play-target-word" class="btn-emoji large">🔊 Play Word</button>
+            <button id="play-target-word" class="btn-emoji large">🔊</button>
             <div class="word-options">
                 ${selectedWords.map(word => `
                     <button class="word-option" data-word="${word}">${word}</button>
                 `).join('')}
             </div>
             <div id="sound-match-feedback"></div>
-            <button id="new-sound-match" class="btn-secondary">New Exercise</button>
+            <button id="new-sound-match" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Exercise'}</button>
         </div>
     `;
 
@@ -873,6 +936,88 @@ async function practiceAllVocabulary() {
     }
 }
 
+// --- Daily Reading Feature ---
+async function showDailyReading() {
+    const language = document.getElementById('language').value;
+    const container = document.getElementById('result');
+    container.innerHTML = `<div class="exercise-header daily-header">Daily Reading</div><div class="daily-reading-container" id="daily-reading-list"><div class="loading-spinner"></div></div>`;
+    const list = document.getElementById('daily-reading-list');
+    try {
+        const readings = await fetchDailyReadings(language);
+        list.innerHTML = readings.map(level => `
+            <div class="daily-level-label">${level.levelLabel}</div>
+            <div class="daily-reading-text">${level.text}</div>
+        `).join('');
+    } catch (e) {
+        list.innerHTML = `<div class="incorrect">Could not fetch daily readings. Try again later.</div>`;
+    }
+}
+
+// Fetch daily readings related to daily words
+async function fetchDailyReadings(language) {
+    // For demo, generate short texts related to demo words
+    const dailyWords = await fetchDailyWordsFromDictionaries(language);
+    const levels = ['Beginner','Elementary','Intermediate','Advanced'];
+    return levels.map((level, i) => ({
+        levelLabel: level,
+        text: `This is a short reading for the word <b>${dailyWords[i].word.replace(/<[^>]+>/g,'')}</b>.` // Replace with real fetch/generation logic
+    }));
+}
+
+// --- Daily Writing Feature ---
+async function showDailyWriting() {
+    const language = document.getElementById('language').value;
+    const container = document.getElementById('result');
+    container.innerHTML = `<div class="exercise-header daily-header">Daily Writing</div><div class="daily-writing-container" id="daily-writing-list"><div class="loading-spinner"></div></div>`;
+    const list = document.getElementById('daily-writing-list');
+    try {
+        const prompts = await fetchDailyWritingPrompts(language);
+        list.innerHTML = prompts.map(level => `
+            <div class="daily-level-label">${level.levelLabel}</div>
+            <div class="daily-writing-prompt">${level.prompt}</div>
+        `).join('');
+    } catch (e) {
+        list.innerHTML = `<div class="incorrect">Could not fetch daily writing prompts. Try again later.</div>`;
+    }
+}
+
+// Fetch/generate daily writing prompts related to daily words
+async function fetchDailyWritingPrompts(language) {
+    const dailyWords = await fetchDailyWordsFromDictionaries(language);
+    const levels = ['Beginner','Elementary','Intermediate','Advanced'];
+    return levels.map((level, i) => ({
+        levelLabel: level,
+        prompt: `Write a sentence or short story using the word <b>${dailyWords[i].word.replace(/<[^>]+>/g,'')}</b>.` // Replace with real prompt logic
+    }));
+}
+
+// --- Daily Speaking Feature ---
+async function showDailySpeaking() {
+    const language = document.getElementById('language').value;
+    const container = document.getElementById('result');
+    container.innerHTML = `<div class="exercise-header daily-header">Daily Speaking</div><div class="daily-speaking-container" id="daily-speaking-list"><div class="loading-spinner"></div></div>`;
+    const list = document.getElementById('daily-speaking-list');
+    try {
+        const prompts = await fetchDailySpeakingPrompts(language);
+        list.innerHTML = prompts.map(level => `
+            <div class="daily-level-label">${level.levelLabel}</div>
+            <div class="daily-speaking-prompt">${level.prompt}</div>
+        `).join('');
+    } catch (e) {
+        list.innerHTML = `<div class="incorrect">Could not fetch daily speaking prompts. Try again later.</div>`;
+    }
+}
+
+// Fetch/generate daily speaking prompts related to daily words
+async function fetchDailySpeakingPrompts(language) {
+    const dailyWords = await fetchDailyWordsFromDictionaries(language);
+    const levels = ['Beginner','Elementary','Intermediate','Advanced'];
+    return levels.map((level, i) => ({
+        levelLabel: level,
+        prompt: `Say something about <b>${dailyWords[i].word.replace(/<[^>]+>/g,'')}</b> or use it in a sentence.` // Replace with real prompt logic
+    }));
+}
+
 // Helper functions
 function shuffleArray(array) {
     const newArray = [...array];
@@ -887,6 +1032,78 @@ function showNoDataMessage() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = '<p class="no-data">No data available for selected day/language.</p>';
 }
+
+// Helper: Add randomize button to exercise containers
+function addRandomizeButton(containerId, randomizeFn) {
+    const container = document.getElementById(containerId) || document.querySelector(`.${containerId}`);
+    if (!container) return;
+    // Remove any existing randomize button to avoid duplicates
+    const existingBtn = container.querySelector('.btn-randomize');
+    if (existingBtn) existingBtn.remove();
+    let btn = document.createElement('button');
+    btn.className = 'btn-randomize';
+    const language = document.getElementById('language')?.value || 'COSYenglish';
+    btn.setAttribute('aria-label', (translations[language]?.buttons?.randomize || 'Randomize exercise'));
+    btn.title = translations[language]?.buttons?.randomize || 'Randomize exercise';
+    btn.innerHTML = translations[language]?.buttons?.randomize || '🎲';
+    btn.style.marginLeft = '10px';
+    btn.onclick = randomizeFn;
+    btn.style.float = 'right';
+    btn.style.fontSize = '1.5rem';
+    btn.style.background = 'linear-gradient(90deg,#ffe082,#1de9b6)';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '50%';
+    btn.style.width = '44px';
+    btn.style.height = '44px';
+    btn.style.boxShadow = '0 2px 8px #ccc';
+    btn.style.cursor = 'pointer';
+    btn.style.transition = 'transform 0.2s';
+    btn.onmouseover = () => btn.style.transform = 'scale(1.15)';
+    btn.onmouseout = () => btn.style.transform = '';
+    container.prepend(btn);
+}
+
+// Patch all main exercise renderers to add the randomize button
+const _showRandomWord = showRandomWord;
+showRandomWord = async function() {
+    await _showRandomWord.apply(this, arguments);
+    addRandomizeButton('word-display-container', startRandomWordPractice);
+};
+const _showOppositesExercise = showOppositesExercise;
+showOppositesExercise = async function() {
+    await _showOppositesExercise.apply(this, arguments);
+    addRandomizeButton('opposites-exercise', startRandomWordPractice);
+};
+const _showMatchOpposites = showMatchOpposites;
+showMatchOpposites = async function() {
+    await _showMatchOpposites.apply(this, arguments);
+    addRandomizeButton('match-exercise', startRandomWordPractice);
+};
+const _showBuildWord = showBuildWord;
+showBuildWord = async function() {
+    await _showBuildWord.apply(this, arguments);
+    addRandomizeButton('build-word-exercise', startRandomWordPractice);
+};
+const _showIdentifyImage = showIdentifyImage;
+showIdentifyImage = async function() {
+    await _showIdentifyImage.apply(this, arguments);
+    addRandomizeButton('image-exercise', startRandomImagePractice);
+};
+const _showMatchImageWord = showMatchImageWord;
+showMatchImageWord = async function() {
+    await _showMatchImageWord.apply(this, arguments);
+    addRandomizeButton('match-image-word-exercise', startRandomImagePractice);
+};
+const _showTranscribeWord = showTranscribeWord;
+showTranscribeWord = async function() {
+    await _showTranscribeWord.apply(this, arguments);
+    addRandomizeButton('listening-exercise', startListeningPractice);
+};
+const _showMatchSoundWord = showMatchSoundWord;
+showMatchSoundWord = async function() {
+    await _showMatchSoundWord.apply(this, arguments);
+    addRandomizeButton('match-sound-exercise', startListeningPractice);
+};
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', initVocabularyPractice);

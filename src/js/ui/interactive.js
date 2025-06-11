@@ -1,80 +1,103 @@
 // Sound effects for UI interactions
-// Preload audio
-const clickSound = new Audio('assets/sounds/click.mp3'); // click
-const selectSound = new Audio('assets/sounds/select.mp3'); // select (reuse click)
-const successSound = new Audio('assets/sounds/success.mp3'); // success (placeholder)
-const errorSound = new Audio('assets/sounds/error.mp3'); // error (placeholder)
+const SOUNDS = {
+    click: new Audio('assets/sounds/click.mp3'),
+    select: new Audio('assets/sounds/select.mp3'),
+    success: new Audio('assets/sounds/success.mp3'),
+    error: new Audio('assets/sounds/error.mp3')
+};
 
 // Play sound helpers
-function playClick() { clickSound.currentTime = 0; clickSound.play(); }
-function playSelect() { selectSound.currentTime = 0; selectSound.play(); }
-function playSuccess() { successSound.currentTime = 0; successSound.play(); }
-function playError() { errorSound.currentTime = 0; errorSound.play(); }
+function playSound(type) {
+    SOUNDS[type].currentTime = 0;
+    SOUNDS[type].play().catch(e => console.log("Audio play failed:", e));
+}
 
-// Adventure/game-like logic: XP, level, streak
-let cosyXP = parseInt(localStorage.getItem('cosy_xp') || '0');
-let cosyLevel = parseInt(localStorage.getItem('cosy_level') || '1');
-let cosyStreak = parseInt(localStorage.getItem('cosy_streak') || '0');
-
-function addXP(amount) {
-  cosyXP += amount;
-  if (cosyXP >= cosyLevel * 10) {
-    cosyXP = 0;
-    cosyLevel++;
-    playSuccess();
-    showToast('🎉 Level up! You are now level ' + cosyLevel + '!');
-    let stats = document.getElementById('cosy-gamestats');
-    if (stats) {
-      stats.classList.add('levelup');
-      setTimeout(() => stats.classList.remove('levelup'), 1200);
+// Adventure/game-like logic
+class GameState {
+    constructor() {
+        this.xp = parseInt(localStorage.getItem('cosy_xp') || '0');
+        this.level = parseInt(localStorage.getItem('cosy_level') || '1');
+        this.streak = parseInt(localStorage.getItem('cosy_streak') || '0');
     }
-  }
-  localStorage.setItem('cosy_xp', cosyXP);
-  localStorage.setItem('cosy_level', cosyLevel);
-  updateGameStats();
-}
-function addStreak() {
-  cosyStreak++;
-  localStorage.setItem('cosy_streak', cosyStreak);
-  updateGameStats();
-}
-function resetStreak() {
-  cosyStreak = 0;
-  localStorage.setItem('cosy_streak', cosyStreak);
-  updateGameStats();
-}
-function updateGameStats() {
-  let stats = document.getElementById('cosy-gamestats');
-  if (!stats) {
-    stats = document.createElement('div');
-    stats.id = 'cosy-gamestats';
-    stats.className = 'box-shadow-strong bg-bdbd color-white border-radius-12 font-weight-bold';
-    stats.style.position = 'fixed';
-    stats.style.top = '10px';
-    stats.style.right = '10px';
-    stats.style.zIndex = '9999';
-    document.body.appendChild(stats);
-  }
-  stats.innerHTML = `XP: ${cosyXP} | Level: ${cosyLevel} | Streak: ${cosyStreak}`;
-}
-function showToast(msg) {
-  let toast = document.createElement('div');
-  toast.textContent = msg;
-  toast.className = 'cosy-toast box-shadow-strong bg-bdbd color-white border-radius-10 font-weight-bold';
-  toast.style.position = 'fixed';
-  toast.style.bottom = '30px';
-  toast.style.left = '50%';
-  toast.style.transform = 'translateX(-50%)';
-  toast.style.zIndex = '9999';
-  document.body.appendChild(toast);
-  setTimeout(() => { toast.remove(); }, 1800);
-}
-window.addEventListener('DOMContentLoaded', updateGameStats);
 
-// Award XP and streaks for correct answers in any activity
+    save() {
+        localStorage.setItem('cosy_xp', this.xp);
+        localStorage.setItem('cosy_level', this.level);
+        localStorage.setItem('cosy_streak', this.streak);
+    }
+
+    addXP(amount) {
+        this.xp += amount;
+        if (this.xp >= this.level * 10) {
+            this.xp = 0;
+            this.level++;
+            playSound('success');
+            showToast(`🎉 Level up! You are now level ${this.level}!`);
+            this.showLevelUpEffect();
+        }
+        this.save();
+        this.updateUI();
+    }
+
+    addStreak() {
+        this.streak++;
+        this.save();
+        this.updateUI();
+    }
+
+    resetStreak() {
+        this.streak = 0;
+        this.save();
+        this.updateUI();
+    }
+
+    updateUI() {
+        let stats = document.getElementById('cosy-gamestats');
+        if (!stats) {
+            stats = document.createElement('div');
+            stats.id = 'cosy-gamestats';
+            stats.className = 'game-stats';
+            document.body.appendChild(stats);
+        }
+        stats.innerHTML = `XP: ${this.xp} | Level: ${this.level} | Streak: ${this.streak}`;
+    }
+
+    showLevelUpEffect() {
+        let stats = document.getElementById('cosy-gamestats');
+        if (stats) {
+            stats.classList.add('levelup');
+            setTimeout(() => stats.classList.remove('levelup'), 1200);
+        }
+        showConfetti();
+    }
+}
+
+// Toast notifications
+function showToast(msg) {
+    let toast = document.createElement('div');
+    toast.textContent = msg;
+    toast.className = 'cosy-toast';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 1800);
+}
+// Confetti effect
+function showConfetti() {
+    for (let i = 0; i < 30; i++) {
+        let c = document.createElement('div');
+        c.textContent = '🎊';
+        c.className = 'confetti';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 1400);
+    }
+}
+
+// Initialize game state on load
+window.addEventListener('DOMContentLoaded', () => gameState.updateUI());
+
+// Award XP and streaks for correct answers
 function awardCorrectAnswer() {
-  addXP(3);
-  addStreak();
+    gameState.addXP(3);
+    gameState.addStreak();
 }
 
 // Utility: call awardCorrectAnswer and mark element
@@ -192,17 +215,26 @@ window.practiceVocabulary = async function(type, forceWord) {
   // ...fetch items, then...
   // showRevisionButton('vocabulary', items, language);
 };
+// In interactive.js, update the practiceGrammar function:
 window.practiceGrammar = async function(type, forceItem) {
-  const language = document.getElementById('language').value;
-  if (forceItem) {
-    // Simulate the UI for a specific grammar item
-    // On correct/incorrect, call scheduleReview(language, type, forceItem, correct)
-    return;
-  }
-  await window._practiceGrammar(type);
-  // After showing, show revision button if there are due items
-  // ...fetch items, then...
-  // showRevisionButton(type, items, language);
+    const language = document.getElementById('language').value;
+    if (forceItem) {
+        // Handle forced item (for SRS reviews)
+        return;
+    }
+    
+    // Delegate to grammar.js functions
+    if (type === 'gender') {
+        await startGenderPractice();
+    } else if (type === 'verbs') {
+        await startVerbsPractice();
+    } else if (type === 'possessives') {
+        await startPossessivesPractice();
+    }
+    
+    // Show revision button if there are due items
+    const items = await loadGrammarItems(language, type, getSelectedDays());
+    showRevisionButton(type, items, language);
 };
 
 // --- Make practice more memorable/productive ---
@@ -251,6 +283,36 @@ window.practiceAllTypes = [
   'choose4audio',
   'choose4image',
 ];
+
+function setupEnterKeySupport() {
+    // This will be called to set up Enter key listeners for any input field
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const activeInput = document.activeElement;
+            if (activeInput && activeInput.tagName === 'INPUT') {
+                // Find the nearest check button and click it
+                let container = activeInput.closest('.exercise-container, .result-area, .match-exercise');
+                if (container) {
+                    let checkBtn = container.querySelector('.btn-primary, .check-btn, [id^="check-"]');
+                    if (checkBtn) checkBtn.click();
+                }
+            }
+        }
+    });
+}
+// More specific helper for exercises with known button IDs
+function addEnterKeySupport(inputId, buttonId) {
+    const input = document.getElementById(inputId);
+    const button = document.getElementById(buttonId);
+    if (input && button) {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                button.click();
+            }
+        });
+    }
+}
 
 // Helper: get all words/images for current language/day
 async function getAllPracticeItems(language, days) {
@@ -715,7 +777,7 @@ function getTranslationForText(text, lang, contextType, originalLang) {
 }
 
 // --- Floating Help Button, Tip Popup, and Translation Popup Logic ---
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded'), function() {
   const helpBtn = document.getElementById('floating-help-btn');
   const tipPopup = document.getElementById('floating-tip-popup');
   const tipText = document.getElementById('floating-tip-text');
@@ -724,7 +786,7 @@ window.addEventListener('DOMContentLoaded', function() {
   const translationPopup = document.getElementById('translation-popup');
   const translationText = document.getElementById('translation-popup-text');
   const closeTranslationBtn = translationPopup.querySelector('.close-translation');
-
+}
   // Helper: get a random fun fact or tip for the current language
   function getRandomTip() {
     const lang = document.getElementById('language').value || 'COSYenglish';
@@ -801,4 +863,18 @@ window.addEventListener('DOMContentLoaded', function() {
     if (tipPopup.style.display === 'flex' && !tipPopup.contains(e.target) && e.target !== helpBtn) hideTipPopup();
     if (translationPopup.style.display === 'flex' && !translationPopup.contains(e.target)) hideTranslationPopup();
   });
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    setupEnterKeySupport();
+    // Unlock audio context for iOS/Android
+    function unlockAudio() {
+        try {
+            const u = new SpeechSynthesisUtterance(' ');
+            window.speechSynthesis.speak(u);
+        } catch(e) {}
+    }
+    window.addEventListener('touchstart', unlockAudio, {once: true});
+    window.addEventListener('click', unlockAudio, {once: true});
+
 });

@@ -5,7 +5,6 @@ function updateUIForLanguage(language) {
   const t = translations[language] || translations['COSYenglish'];
   
   // Update all text elements
-  document.querySelector('h1').textContent = 'COSYlanguages';
   document.querySelector('label[for="language"]').textContent = t.chooseLanguage;
   document.querySelector('label[for="day"]').textContent = t.chooseDay;
   document.querySelector('label[for="day-from"]').textContent = t.dayFrom;
@@ -29,6 +28,9 @@ function updateUIForLanguage(language) {
   
   // Update grammar options
   document.getElementById('daily-grammar-btn').textContent = t.dailyGrammar;
+  document.getElementById('gender-btn').textContent = t.gender;
+  document.getElementById('verbs-btn').textContent = t.verbs;
+  document.getElementById('possessives-btn').textContent = t.possessives;
   document.getElementById('practice-all-grammar-btn').textContent = t.practiceAll;
   
   // Update reading options
@@ -49,10 +51,12 @@ function updateUIForLanguage(language) {
   document.getElementById('storytelling-btn').textContent = t.storytelling;
   document.getElementById('diary-btn').textContent = t.diary;
   
-  // Update grammar options if visible
-  if (document.getElementById('grammar-options').style.display === 'block') {
-    updateGrammarOptions();
-  }
+  // Update ARIA and button labels using t.aria and t.buttons
+  document.getElementById('practice-all-btn').setAttribute('aria-label', t.aria.practiceAll);
+  document.getElementById('practice-all-btn').title = t.aria.practiceAll;
+  // ...repeat for all main and option buttons...
+  
+  // Remove updates for elements not present in the app
 }
 
 // Initialize language change handler

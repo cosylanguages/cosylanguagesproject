@@ -6,7 +6,8 @@
     <title>COSYlanguages</title>
     <link rel="stylesheet" href="src/css/styles.css">
     <link rel="stylesheet" href="src/css/vocabulary.css">
-    </script>
+    <link rel="stylesheet" href="src/css/grammar.css">
+</script>
 </head>
 <body>
     <div class="container">
@@ -15,7 +16,7 @@
         <div class="menu-section">
             <label for="language">🌎 Choose Your Language:</label>
             <select id="language">
-                <option value="">Your language</option>
+                <option value="">Your Language</option>
                 <option value="COSYenglish" data-bg="COSYenglish">COSYenglish</option>
                 <option value="COSYfrançais" data-bg="COSYfrançais">COSYfrançais</option>
                 <option value="COSYitaliano" data-bg="COSYitaliano">COSYitaliano</option>
@@ -33,21 +34,20 @@
         
         <div class="menu-section">
             <label for="day">📅 Choose Your Day:</label>
-            <select id="day">
+            <select id="day" aria-label="Choose your day">
                 <option value="">Day</option>
                 <!-- Days will be populated by JavaScript -->
             </select>
-            
             <div class="day-range">
                 <div>
                     <label for="day-from">Day From:</label>
-                    <select id="day-from">
+                    <select id="day-from" aria-label="Day from">
                         <option value="">From</option>
                     </select>
                 </div>
                 <div>
                     <label for="day-to">Day To:</label>
-                    <select id="day-to">
+                    <select id="day-to" aria-label="Day to">
                         <option value="">To</option>
                     </select>
                 </div>
@@ -56,56 +56,58 @@
         
         <div class="menu-section">
             <label>🧭 Choose Your Practice:</label>
-            <div class="practice-types">
-                <button id="vocabulary-btn" class="btn-primary">🔠 Vocabulary</button>
-                <button id="grammar-btn" class="btn-primary">🧩 Grammar</button>
-                <button id="reading-btn" class="btn-primary">📚 Reading</button>
-                <button id="speaking-btn" class="btn-primary">🗣️ Speaking</button>
-                <button id="writing-btn" class="btn-primary">✍️ Writing</button>
-                <button id="practice-all-btn" class="btn-primary">🔄 Practice All</button>
+            <div class="practice-types" role="navigation" aria-label="Practice type menu">
+                <button id="vocabulary-btn" class="btn-primary" aria-label="Vocabulary" title="Vocabulary" role="button">🔠 Vocabulary</button>
+                <button id="grammar-btn" class="btn-primary" aria-label="Grammar" title="Grammar" role="button">🧩 Grammar</button>
+                <button id="reading-btn" class="btn-primary" aria-label="Reading" title="Reading" role="button">📚 Reading</button>
+                <button id="speaking-btn" class="btn-primary" aria-label="Speaking" title="Speaking" role="button">🗣️ Speaking</button>
+                <button id="writing-btn" class="btn-primary" aria-label="Writing" title="Writing" role="button">✍️ Writing</button>
+                <button id="practice-all-btn" class="btn-primary option-btn" aria-label="Practice All" title="Practice All" role="button">🔄 Practice All</button>
             </div>
             
-            <div id="vocabulary-options" class="practice-options">
+            <div id="vocabulary-options" class="practice-options" aria-label="Vocabulary options" role="region">
                 <div class="vocabulary-options">
-                    <button id="daily-word-btn" class="btn-secondary">✨ Daily Word</button>
-                    <button id="random-word-btn" class="btn-secondary">🔤 Random Word</button>
-                    <button id="random-image-btn" class="btn-secondary">🖼️ Random Image</button>
-                    <button id="listening-btn" class="btn-secondary">🎧 Listening</button>
-                    <button id="practice-all-vocab-btn" class="btn-secondary">🔄 Practice All</button>
+                    <button id="daily-word-btn" class="btn-secondary option-btn" aria-label="Daily Word" title="Daily Word" role="button">✨ Daily Word</button>
+                    <button id="random-word-btn" class="btn-secondary option-btn" aria-label="Random Word" title="Random Word" role="button">🔤 Random Word</button>
+                    <button id="random-image-btn" class="btn-secondary option-btn" aria-label="Random Image" title="Random Image" role="button">🖼️ Random Image</button>
+                    <button id="listening-btn" class="btn-secondary option-btn" aria-label="Listening" title="Listening" role="button">🎧 Listening</button>
+                    <button id="practice-all-vocab-btn" class="btn-secondary option-btn" aria-label="Practice All Vocabulary" title="Practice All Vocabulary" role="button">🔄 Practice All</button>
                 </div>
             </div>
             
-            <div id="grammar-options" class="practice-options">
+            <div id="grammar-options" class="practice-options" aria-label="Grammar options" role="region">
                 <div class="grammar-options">
-                    <!-- Grammar buttons will be populated by JavaScript -->
-                    <button id="practice-all-grammar-btn" class="btn-secondary">🔄 Practice All</button>
+                    <button id="gender-btn" class="btn-secondary option-btn" aria-label="Gender" title="Gender" role="button">✨ Gender</button>
+                    <button id="verbs-btn" class="btn-secondary option-btn" aria-label="Verbs" title="Verbs" role="button">🧩 Verbs</button>
+                    <button id="possessives-btn" class="btn-secondary option-btn" aria-label="Possessives" title="Possessives" role="button">🔠 Possessives</button>
+                    <button id="practice-all-grammar-btn" class="btn-secondary option-btn" aria-label="Practice All Grammar" title="Practice All Grammar" role="button">🔄 Practice All</button>
                 </div>
             </div>
 
-            <div id="reading-options" class="practice-options">
+            <div id="reading-options" class="practice-options" aria-label="Reading options" role="region">
                 <div class="reading-options">
-                    <button id="daily-reading-btn" class="btn-secondary">✨ Daily Reading</button>
-                    <button id="story-btn" class="btn-secondary">📖 Story</button>
-                    <button id="interesting-fact-btn" class="btn-secondary">🔄 Interesting facts</button>
+                    <button id="daily-reading-btn" class="btn-secondary option-btn" aria-label="Daily Reading" title="Daily Reading" role="button">✨ Daily Reading</button>
+                    <button id="story-btn" class="btn-secondary option-btn" aria-label="Story" title="Story" role="button">📖 Story</button>
+                    <button id="interesting-fact-btn" class="btn-secondary option-btn" aria-label="Interesting facts" title="Interesting facts" role="button">🔄 Interesting facts</button>
                 </div>
             </div>
             
-            <div id="speaking-options" class="practice-options">
+            <div id="speaking-options" class="practice-options" aria-label="Speaking options" role="region">
                 <div class="speaking-options">
-                <button id="daily-speaking-btn" class="btn-secondary">✨ Daily Speaking</button>
-                <button id="question-practice-btn" class="btn-secondary">❓ Question</button>
-                <button id="monologue-btn" class="btn-secondary">💬 Monologue</button>
-                <button id="role-play-btn" class="btn-secondary">🎭 Role Play</button>
-                <button id="practice-all-speaking-btn" class="btn-secondary">🔄 Practice All</button>
+                <button id="daily-speaking-btn" class="btn-secondary option-btn" aria-label="Daily Speaking" title="Daily Speaking" role="button">✨ Daily Speaking</button>
+                <button id="question-practice-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
+                <button id="monologue-btn" class="btn-secondary option-btn" aria-label="Monologue" title="Monologue" role="button">💬 Monologue</button>
+                <button id="role-play-btn" class="btn-secondary option-btn" aria-label="Role Play" title="Role Play" role="button">🎭 Role Play</button>
+                <button id="practice-all-speaking-btn" class="btn-secondary option-btn" aria-label="Practice All Speaking" title="Practice All Speaking" role="button">🔄 Practice All</button>
                 </div>
             </div>
 
-            <div id="writing-options" class="practice-options">
+            <div id="writing-options" class="practice-options" aria-label="Writing options" role="region">
                 <div class="writing-options">
-                <button id="daily-writing-btn" class="btn-secondary">✨ Daily writing</button>
-                <button id="question-btn" class="btn-secondary">❓ Question</button>
-                <button id="storytelling-btn" class="btn-secondary">📜 Storytelling</button>
-                <button id="diary-btn" class="btn-secondary">📔 Diary</button>
+                <button id="daily-writing-btn" class="btn-secondary option-btn" aria-label="Daily writing" title="Daily writing" role="button">✨ Daily writing</button>
+                <button id="question-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
+                <button id="storytelling-btn" class="btn-secondary option-btn" aria-label="Storytelling" title="Storytelling" role="button">📜 Storytelling</button>
+                <button id="diary-btn" class="btn-secondary option-btn" aria-label="Diary" title="Diary" role="button">📔 Diary</button>
                 </div>
             </div>  
         </div>
@@ -165,7 +167,22 @@
 
 
 
-
+// Show all main practice types
+function showAllMainPracticeTypes() {
+    ['vocabulary-btn', 'grammar-btn', 'reading-btn', 'speaking-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
+        document.getElementById(id).style.display = 'inline-block';
+        document.getElementById(id).classList.remove('active-main-btn');
+    });
+}
+function hideOtherMainPracticeTypes(selectedId) {
+    ['vocabulary-btn', 'grammar-btn', 'speaking-btn', 'reading-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
+         if (id !== selectedId) {
+            document.getElementById(id).style.display = 'none';
+        } else {
+            document.getElementById(id).classList.add('active-main-btn');
+        }
+    });
+}
         // --- Hide other options when one is selected ---
         function hideOtherVocabularyOptions(selectedId) {
             document.querySelectorAll('#vocabulary-options button').forEach(btn => {
@@ -470,7 +487,26 @@
                             const base = langCode.split('-')[0];
                             match = voices.find(v => v.lang.startsWith(base));
                         }
-                        if (!match) match = voices[0]; // fallback
+                        if (!match) {
+                            match = voices[0]; // fallback
+                            // Show warning if no matching voice is found for the selected language
+                            const langNames = {
+                                'en-GB': 'English',
+                                'fr-FR': 'French',
+                                'es-ES': 'Spanish',
+                                'it-IT': 'Italian',
+                                'de-DE': 'German',
+                                'pt-PT': 'Portuguese',
+                                'ru-RU': 'Russian',
+                                'br-FR': 'Breton',
+                                'tt-RU': 'Tatar',
+                                'ba-RU': 'Bashkir',
+                                'hy-AM': 'Armenian',
+                                'el-GR': 'Greek'
+                            };
+                            const langLabel = langNames[langCode] || langCode;
+                            alert('No ' + langLabel + ' voice found on your system. Please install a ' + langLabel + ' voice in your OS settings for correct pronunciation.');
+                        }
                         utter.voice = match;
                     }
                     window.speechSynthesis.speak(utter);
@@ -946,89 +982,6 @@
                     addEnterKeySupport('listening-answer-input', 'check-listening-answer-btn');
                 }, 0);
                 return;
-            }
-        }
-        
-        // Load gender grammar data for a given language and day
-        async function loadGenderGrammar(language, day) {
-            const fileMap = {
-                'COSYenglish': 'data/grammar/gender/grammar_gender_english.json',
-                'COSYitaliano': 'data/grammar/gender/grammar_gender_italian.json',
-                'COSYfrançais': 'data/grammar/gender/grammar_gender_french.json',
-                'COSYespañol': 'data/grammar/gender/grammar_gender_spanish.json',
-                'COSYdeutsch': 'data/grammar/gender/grammar_gender_german.json',
-                'COSYportuguês': 'data/grammar/gender/grammar_gender_portuguese.json',
-                'ТАКОЙрусский': 'data/grammar/gender/grammar_gender_russian.json',
-                'COSYbrezhoneg': 'data/grammar/gender/grammar_gender_breton.json',
-                'COSYtatarça': 'data/grammar/gender/grammar_gender_tatar.json',
-                'COSYbashkort': 'data/grammar/gender/grammar_gender_bashkir.json',
-                'ԾՈՍՅհայկական': 'data/grammar/gender/grammar_gender_armenian.json',
-                'ΚΟΖΥελληνικά': 'data/grammar/gender/grammar_gender_greek.json'
-            };
-            const file = fileMap[language];
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        // Load verb grammar data for a given language and day
-        async function loadVerbGrammar(language, day) {
-            const fileMap = {
-                'COSYenglish': 'data/grammar/verbs/grammar_verbs_english.json',
-                'COSYitaliano': 'data/grammar/verbs/grammar_verbs_italian.json',
-                'COSYfrançais': 'data/grammar/verbs/grammar_verbs_french.json',
-                'COSYespañol': 'data/grammar/verbs/grammar_verbs_spanish.json',
-                'COSYdeutsch': 'data/grammar/verbs/grammar_verbs_german.json',
-                'COSYportuguês': 'data/grammar/verbs/grammar_verbs_portuguese.json',
-                'ΚΟΖΥελληνικά': 'data/grammar/verbs/grammar_verbs_greek.json',
-                'ТАКОЙрусский': 'data/grammar/verbs/grammar_verbs_russian.json',
-                'COSYbrezhoneg': 'data/grammar/verbs/grammar_verbs_breton.json',
-                'COSYtatarça': 'data/grammar/verbs/grammar_verbs_tatar.json',
-                'COSYbashkort': 'data/grammar/verbs/grammar_verbs_bashkir.json',
-            };
-            const file = fileMap[language];
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        // Load possessives grammar data for a given language and day
-        async function loadPossessivesGrammar(language, day) {
-            const fileMap = {
-                'COSYenglish': 'data/grammar/possessives/possessives_english.json',
-                'COSYitaliano': 'data/grammar/possessives/possessives_italian.json',
-                'COSYfrançais': 'data/grammar/possessives/possessives_french.json',
-                'COSYespañol': 'data/grammar/possessives/possessives_spanish.json',
-                'COSYdeutsch': 'data/grammar/possessives/possessives_german.json',
-                'COSYportuguês': 'data/grammar/possessives/possessives_portuguese.json',
-                'ТАКОЙрусский': 'data/grammar/possessives/possessives_russian.json',
-                'COSYbrezhoneg': 'data/grammar/possessives/possessives_breton.json',
-                'COSYtatarça': 'data/grammar/possessives/possessives_tatar.json',
-                'COSYbashkort': 'data/grammar/possessives/possessives_bashkir.json',
-                'ԾՈՍՅհայկական': 'data/grammar/possessives/possessives_armenian.json',
-                'ΚΟΖΥελληνικά': 'data/grammar/possessives/possessives_greek.json'
-            };
-            const file = fileMap[language];
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
             }
         }
 
@@ -1681,7 +1634,6 @@
         // Remove double-click restoreMenu listeners (no longer needed)
         // vocabularyBtn.addEventListener('dblclick', restoreMenu);
         // grammarBtn.addEventListener('dblclick', restoreMenu);
-        // speakingBtn.addEventListener('dblclick', restoreMenu);
 
         // --- Hide/show day and day-from/day-to options depending on selection ---
 function updateDaySelectors() {
@@ -1769,8 +1721,8 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/exercises/speaking.js"></script>
     <script src="src/js/exercises/writing.js"></script>
     <script src="src/js/exercises/reading.js"></script>
-    <script src="src/js/interactive.js"></script>
-    <script src="src/js/translations.js"></script>
+    <script src="src/js/ui/interactive.js"></script>
+    <script src="src/js/ui/translations.js"></script>
     <script src="src/js/buttons.js"></script>
     <script src="src/js/language-handler.js"></script>
 
