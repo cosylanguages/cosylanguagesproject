@@ -71,26 +71,26 @@ setupOptionToggle('grammar-options', [
 setupOptionToggle('reading-options', [
     'daily-reading-btn', 'story-btn', 'interesting-fact-btn'
 ], [
-    function() { /* TODO: implement reading exercises */ },
-    function() { /* TODO: implement story exercise */ },
-    function() { /* TODO: implement interesting facts */ }
+    showDailyReading,
+    showStoryPractice, 
+    showInterestingFactPractice
 ]);
 setupOptionToggle('speaking-options', [
     'daily-speaking-btn', 'question-practice-btn', 'monologue-btn', 'role-play-btn', 'practice-all-speaking-btn'
 ], [
-    function() { /* TODO: implement speaking exercises */ },
-    function() { /* TODO: implement question practice */ },
-    function() { /* TODO: implement monologue */ },
-    function() { /* TODO: implement role play */ },
-    function() { /* TODO: implement practice all speaking */ }
+    showDailySpeaking,
+    showQuestionPractice,
+    showMonologuePractice,
+    showRolePlayPractice,
+    practiceAllSpeaking
 ]);
 setupOptionToggle('writing-options', [
     'daily-writing-btn', 'question-btn', 'storytelling-btn', 'diary-btn'
 ], [
-    function() { /* TODO: implement writing exercises */ },
-    function() { /* TODO: implement writing question */ },
-    function() { /* TODO: implement storytelling */ },
-    function() { /* TODO: implement diary */ }
+    showDailyWriting,
+    showQuestionWriting,
+    showStorytellingPractice,
+    showDiaryPractice
 ]);
 
 // Toggle main practice type

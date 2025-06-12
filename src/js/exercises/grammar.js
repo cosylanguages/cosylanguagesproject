@@ -634,4 +634,12 @@ async function practiceAllGrammar() {
     }
 }
 
+// Patching grammar exercise functions for the randomize button
+showArticleWord = patchExerciseForRandomizeButton(showArticleWord, '.gender-exercise', startGenderPractice);
+showMatchArticlesWords = patchExerciseForRandomizeButton(showMatchArticlesWords, '.match-exercise', startGenderPractice);
+showTypeVerb = patchExerciseForRandomizeButton(showTypeVerb, '.verb-exercise', startVerbsPractice);
+showMatchVerbsPronouns = patchExerciseForRandomizeButton(showMatchVerbsPronouns, '.match-exercise', startVerbsPractice);
+showFillGaps = patchExerciseForRandomizeButton(showFillGaps, '.fill-gap-exercise', startVerbsPractice);
+showWordOrder = patchExerciseForRandomizeButton(showWordOrder, '.word-order-exercise', startVerbsPractice);
+
 document.addEventListener('DOMContentLoaded', initGrammarPractice);
