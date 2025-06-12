@@ -20,7 +20,7 @@ function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to 
     if (typeof containerIdOrElement === 'string') {
         container = document.getElementById(containerIdOrElement) || document.querySelector(`.${containerIdOrElement}`);
     }
-    
+
     if (!container) {
         // console.warn(`Container not found for randomize button: ${containerIdOrElement}`);
         return;
@@ -28,28 +28,16 @@ function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to 
     // Remove any existing randomize button to avoid duplicates
     const existingBtn = container.querySelector('.btn-randomize');
     if (existingBtn) existingBtn.remove();
-    
+
     let btn = document.createElement('button');
-    btn.className = 'btn-randomize';
+    btn.className = 'btn-randomize randomizer-button'; // Apply new and old class
     const language = document.getElementById('language')?.value || 'COSYenglish'; // Assume translations is global
     const currentTranslations = translations[language] || translations.COSYenglish;
 
     btn.setAttribute('aria-label', currentTranslations.aria?.randomize || 'Randomize exercise');
     btn.title = currentTranslations.aria?.randomize || 'Randomize exercise';
     btn.innerHTML = currentTranslations.buttons?.randomize || '🎲';
-    btn.style.marginLeft = '10px';
-    btn.style.float = 'right';
-    btn.style.fontSize = '1.5rem';
-    btn.style.background = 'linear-gradient(90deg,#ffe082,#1de9b6)';
-    btn.style.border = 'none';
-    btn.style.borderRadius = '50%';
-    btn.style.width = '44px';
-    btn.style.height = '44px';
-    btn.style.boxShadow = '0 2px 8px #ccc';
-    btn.style.cursor = 'pointer';
-    btn.style.transition = 'transform 0.2s';
-    btn.onmouseover = () => btn.style.transform = 'scale(1.15)';
-    btn.onmouseout = () => btn.style.transform = '';
+    // Inline styles and mouse event handlers removed
     btn.onclick = randomizeFn; // Assign the passed randomizeFn directly
 
     container.prepend(btn);
@@ -99,7 +87,7 @@ function patchExerciseForRandomizeButton(originalExerciseFn, containerSelectorOr
     return async function() {
         // Call the original exercise function, ensuring 'this' and 'arguments' are passed correctly
         await originalExerciseFn.apply(this, arguments);
-        
+
         // Now, add the randomize button.
         // addRandomizeButton can take an ID string, a class selector string (e.g. ".my-class"), or an element.
         // The existing addRandomizeButton logic handles ID or class selector (if class is passed as ".class-name" or just "class-name").
