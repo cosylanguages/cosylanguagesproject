@@ -162,20 +162,59 @@ section.content-section {
     margin-bottom: 15px; 
 }
 
-.practice-options { 
-    background-color: var(--light-grey); padding: 15px; border-radius: 6px;
-    margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-    width: 100%; display: flex; flex-wrap: wrap; justify-content: center;
-    align-items: center; gap: 8px; 
+.practice-options {
+    /* background-color: var(--light-grey); */ /* Removed */
+    /* padding: 15px; */ /* Removed */
+    /* border-radius: 6px; */ /* Removed */
+    /* margin-top: 10px; */ /* Handled by children or removed */
+    /* box-shadow: 0 2px 5px rgba(0,0,0,0.05); */ /* Removed */
+    width: 100%; 
+    display: flex;
+    flex-direction: column; /* Stack option groups (.vocabulary-options, etc.) vertically */
+    align-items: center; /* Center these groups if they don't take up full width */
+    /* gap is removed as spacing will be handled by margins on children or padding within children */
 }
 
-.result-area { 
-    background-color: #fff; color: var(--text-color-dark); border-radius: 8px; 
-    padding: 20px; margin: 20px auto; /* Centered with top/bottom margin */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center;
-    font-size: var(--font-size-normal); min-height: 4em; /* Adjusted min-height */ 
+/* New rule for the direct children of .practice-options */
+.vocabulary-options, 
+.grammar-options, 
+.reading-options, 
+.speaking-options, 
+.writing-options {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center;   /* Align buttons vertically if they wrap to multiple lines */
+    flex-wrap: wrap;       /* Allow buttons to wrap to the next line */
+    gap: 8px;              /* Space between individual buttons */
+    width: 100%;           /* Ensure the container takes full width for proper centering of its content */
+    padding: 5px 0;        /* Add some vertical padding around the button groups */
+    margin-top: 10px;      /* Add space above each group of options */
+}
+
+.result-area {
+    background-color: #f8f9fa; /* Very light grey, var(--light-grey) */
+    color: var(--text-color-dark);
+    border-radius: 10px; /* Slightly increased radius */
+    padding: 25px;     /* Increased padding */
+    margin: 25px auto; /* Adjusted margin */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07); /* Softer, slightly deeper shadow */
+    text-align: center;
+    font-size: 1.05rem; /* Slightly larger font */
+    line-height: 1.6;  /* Improved line height for readability */
+    min-height: 120px; /* Increased min-height */
     animation: popIn 0.5s cubic-bezier(.23,1.01,.32,1) 0.1s both;
-    width: 100%; max-width: 700px; 
+    width: 100%;
+    max-width: 700px; /* Keep max-width */
+    border: 1px solid #dee2e6; /* var(--border-color) */
+    display: flex; /* Added to help center content vertically if needed */
+    flex-direction: column; /* Stack content vertically */
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+}
+
+/* Optional: Style for when result area has content to ensure it's not overly centered */
+.result-area:not(:empty) {
+    justify-content: flex-start; /* Align content to the top when not empty */
 }
 
 /* ==========================================================================
