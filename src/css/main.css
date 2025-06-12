@@ -320,10 +320,22 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
 #tf-feedback, #choose4-feedback, #match-feedback { font-size: 0.9rem; } 
 #tf-feedback span, #choose4-feedback span, #match-feedback span { animation: bounceIn 0.5s cubic-bezier(.23,1.01,.32,1); }
 
-.word-pool, .letter-pool {
+.word-pool, .letter-pool { /* Shared styles */
     gap: 8px; margin: 15px 0; padding: 10px; background: var(--light-grey); border-radius: 6px;
 }
-.word-tile, .letter-tile {
+
+/* Specific styles for .letter-pool */
+.letter-pool {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 15px; /* Increased padding */
+    border: 1px solid var(--medium-grey); /* Added border */
+    background-color: #f0f0f0; /* Distinct background */
+}
+
+.word-tile { /* Assuming .word-tile keeps original shared styles for now */
     padding: 8px 10px; background: var(--primary-color); color: var(--text-color-light); 
     border-radius: 4px; cursor: grab; user-select: none;
     min-width: 35px; min-height: 35px; 
@@ -331,17 +343,75 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
     font-size: 0.9rem; margin: 3px; border: none; 
     transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
-.word-tile:hover, .letter-tile:hover {
+.word-tile:hover {
     transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     background-color: var(--primary-hover-color);
 }
-.letter-tile.dragging { opacity: 0.6; transform: scale(1.1); } 
-.word-slots, .letter-slots { display:flex; justify-content:center; gap: 5px; margin: 15px 0; } /* Added justify-content */
-.word-slot, .letter-slot {
+
+/* New .letter-tile styles */
+.letter-tile {
+    padding: 8px 10px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    color: var(--text-color-light);
+    border-radius: 4px;
+    cursor: grab;
+    user-select: none;
+    min-width: 35px; /* Base, can be overridden by slot size effectively */
+    min-height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem; /* Increased font-size */
+    font-weight: bold; /* Added font-weight */
+    margin: 3px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Added box-shadow */
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+.letter-tile:hover {
+    transform: translateY(-2px) scale(1.05); /* Modified hover effect */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Modified hover effect */
+    /* background gradient could be changed on hover if desired, but not specified */
+}
+.letter-tile.dragging {
+    opacity: 0.7; /* Modified opacity */
+    box-shadow: 0 6px 10px rgba(0,0,0,0.3); /* Modified box-shadow */
+    transform: scale(1.1); /* Modified transform */
+}
+
+.word-slots { display:flex; justify-content:center; gap: 5px; margin: 15px 0; } /* Specific to word-slots */
+
+/* New .letter-slots styles */
+.letter-slots {
+    display:flex;
+    justify-content:center;
+    gap: 8px; /* Increased gap */
+    margin: 20px 0; /* Increased margin */
+}
+
+.word-slot { /* Specific to word-slot */
     min-width: 35px; min-height: 35px; background: var(--medium-grey);
     border: 1px dashed var(--dark-grey); border-radius: 4px; 
 }
-.letter-slot.hovered { background: var(--light-grey); border-style: solid; } 
+
+/* New .letter-slot styles */
+.letter-slot {
+    min-width: 45px; /* Increased size */
+    min-height: 45px; /* Increased size */
+    background: var(--light-grey); /* Changed background */
+    border: 2px dashed var(--medium-grey); /* Changed border */
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Added inset shadow */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.letter-slot.hovered {
+    border-color: var(--primary-color); /* Changed border-color */
+    background-color: #e9f5ff; /* Changed background-color */
+    border-style: dashed; /* Ensuring it remains dashed */
+}
 
 /* ==========================================================================
    Specific Exercise Type Styles
@@ -365,7 +435,16 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
 .opposite-arrow { font-size: 1.5rem; color: var(--dark-grey); }
 .opposite-answer { background: #fff; border: 2px dashed var(--primary-color); }
 .exercise-actions { gap: 10px; margin-top: 15px; display: flex; justify-content: center; } 
-.build-word-exercise { background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 500px; margin: 15px auto; text-align: center; }
+.build-word-exercise {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px; /* Increased padding */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    max-width: 500px;
+    margin: 15px auto;
+    text-align: center;
+    border: 1px solid var(--border-color); /* Added border */
+}
 .vocabulary-image { 
     max-width: 200px; max-height: 150px; display: block; margin: 15px auto; 
     border: 1px solid var(--medium-grey); border-radius: 4px; 
