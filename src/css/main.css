@@ -46,7 +46,12 @@ html {
 body {
     font-family: Arial, Helvetica, sans-serif;
     color: var(--text-color-dark);
-    background-color: #f4f4f4;
+    background-color: #f4f4f4; /* Fallback */
+    background-image: linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -543,3 +548,17 @@ button.btn-primary, button.btn-secondary, button.btn-emoji {
     margin: 5px;
     padding: 0.7em 1.3em;
 }
+
+/* --- Language Flag Backgrounds --- */
+body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYespañol { background-image: url('https://flagcdn.com/es.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYportuguês { background-image: url('https://flagcdn.com/pt.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbrezhoneg { background-image: url('/assets/icons/Flag_of_Brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYtatarça { background-image: url('/assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Bashkortostan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
