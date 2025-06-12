@@ -2,6 +2,7 @@
 // Data loading functions
 async function loadGenderGrammar(language, day) {
     const fileMap = {
+        'COSYenglish': 'data/grammar/gender/grammar_gender_english.json',
         'COSYitaliano': 'data/grammar/gender/grammar_gender_italian.json',
         'COSYfrançais': 'data/grammar/gender/grammar_gender_french.json',
         'COSYespañol': 'data/grammar/gender/grammar_gender_spanish.json',
@@ -15,8 +16,19 @@ async function loadGenderGrammar(language, day) {
         'COSYbashkort': 'data/grammar/gender/grammar_gender_bashkir.json'
     };
     const file = fileMap[language];
-    if (!file) return [];
-    const data = await loadData(file); // Use loadData
+    if (!file) {
+        console.error(`Error loading gender grammar: No file mapped for language ${language}`);
+        return []; 
+    }
+    
+    const loadResult = await loadData(file); 
+    
+    if (loadResult.error) {
+        console.error(`Error loading gender grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
+        return []; 
+    }
+    
+    const data = loadResult.data; 
     return data && data[day] ? data[day] : [];
 }
 
@@ -33,10 +45,20 @@ async function loadVerbGrammar(language, day) {
         'COSYbrezhoneg': 'data/grammar/verbs/grammar_verbs_breton.json',
         'COSYtatarça': 'data/grammar/verbs/grammar_verbs_tatar.json',
         'COSYbashkort': 'data/grammar/verbs/grammar_verbs_bashkir.json',
+        'ԾՈՍՅհայկական': 'data/grammar/verbs/grammar_verbs_armenian.json',
     };
     const file = fileMap[language];
-    if (!file) return [];
-    const data = await loadData(file); // Use loadData
+    if (!file) {
+        console.error(`Error loading verb grammar: No file mapped for language ${language}`);
+        return [];
+    }
+    const loadResult = await loadData(file); 
+    
+    if (loadResult.error) {
+        console.error(`Error loading verb grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
+        return [];
+    }
+    const data = loadResult.data;
     return data && data[day] ? data[day] : [];
 }
 
@@ -56,8 +78,17 @@ async function loadPossessivesGrammar(language, day) {
         'ΚΟΖΥελληνικά': 'data/grammar/possessives/possessives_greek.json'
     };
     const file = fileMap[language];
-    if (!file) return [];
-    const data = await loadData(file); // Use loadData
+    if (!file) {
+        console.error(`Error loading possessives grammar: No file mapped for language ${language}`);
+        return [];
+    }
+    const loadResult = await loadData(file); 
+    
+    if (loadResult.error) {
+        console.error(`Error loading possessives grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
+        return [];
+    }
+    const data = loadResult.data;
     return data && data[day] ? data[day] : [];
 }
 
@@ -182,7 +213,7 @@ async function showMatchArticlesWords() {
                     ${shuffledArticles.map(article => `<div class="match-item" data-article="${article}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.articleAriaLabel || 'Article:'} ${article}">${article} 📝</div>`).join('')}
                 </div>
                 <div class="match-col" id="words-col" aria-label="${currentTranslations.aria?.wordsColumn || 'Words column'}">
-                    ${shuffledWords.map(word => `<div class="match-item" data-word="${word}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.wordAriaLabel || 'Word:'} ${word}">${word} 🔤</div>`).join('')}
+                    ${shuffledWords.map(word => `<div class="match-item" data-word="${word}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.wordAriaLabel || 'Word:'} ${word}">${word}</div>`).join('')}
                 </div>
             </div>
             <div id="match-feedback" class="exercise-feedback" aria-live="polite"></div>

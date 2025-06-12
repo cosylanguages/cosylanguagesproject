@@ -999,15 +999,20 @@ function hideOtherMainPracticeTypes(selectedId) {
                 'COSYbashkort': 'data/speaking/prompts/speaking_bashkir.json'
             };
             const file = fileMap[language];
-            if (!file) return [];
-            try {
-                const response = await fetch(file);
-                if (!response.ok) return [];
-                const data = await response.json();
-                return data[day] || [];
-            } catch (e) {
-                return [];
+            if (!file) {
+                console.error(`Error loading vocabulary: No file mapped for language ${language}`);
+                return []; 
             }
+            
+            const loadResult = await loadData(file); // Uses global loadData from utils.js
+
+            if (loadResult.error) {
+                console.error(`Error loading vocabulary for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
+                return []; 
+            }
+            
+            const data = loadResult.data;
+            return data[day] || [];
         }
 
         // Speaking practice function
@@ -1722,6 +1727,8 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/ui/translations.js"></script>
     <script src="src/js/buttons.js"></script>
     <script src="src/js/language-handler.js"></script>
+    <script src="src/js/utils.js"></script>
+
 
 
 </body>

@@ -210,7 +210,7 @@ async function showRandomWord() {
     
     resultArea.innerHTML = `
         <div class="word-display-container" role="region" aria-label="${t.randomWordExercise || 'Random Word Exercise'}">
-            <div class="word-display" id="displayed-word" aria-label="${t.wordToPracticeLabel || 'Word to practice'}">🔤 <b>${word}</b></div>
+            <div class="word-display" id="displayed-word" aria-label="${t.wordToPracticeLabel || 'Word to practice'}"><b>${word}</b></div>
             <div class="word-actions">
                 <button id="pronounce-word" class="btn-emoji" aria-label="${t.pronounceWord || 'Pronounce word'}">🔊</button>
                 <button id="next-word" class="btn-emoji" aria-label="${t.nextWord || 'Next word'}">🔄</button>
@@ -261,7 +261,7 @@ async function showOppositesExercise(baseWord = null) {
     resultArea.innerHTML = `
         <div class="opposites-exercise" role="form" aria-label="${t.oppositesExercise || 'Opposites Exercise'}">
             <div class="word-pair">
-                <div class="word-box" aria-label="${t.wordAriaLabel || 'Word'}">${word} 🔤</div>
+                <div class="word-box" aria-label="${t.wordAriaLabel || 'Word'}">${word}</div>
                 <div class="opposite-arrow" aria-label="${t.oppositeArrowLabel || 'Opposite arrow'}">⇄</div>
                 <div class="word-box opposite-answer" id="opposite-answer" aria-label="${t.oppositeLabel || 'Opposite'}">?</div>
             </div>
@@ -342,7 +342,7 @@ async function showMatchOpposites() {
             <div class="match-container">
                 <div class="match-col" id="words-col" aria-label="${t.wordsColumn || 'Words column'}">
                     ${wordsColumn.map((pair, index) => `
-                        <div class="match-item" data-word="${pair.word}" role="button" tabindex="0" aria-label="${t.wordLabel || 'Word'}: ${pair.word}">${pair.word} 🔤</div>
+                        <div class="match-item" data-word="${pair.word}" role="button" tabindex="0" aria-label="${t.wordLabel || 'Word'}: ${pair.word}">${pair.word}</div>
                     `).join('')}
                 </div>
                 <div class="match-col" id="opposites-col" aria-label="${t.oppositesColumn || 'Opposites column'}">

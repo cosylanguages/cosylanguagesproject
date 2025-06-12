@@ -73,15 +73,25 @@ async function loadData(filePath) {
     try {
         const response = await fetch(filePath);
         if (response.ok) {
-            const data = await response.json();
-            return data;
+            try {
+                const data = await response.json();
+                return { data: data, error: null, errorType: null };
+            } catch (jsonError) {
+                console.error(`Error parsing JSON from ${filePath}:`, jsonError);
+                return { data: [], error: 'Invalid JSON format', errorType: 'jsonError' };
+            }
         } else {
-            console.error(`Error loading data from ${filePath}: ${response.status}`);
-            return []; // Return empty array on HTTP error
+            if (response.status === 404) {
+                console.error(`Error loading data from ${filePath}: ${response.status} (File not found)`);
+                return { data: [], error: 'File not found', errorType: 'fileNotFound' };
+            } else {
+                console.error(`Error loading data from ${filePath}: ${response.status}`);
+                return { data: [], error: 'Failed to load data', errorType: 'httpError' };
+            }
         }
     } catch (error) {
-        console.error(`Exception while loading data from ${filePath}:`, error);
-        return []; // Return empty array on network error or JSON parsing error
+        console.error(`Network error or other exception while loading data from ${filePath}:`, error);
+        return { data: [], error: 'Network error or other issue', errorType: 'networkError' };
     }
 }
 
