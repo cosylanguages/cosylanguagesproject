@@ -210,7 +210,7 @@ async function showMatchArticlesWords() {
         <div class="match-exercise" role="region" aria-label="${currentTranslations.aria?.matchArticlesWords || 'Match Articles and Words'}">
             <div class="match-container">
                 <div class="match-col" id="articles-col" aria-label="${currentTranslations.aria?.articlesColumn || 'Articles column'}">
-                    ${shuffledArticles.map(article => `<div class="match-item" data-article="${article}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.articleAriaLabel || 'Article:'} ${article}">${article} 📝</div>`).join('')}
+                    ${shuffledArticles.map(article => `<div class="match-item" data-article="${article}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.articleAriaLabel || 'Article:'} ${article}">${article} </div>`).join('')}
                 </div>
                 <div class="match-col" id="words-col" aria-label="${currentTranslations.aria?.wordsColumn || 'Words column'}">
                     ${shuffledWords.map(word => `<div class="match-item" data-word="${word}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.wordAriaLabel || 'Word:'} ${word}">${word}</div>`).join('')}
