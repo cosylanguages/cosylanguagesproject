@@ -192,9 +192,10 @@ async function startRandomWordPractice() {
 async function showRandomWord() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
+    const t = translations[language] || translations.COSYenglish;
     
     if (!language || !days.length) {
-        alert('Please select language and day(s) first');
+        alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
 
@@ -208,15 +209,15 @@ async function showRandomWord() {
     const resultArea = document.getElementById('result');
     
     resultArea.innerHTML = `
-        <div class="word-display-container" role="region" aria-label="Random Word Exercise">
-            <div class="word-display" id="displayed-word" aria-label="Word to practice">🔤 <b>${word}</b></div>
+        <div class="word-display-container" role="region" aria-label="${t.randomWordExercise || 'Random Word Exercise'}">
+            <div class="word-display" id="displayed-word" aria-label="${t.wordToPracticeLabel || 'Word to practice'}">🔤 <b>${word}</b></div>
             <div class="word-actions">
-                <button id="pronounce-word" class="btn-emoji" aria-label="Pronounce word">🔊</button>
-                <button id="next-word" class="btn-emoji" aria-label="Next word">🔄</button>
+                <button id="pronounce-word" class="btn-emoji" aria-label="${t.pronounceWord || 'Pronounce word'}">🔊</button>
+                <button id="next-word" class="btn-emoji" aria-label="${t.nextWord || 'Next word'}">🔄</button>
             </div>
             <div class="word-exercise-options">
-                <button class="btn-secondary" id="practice-opposite" aria-label="Find Opposite">⇄ Find Opposite</button>
-                <button class="btn-secondary" id="practice-build" aria-label="Build Word">🔡 Build Word</button>
+                <button class="btn-secondary" id="practice-opposite" aria-label="${t.findOppositeButtonLabel || 'Find Opposite'}">${t.findOppositeButtonLabel || '⇄ Find Opposite'}</button>
+                <button class="btn-secondary" id="practice-build" aria-label="${t.buildWordButtonLabel || 'Build Word'}">${t.buildWordButtonLabel || '🔡 Build Word'}</button>
             </div>
         </div>
     `;
@@ -243,62 +244,51 @@ async function showRandomWord() {
 async function showOppositesExercise(baseWord = null) {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
-    
+    const t = translations[language] || translations.COSYenglish;
     if (!language || !days.length) {
-        alert('Please select language and day(s) first');
+        alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
-
     const words = await loadVocabulary(language, days);
     const opposites = await loadOpposites(language, days);
-    
     if (!words.length || Object.keys(opposites).length === 0) {
         showNoDataMessage();
         return;
     }
-
     const word = baseWord || words[Math.floor(Math.random() * words.length)];
-    const opposite = opposites[word] || 'No opposite found';
-
+    const opposite = opposites[word] || (t.noOppositeFound || 'No opposite found');
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
-        <div class="opposites-exercise" role="form" aria-label="Opposites Exercise">
+        <div class="opposites-exercise" role="form" aria-label="${t.oppositesExercise || 'Opposites Exercise'}">
             <div class="word-pair">
-                <div class="word-box" aria-label="Word">${word} 🔤</div>
-                <div class="opposite-arrow" aria-label="Opposite arrow">⇄</div>
-                <div class="word-box opposite-answer" id="opposite-answer" aria-label="Opposite">?</div>
+                <div class="word-box" aria-label="${t.wordAriaLabel || 'Word'}">${word} 🔤</div>
+                <div class="opposite-arrow" aria-label="${t.oppositeArrowLabel || 'Opposite arrow'}">⇄</div>
+                <div class="word-box opposite-answer" id="opposite-answer" aria-label="${t.oppositeLabel || 'Opposite'}">?</div>
             </div>
-            <input type="text" id="opposite-input" class="exercise-input" aria-label="Type the opposite" placeholder="Type the opposite...">
-            <button id="check-opposite" class="btn-primary" aria-label="Check answer">✅ ${translations[language]?.check || 'Check'}</button>
+            <input type="text" id="opposite-input" class="exercise-input" aria-label="${t.typeTheOpposite || 'Type the opposite'}" placeholder="${t.typeTheOppositePlaceholder || 'Type the opposite...'}">
+            <button id="check-opposite" class="btn-primary" aria-label="${t.checkAnswer || 'Check answer'}">✅ ${t.check || 'Check'}</button>
             <div id="opposite-feedback" class="exercise-feedback" aria-live="polite"></div>
             <div class="exercise-actions">
-                <button id="reveal-opposite" class="btn-secondary" aria-label="Reveal Answer">👁️ Reveal Answer</button>
-                <button id="new-opposite" class="btn-secondary" aria-label="New Word">🔄 New Word</button>
+                <button id="reveal-opposite" class="btn-secondary" aria-label="${t.revealAnswer || 'Reveal Answer'}">👁️ ${t.revealAnswer || 'Reveal Answer'}</button>
+                <button id="new-opposite" class="btn-secondary" aria-label="${t.newWord || 'New Word'}">🔄 ${t.newWord || 'New Word'}</button>
             </div>
         </div>
     `;
-
     addEnterKeySupport('opposite-input', 'check-opposite');
-
-    // Add event listeners
     document.getElementById('check-opposite').addEventListener('click', () => {
         const userAnswer = document.getElementById('opposite-input').value.trim();
         const feedback = document.getElementById('opposite-feedback');
-        
-        
         if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
-            feedback.innerHTML = '<span class="correct">✅ Correct!</span>';
+            feedback.innerHTML = `<span class="correct">${t.correct || '✅ Correct!'}</span>`;
             document.getElementById('opposite-answer').textContent = opposite;
         } else {
-            feedback.innerHTML = '<span class="incorrect">❌ Try again!</span>';
+            feedback.innerHTML = `<span class="incorrect">${t.feedbackNotQuiteTryAgain || '❌ Try again!'}</span>`;
         }
     });
-
     document.getElementById('reveal-opposite').addEventListener('click', () => {
         document.getElementById('opposite-answer').textContent = opposite;
         document.getElementById('opposite-feedback').innerHTML = '';
     });
-
     document.getElementById('new-opposite').addEventListener('click', () => {
         showOppositesExercise();
     });
@@ -308,9 +298,10 @@ async function showOppositesExercise(baseWord = null) {
 async function showMatchOpposites() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
+    const t = translations[language] || translations.COSYenglish;
     
     if (!language || !days.length) {
-        alert('Please select language and day(s) first');
+        alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
 
@@ -347,22 +338,22 @@ async function showMatchOpposites() {
 
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
-        <div class="match-exercise" role="region" aria-label="Match Opposites Exercise">
+        <div class="match-exercise" role="region" aria-label="${t.matchOppositesExercise || 'Match Opposites Exercise'}">
             <div class="match-container">
-                <div class="match-col" id="words-col" aria-label="Words column">
+                <div class="match-col" id="words-col" aria-label="${t.wordsColumn || 'Words column'}">
                     ${wordsColumn.map((pair, index) => `
-                        <div class="match-item" data-word="${pair.word}" role="button" tabindex="0" aria-label="Word: ${pair.word}">${pair.word} 🔤</div>
+                        <div class="match-item" data-word="${pair.word}" role="button" tabindex="0" aria-label="${t.wordLabel || 'Word'}: ${pair.word}">${pair.word} 🔤</div>
                     `).join('')}
                 </div>
-                <div class="match-col" id="opposites-col" aria-label="Opposites column">
+                <div class="match-col" id="opposites-col" aria-label="${t.oppositesColumn || 'Opposites column'}">
                     ${oppositesColumn.map((opposite, index) => `
-                        <div class="match-item" data-opposite="${opposite}" role="button" tabindex="0" aria-label="Opposite: ${opposite}">${opposite} ⇄</div>
+                        <div class="match-item" data-opposite="${opposite}" role="button" tabindex="0" aria-label="${t.oppositeLabel || 'Opposite'}: ${opposite}">${opposite} ⇄</div>
                     `).join('')}
                 </div>
             </div>
             <div id="match-feedback" class="exercise-feedback" aria-live="polite"></div>
-            <button id="check-matches" class="btn-primary" aria-label="Check Matches">✅ ${translations[language]?.check || 'Check'} Matches</button>
-            <button id="new-match" class="btn-secondary" aria-label="New Exercise">🔄 New Exercise</button>
+            <button id="check-matches" class="btn-primary" aria-label="${t.checkMatches || 'Check Matches'}">✅ ${translations[language]?.check || 'Check'} ${t.matches || 'Matches'}</button>
+            <button id="new-match" class="btn-secondary" aria-label="${t.newExercise || 'New Exercise'}">🔄 ${t.newExercise || 'New Exercise'}</button>
         </div>
     `;
 
@@ -441,6 +432,7 @@ async function showBuildWord(baseWord = null) {
 
     const word = baseWord || words[Math.floor(Math.random() * words.length)];
     const shuffledLetters = shuffleArray([...word.toLowerCase()]);
+    const t = translations[language] || translations.COSYenglish;
     
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
@@ -592,13 +584,14 @@ async function showIdentifyImage() {
 
     const imageItem = images[Math.floor(Math.random() * images.length)];
     const correctAnswer = imageItem.translations[language];
+    const t = translations[language] || translations.COSYenglish;
     
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="image-exercise">
-            <h3>What is this?</h3>
+            <h3>${t.whatIsThis || 'What is this?'}</h3>
             <img src="${imageItem.src}" alt="${imageItem.alt}" class="vocabulary-image">
-            <input type="text" id="image-answer" placeholder="Type the word...">
+            <input type="text" id="image-answer" placeholder="${t.typeTheWord || 'Type the word...'}">
             <button id="check-image" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
             <div id="image-feedback"></div>
             <button id="new-image" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Image'}</button>
@@ -678,7 +671,7 @@ async function showMatchImageWord() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="match-image-word-exercise">
-            <h3>Match each image with its word</h3>
+            <h3>${t.matchEachImageWithWord || 'Match each image with its word'}</h3>
             <div class="match-grid">
                 ${shuffledItems.map(item => `
                     ${item.type === 'image' ? `
@@ -694,7 +687,7 @@ async function showMatchImageWord() {
             </div>
             <div id="match-image-feedback"></div>
             <button id="check-image-matches" class="btn-primary">${translations[language]?.buttons?.check || 'Check'} Matches</button>
-            <button id="new-image-match" class="btn-secondary" aria-label="New Exercise">🔄 New Exercise</button>
+            <button id="new-image-match" class="btn-secondary" aria-label="${t.newExercise || 'New Exercise'}">🔄 ${t.newExercise || 'New Exercise'}</button>
         </div>
     `;
 
@@ -788,11 +781,12 @@ async function showTranscribeWord() {
 
     const word = words[Math.floor(Math.random() * words.length)];
     const resultArea = document.getElementById('result');
+    const t = translations[language] || translations.COSYenglish;
     
     resultArea.innerHTML = `
         <div class="listening-exercise">
             <button id="play-word" class="btn-emoji">🔊</button>
-            <input type="text" id="transcription" placeholder="Type what you hear...">
+            <input type="text" id="transcription" placeholder="${t.typeWhatYouHear || 'Type what you hear...'}">
             <button id="check-transcription" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
             <div id="transcription-feedback"></div>
             <button id="new-transcription" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Word'}</button>
@@ -849,6 +843,7 @@ async function showMatchSoundWord() {
 
     // The word to play
     const wordToPlay = selectedWords[Math.floor(Math.random() * selectedWords.length)];
+    const t = translations[language] || translations.COSYenglish;
     
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `

@@ -15,18 +15,28 @@ function showNoDataMessage() {
 }
 
 // Helper: Add randomize button to exercise containers
-function addRandomizeButton(containerId, randomizeFn) {
-    const container = document.getElementById(containerId) || document.querySelector(`.${containerId}`);
-    if (!container) return;
+function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to accept element directly
+    let container = containerIdOrElement;
+    if (typeof containerIdOrElement === 'string') {
+        container = document.getElementById(containerIdOrElement) || document.querySelector(`.${containerIdOrElement}`);
+    }
+    
+    if (!container) {
+        // console.warn(`Container not found for randomize button: ${containerIdOrElement}`);
+        return;
+    }
     // Remove any existing randomize button to avoid duplicates
     const existingBtn = container.querySelector('.btn-randomize');
     if (existingBtn) existingBtn.remove();
+    
     let btn = document.createElement('button');
     btn.className = 'btn-randomize';
-    const language = document.getElementById('language')?.value || 'COSYenglish';
-    btn.setAttribute('aria-label', (translations[language]?.buttons?.randomize || 'Randomize exercise'));
-    btn.title = translations[language]?.buttons?.randomize || 'Randomize exercise';
-    btn.innerHTML = translations[language]?.buttons?.randomize || '🎲';
+    const language = document.getElementById('language')?.value || 'COSYenglish'; // Assume translations is global
+    const currentTranslations = translations[language] || translations.COSYenglish;
+
+    btn.setAttribute('aria-label', currentTranslations.aria?.randomize || 'Randomize exercise');
+    btn.title = currentTranslations.aria?.randomize || 'Randomize exercise';
+    btn.innerHTML = currentTranslations.buttons?.randomize || '🎲';
     btn.style.marginLeft = '10px';
     btn.style.float = 'right';
     btn.style.fontSize = '1.5rem';
@@ -40,6 +50,8 @@ function addRandomizeButton(containerId, randomizeFn) {
     btn.style.transition = 'transform 0.2s';
     btn.onmouseover = () => btn.style.transform = 'scale(1.15)';
     btn.onmouseout = () => btn.style.transform = '';
+    btn.onclick = randomizeFn; // Assign the passed randomizeFn directly
+
     container.prepend(btn);
 }
 
@@ -71,4 +83,16 @@ async function loadData(filePath) {
         console.error(`Exception while loading data from ${filePath}:`, error);
         return []; // Return empty array on network error or JSON parsing error
     }
+}
+
+function patchExerciseForRandomizeButton(originalExerciseFn, containerSelectorOrElement, randomizeFn) {
+    return async function() {
+        // Call the original exercise function, ensuring 'this' and 'arguments' are passed correctly
+        await originalExerciseFn.apply(this, arguments);
+        
+        // Now, add the randomize button.
+        // addRandomizeButton can take an ID string, a class selector string (e.g. ".my-class"), or an element.
+        // The existing addRandomizeButton logic handles ID or class selector (if class is passed as ".class-name" or just "class-name").
+        addRandomizeButton(containerSelectorOrElement, randomizeFn);
+    };
 }

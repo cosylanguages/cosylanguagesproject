@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSYlanguages</title>
-    <link rel="stylesheet" href="src/css/styles.css">
-    <link rel="stylesheet" href="src/css/vocabulary.css">
-    <link rel="stylesheet" href="src/css/grammar.css">
-</script>
+    <link rel="stylesheet" href="src/css/main.css">
 </head>
 <body>
     <div class="container">
@@ -115,20 +112,18 @@
         <div id="result" class="result-area flex-center"></div>
     </div>
 
-    <!-- Dashboard Section -->
-    <section id="dashboard" style="display:none;">
-      <h2>Dashboard</h2>
-      <div id="user-stats">
-        <p>XP: <span id="xp-count">0</span></p>
-        <p>Streak: <span id="streak-count">0</span></p>
-        <p>Completed Lessons: <span id="completed-lessons">0</span></p>
-        <p>Level: <span id="user-level">1</span></p>
-        <p>Achievements: <span id="user-achievements"></span></p>
-      </div>
-      <button id="go-to-skill-tree">Go to Skill Tree</button>
-    </section>
+    <!-- Floating Help Button -->
+    <button id="floating-help-btn" title="Help / Fun Fact / Tip">❓</button>
+    <!-- Floating Fun Fact / Tip Popup -->    <div id="floating-tip-popup">
+      <span id="floating-tip-text"></span>
+      <button class="close-tip" title="Close">✖</button>
+      <button class="translate-tip" title="Translate">🌍</button>
+    </div>
+    <!-- Translation Popup -->    <div id="translation-popup">
+      <span id="translation-popup-text"></span>
+      <button class="close-translation" title="Close">✖</button>
+    </div>
 
-    <script src="src/js/user-progress.js"></script>
     <script>
         // Populate days dropdown (1-30)
         const daySelect = document.getElementById('day');
@@ -313,8 +308,6 @@ function hideOtherMainPracticeTypes(selectedId) {
                         else if (type.includes('verb')) practiceGrammar('verbs');
                         else if (type.includes('adjective')) practiceGrammar('adjectives');
                         else if (type.includes('plural')) practiceGrammar('plurals');
-                        else if (type.includes('past')) practiceGrammar('pastTense');
-                        else if (type.includes('future')) practiceGrammar('futureTense');
                     }
                 };
             }
@@ -353,7 +346,7 @@ function hideOtherMainPracticeTypes(selectedId) {
             if (day >= 1) {
                 const genderBtn = document.createElement('button');
                 genderBtn.textContent = t.gender;
-                genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                genderBtn.className = 'btn-secondary grammar-option-btn';
                 genderBtn.onclick = function() {
                     // Start gender practice on single click
                     hideOtherGrammarOptionBtns(genderBtn);
@@ -365,7 +358,7 @@ function hideOtherMainPracticeTypes(selectedId) {
             if (day >= 2) {
                 const verbBtn = document.createElement('button');
                 verbBtn.textContent = t.verbs;
-                verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                verbBtn.className = 'btn-secondary grammar-option-btn';
                 verbBtn.onclick = function() {
                     // Start verb practice on single click
                     hideOtherGrammarOptionBtns(verbBtn);
@@ -377,14 +370,14 @@ function hideOtherMainPracticeTypes(selectedId) {
             if (day >= 5) {
                 const pastBtn = document.createElement('button');
                 pastBtn.textContent = t.pastTense;
-                pastBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                pastBtn.className = 'btn-secondary grammar-option-btn';
                 pastBtn.onclick = makeToggleHandler(pastBtn);
                 grammarOptionsContainer.appendChild(pastBtn);
             }
             if (day >= 7) {
                 const futureBtn = document.createElement('button');
                 futureBtn.textContent = t.futureTense;
-                futureBtn.className = 'btn-secondary btn-small grammar-option-btn';
+                futureBtn.className = 'btn-secondary grammar-option-btn';
                 futureBtn.onclick = makeToggleHandler(futureBtn);
                 grammarOptionsContainer.appendChild(futureBtn);
             }
@@ -717,7 +710,7 @@ function hideOtherMainPracticeTypes(selectedId) {
                 function renderOppositePractice() {
                     const opposite = opposites[word.trim()];
                     resultArea.innerHTML = `
-                        <div class="flex-col-center min-height-220">
+                        <div class="flex-col-center min-height-180">
                             <div id="opposite-word" class="font-size-15 font-weight-600 margin-bottom-8 cursor-pointer">${word} ≠ ?</div>
                             <input id="opposite-input" type="text" placeholder="Type the opposite..." class="font-size-11 padding-8-14 border-radius-8 border-bbb margin-bottom-10 min-width-220 text-center">
                             <div class="flex-row-center gap-18 justify-content-center align-items-center">
@@ -1482,7 +1475,7 @@ function hideOtherMainPracticeTypes(selectedId) {
 
                             <div style=\"display:flex; align-items:center; gap:12px; margin-bottom:18px;\">
                                 <span id=\"verb-prompt\" style=\"font-size:2rem; font-weight:600; cursor:pointer;\">${item.prompt}</span>
-                                <button id="play-verb-pronounce-btn" class="btn-secondary btn-emoji" title="Hear pronunciation">🔊</button>
+                                <button id=\"play-verb-pronounce-btn\" class=\"btn-secondary btn-emoji\" title=\"Hear pronunciation\">🔊</button>
                             </div>
                             <input id=\"verb-answer-input\" type=\"text\" placeholder=\"Type the answer...\" style=\"font-size:1.1rem; padding:8px 14px; border-radius:8px; border:1px solid #bbb; margin-bottom:14px; width:220px; text-align:center;\">
                             <div id="verb-answer-feedback" style="margin-top:10px;"></div>
@@ -1717,73 +1710,6 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
   };
   statsContainer.appendChild(resetBtn);
 }
-
-// --- User Progress Integration & Gamification ---
-        if (typeof UserProgress !== 'undefined') {
-            UserProgress.load();
-            UserProgress.updateStreak();
-            updateDashboardUI();
-        }
-
-        // Calculate user level based on XP (e.g., every 50 XP = 1 level)
-        function getUserLevel(xp) {
-            return Math.floor(xp / 50) + 1;
-        }
-
-        // Example achievements logic
-        function getAchievements(progress) {
-            const achievements = [];
-            if (progress.xp >= 100) achievements.push('💯 100 XP!');
-            if (progress.streak >= 7) achievements.push('🔥 7-day streak!');
-            if (progress.completedLessons.length >= 10) achievements.push('🏅 10 Lessons!');
-            return achievements;
-        }
-
-        function updateDashboardUI() {
-            if (typeof UserProgress === 'undefined') return;
-            document.getElementById('xp-count').textContent = UserProgress.data.xp;
-            document.getElementById('streak-count').textContent = UserProgress.data.streak;
-            document.getElementById('completed-lessons').textContent = UserProgress.data.completedLessons.length;
-            document.getElementById('user-level').textContent = getUserLevel(UserProgress.data.xp);
-            document.getElementById('user-achievements').textContent = getAchievements(UserProgress.data).join(' ');
-        }
-
-        // Navigation: Dashboard <-> Skill Tree/Main Menu
-        const dashboardSection = document.getElementById('dashboard');
-        const goToSkillTreeBtn = document.getElementById('go-to-skill-tree');
-        let dashboardBtn = document.getElementById('open-dashboard-btn');
-        if (!dashboardBtn) {
-            dashboardBtn = document.createElement('button');
-            dashboardBtn.id = 'open-dashboard-btn';
-            dashboardBtn.textContent = '🏆 Dashboard';
-            dashboardBtn.className = 'btn-primary';
-            const menuSection = document.querySelector('.menu-section');
-            if (menuSection) menuSection.parentNode.insertBefore(dashboardBtn, menuSection);
-        }
-        dashboardBtn.onclick = function() {
-            document.querySelector('.container').style.display = 'none';
-            dashboardSection.style.display = 'block';
-            updateDashboardUI();
-        };
-        goToSkillTreeBtn.onclick = function() {
-            dashboardSection.style.display = 'none';
-            document.querySelector('.container').style.display = 'block';
-        };
-
-        // --- Connect lesson completion to XP/streaks ---
-        // Call this function when a lesson is completed
-        function completeLessonAndReward(lessonId) {
-            if (typeof UserProgress !== 'undefined') {
-                UserProgress.completeLesson(lessonId);
-                UserProgress.updateStreak();
-                updateDashboardUI();
-                // Gamification: show confetti and toast
-                if (typeof showConfetti === 'function') showConfetti();
-                if (typeof showToast === 'function') showToast('🎉 Lesson completed! +10 XP');
-            }
-        }
-        // Example: Hook into your lesson completion logic
-        // completeLessonAndReward('lesson-1'); // Call this when a lesson is finished
     </script>
 
     <script src="src/js/exercises/vocabulary.js"></script>
@@ -1796,7 +1722,7 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/ui/translations.js"></script>
     <script src="src/js/buttons.js"></script>
     <script src="src/js/language-handler.js"></script>
-    <script src="src/js/user-progress.js"></script>
-    <script src="src/js/utils.js"></script>
+
+
 </body>
 </html>
