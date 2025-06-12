@@ -601,3 +601,21 @@ body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/
 body.flag-COSYbrezhoneg { background-image: url('/assets/icons/Flag_of_Brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
 body.flag-COSYtatarça { background-image: url('/assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
 body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Bashkortostan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+
+.randomizer-button {
+  margin-left: 10px;
+  float: right;
+  font-size: 1.5rem;
+  background: linear-gradient(90deg,#ffe082,#1de9b6);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  box-shadow: 0 2px 8px #ccc;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.randomizer-button:hover {
+  transform: scale(1.15);
+}
