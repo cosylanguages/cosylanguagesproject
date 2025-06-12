@@ -619,3 +619,56 @@ body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Bashkortos
 .randomizer-button:hover {
   transform: scale(1.15);
 }
+
+/* CSS-only translation workaround for 'Choose Your Practice' label */
+#choose-practice-label {
+    font-size: 0 !important; /* Hide original text, !important to override existing label styles if necessary */
+    position: relative; /* Ensure pseudo-element is positioned relative to this label */
+}
+
+#choose-practice-label::before {
+    font-size: 1rem; /* Restore font size for the pseudo-element, match original label font-size if different */
+    color: var(--text-color-light); /* Assuming this label is on a dark background like other container labels */
+    /* Add other original label styling here if needed e.g., font-weight */
+}
+
+/* Language-specific content */
+body.flag-COSYenglish #choose-practice-label::before {
+    content: "🧭 Choose Your Practice:";
+}
+body.flag-COSYfrançais #choose-practice-label::before {
+    content: "🧭 Choisissez votre exercice :";
+}
+body.flag-COSYitaliano #choose-practice-label::before {
+    content: "🧭 Scegli il tuo esercizio:";
+}
+body.flag-COSYespañol #choose-practice-label::before {
+    content: "🧭 Elige tu práctica:";
+}
+body.flag-COSYportuguês #choose-practice-label::before {
+    content: "🧭 Escolha sua prática:";
+}
+body.flag-COSYdeutsch #choose-practice-label::before {
+    content: "🧭 Wählen Sie Ihre Übung:";
+}
+body.flag-ΚΟΖΥελληνικά #choose-practice-label::before {
+    content: "🧭 Επιλέξτε την άσκησή σας:";
+}
+body.flag-ТАКОЙрусский #choose-practice-label::before {
+    content: "🧭 Выберите упражнение:";
+}
+body.flag-COSYbrezhoneg #choose-practice-label::before {
+    content: "🧭 Dibabit ho pleustr :";
+}
+body.flag-COSYtatarça #choose-practice-label::before {
+    content: "🧭 Практиканы сайлагыз:";
+}
+body.flag-ԾՈՍՅհայկական #choose-practice-label::before {
+    content: "🧭 Ընտրեք ձեր վարժությունը:";
+}
+/* Note: The Bashkir (COSYbashkort) translation for selectPractice was missing in the provided translations.js. 
+   I will add a rule for it using the English text as a fallback. 
+   If a Bashkir translation becomes available, this CSS should be updated. */
+body.flag-COSYbashkort #choose-practice-label::before {
+    content: "🧭 Choose Your Practice:"; /* Fallback for Bashkir */
+}
