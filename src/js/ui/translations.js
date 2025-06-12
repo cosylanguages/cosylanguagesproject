@@ -2036,5 +2036,3 @@ const translations = {
     }
   }
 };
-
-
