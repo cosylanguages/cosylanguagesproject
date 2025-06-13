@@ -1,92 +1,155 @@
 // Event Listeners Setup (Core Logic)
 
-function setupCoreEventListeners() {
-    console.log("DEBUG: setupCoreEventListeners called");
+function populateDaysDropdowns() {
+    const daySelect = document.getElementById('day');
+    const dayFromSelect = document.getElementById('day-from');
+    const dayToSelect = document.getElementById('day-to');
 
+    if (daySelect && dayFromSelect && dayToSelect) {
+        for (let i = 1; i <= 30; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `Day ${i}`;
+            daySelect.appendChild(option.cloneNode(true));
+            dayFromSelect.appendChild(option.cloneNode(true));
+            dayToSelect.appendChild(option.cloneNode(true));
+        }
+    }
+}
+
+function initializeEventListeners() {
+    console.log("DEBUG: initializeEventListeners called");
+
+    populateDaysDropdowns();
+
+    // restoreUserSelection is expected to be global (from index.html)
+    if (typeof restoreUserSelection === 'function') {
+        restoreUserSelection(); 
+    } else {
+        console.warn("initializeEventListeners: restoreUserSelection is not defined. User selections may not be restored.");
+        // Fallback: update UI for default language if restoreUserSelection isn't there
+        const languageSelectElementForFallback = document.getElementById('language');
+        const initialLangForFallback = languageSelectElementForFallback ? (languageSelectElementForFallback.value || 'COSYenglish') : 'COSYenglish';
+        if (typeof updateUIForLanguage === 'function') { // updateUIForLanguage is from language-handler.js
+            updateUIForLanguage(initialLangForFallback);
+        }
+    }
+
+    if (typeof goBackToMainMenu === 'function') { // From ui-visibility.js
+        goBackToMainMenu(); 
+    } else {
+        console.error("initializeEventListeners: goBackToMainMenu is not defined.");
+    }
+
+    if (typeof updateDaySelectors === 'function') { // From ui-visibility.js (or index.html if not moved)
+        updateDaySelectors(); 
+    } else {
+        console.error("initializeEventListeners: updateDaySelectors is not defined.");
+    }
+    
+    const languageSelectElement = document.getElementById('language');
     const daySelectElement = document.getElementById('day');
     const dayFromSelectElement = document.getElementById('day-from');
     const dayToSelectElement = document.getElementById('day-to');
-    const languageSelectElement = document.getElementById('language');
-    const grammarOptionsElement = document.getElementById('grammar-options'); // Used in original listeners
+    const grammarOptionsElement = document.getElementById('grammar-options');
 
-    // This function is intended to be called AFTER the main DOMContentLoaded in index.html
-    // has run restoreUserSelection() and goBackToMainMenu().
-    
-    const initialDayValue = daySelectElement ? daySelectElement.value : ""; 
-    const initialDay = initialDayValue && initialDayValue !== "" ? parseInt(initialDayValue) : 1; 
-    const initialLang = languageSelectElement ? (languageSelectElement.value || 'COSYenglish') : 'COSYenglish';
-    
-    if (typeof updateUIVisibilityForDay === 'function') {
-        updateUIVisibilityForDay(initialDay, initialLang);
-    } else {
-        console.error("updateUIVisibilityForDay function is not defined. UI Visibility will not be updated on load from event-listeners-setup.js.");
-    }
-
-    // Event listener for single day selection
-    if (daySelectElement) {
-        daySelectElement.addEventListener('change', function() {
-            // The original listener in index.html handles updateDaySelectors and potentially updateGrammarOptions.
-            // This adds the call to updateUIVisibilityForDay.
-            if (this.value) { 
-                const currentLanguage = languageSelectElement ? languageSelectElement.value : 'COSYenglish';
-                if (typeof updateUIVisibilityForDay === 'function') {
-                    updateUIVisibilityForDay(parseInt(this.value), currentLanguage);
-                }
-            }
-        });
-    }
-
-    // Event listener for language selection
     if (languageSelectElement) {
         languageSelectElement.addEventListener('change', function() {
-            // The original listener in index.html handles flag, updateUIForLanguage, saveUserSelection.
-            // This adds the call to updateUIVisibilityForDay.
             const lang = this.value;
-            const currentDayValue = daySelectElement ? daySelectElement.value : "";
-            let dayToUse = 1; // Default day
 
-            if (currentDayValue) {
-                dayToUse = parseInt(currentDayValue);
+            // Determine current day for context
+            // This logic is for updateUIVisibilityForDay, which needs a specific day.
+            let dayToUse = 1; // Default day
+            const singleDayValue = daySelectElement ? daySelectElement.value : "";
+            if (singleDayValue) {
+                dayToUse = parseInt(singleDayValue);
             } else {
                 const dayFromValue = dayFromSelectElement ? dayFromSelectElement.value : "";
                 if (dayFromValue) {
                     dayToUse = parseInt(dayFromValue);
                 }
             }
-            if (typeof updateUIVisibilityForDay === 'function') {
+
+            // Call for UI visibility update based on day and language
+            if (typeof updateUIVisibilityForDay === 'function') { // from ui-visibility.js
                 updateUIVisibilityForDay(dayToUse, lang);
             }
+
+            // Update grammar options if they are visible
+            // updateGrammarOptions (from ui-visibility.js or index.html) should internally get current language and day
+            if (grammarOptionsElement && grammarOptionsElement.style.display === 'block') {
+                if (typeof updateGrammarOptions === 'function') { 
+                    updateGrammarOptions();
+                }
+            }
+            // Note: saveUserSelection, body class update, and the main updateUIForLanguage(lang) call
+            // are assumed to be handled by listeners in index.html and language-handler.js
+            // that could not be removed or fully consolidated.
         });
     }
-    
-    // Event listeners for day range selectors
-    [dayFromSelectElement, dayToSelectElement].forEach(el => {
-        if (el) {
-            el.addEventListener('change', function() {
-                // The original listeners in index.html handle updateGrammarOptions if grammar is visible.
-                // This adds the call to updateUIVisibilityForDay.
-                const currentLanguage = languageSelectElement ? languageSelectElement.value : 'COSYenglish';
-                let dayToUseForVisibility = 1; // Default
 
+    const daySelectors = [daySelectElement, dayFromSelectElement, dayToSelectElement];
+    daySelectors.forEach(selector => {
+        if (selector) {
+            selector.addEventListener('change', function() {
+                if (typeof updateDaySelectors === 'function') { // from ui-visibility.js or index.html
+                    updateDaySelectors(); 
+                }
+                
+                const currentLanguage = languageSelectElement ? languageSelectElement.value : 'COSYenglish';
+                let dayToUseForVisibility = 1;
                 const singleDayValue = daySelectElement ? daySelectElement.value : "";
-                if (singleDayValue) { // If single day is selected, it dictates visibility
+
+                if (singleDayValue) {
                     dayToUseForVisibility = parseInt(singleDayValue);
-                } else { // Otherwise, use the 'from' value of the range
+                } else {
                     const dayFromValue = dayFromSelectElement ? dayFromSelectElement.value : "";
                     if (dayFromValue) {
                         dayToUseForVisibility = parseInt(dayFromValue);
                     }
                 }
-                if (typeof updateUIVisibilityForDay === 'function') {
+
+                if (typeof updateUIVisibilityForDay === 'function') { // from ui-visibility.js
                     updateUIVisibilityForDay(dayToUseForVisibility, currentLanguage);
+                }
+
+                if (grammarOptionsElement && grammarOptionsElement.style.display === 'block') {
+                    if (typeof updateGrammarOptions === 'function') { // from ui-visibility.js or index.html
+                        updateGrammarOptions();
+                    }
                 }
             });
         }
     });
+    
+    // Call other init functions
+    if (typeof initButtons === 'function') { // from buttons.js
+        initButtons();
+    } else {
+        console.error("initializeEventListeners: initButtons is not defined.");
+    }
+
+    if (typeof initVocabularyPractice === 'function') { // from exercises/vocabulary.js
+        initVocabularyPractice();
+    } else {
+        console.error("initializeEventListeners: initVocabularyPractice is not defined.");
+    }
+
+    if (typeof initGrammarPractice === 'function') { // from exercises/grammar.js
+        initGrammarPractice();
+    } else {
+        console.error("initializeEventListeners: initGrammarPractice is not defined.");
+    }
+    
+    // Initial UI visibility update based on the (potentially restored) language and default/restored day
+    const initialDayValue = daySelectElement ? daySelectElement.value : ""; 
+    const initialDay = initialDayValue && initialDayValue !== "" ? parseInt(initialDayValue) : 1; 
+    const initialLang = languageSelectElement ? (languageSelectElement.value || 'COSYenglish') : 'COSYenglish';
+    if (typeof updateUIVisibilityForDay === 'function') { // from ui-visibility.js
+        updateUIVisibilityForDay(initialDay, initialLang);
+    }
+
+    console.log("DEBUG: initializeEventListeners completed.");
 }
 
-// IMPORTANT: This script assumes that by the time setupCoreEventListeners is called,
-// the DOM is loaded, and other global functions (like updateDaySelectors, updateGrammarOptions,
-// restoreUserSelection, goBackToMainMenu, updateUIForLanguage, saveUserSelection) are available from index.html.
-// The function updateUIVisibilityForDay is expected from ui-visibility.js, loaded before this.
-// This setupCoreEventListeners function itself needs to be called, typically from index.html's DOMContentLoaded.
+window.addEventListener('DOMContentLoaded', initializeEventListeners);

@@ -153,16 +153,37 @@ async function showArticleWord() {
         { type: 'word', question: `${currentTranslations.wordFor || "Word for"} "${item.article}"`, answer: item.word }
     ];
     const variation = variations[Math.floor(Math.random() * variations.length)];
+    const wordToPronounce = variation.type === 'article' ? item.word : item.article;
+
 
     resultArea.innerHTML = `
         <div class="gender-exercise" role="form" aria-label="${currentTranslations.aria?.genderExercise || 'Gender Exercise'}">
             <div class="gender-prompt" aria-label="${variation.question}">${variation.question}</div>
+            <button id="pronounce-gender-item" class="btn-emoji" title="${currentTranslations.aria?.pronounce || 'Pronounce'}">🔊</button>
             <input type="text" id="gender-answer-input" class="exercise-input" aria-label="${currentTranslations.aria?.typeYourAnswer || 'Type your answer'}" placeholder="${currentTranslations.typeYourAnswerPlaceholder || 'Type your answer...'}">
             <button id="check-gender-answer-btn" class="btn-primary" aria-label="${currentTranslations.aria?.checkAnswer || 'Check answer'}">✅ ${currentTranslations.buttons?.check || 'Check'}</button>
             <div id="gender-answer-feedback" class="exercise-feedback" aria-live="polite"></div>
             <button id="new-gender-exercise" class="btn-secondary" aria-label="${currentTranslations.aria?.newExercise || 'New Exercise'}">🔄 ${currentTranslations.buttons?.newExercise || 'New Exercise'}</button>
         </div>
     `;
+
+    const pronounceButton = document.getElementById('pronounce-gender-item');
+    if (pronounceButton && typeof pronounceWord === 'function') {
+        // Initial pronunciation based on what is being asked (word or article)
+        if (variation.type === 'article' && item.word) {
+             pronounceWord(item.word, language);
+        } else if (variation.type === 'word' && item.article) {
+             pronounceWord(item.article, language); // If asking for the word, pronounce the article as a hint
+        }
+        pronounceButton.addEventListener('click', () => {
+            if (variation.type === 'article' && item.word) {
+                 pronounceWord(item.word, language);
+            } else if (variation.type === 'word' && item.article) {
+                 pronounceWord(item.article, language);
+            }
+        });
+    }
+
     document.getElementById('check-gender-answer-btn').onclick = function() {
         const userInput = document.getElementById('gender-answer-input').value.trim();
         let feedback = '';
@@ -306,21 +327,31 @@ async function showTypeVerb() {
     if (!items.length) { showNoDataMessage(); return; }
     const item = items[Math.floor(Math.random() * items.length)];
     const variations = [
-        { type: 'infinitive', promptText: `${currentTranslations.infinitiveOf || "Infinitive of"} "${item.prompt}"` },
-        { type: 'conjugated', promptText: `${currentTranslations.conjugateFor || "Conjugate"} "${item.infinitive}" ${currentTranslations.forPronoun || "for"} "${item.prompt}"` }
+        { type: 'infinitive', promptText: `${currentTranslations.infinitiveOf || "Infinitive of"} "${item.prompt}"`, pronounceText: item.prompt },
+        { type: 'conjugated', promptText: `${currentTranslations.conjugateFor || "Conjugate"} "${item.infinitive}" ${currentTranslations.forPronoun || "for"} "${item.prompt}"`, pronounceText: item.infinitive }
     ];
     const variation = variations[Math.floor(Math.random() * variations.length)];
     const correctAnswer = variation.type === 'infinitive' ? item.infinitive : item.answer;
+    const wordToPronounceVerb = variation.pronounceText;
+
 
     resultArea.innerHTML = `
         <div class="verb-exercise" aria-label="${currentTranslations.verbExerciseAriaLabel || 'Verb Exercise'}">
             <div class="verb-prompt">${variation.promptText}</div>
+            <button id="pronounce-verb-item" class="btn-emoji" title="${currentTranslations.aria?.pronounce || 'Pronounce'}">🔊</button>
             <input type="text" id="verb-answer-input" placeholder="${currentTranslations.typeYourAnswerPlaceholder || 'Type your answer...'}" class="exercise-input">
             <button id="check-verb-answer-btn" class="btn-primary">${currentTranslations.buttons?.check || 'Check'}</button>
             <div id="verb-answer-feedback" class="exercise-feedback"></div>
             <button id="new-verb-exercise" class="btn-secondary">${currentTranslations.buttons?.newExercise || 'New Exercise'}</button>
         </div>
     `;
+
+    const pronounceVerbButton = document.getElementById('pronounce-verb-item');
+    if (pronounceVerbButton && typeof pronounceWord === 'function') {
+        pronounceWord(wordToPronounceVerb, language); // Initial pronunciation
+        pronounceVerbButton.addEventListener('click', () => pronounceWord(wordToPronounceVerb, language));
+    }
+
     document.getElementById('check-verb-answer-btn').onclick = function() {
         const userInput = document.getElementById('verb-answer-input').value.trim();
         let feedback = '';

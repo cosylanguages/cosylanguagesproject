@@ -153,3 +153,229 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
 
     console.log(`DEBUG: updateUIVisibilityForDay finished for Day: ${day}, Language: ${selectedLanguage}`);
 }
+
+// Show all main practice types
+function showAllMainPracticeTypes() {
+    ['vocabulary-btn', 'grammar-btn', 'reading-btn', 'speaking-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = 'inline-block';
+            el.classList.remove('active-main-btn');
+        }
+    });
+}
+function hideOtherMainPracticeTypes(selectedId) {
+    ['vocabulary-btn', 'grammar-btn', 'speaking-btn', 'reading-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            if (id !== selectedId) {
+                el.style.display = 'none';
+            } else {
+                el.classList.add('active-main-btn');
+            }
+        }
+    });
+}
+// --- Hide other options when one is selected ---
+function hideOtherVocabularyOptions(selectedId) {
+    document.querySelectorAll('#vocabulary-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllVocabularyOptions() {
+    document.querySelectorAll('#vocabulary-options button').forEach(btn => {
+        btn.style.display = '';
+    });
+}
+function hideOtherGrammarOptions(selectedId) {
+    document.querySelectorAll('#grammar-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllGrammarOptions() {
+    document.querySelectorAll('#grammar-options button').forEach(btn => {
+        btn.style.display = '';
+    });
+}
+function hideOtherReadingOptions(selectedId) {
+    document.querySelectorAll('#reading-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllReadingOptions() {
+    document.querySelectorAll('#reading-options button').forEach(btn => {
+        btn.style.display = '';
+    });
+}
+function hideOtherSpeakingOptions(selectedId) {
+    document.querySelectorAll('#speaking-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllSpeakingOptions() {
+    document.querySelectorAll('#speaking-options button').forEach(btn => {
+        btn.style.display = '';
+    });
+}
+function hideOtherWritingOptions(selectedId) {
+    document.querySelectorAll('#writing-options button').forEach(btn => {
+        if (btn.id !== selectedId) btn.style.display = 'none';
+    });
+}
+function showAllWritingOptions() {
+    document.querySelectorAll('#writing-options button').forEach(btn => {
+        btn.style.display = '';
+    });
+}
+
+// Helper: go back to main menu
+function goBackToMainMenu() {
+    showAllMainPracticeTypes();
+    if (typeof showAllVocabularyOptions === 'function') showAllVocabularyOptions();
+    if (typeof showAllGrammarOptions === 'function') showAllGrammarOptions();
+    if (typeof showAllReadingOptions === 'function') showAllReadingOptions();
+    if (typeof showAllSpeakingOptions === 'function') showAllSpeakingOptions();
+    if (typeof showAllWritingOptions === 'function') showAllWritingOptions();
+
+    const vocabularyOptions = document.getElementById('vocabulary-options');
+    const grammarOptions = document.getElementById('grammar-options');
+    const readingOptions = document.getElementById('reading-options');
+    const speakingOptions = document.getElementById('speaking-options');
+    const writingOptions = document.getElementById('writing-options');
+    const practiceAllBtn = document.getElementById('practice-all-btn');
+
+    if (vocabularyOptions) vocabularyOptions.style.display = 'none';
+    if (grammarOptions) grammarOptions.style.display = 'none';
+    if (readingOptions) readingOptions.style.display = 'none';
+    if (speakingOptions) speakingOptions.style.display = 'none';
+    if (writingOptions) writingOptions.style.display = 'none';
+    if (practiceAllBtn) practiceAllBtn.style.display = 'block';
+    if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
+    
+    if (typeof showPracticeAllButtons === 'function') showPracticeAllButtons();
+}
+
+
+// Update grammar options based on selected day or range
+function updateGrammarOptions() {
+    const lang = document.getElementById('language').value;
+    const t = translations[lang] || translations['COSYenglish'];
+    const days = getSelectedDays(); // Assumes getSelectedDays is available globally or in this scope
+    const grammarOptionsContainer = document.querySelector('#grammar-options .grammar-options');
+
+    if (!grammarOptionsContainer) return;
+    grammarOptionsContainer.innerHTML = '';
+
+    if (!days.length) {
+        const noDayMsg = document.createElement('p');
+        noDayMsg.textContent = t.selectDay;
+        grammarOptionsContainer.appendChild(noDayMsg);
+        return;
+    }
+    
+    const day = parseInt(days[0]);
+
+    function hideOtherGrammarOptionBtns(selectedBtn) {
+        const btns = grammarOptionsContainer.querySelectorAll('.grammar-option-btn');
+        btns.forEach(btn => {
+            if (btn !== selectedBtn) {
+                btn.style.display = 'none';
+            } else {
+                btn.classList.add('active-grammar-btn');
+            }
+        });
+    }
+
+    // Fix: For day 3, ONLY show gender, verbs, possessives (no duplicates)
+    if (day === 3) {
+        const genderBtn = document.createElement('button');
+        genderBtn.textContent = t.gender;
+        genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
+        genderBtn.onclick = function() {
+            hideOtherGrammarOptionBtns(genderBtn);
+            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
+            if (typeof practiceGrammar === 'function') practiceGrammar('gender');
+        };
+        grammarOptionsContainer.appendChild(genderBtn);
+
+        const verbBtn = document.createElement('button');
+        verbBtn.textContent = t.verbs;
+        verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
+        verbBtn.onclick = function() {
+            hideOtherGrammarOptionBtns(verbBtn);
+            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
+            if (typeof practiceGrammar === 'function') practiceGrammar('verbs');
+        };
+        grammarOptionsContainer.appendChild(verbBtn);
+
+        const possBtn = document.createElement('button');
+        possBtn.textContent = t.possessives;
+        possBtn.className = 'btn-secondary btn-small grammar-option-btn';
+        possBtn.onclick = function() {
+            hideOtherGrammarOptionBtns(possBtn);
+            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
+            if (typeof practiceGrammar === 'function') practiceGrammar('possessives');
+        };
+        grammarOptionsContainer.appendChild(possBtn);
+        return;
+    }
+
+    if (day >= 1) {
+        const genderBtn = document.createElement('button');
+        genderBtn.textContent = t.gender;
+        genderBtn.className = 'btn-secondary grammar-option-btn'; // Removed btn-small
+        genderBtn.onclick = function() {
+            hideOtherGrammarOptionBtns(genderBtn);
+            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
+            if (typeof practiceGrammar === 'function') practiceGrammar('gender');
+        };
+        grammarOptionsContainer.appendChild(genderBtn);
+    }
+    if (day >= 2) {
+        const verbBtn = document.createElement('button');
+        verbBtn.textContent = t.verbs;
+        verbBtn.className = 'btn-secondary grammar-option-btn'; // Removed btn-small
+        verbBtn.onclick = function() {
+            hideOtherGrammarOptionBtns(verbBtn);
+            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
+            if (typeof practiceGrammar === 'function') practiceGrammar('verbs');
+        };
+        grammarOptionsContainer.appendChild(verbBtn);
+    }
+    // Removed makeToggleHandler and related past/future tense buttons as they are not in the original index.html
+}
+
+// --- Hide/show day and day-from/day-to options depending on selection ---
+function updateDaySelectors() {
+    const daySelect = document.getElementById('day');
+    const dayFromSelect = document.getElementById('day-from');
+    const dayToSelect = document.getElementById('day-to');
+
+    if (!daySelect || !dayFromSelect || !dayToSelect) return; // Elements not found
+
+    const day = daySelect.value;
+    const dayFrom = dayFromSelect.value;
+    const dayTo = dayToSelect.value;
+
+    const dayFromParent = dayFromSelect.parentElement;
+    const dayToParent = dayToSelect.parentElement;
+
+    if (!dayFromParent || !dayToParent) return; // Parent elements not found
+
+    if (day) {
+        // Hide range selectors
+        dayFromParent.style.display = 'none';
+        dayToParent.style.display = 'none';
+        daySelect.style.display = ''; // Ensure single day selector is visible
+    } else if (dayFrom || dayTo) {
+        // Hide single day selector
+        daySelect.style.display = 'none';
+        dayFromParent.style.display = ''; // Ensure range selectors are visible
+        dayToParent.style.display = '';
+    } else {
+        // Show all
+        daySelect.style.display = '';
+        dayFromParent.style.display = '';
+        dayToParent.style.display = '';
+    }
+}

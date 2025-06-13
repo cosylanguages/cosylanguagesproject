@@ -1,24 +1,5 @@
 // Speaking Exercises
 
-// Helper to map COSYlanguage to speech recognition lang codes
-function mapLanguageToSpeechCode(lang) {
-    switch(lang) {
-        case 'COSYenglish': return 'en-US'; // Or en-GB based on preference/availability
-        case 'COSYfrançais': return 'fr-FR';
-        case 'COSYespañol': return 'es-ES';
-        case 'COSYitaliano': return 'it-IT';
-        case 'COSYdeutsch': return 'de-DE';
-        case 'COSYportuguês': return 'pt-PT';
-        case 'ΚΟΖΥελληνικά': return 'el-GR';
-        case 'ТАКОЙрусский': return 'ru-RU';
-        case 'COSYbrezhoneg': return 'fr-FR'; // Breton uses French as a fallback
-        case 'ԾՈՍՅհայկական': return 'hy-AM';
-        case 'COSYtatarça': return 'ru-RU'; // Tatar uses Russian as a fallback
-        case 'COSYbashkort': return 'ru-RU'; // Bashkir uses Russian as a fallback
-        default: return 'en-US'; // Default
-    }
-}
-
 // Placeholder functions for specific speaking exercises
 async function showDailySpeaking() {
     const resultArea = document.getElementById('result');
@@ -41,26 +22,23 @@ async function showQuestionPractice() {
         return;
     }
 
-    // Get day - assuming getSelectedDays() is global
-    const days = getSelectedDays(); // This function is in index.html's script tag
+    const days = getSelectedDays(); 
     if (!days || days.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.selectDay || 'Please select a day or a range of days first.'}</p>`;
         return;
     }
-    const day = days[0]; // Use the first day in the range
+    const day = days[0]; 
 
-    const questions = await loadSpeakingQuestions(language, day); // From utils.js
+    const questions = await loadSpeakingQuestions(language, day); 
 
     if (!questions || questions.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
         return;
     }
 
-    // Shuffle the questions array in place
     questions.sort(() => 0.5 - Math.random());
-
     let currentQuestionIndex = 0;
-    let recognition; // Speech recognition instance
+    // Local 'recognition' instance is removed. We will use the global 'recognition' from speech-features.js
 
     function displayCurrentQuestion() {
         const questionText = questions[currentQuestionIndex];
@@ -81,76 +59,79 @@ async function showQuestionPractice() {
     function handleSpeakingRecording() {
         const questionText = questions[currentQuestionIndex];
         const recordButton = document.getElementById('speaking-record-btn');
-        const feedbackDiv = document.getElementById('speaking-feedback');
+        const feedbackDiv = document.getElementById('speaking-feedback'); // For specific messages
+        const transcriptDiv = document.getElementById('speaking-transcript'); // For transcript
 
-        if (!recordButton || !feedbackDiv) return;
-
-        if (recognition && recordButton.classList.contains('recording')) { // Stop recording
-            try {
-                recognition.stop();
-            } catch (e) {
-                console.warn("Recognition stop error:", e.message);
-            }
-            // UI update will be handled in onend
+        if (!recordButton || !feedbackDiv || !transcriptDiv) {
+            console.error("Required UI elements for recording are missing.");
             return;
         }
         
-        recordButton.classList.add('recording');
-        recordButton.textContent = currentTranslations.recordingInProgress || 'Recording...';
-        feedbackDiv.textContent = ''; // Clear previous feedback
-
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            feedbackDiv.textContent = currentTranslations.speechRecognitionNotSupported || 'Speech recognition is not supported in this browser.';
-            recordButton.classList.remove('recording');
-            recordButton.textContent = '🎤';
+        // Use the global 'recognition' object and its 'recognizing' flag
+        if (typeof recognition !== 'undefined' && recognition.recognizing) {
+            recognition.stop(); 
+            // Button state will be handled by onEndCallback
             return;
         }
+        
+        // Ensure `translations` and `language` are available in this scope for callbacks
+        const langCode = mapLanguageToSpeechCode(language);
 
-        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognitionAPI();
-        recognition.lang = mapLanguageToSpeechCode(language);
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-
-        recognition.onstart = () => {
-            feedbackDiv.textContent = currentTranslations.feedbackListening || 'Listening...';
+        const onStartCallback = () => {
+            recordButton.classList.add('recording');
+            recordButton.textContent = currentTranslations.recordingInProgress || 'Recording...';
+            feedbackDiv.textContent = ''; // Clear previous specific feedback
+            // Global startPronunciationCheck will set its own "Listening..."
         };
 
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            const transcriptDiv = document.getElementById('speaking-transcript');
-            if (transcriptDiv) {
-                transcriptDiv.textContent = `${currentTranslations.youSaid || 'You said'}: ${transcript}`;
-            }
+        const onResultCallback = (transcript) => {
+            // Global startPronunciationCheck updates transcriptDiv by default.
+            // We just need to call our domain-specific checker.
             checkSpeakingAnswer(questionText, transcript);
         };
 
-        recognition.onerror = (event) => {
-            let errorMsg = `${currentTranslations.error || 'Error'}: ${event.error}`; // This generic 'error' key was added
-            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                 errorMsg += ` - ${currentTranslations.micPermissionDenied || 'Microphone permission denied. Please allow microphone access in your browser settings.'}`;
-            } else if (event.error === 'no-speech') {
-                errorMsg += ` - ${currentTranslations.noSpeechDetected || 'No speech detected. Please try again.'}`;
+        const onErrorCallback = (event) => {
+            recordButton.classList.remove('recording');
+            recordButton.textContent = '🎤';
+
+            let errorMsg = currentTranslations.error || 'Error';
+            if (event.error === 'no-speech') {
+                errorMsg = currentTranslations.noSpeechDetected || 'No speech detected. Please try again.';
+            } else if (event.error === 'audio-capture') {
+                errorMsg = currentTranslations.micProblem || 'Audio capture problem. Is your microphone working?';
+            } else if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                errorMsg = currentTranslations.micPermissionDenied || 'Microphone permission denied. Please allow microphone access.';
+            } else if (event.error === 'network') {
+                errorMsg = currentTranslations.networkError || 'Network error during speech recognition.';
+            } else if (event.error === 'aborted') {
+                errorMsg = currentTranslations.recognitionAborted || 'Speech recognition aborted.';
+            } else {
+                errorMsg = `${currentTranslations.errorInRecognition || 'Error in recognition'}: ${event.error}`;
             }
             feedbackDiv.textContent = errorMsg;
         };
 
-        recognition.onend = () => {
+        const onEndCallback = () => {
             recordButton.classList.remove('recording');
             recordButton.textContent = '🎤';
-            // Clear "Listening..." if it was the last message and no result/error changed it
+            // Clear "Listening..." if it was the last message from global and no result/error changed it
             if (feedbackDiv.textContent === (currentTranslations.feedbackListening || 'Listening...')) {
                  feedbackDiv.textContent = ''; 
             }
         };
-        
-        try {
-            recognition.start();
-        } catch (e) {
-            feedbackDiv.textContent = `${currentTranslations.errorStartingRecognition || 'Error starting recognition'}: ${e.message}`;
-            recordButton.classList.remove('recording');
-            recordButton.textContent = '🎤';
-        }
+
+        // Call the global function from speech-features.js
+        // It will handle its own 'recognition' instance.
+        startPronunciationCheck(
+            questionText,       // targetWord for comparison (can be null if only transcript is needed)
+            langCode,           // language code like 'en-US'
+            'speaking-transcript', // ID for transcript display
+            'speaking-feedback',   // ID for feedback display
+            onStartCallback,
+            onResultCallback,
+            onErrorCallback,
+            onEndCallback
+        );
     }
     
     function checkSpeakingAnswer(question, transcript) {
@@ -159,7 +140,6 @@ async function showQuestionPractice() {
 
         let feedbackMsg = '';
         if (!transcript || !transcript.trim()) {
-            // This case should ideally be caught by 'no-speech' error, but as a fallback:
             feedbackMsg = currentTranslations.noSpeechDetected || 'No speech detected. Please try again.';
         } else {
             const questionWords = question.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2);
@@ -167,24 +147,22 @@ async function showQuestionPractice() {
             
             let commonWordCount = 0;
             if (questionWords.length > 0) {
-                // Count words from transcript that are present in the question words
                 commonWordCount = transcriptWords.filter(tWord => questionWords.some(qWord => qWord === tWord || tWord.includes(qWord) || qWord.includes(tWord))).length;
             }
 
-
-            if (commonWordCount > 0 || transcriptWords.length > 2) { // Be a bit lenient if question is very short
+            if (commonWordCount > 0 || transcriptWords.length > 2) { 
                 feedbackMsg = currentTranslations.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
                  if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
-                    CosyAppInteractive.addXP(3); // Award XP for speaking
+                    CosyAppInteractive.addXP(3); 
                 }
             } else if (transcriptWords.length > 0) {
                  feedbackMsg = currentTranslations.tryAgainSpeakingShort || "Try to give a more detailed answer.";
-            }
-             else {
+            } else {
                 feedbackMsg = currentTranslations.tryAgainSpeaking || "Try to address the question more directly.";
             }
         }
-        feedbackDiv.textContent = feedbackMsg;
+        // This function now directly sets the feedback, which is fine as it's called by onResultCallback
+        feedbackDiv.textContent = feedbackMsg; 
     }
 
     resultArea.innerHTML = `
@@ -192,8 +170,8 @@ async function showQuestionPractice() {
             <h3>${currentTranslations.speakingQuestionTitle || 'Question Practice'}</h3>
             <div id="speaking-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 20px; min-height: 40px;"></div>
             <div class="navigation-buttons" style="margin-bottom: 20px;">
-                <button id="prev-speaking-question-btn" class="btn-secondary btn-small">&lt; ${currentTranslations.buttons.previous || 'Previous'}</button>
-                <button id="next-speaking-question-btn" class="btn-secondary btn-small">${currentTranslations.buttons.next || 'Next'} &gt;</button>
+                <button id="prev-speaking-question-btn" class="btn-secondary btn-small">&lt; ${currentTranslations.buttons?.previous || 'Previous'}</button>
+                <button id="next-speaking-question-btn" class="btn-secondary btn-small">${currentTranslations.buttons?.next || 'Next'} &gt;</button>
             </div>
             <button id="speaking-record-btn" class="btn-primary btn-emoji" style="font-size: 2.5em; padding: 10px 20px; margin-bottom:15px; line-height: 1;">🎤</button>
             <div id="speaking-transcript" class="transcript-area" style="margin-top: 10px; min-height: 25px; padding: 5px; border: 1px solid #eee; border-radius: 4px;"></div>
@@ -217,7 +195,7 @@ async function showQuestionPractice() {
 
     document.getElementById('speaking-record-btn').addEventListener('click', handleSpeakingRecording);
 
-    displayCurrentQuestion(); // Display the first question
+    displayCurrentQuestion(); 
 }
 
 
@@ -244,34 +222,22 @@ async function showRolePlayPractice() {
 }
 
 async function practiceAllSpeaking() {
-    // This could be a simple alias to startRandomSpeakingPractice or a more complex sequence
     await startRandomSpeakingPractice();
 }
 
-// Main function to start a random speaking exercise (can be called by Practice All or Randomize button)
 async function startRandomSpeakingPractice() {
-    // For now, let's assume Question Practice is the primary one to randomize into if available
-    // Or select from a list of implemented ones
-    const implementedExercises = [showQuestionPractice]; // Add others as they get implemented
-    
-    // For now, let's always pick showQuestionPractice if it's in the list
-    // In the future, this could be random:
-    // const randomExerciseFunction = implementedExercises[Math.floor(Math.random() * implementedExercises.length)];
-    // await randomExerciseFunction();
-
-    await showQuestionPractice(); // Directly call the main implemented function
+    const implementedExercises = [showQuestionPractice]; 
+    await showQuestionPractice(); 
 }
 
-// Patch the exercise functions to add the randomize button
-// The randomize button will call startRandomSpeakingPractice, which now defaults to showQuestionPractice
 showDailySpeaking = patchExerciseForRandomizeButton(showDailySpeaking, '.speaking-exercise-container', startRandomSpeakingPractice);
 showQuestionPractice = patchExerciseForRandomizeButton(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
 showMonologuePractice = patchExerciseForRandomizeButton(showMonologuePractice, '.speaking-exercise-container', startRandomSpeakingPractice);
 showRolePlayPractice = patchExerciseForRandomizeButton(showRolePlayPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
-// practiceAllSpeaking is not a display function itself but calls startRandomSpeakingPractice, so it doesn't need patching.
 
-// Ensure the main button for "Question" in speaking options calls showQuestionPractice
-// This is typically handled in buttons.js or index.html event setup.
-// Example: document.getElementById('question-practice-btn').addEventListener('click', showQuestionPractice);
-// This file should only define the functions, not attach to main menu buttons.
-// Attachment is done in buttons.js or similar.
+// Translations object needs to be globally available or passed around.
+// For now, assuming `translations` is global as it was in index.html
+// and `getSelectedDays`, `loadSpeakingQuestions` are also available globally.
+// `patchExerciseForRandomizeButton` is assumed to be global from another utils file.
+
+[end of src/js/exercises/speaking.js]

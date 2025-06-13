@@ -1,4 +1,137 @@
 // Functions moved to utils.js: shuffleArray, showNoDataMessage, addRandomizeButton
+
+// Data loading functions
+/**
+ * Gets the vocabulary file path for the given language.
+ * @param {string} language The selected language.
+ * @returns {string} The path to the vocabulary file.
+ */
+function getVocabularyFile(language) {
+  // Language mapping for file names
+  const langMap = {
+    'COSYenglish': 'english',
+    'COSYfrançais': 'french',
+    'COSYespañol': 'spanish',
+    'COSYitaliano': 'italian',
+    'COSYdeutsch': 'german',
+    'COSYportuguês': 'portuguese',
+    'ΚΟΖΥελληνικά': 'greek',
+    'ТАКОЙрусский': 'russian',
+    'ԾՈՍՅհայկական': 'armenian',
+    'COSYbrezhoneg': 'breton',
+    'COSYtatarça': 'tatar',
+    'COSYbashkort': 'bashkir'
+  };
+  const langFile = langMap[language] || 'english'; // Default to English if no mapping
+  return `data/vocabulary/words/${langFile}.json`;
+}
+
+/**
+ * Loads vocabulary for the given language and day(s).
+ * @param {string} language The selected language.
+ * @param {string|string[]} day The selected day(s).
+ * @returns {Promise<string[]>} A promise that resolves to an array of words.
+ */
+async function loadVocabulary(language, day) {
+  const filePath = getVocabularyFile(language);
+  try {
+    const response = await fetch(filePath);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    let words = [];
+    if (Array.isArray(day)) {
+      day.forEach(d => {
+        if (data[d]) words = words.concat(data[d]);
+      });
+    } else {
+      if (data[day]) words = data[day];
+    }
+    return words;
+  } catch (e) {
+    console.error("Error loading vocabulary:", e);
+    return []; // Return empty array on error
+  }
+}
+
+/**
+ * Loads image vocabulary for the given language and day(s).
+ * @param {string} language The selected language.
+ * @param {string|string[]} day The selected day(s).
+ * @returns {Promise<object[]>} A promise that resolves to an array of image objects.
+ */
+async function loadImageVocabulary(language, day) {
+  const filePath = `data/vocabulary/images/images.json`; // Assuming a single file for all image metadata
+  try {
+    const response = await fetch(filePath);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    let images = [];
+    if (Array.isArray(day)) {
+      day.forEach(d => {
+        if (data[d]) images = images.concat(data[d]);
+      });
+    } else {
+      if (data[day]) images = data[day];
+    }
+    // Filter images that have a translation for the current language
+    return images.filter(img => img.translations && img.translations[language]);
+  } catch (e) {
+    console.error("Error loading image vocabulary:", e);
+    return [];
+  }
+}
+
+/**
+ * Gets the opposites file path for the given language.
+ * @param {string} language The selected language.
+ * @returns {string} The path to the opposites file.
+ */
+function getOppositesFile(language) {
+  const langMap = {
+    'COSYenglish': 'english',
+    'COSYfrançais': 'french',
+    'COSYespañol': 'spanish',
+    'COSYitaliano': 'italian',
+    'COSYdeutsch': 'german',
+    'COSYportuguês': 'portuguese',
+    'ΚΟΖΥελληνικά': 'greek',
+    'ТАКОЙрусский': 'russian',
+    'ԾՈՍՅհայկական': 'armenian',
+    'COSYbrezhoneg': 'breton',
+    'COSYtatarça': 'tatar',
+    'COSYbashkort': 'bashkir'
+  };
+  const langFile = langMap[language] || 'english';
+  return `data/vocabulary/opposites/${langFile}.json`;
+}
+
+/**
+ * Loads opposites for the given language and day(s).
+ * @param {string} language The selected language.
+ * @param {string|string[]} day The selected day(s).
+ * @returns {Promise<object>} A promise that resolves to an object of opposites.
+ */
+async function loadOpposites(language, day) {
+  const filePath = getOppositesFile(language);
+  try {
+    const response = await fetch(filePath);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    let opposites = {};
+    if (Array.isArray(day)) {
+      day.forEach(d => {
+        if (data[d]) Object.assign(opposites, data[d]);
+      });
+    } else {
+      if (data[day]) opposites = data[day];
+    }
+    return opposites;
+  } catch (e) {
+    console.error("Error loading opposites:", e);
+    return {}; // Return empty object on error
+  }
+}
+
 // Vocabulary Practice Types
 const VOCABULARY_PRACTICE_TYPES = {
     'random-word': {
@@ -213,8 +346,10 @@ async function showRandomWord() {
             <div class="word-display" id="displayed-word" aria-label="${t.wordToPracticeLabel || 'Word to practice'}"><b>${word}</b></div>
             <div class="word-actions">
                 <button id="pronounce-word" class="btn-emoji" aria-label="${t.pronounceWord || 'Pronounce word'}">🔊</button>
+                <button id="say-word-mc" class="btn-emoji" title="Say it (Microphone Check)">🎤</button> 
                 <button id="next-word" class="btn-emoji" aria-label="${t.nextWord || 'Next word'}">🔄</button>
             </div>
+            <div id="pronunciation-feedback" style="margin-top:10px; text-align:center;"></div>
             <div class="word-exercise-options">
                 <button class="btn-secondary" id="practice-opposite" aria-label="${t.findOppositeButtonLabel || 'Find Opposite'}">${t.findOppositeButtonLabel || '⇄ Find Opposite'}</button>
                 <button class="btn-secondary" id="practice-build" aria-label="${t.buildWordButtonLabel || 'Build Word'}">${t.buildWordButtonLabel || '🔡 Build Word'}</button>
