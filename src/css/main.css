@@ -758,3 +758,136 @@ body.flag-ԾՈՍՅհայկական #choose-practice-label::before {
 body.flag-COSYbashkort #choose-practice-label::before {
     content: "🧭 Choose Your Practice:"; /* Fallback for Bashkir */
 }
+
+/* Added styles for Speaking and Writing Exercises - START */
+
+/* Speaking and Writing Exercise Common Styles */
+.speaking-exercise-container,
+.writing-exercise-container {
+    background-color: #fff; /* Matches .exercise-container */
+    border-radius: 8px; /* Matches .exercise-container */
+    padding: 20px; /* Slightly more padding than general .exercise-container */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Slightly more pronounced shadow */
+    max-width: 650px; /* Consistent max-width */
+    margin: 15px auto; /* Consistent margin */
+    text-align: center; /* Center align text content by default */
+}
+
+.speaking-exercise-container h3,
+.writing-exercise-container h3 {
+    font-size: 1.3rem; /* Specific heading size for these exercises */
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* Question Text Display (Common for Speaking & Writing) */
+#speaking-question-text,
+#writing-question-text {
+    font-size: 1.15rem; /* Readability */
+    font-weight: 500;
+    line-height: 1.6;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    background-color: var(--light-grey); /* Subtle background */
+    border-left: 4px solid var(--primary-color); /* Accent border */
+    border-radius: 4px;
+    text-align: left; /* Questions are usually better left-aligned */
+    color: var(--text-color-dark);
+    min-height: 50px; /* Ensure space even for short questions */
+}
+
+/* Navigation Buttons Container (Common for Speaking & Writing) */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between; /* Puts Previous to left, Next to right */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.navigation-buttons button { /* Styling for prev/next buttons */
+    min-width: 100px; /* Ensure decent width */
+}
+.navigation-buttons button:disabled {
+    background-color: var(--medium-grey);
+    border-color: var(--border-color);
+    color: var(--dark-grey);
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Speaking Section Specifics */
+#speaking-record-btn {
+    font-size: 2.5em; /* Ensure emoji is large */
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    line-height: 1; /* Helps center emoji if it's off */
+}
+
+#speaking-record-btn.recording {
+    background-color: var(--error-bg); 
+    color: var(--error-text);
+    animation: pulseAnimation 1.5s infinite;
+}
+
+#speaking-transcript {
+    margin-top: 15px;
+    padding: 10px;
+    min-height: 30px;
+    font-style: italic;
+    color: #555; 
+    background-color: #f9f9f9;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    line-height: 1.5;
+}
+
+#speaking-feedback,
+#writing-feedback { 
+    margin-top: 15px;
+    padding: 10px;
+    min-height: 30px;
+    border-radius: 4px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+#speaking-feedback.correct, #writing-feedback.correct {
+    color: var(--success-text); background-color: var(--success-bg); border: 1px solid var(--success-border);
+}
+#speaking-feedback.error, #writing-feedback.error { 
+    color: var(--error-text); background-color: var(--error-bg); border: 1px solid var(--error-border);
+}
+
+
+/* Writing Section Specifics */
+#writing-answer-area {
+    width: 100%; 
+    max-width: 100%; 
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem; 
+    line-height: 1.5;
+    min-height: 100px; 
+    resize: vertical; 
+}
+#writing-answer-area:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+#submit-writing-answer-btn {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    min-width: 150px; 
+}
+
+/* Pulse animation for recording button */
+@keyframes pulseAnimation {
+    0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 
+    70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
+
+/* Added styles for Speaking and Writing Exercises - END */

@@ -92,5 +92,27 @@ function patchExerciseForRandomizeButton(originalExerciseFn, containerSelectorOr
         // addRandomizeButton can take an ID string, a class selector string (e.g. ".my-class"), or an element.
         // The existing addRandomizeButton logic handles ID or class selector (if class is passed as ".class-name" or just "class-name").
         addRandomizeButton(containerSelectorOrElement, randomizeFn);
+    }
+}
+
+async function loadSpeakingQuestions(language, day) {
+    const langKey = language.replace('COSY', '').toLowerCase();
+    const filePath = `data/speaking/question/question_${langKey}.json`;
+
+    const result = await loadData(filePath);
+
+    if (result.error) {
+        // Error already logged by loadData, but we can add context
+        console.error(`Error encountered in loadSpeakingQuestions for ${language}, day ${day} from ${filePath}: ${result.errorType} - ${result.error}`);
+        return [];
+    }
+
+    const data = result.data;
+    // Ensure data is not null and day exists
+    if (data && data[day]) {
+        return data[day];
+    } else {
+        // console.warn(`No speaking questions found for ${language}, day ${day}`);
+        return [];
     };
 }

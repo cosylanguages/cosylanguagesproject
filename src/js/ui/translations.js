@@ -183,6 +183,42 @@ const translations = {
       help: 'Help',
       close: 'Close',
       translate: 'Translate',
+    },
+    // New keys for Speaking/Writing exercises - START
+    noQuestionsAvailable: "No questions available for this selection.",
+    speakingQuestionTitle: "Question Practice", 
+    writingQuestionTitle: "Question Practice", 
+    feedbackListening: "Listening...",
+    youSaid: "You said",
+    error: "Error",
+    micPermissionDenied: "Microphone permission denied. Please allow microphone access in your browser settings.",
+    speechRecognitionNotSupported: "Speech recognition is not supported in this browser.",
+    goodAnswerSpeaking: "Good! Your answer seems relevant.",
+    tryAgainSpeaking: "Try to address the question more directly.",
+    tryAgainSpeakingShort: "Try to give a more detailed answer.",
+    noSpeechDetected: "No speech detected. Please try again.",
+    pleaseWriteAnswer: "Please write an answer before submitting.",
+    goodAnswerWriting: "Good! You've used some keywords from the question",
+    answerSubmittedWriting: "Answer submitted. Try to incorporate more elements from the question.",
+    tryToElaborate: "Try to elaborate more in your answer.",
+    submitAnswer: "Submit Answer",
+    recordingInProgress: "Recording...",
+    errorStartingRecognition: "Error starting recognition",
+    // New keys for Speaking/Writing exercises - END
+    // Adding 'previous' to buttons
+    buttons: {
+      check: 'Check',
+      newExercise: 'New Exercise',
+      revealAnswer: 'Reveal Answer',
+      randomize: '🎲',
+      previous: 'Previous', // ADDED HERE
+      next: 'Next',
+      back: 'Back',
+      continue: 'Continue', 
+      reset: 'Reset',
+      help: 'Help',
+      close: 'Close',
+      translate: 'Translate',
     }
   },
   COSYfrançais: {
