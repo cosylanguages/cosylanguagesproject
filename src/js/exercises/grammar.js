@@ -156,7 +156,7 @@ async function showArticleWord() {
 
     resultArea.innerHTML = `
         <div class="gender-exercise" role="form" aria-label="${currentTranslations.aria?.genderExercise || 'Gender Exercise'}">
-            <div class="gender-prompt" aria-label="${variation.question}">🧩 ${variation.question}</div>
+            <div class="gender-prompt" aria-label="${variation.question}">${variation.question}</div>
             <input type="text" id="gender-answer-input" class="exercise-input" aria-label="${currentTranslations.aria?.typeYourAnswer || 'Type your answer'}" placeholder="${currentTranslations.typeYourAnswerPlaceholder || 'Type your answer...'}">
             <button id="check-gender-answer-btn" class="btn-primary" aria-label="${currentTranslations.aria?.checkAnswer || 'Check answer'}">✅ ${currentTranslations.buttons?.check || 'Check'}</button>
             <div id="gender-answer-feedback" class="exercise-feedback" aria-live="polite"></div>
