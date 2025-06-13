@@ -96,14 +96,33 @@ function patchExerciseForRandomizeButton(originalExerciseFn, containerSelectorOr
 }
 
 async function loadSpeakingQuestions(language, day) {
-    const langKey = language.replace('COSY', '').toLowerCase();
-    const filePath = `data/speaking/question/question_${langKey}.json`;
+    let langFileKey;
+    // Determine langFileKey using a switch or map
+    switch(language) {
+        case 'COSYenglish': langFileKey = 'english'; break;
+        case 'COSYfrançais': langFileKey = 'french'; break;
+        case 'COSYespañol': langFileKey = 'spanish'; break;
+        case 'COSYitaliano': langFileKey = 'italian'; break;
+        case 'COSYdeutsch': langFileKey = 'german'; break;
+        case 'COSYportuguês': langFileKey = 'portuguese'; break;
+        case 'ΚΟΖΥελληνικά': langFileKey = 'greek'; break;
+        case 'ТАКОЙрусский': langFileKey = 'russian'; break;
+        case 'ԾՈՍՅհայկական': langFileKey = 'armenian'; break;
+        case 'COSYbrezhoneg': langFileKey = 'breton'; break;
+        case 'COSYtatarça': langFileKey = 'tatar'; break;
+        case 'COSYbashkort': langFileKey = 'bashkir'; break;
+        default:
+            console.warn(`Unsupported language for speaking questions: ${language}. No questions will be loaded.`);
+            return []; // Return empty array if language is not mapped
+    }
 
-    const result = await loadData(filePath);
+    const filePath = `data/speaking/question/question_${langFileKey}.json`;
+
+    const result = await loadData(filePath); // loadData remains unchanged
 
     if (result.error) {
-        // Error already logged by loadData, but we can add context
-        console.error(`Error encountered in loadSpeakingQuestions for ${language}, day ${day} from ${filePath}: ${result.errorType} - ${result.error}`);
+        // Error already logged by loadData, but we can add context for which mapping was used
+        console.error(`Error encountered in loadSpeakingQuestions for ${language} (mapped to ${langFileKey}), day ${day} from ${filePath}: ${result.errorType} - ${result.error}`);
         return [];
     }
 
@@ -112,7 +131,7 @@ async function loadSpeakingQuestions(language, day) {
     if (data && data[day]) {
         return data[day];
     } else {
-        // console.warn(`No speaking questions found for ${language}, day ${day}`);
+        // console.warn(`No speaking questions found for ${language} (mapped to ${langFileKey}), day ${day}`);
         return [];
-    };
+    }
 }
