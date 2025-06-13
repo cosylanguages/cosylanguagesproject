@@ -261,15 +261,23 @@ function hideOtherMainPracticeTypes(selectedId) {
             const day = document.getElementById('day').value;
             const dayFrom = document.getElementById('day-from').value;
             const dayTo = document.getElementById('day-to').value;
+            console.log("DEBUG: getSelectedDays - day:", day, "dayFrom:", dayFrom, "dayTo:", dayTo);
+
             if (day) {
+                // Added log before return
+                console.log("DEBUG: getSelectedDays - returning:", [day]);
                 return [day];
             } else if (dayFrom && dayTo && Number(dayFrom) <= Number(dayTo)) {
                 const from = Number(dayFrom);
                 const to = Number(dayTo);
                 const days = [];
                 for (let i = from; i <= to; i++) days.push(String(i));
+                // Added log before return
+                console.log("DEBUG: getSelectedDays - returning:", days);
                 return days;
             } else {
+                // Added log before return
+                console.log("DEBUG: getSelectedDays - returning:", []);
                 return [];
             }
         }
@@ -313,7 +321,6 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/exercises/vocabulary.js"></script>
     <script src="src/js/speech-features.js"></script>
     <script src="src/js/ui-visibility.js"></script>
-    <script src="src/js/event-listeners-setup.js"></script>
     <script src="src/js/exercises/vocabulary_buttons.js"></script>
     <script src="src/js/exercises/grammar.js"></script>
     <script src="src/js/exercises/speaking.js"></script> 
@@ -321,6 +328,7 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/exercises/reading.js"></script> 
     <script src="src/js/buttons.js"></script>
     <script src="src/js/language-handler.js"></script>
+    <script src="src/js/event-listeners-setup.js"></script>
     <!-- interactive.js should be loaded after all feature scripts -->
     <script src="src/js/ui/interactive.js"></script>
 

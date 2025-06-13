@@ -150,7 +150,9 @@ const VOCABULARY_PRACTICE_TYPES = {
 
 // Initialize vocabulary practice
 function initVocabularyPractice() {
+    console.log("DEBUG: initVocabularyPractice called");
     // Daily Word Button
+    console.log("DEBUG: Finding daily-word-btn:", document.getElementById('daily-word-btn'));
     document.getElementById('daily-word-btn')?.addEventListener('click', () => {
         showDailyWords();
     });
