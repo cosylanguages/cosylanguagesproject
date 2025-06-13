@@ -257,16 +257,20 @@ function hideOtherMainPracticeTypes(selectedId) {
             const day = document.getElementById('day').value;
             const dayFrom = document.getElementById('day-from').value;
             const dayTo = document.getElementById('day-to').value;
+            console.log("DEBUG_SIM: getSelectedDays - day:", day, "dayFrom:", dayFrom, "dayTo:", dayTo);
 
             if (day) {
+                console.log("DEBUG_SIM: getSelectedDays - returning array:", [day]);
                 return [day];
             } else if (dayFrom && dayTo && Number(dayFrom) <= Number(dayTo)) {
                 const from = Number(dayFrom);
                 const to = Number(dayTo);
                 const days = [];
                 for (let i = from; i <= to; i++) days.push(String(i));
+                console.log("DEBUG_SIM: getSelectedDays - returning array:", days);
                 return days;
             } else {
+                console.log("DEBUG_SIM: getSelectedDays - returning empty array");
                 return [];
             }
         }
