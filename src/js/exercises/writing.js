@@ -37,6 +37,9 @@ async function showQuestionWriting() {
         return;
     }
 
+    // Shuffle the questions array in place
+    questions.sort(() => 0.5 - Math.random());
+
     let currentQuestionIndex = 0;
 
     function displayCurrentWritingQuestion() {

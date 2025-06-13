@@ -56,6 +56,9 @@ async function showQuestionPractice() {
         return;
     }
 
+    // Shuffle the questions array in place
+    questions.sort(() => 0.5 - Math.random());
+
     let currentQuestionIndex = 0;
     let recognition; // Speech recognition instance
 
