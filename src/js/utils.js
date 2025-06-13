@@ -20,7 +20,7 @@ function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to 
     if (typeof containerIdOrElement === 'string') {
         container = document.getElementById(containerIdOrElement) || document.querySelector(`.${containerIdOrElement}`);
     }
-    
+
     if (!container) {
         // console.warn(`Container not found for randomize button: ${containerIdOrElement}`);
         return;
@@ -28,7 +28,7 @@ function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to 
     // Remove any existing randomize button to avoid duplicates
     const existingBtn = container.querySelector('.btn-randomize');
     if (existingBtn) existingBtn.remove();
-    
+
     let btn = document.createElement('button');
     btn.className = 'btn-randomize randomizer-button'; // Apply new and old class
     const language = document.getElementById('language')?.value || 'COSYenglish'; // Assume translations is global
@@ -87,7 +87,7 @@ function patchExerciseForRandomizeButton(originalExerciseFn, containerSelectorOr
     return async function() {
         // Call the original exercise function, ensuring 'this' and 'arguments' are passed correctly
         await originalExerciseFn.apply(this, arguments);
-        
+
         // Now, add the randomize button.
         // addRandomizeButton can take an ID string, a class selector string (e.g. ".my-class"), or an element.
         // The existing addRandomizeButton logic handles ID or class selector (if class is passed as ".class-name" or just "class-name").
@@ -135,3 +135,59 @@ async function loadSpeakingQuestions(language, day) {
         return [];
     }
 }
+
+/**
+ * Retrieves the selected days from the checkboxes.
+ * @returns {string[]} An array of selected days.
+ */
+function getSelectedDays() {
+  const days = [];
+  document.querySelectorAll('.day-checkbox:checked').forEach(checkbox => {
+    days.push(checkbox.value);
+  });
+  return days;
+}
+
+/**
+ * Removes accents from a string.
+ * @param {string} str The input string.
+ * @returns {string} The string without accents.
+ */
+function removeAccents(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+// --- Stubs for speech functions to prevent errors if called before speech-features.js loads ---
+if (typeof window.pronounceWord !== 'function') {
+    window.pronounceWord = function(word, language) {
+        console.warn("pronounceWord called before speech-features.js loaded or fully initialized. Word:", word, "Lang:", language);
+        // Optionally, alert the user or provide minimal feedback via UI
+        // alert("Pronunciation feature is still loading. Please try again shortly.");
+    };
+}
+
+if (typeof window.startPronunciationCheck !== 'function') {
+    window.startPronunciationCheck = function(targetWord, language, transcriptDivId, feedbackDivId, onStartCallback, onResultCallback, onErrorCallback, onEndCallback) {
+        console.warn("startPronunciationCheck called before speech-features.js loaded or fully initialized. Target:", targetWord);
+        const feedbackEl = document.getElementById(feedbackDivId);
+        if (feedbackEl) {
+            // Assuming 'translations' is globally available or use a generic message
+            const lang = document.getElementById('language')?.value || 'COSYenglish';
+            const t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : { featureLoading: "Speech features are loading. Please try again shortly." };
+            feedbackEl.textContent = t.featureLoading;
+        }
+        // Call error or end callback if provided, to prevent UI hangs in calling code
+        if (typeof onErrorCallback === 'function') {
+            onErrorCallback({ error: "not-loaded", message: "Speech recognition service not yet available." });
+        } else if (typeof onEndCallback === 'function') {
+            // If only onEnd is provided, call it to signal completion.
+            onEndCallback();
+        }
+    };
+}
+
+// Ensure the global 'recognition' object used by speech features is at least null if not defined
+if (typeof window.recognition === 'undefined') {
+    window.recognition = null;
+}
+[end of src/js/utils.js]
