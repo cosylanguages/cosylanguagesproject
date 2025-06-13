@@ -387,13 +387,6 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
    ========================================================================== */
 
 /* Vocabulary Exercise Styles */
-.daily-words-container { background: var(--light-grey); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-.daily-word-level { padding: 10px; margin-bottom: 10px; border-radius: 6px; }
-.daily-word-level.beginner { background: rgba(178, 235, 242, 0.3); border-left: 5px solid #00bdbd;}
-.daily-word-level.elementary { background: rgba(178, 235, 242, 0.5); border-left: 5px solid #1de9b6;}
-.daily-word-level.intermediate { background: rgba(178, 235, 242, 0.7); border-left: 5px solid #ffe082;}
-.daily-word-level.advanced { background: rgba(178, 235, 242, 0.9); border-left: 5px solid #ffb74d;}
-.example { font-style: italic; color: var(--dark-grey); margin-left: 10px; font-size: 0.9em; }
 .word-display-container { text-align: center; padding: 10px 15px; }
 .word-display { font-size: 1.8rem; font-weight: bold; margin: 10px 0; padding:10px; background-color: var(--light-grey); border-radius: 4px; color: var(--primary-color); }
 .word-actions { gap: 10px; margin-bottom: 10px; display: flex; justify-content: center; } 
@@ -891,3 +884,5 @@ body.flag-COSYbashkort #choose-practice-label::before {
 }
 
 /* Added styles for Speaking and Writing Exercises - END */
+
+

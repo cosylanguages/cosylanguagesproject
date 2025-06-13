@@ -64,7 +64,6 @@
             
             <div id="vocabulary-options" class="practice-options" aria-label="Vocabulary options" role="region">
                 <div class="vocabulary-options">
-                    <button id="daily-word-btn" class="btn-secondary option-btn" aria-label="Daily Word" title="Daily Word" role="button">✨ Daily Word</button>
                     <button id="random-word-btn" class="btn-secondary option-btn" aria-label="Random Word" title="Random Word" role="button">🔤 Random Word</button>
                     <button id="random-image-btn" class="btn-secondary option-btn" aria-label="Random Image" title="Random Image" role="button">🖼️ Random Image</button>
                     <button id="listening-btn" class="btn-secondary option-btn" aria-label="Listening" title="Listening" role="button">🎧 Listening</button>
@@ -83,7 +82,6 @@
 
             <div id="reading-options" class="practice-options" aria-label="Reading options" role="region">
                 <div class="reading-options">
-                    <button id="daily-reading-btn" class="btn-secondary option-btn" aria-label="Daily Reading" title="Daily Reading" role="button">✨ Daily Reading</button>
                     <button id="story-btn" class="btn-secondary option-btn" aria-label="Story" title="Story" role="button">📖 Story</button>
                     <button id="interesting-fact-btn" class="btn-secondary option-btn" aria-label="Interesting facts" title="Interesting facts" role="button">🔄 Interesting facts</button>
                 </div>
@@ -91,7 +89,6 @@
             
             <div id="speaking-options" class="practice-options" aria-label="Speaking options" role="region">
                 <div class="speaking-options">
-                <button id="daily-speaking-btn" class="btn-secondary option-btn" aria-label="Daily Speaking" title="Daily Speaking" role="button">✨ Daily Speaking</button>
                 <button id="question-practice-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
                 <button id="monologue-btn" class="btn-secondary option-btn" aria-label="Monologue" title="Monologue" role="button">💬 Monologue</button>
                 <button id="role-play-btn" class="btn-secondary option-btn" aria-label="Role Play" title="Role Play" role="button">🎭 Role Play</button>
@@ -101,7 +98,6 @@
 
             <div id="writing-options" class="practice-options" aria-label="Writing options" role="region">
                 <div class="writing-options">
-                <button id="daily-writing-btn" class="btn-secondary option-btn" aria-label="Daily writing" title="Daily writing" role="button">✨ Daily writing</button>
                 <button id="question-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
                 <button id="storytelling-btn" class="btn-secondary option-btn" aria-label="Storytelling" title="Storytelling" role="button">📜 Storytelling</button>
                 <button id="diary-btn" class="btn-secondary option-btn" aria-label="Diary" title="Diary" role="button">📔 Diary</button>
@@ -261,6 +257,7 @@ function hideOtherMainPracticeTypes(selectedId) {
             const day = document.getElementById('day').value;
             const dayFrom = document.getElementById('day-from').value;
             const dayTo = document.getElementById('day-to').value;
+
             if (day) {
                 return [day];
             } else if (dayFrom && dayTo && Number(dayFrom) <= Number(dayTo)) {
@@ -313,7 +310,6 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/exercises/vocabulary.js"></script>
     <script src="src/js/speech-features.js"></script>
     <script src="src/js/ui-visibility.js"></script>
-    <script src="src/js/event-listeners-setup.js"></script>
     <script src="src/js/exercises/vocabulary_buttons.js"></script>
     <script src="src/js/exercises/grammar.js"></script>
     <script src="src/js/exercises/speaking.js"></script> 
@@ -321,6 +317,7 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/exercises/reading.js"></script> 
     <script src="src/js/buttons.js"></script>
     <script src="src/js/language-handler.js"></script>
+    <script src="src/js/event-listeners-setup.js"></script>
     <!-- interactive.js should be loaded after all feature scripts -->
     <script src="src/js/ui/interactive.js"></script>
 

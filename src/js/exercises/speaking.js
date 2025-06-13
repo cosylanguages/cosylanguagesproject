@@ -1,17 +1,6 @@
 // Speaking Exercises
 
 // Placeholder functions for specific speaking exercises
-async function showDailySpeaking() {
-    const resultArea = document.getElementById('result');
-    const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
-    resultArea.innerHTML = `
-        <div class="speaking-exercise-container">
-            <h3>${currentTranslations.dailySpeaking || 'Daily Speaking'}</h3>
-            <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
-        </div>`;
-}
-
 async function showQuestionPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
@@ -230,7 +219,6 @@ async function startRandomSpeakingPractice() {
     await showQuestionPractice(); 
 }
 
-showDailySpeaking = patchExerciseForRandomizeButton(showDailySpeaking, '.speaking-exercise-container', startRandomSpeakingPractice);
 showQuestionPractice = patchExerciseForRandomizeButton(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
 showMonologuePractice = patchExerciseForRandomizeButton(showMonologuePractice, '.speaking-exercise-container', startRandomSpeakingPractice);
 showRolePlayPractice = patchExerciseForRandomizeButton(showRolePlayPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
@@ -239,5 +227,3 @@ showRolePlayPractice = patchExerciseForRandomizeButton(showRolePlayPractice, '.s
 // For now, assuming `translations` is global as it was in index.html
 // and `getSelectedDays`, `loadSpeakingQuestions` are also available globally.
 // `patchExerciseForRandomizeButton` is assumed to be global from another utils file.
-
-[end of src/js/exercises/speaking.js]

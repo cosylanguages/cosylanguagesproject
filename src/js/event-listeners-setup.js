@@ -1,5 +1,10 @@
 // Event Listeners Setup (Core Logic)
 
+// Placeholder stub for updateGrammarOptions
+function updateGrammarOptions() { 
+    console.log("DEBUG: updateGrammarOptions called (stub)"); 
+}
+
 function populateDaysDropdowns() {
     const daySelect = document.getElementById('day');
     const dayFromSelect = document.getElementById('day-from');
@@ -23,29 +28,13 @@ function initializeEventListeners() {
     populateDaysDropdowns();
 
     // restoreUserSelection is expected to be global (from index.html)
-    if (typeof restoreUserSelection === 'function') {
-        restoreUserSelection(); 
-    } else {
-        console.warn("initializeEventListeners: restoreUserSelection is not defined. User selections may not be restored.");
-        // Fallback: update UI for default language if restoreUserSelection isn't there
-        const languageSelectElementForFallback = document.getElementById('language');
-        const initialLangForFallback = languageSelectElementForFallback ? (languageSelectElementForFallback.value || 'COSYenglish') : 'COSYenglish';
-        if (typeof updateUIForLanguage === 'function') { // updateUIForLanguage is from language-handler.js
-            updateUIForLanguage(initialLangForFallback);
-        }
-    }
+    restoreUserSelection(); 
 
-    if (typeof goBackToMainMenu === 'function') { // From ui-visibility.js
-        goBackToMainMenu(); 
-    } else {
-        console.error("initializeEventListeners: goBackToMainMenu is not defined.");
-    }
+    // From ui-visibility.js
+    goBackToMainMenu(); 
 
-    if (typeof updateDaySelectors === 'function') { // From ui-visibility.js (or index.html if not moved)
-        updateDaySelectors(); 
-    } else {
-        console.error("initializeEventListeners: updateDaySelectors is not defined.");
-    }
+    // From ui-visibility.js (or index.html if not moved)
+    updateDaySelectors(); 
     
     const languageSelectElement = document.getElementById('language');
     const daySelectElement = document.getElementById('day');
@@ -71,16 +60,13 @@ function initializeEventListeners() {
             }
 
             // Call for UI visibility update based on day and language
-            if (typeof updateUIVisibilityForDay === 'function') { // from ui-visibility.js
-                updateUIVisibilityForDay(dayToUse, lang);
-            }
+            // from ui-visibility.js
+            updateUIVisibilityForDay(dayToUse, lang);
 
             // Update grammar options if they are visible
             // updateGrammarOptions (from ui-visibility.js or index.html) should internally get current language and day
             if (grammarOptionsElement && grammarOptionsElement.style.display === 'block') {
-                if (typeof updateGrammarOptions === 'function') { 
-                    updateGrammarOptions();
-                }
+                updateGrammarOptions();
             }
             // Note: saveUserSelection, body class update, and the main updateUIForLanguage(lang) call
             // are assumed to be handled by listeners in index.html and language-handler.js
@@ -92,9 +78,8 @@ function initializeEventListeners() {
     daySelectors.forEach(selector => {
         if (selector) {
             selector.addEventListener('change', function() {
-                if (typeof updateDaySelectors === 'function') { // from ui-visibility.js or index.html
-                    updateDaySelectors(); 
-                }
+                // from ui-visibility.js or index.html
+                updateDaySelectors(); 
                 
                 const currentLanguage = languageSelectElement ? languageSelectElement.value : 'COSYenglish';
                 let dayToUseForVisibility = 1;
@@ -109,45 +94,33 @@ function initializeEventListeners() {
                     }
                 }
 
-                if (typeof updateUIVisibilityForDay === 'function') { // from ui-visibility.js
-                    updateUIVisibilityForDay(dayToUseForVisibility, currentLanguage);
-                }
+                // from ui-visibility.js
+                updateUIVisibilityForDay(dayToUseForVisibility, currentLanguage);
 
                 if (grammarOptionsElement && grammarOptionsElement.style.display === 'block') {
-                    if (typeof updateGrammarOptions === 'function') { // from ui-visibility.js or index.html
-                        updateGrammarOptions();
-                    }
+                    // from ui-visibility.js or index.html
+                    updateGrammarOptions();
                 }
             });
         }
     });
     
     // Call other init functions
-    if (typeof initButtons === 'function') { // from buttons.js
-        initButtons();
-    } else {
-        console.error("initializeEventListeners: initButtons is not defined.");
-    }
+    // from buttons.js
+    initButtons();
 
-    if (typeof initVocabularyPractice === 'function') { // from exercises/vocabulary.js
-        initVocabularyPractice();
-    } else {
-        console.error("initializeEventListeners: initVocabularyPractice is not defined.");
-    }
+    // from exercises/vocabulary.js
+    initVocabularyPractice();
 
-    if (typeof initGrammarPractice === 'function') { // from exercises/grammar.js
-        initGrammarPractice();
-    } else {
-        console.error("initializeEventListeners: initGrammarPractice is not defined.");
-    }
+    // from exercises/grammar.js
+    initGrammarPractice();
     
     // Initial UI visibility update based on the (potentially restored) language and default/restored day
     const initialDayValue = daySelectElement ? daySelectElement.value : ""; 
     const initialDay = initialDayValue && initialDayValue !== "" ? parseInt(initialDayValue) : 1; 
     const initialLang = languageSelectElement ? (languageSelectElement.value || 'COSYenglish') : 'COSYenglish';
-    if (typeof updateUIVisibilityForDay === 'function') { // from ui-visibility.js
-        updateUIVisibilityForDay(initialDay, initialLang);
-    }
+    // from ui-visibility.js
+    updateUIVisibilityForDay(initialDay, initialLang);
 
     console.log("DEBUG: initializeEventListeners completed.");
 }
