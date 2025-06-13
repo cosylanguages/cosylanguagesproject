@@ -398,6 +398,14 @@ function hideOtherMainPracticeTypes(selectedId) {
                     if (grammarOptions.style.display === 'block') {
                         updateGrammarOptions();
                     }
+
+            // Call the new setup for core event listeners and initial UI update
+            // This function is defined in event-listeners-setup.js
+            if (typeof setupCoreEventListeners === 'function') {
+                setupCoreEventListeners();
+            } else {
+                console.error("setupCoreEventListeners is not defined. Critical UI updates might not occur.");
+            }
                 });
             }
         });
@@ -1734,6 +1742,8 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/utils.js"></script>
     <script src="src/js/ui/translations.js"></script>
     <script src="src/js/exercises/vocabulary.js"></script>
+    <script src="src/js/ui-visibility.js"></script>
+    <script src="src/js/event-listeners-setup.js"></script>
     <script src="src/js/exercises/vocabulary_buttons.js"></script>
     <script src="src/js/exercises/grammar.js"></script>
     <script src="src/js/exercises/speaking.js"></script> 
