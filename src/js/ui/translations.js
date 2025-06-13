@@ -204,6 +204,7 @@ const translations = {
     submitAnswer: "Submit Answer",
     recordingInProgress: "Recording...",
     errorStartingRecognition: "Error starting recognition",
+    noGrammarDay1English: "No grammar exercises for Day 1 in English.",
     // New keys for Speaking/Writing exercises - END
     // Adding 'previous' to buttons
     buttons: {
