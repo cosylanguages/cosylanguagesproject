@@ -262,7 +262,7 @@ async function showOppositesExercise(baseWord = null) {
         <div class="opposites-exercise" role="form" aria-label="${t.oppositesExercise || 'Opposites Exercise'}">
             <div class="word-pair">
                 <div class="word-box" aria-label="${t.wordAriaLabel || 'Word'}">${word}</div>
-                <div class="opposite-arrow" aria-label="${t.oppositeArrowLabel || 'Opposite arrow'}">⇄</div>
+                <div class="opposite-arrow" aria-label="${t.oppositeArrowLabel || 'Opposite arrow'}"></div>
                 <div class="word-box opposite-answer" id="opposite-answer" aria-label="${t.oppositeLabel || 'Opposite'}">?</div>
             </div>
             <input type="text" id="opposite-input" class="exercise-input" aria-label="${t.typeTheOpposite || 'Type the opposite'}" placeholder="${t.typeTheOppositePlaceholder || 'Type the opposite...'}">
