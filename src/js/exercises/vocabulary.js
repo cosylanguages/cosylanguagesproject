@@ -57,12 +57,17 @@ async function showDailyWords() {
     const list = document.getElementById('daily-words-list');
     try {
         const dailyWords = await fetchDailyWordsFromDictionaries(language); // This function uses static examples
-        list.innerHTML = dailyWords.map(level => `
+        list.innerHTML = dailyWords.map(level => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = level.word;
+            const plainWord = (tempDiv.textContent || tempDiv.innerText || "").trim();
+            return `
             <div class="daily-word-level ${level.level}">
-                <b>${level.word}</b> <span>– ${level.definition}</span>
+                <b>${level.word}</b> <button class="btn-emoji btn-emoji-small" onclick="pronounceWord('${plainWord.replace(/'/g, "\\'")}', '${language}')" aria-label="Pronounce word">🎤</button> <span>– ${level.definition}</span>
                 <div class="example">${level.example}</div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     } catch (e) {
         list.innerHTML = `<div class="incorrect">${currentTranslations.couldNotFetchDailyWords || 'Could not fetch daily words. Try again later.'}</div>`;
     }
@@ -213,6 +218,7 @@ async function showRandomWord() {
             <div class="word-display" id="displayed-word" aria-label="${t.wordToPracticeLabel || 'Word to practice'}"><b>${word}</b></div>
             <div class="word-actions">
                 <button id="pronounce-word" class="btn-emoji" aria-label="${t.pronounceWord || 'Pronounce word'}">🔊</button>
+                <button id="record-pronunciation" class="btn-emoji" aria-label="${t.recordPronunciation || 'Record pronunciation'}">🎤</button>
                 <button id="next-word" class="btn-emoji" aria-label="${t.nextWord || 'Next word'}">🔄</button>
             </div>
             <div class="word-exercise-options">
