@@ -347,7 +347,7 @@ async function showMatchOpposites() {
                 </div>
                 <div class="match-col" id="opposites-col" aria-label="${t.oppositesColumn || 'Opposites column'}">
                     ${oppositesColumn.map((opposite, index) => `
-                        <div class="match-item" data-opposite="${opposite}" role="button" tabindex="0" aria-label="${t.oppositeLabel || 'Opposite'}: ${opposite}">${opposite} ⇄</div>
+                        <div class="match-item" data-opposite="${opposite}" role="button" tabindex="0" aria-label="${t.oppositeLabel || 'Opposite'}: ${opposite}">${opposite} </div>
                     `).join('')}
                 </div>
             </div>

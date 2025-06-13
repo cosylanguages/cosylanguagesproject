@@ -503,6 +503,92 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
 #reset-progress-btn:hover { background-color: #d3d9df; border-color: #9fa6ac; color: #222; }
 
 
+/* Styles for Build Word Exercise - Click to move */
+.build-word-exercise {
+    /* Adjust container if needed, e.g., width */
+    /* max-width: 600px; /* Example: if it needs to be wider */
+}
+
+.letter-pool, .word-slots {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; /* Allow wrapping if many letters/slots */
+    justify-content: center; /* Center items */
+    align-items: center; /* Align items vertically */
+    padding: 10px;
+    margin-bottom: 15px; /* Space between pool and slots */
+}
+
+.letter-pool {
+    background-color: var(--light-grey); /* Existing background */
+    border-radius: 6px; /* Existing border-radius */
+    min-height: 50px; /* Ensure it has some height even if empty initially */
+}
+
+.word-slots {
+    min-height: 50px; /* Ensure it has some height */
+    gap: 8px; /* Spacing between slots, increased from 5px */
+}
+
+.letter-tile {
+    /* display: inline-flex; /* Already flex, inline-flex might be redundant if parent is flex */
+    /* Ensure cursor indicates interactivity */
+    cursor: pointer; 
+}
+
+.letter-tile.selected {
+    background-color: #ffe082; /* Yellowish highlight for selected */
+    color: var(--text-color-dark);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 5px rgba(0,123,255,0.5);
+    transform: scale(1.05); /* Slightly larger when selected */
+}
+
+.letter-tile.used {
+    /* This style applies when the tile is in the pool but marked as used, */
+    /* or could apply when it's moved to a slot. */
+    /* For tiles in the pool that are "used" (i.e. visually represented in a slot), */
+    /* they might be hidden or styled differently. */
+    /* The JS logic currently moves the tile out of the pool. */
+    /* So, .used might be more for tiles *in slots*. */
+    /* If a tile is in a slot, it should not also be in the pool. */
+    /* Let's assume .used is for tiles in slots for now, or tiles that were moved */
+    background-color: var(--medium-grey); 
+    color: var(--dark-grey);
+    /* cursor: default; /* Tiles in slots can be clicked to be returned */
+    opacity: 0.7; /* Make it look "used" if it were to remain in pool */
+}
+
+/* Styling for tiles when they are inside a slot */
+.letter-slot .letter-tile {
+    cursor: pointer; /* Make it clear it can be clicked to return */
+    opacity: 1; /* Full opacity when in a slot */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Give it a slight lift */
+    /* Override .used opacity if it's also applied */
+}
+.letter-slot .letter-tile.used {
+    /* This confirms styling for a tile that is inside a slot */
+    opacity: 1; /* Ensure full visibility */
+    background-color: var(--primary-color); /* Keep original tile color or a distinct "placed" color */
+    color: var(--text-color-light);
+}
+
+
+.letter-slot {
+    /* display: inline-flex; /* Changed to flex by parent .word-slots */
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed var(--primary-color); /* Make it look more like a drop target */
+    min-width: 40px; /* Slightly larger */
+    min-height: 40px; /* Slightly larger */
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.letter-slot:empty:hover {
+    background-color: #e0e0e0; /* Light hover effect for empty slots */
+    border-color: var(--primary-hover-color);
+}
+
 /* ==========================================================================
    Animations & Keyframes
    ========================================================================== */

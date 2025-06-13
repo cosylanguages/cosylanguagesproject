@@ -597,13 +597,26 @@ function hideOtherMainPracticeTypes(selectedId) {
                 let feedback = '';
                 if (similarity > 0.7) {
                     feedback = '✅ Good job! Your pronunciation is close enough.';
+                    // Award XP for correct pronunciation
+                    if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
+                        CosyAppInteractive.addXP(2); 
+                    }
                 } else if (similarity > 0.4) {
                     feedback = '🟡 Not bad! Try again for a closer pronunciation.';
                 } else {
                     feedback = '🔴 Keep practicing! Try to say the word more clearly.';
                 }
-                document.getElementById('pronunciation-feedback').innerHTML =
-                    `<p><strong>You said:</strong> ${userSaid}</p><p>${feedback}</p>`;
+                // Ensure the feedback div ID is correct, likely 'pronunciation-feedback'
+                const feedbackDiv = document.getElementById('pronunciation-feedback');
+                if (feedbackDiv) {
+                    feedbackDiv.innerHTML = `<p><strong>You said:</strong> ${userSaid}</p><p>${feedback}</p>`;
+                } else {
+                    // Fallback if the specific feedback div for pronunciation isn't found in the current exercise DOM
+                    const resultArea = document.getElementById('result');
+                    if (resultArea) {
+                         resultArea.innerHTML += `<div id="pronunciation-feedback-fallback" style="margin-top:10px;"><p><strong>You said:</strong> ${userSaid}</p><p>${feedback}</p></div>`;
+                    }
+                }
             };
             recognition.onerror = function(event) {
                 let msg = `<p style='color:red;'>Error: ${event.error}</p>`;
