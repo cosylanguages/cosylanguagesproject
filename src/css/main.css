@@ -11,24 +11,24 @@
 }
 
 html {
-    font-size: 100%; 
-    line-height: 1.5; 
-    -webkit-font-smoothing: antialiased; 
-    -moz-osx-font-smoothing: grayscale; 
-    box-sizing: border-box; 
+    font-size: 100%;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
 }
 
 :root {
-    --primary-color: #007bff; 
-    --primary-hover-color: #0056b3; 
-    --secondary-color: #6c757d;        
-    --secondary-hover-color: #5a6268;   
+    --primary-color: #007bff;
+    --primary-hover-color: #0056b3;
+    --secondary-color: #6c757d;
+    --secondary-hover-color: #5a6268;
     --text-color-light: #fff;
-    --text-color-dark: #333;            
+    --text-color-dark: #333;
     --light-grey: #f8f9fa;
     --medium-grey: #e9ecef;
-    --dark-grey: #6c757d; 
-    --border-color: #dee2e6; 
+    --dark-grey: #6c757d;
+    --border-color: #dee2e6;
     --success-bg: #d4edda;
     --success-text: #155724;
     --success-border: #c3e6cb;
@@ -44,20 +44,20 @@ html {
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif; 
-    color: var(--text-color-dark); 
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text-color-dark);
     background-color: #f4f4f4; /* Fallback */
     background-image: linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%);
     background-attachment: fixed;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    margin: 0; 
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    min-width: 100vw; 
+    min-width: 100vw;
 }
 
 /* ==========================================================================
@@ -75,29 +75,29 @@ a:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    margin-top: 1em; 
-    margin-bottom: 0.5em; 
+    margin-top: 1em;
+    margin-bottom: 0.5em;
     font-weight: bold;
     color: var(--text-color-dark); /* Base heading color */
 }
-h1 { 
-    font-size: 2rem; 
-    text-align: center; 
+h1 {
+    font-size: 2rem;
+    text-align: center;
     color: var(--text-color-light); /* Specific for main title on dark background */
-    margin-bottom: 20px; 
-    letter-spacing: 1px; 
-    text-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 h2 { font-size: 1.5rem; color: #222; } /* Slightly darker than default text */
-h3 { font-size: 1.15rem; color: var(--text-color-dark); } 
+h3 { font-size: 1.15rem; color: var(--text-color-dark); }
 p { margin-bottom: 1em; }
 
 label { /* General label styling, specific contexts might override */
     display: block; margin-bottom: 8px; font-weight: bold;
     color: var(--text-color-dark); /* Default to dark text, assuming labels are on light backgrounds */
     text-align: left; /* More standard for forms */
-    font-size: var(--font-size-normal); 
-    letter-spacing: 0.25px; 
+    font-size: var(--font-size-normal);
+    letter-spacing: 0.25px;
     transition: color 0.2s ease-in-out;
 }
 /* Label inside .container (dark background) needs to be light */
@@ -112,28 +112,28 @@ label { /* General label styling, specific contexts might override */
    Layout & Main Containers
    ========================================================================== */
 
-.main-content-wrapper { 
+.main-content-wrapper {
     max-width: 1200px; margin: 0 auto; padding: 15px; width: 100%;
 }
 
-section.content-section { 
-    padding: 15px; margin-bottom: 15px; background-color: #fff; 
-    border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+section.content-section {
+    padding: 15px; margin-bottom: 15px; background-color: #fff;
+    border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .container { /* Main app container with gradient background */
-    background: linear-gradient(135deg, hsla(178, 90%, 38%, 0.97) 0%, hsla(178, 90%, 48%, 0.90) 100%); 
-    padding: 20px; 
-    border-radius: 12px; 
-    box-shadow: 0 6px 20px rgba(31, 38, 135, 0.15); 
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
+    background: linear-gradient(135deg, hsla(178, 90%, 38%, 0.97) 0%, hsla(178, 90%, 48%, 0.90) 100%);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(31, 38, 135, 0.15);
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
     animation: fadeInUp 0.7s cubic-bezier(.23,1.01,.32,1) 0.1s both;
-    width: 95%; max-width: 700px; 
+    width: 95%; max-width: 700px;
     min-width: 300px; margin: 20px auto; box-sizing: border-box;
-    min-height: auto; 
+    min-height: auto;
 }
 
-.menu-section { 
+.menu-section {
     margin-bottom: 20px; display: flex; flex-direction: column;
     align-items: center; position: relative; width:100%;
     /* Removed background, padding, shadow as it's a logical grouper */
@@ -141,25 +141,25 @@ section.content-section {
 
 .language-day-selection {
     background-color: var(--light-grey); padding: 15px; border-radius: 6px;
-    margin-bottom: 20px; display: flex; flex-wrap: wrap; 
-    gap: 15px; /* Adjusted gap */ 
+    margin-bottom: 20px; display: flex; flex-wrap: wrap;
+    gap: 15px; /* Adjusted gap */
     justify-content: center; border: 1px solid var(--border-color);
 }
-.language-day-selection .select-group { 
-    display: flex; flex-direction: column; align-items: flex-start; 
+.language-day-selection .select-group {
+    display: flex; flex-direction: column; align-items: flex-start;
 }
-.language-day-selection label { 
-    font-size: 0.9rem; font-weight: bold; color: var(--text-color-dark); 
-    margin-bottom: 5px; text-align: left; 
+.language-day-selection label {
+    font-size: 0.9rem; font-weight: bold; color: var(--text-color-dark);
+    margin-bottom: 5px; text-align: left;
 }
 .language-day-selection select { min-width: 150px; }
 
 .day-range { display: flex; gap: 10px; justify-content: center; }
 .day-range div { flex: 1; }
 
-.practice-types { 
+.practice-types {
     display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
-    margin-bottom: 15px; 
+    margin-bottom: 15px;
 }
 
 .practice-options {
@@ -168,7 +168,7 @@ section.content-section {
     /* border-radius: 6px; */ /* Removed */
     /* margin-top: 10px; */ /* Handled by children or removed */
     /* box-shadow: 0 2px 5px rgba(0,0,0,0.05); */ /* Removed */
-    width: 100%; 
+    width: 100%;
     display: flex;
     flex-direction: column; /* Stack option groups (.vocabulary-options, etc.) vertically */
     align-items: center; /* Center these groups if they don't take up full width */
@@ -176,10 +176,10 @@ section.content-section {
 }
 
 /* New rule for the direct children of .practice-options */
-.vocabulary-options, 
-.grammar-options, 
-.reading-options, 
-.speaking-options, 
+.vocabulary-options,
+.grammar-options,
+.reading-options,
+.speaking-options,
 .writing-options {
     display: flex;
     justify-content: center; /* Center buttons horizontally */
@@ -221,7 +221,7 @@ section.content-section {
    Buttons
    ========================================================================== */
 
-.btn { 
+.btn {
     display: inline-block; padding: 0.6em 1.2em; font-size: var(--font-size-small, 0.9rem); font-weight: bold;
     line-height: 1.4; text-align: center; text-decoration: none;
     color: var(--text-color-light); background-color: var(--primary-color);
@@ -242,7 +242,7 @@ section.content-section {
 
 .btn-secondary {
     color: var(--text-color-dark); background-color: var(--medium-grey);
-    border-color: var(--dark-grey); 
+    border-color: var(--dark-grey);
 }
 .btn-secondary:hover {
     color: var(--text-color-dark); background-color: #d3d9df; border-color: #9fa6ac;
@@ -256,8 +256,8 @@ section.content-section {
 .btn-emoji:hover { background: var(--medium-grey); border-color: var(--dark-grey); }
 
 /* General select and button tags get .btn and .btn-secondary styling by default */
-select, 
-button { 
+select,
+button {
     display: inline-block; /* Changed from block for better flow with other elements */
     padding: 0.6em 1.2em; font-size: var(--font-size-small, 0.9rem); font-weight: bold; line-height: 1.4;
     text-align: center; text-decoration: none; border-radius: 0.3rem; cursor: pointer;
@@ -266,13 +266,13 @@ button {
     color: var(--text-color-dark); background-color: var(--medium-grey);
     border: 1px solid var(--dark-grey);
 }
-select { text-align-last: center; } 
+select { text-align-last: center; }
 button:hover, select:hover { background-color: #d3d9df; border-color: #9fa6ac; color: var(--text-color-dark); }
 button:focus, select:focus { outline: 2px solid var(--primary-color); outline-offset: 2px; box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); }
 button:active, select:active { transform: translateY(1px); filter: brightness(95%); }
 
 /* Specific button group styling */
-.practice-types button { 
+.practice-types button {
     /* This will override the general 'button' if it's more specific or has the .btn-primary class */
     /* Assuming these should look like primary buttons: */
     color: var(--text-color-light); background-color: var(--primary-color); border-color: var(--primary-color);
@@ -284,20 +284,20 @@ button:active, select:active { transform: translateY(1px); filter: brightness(95
 
 .btn-small { padding: 0.4em 0.8em; font-size: 0.8rem; }
 
-.practice-options button { 
-    font-size: 0.9rem; padding: 0.7em 1.3em; 
-    font-weight: 600; border-radius: 8px; margin: 5px; 
+.practice-options button {
+    font-size: 0.9rem; padding: 0.7em 1.3em;
+    font-weight: 600; border-radius: 8px; margin: 5px;
     background: linear-gradient(90deg, #ffe082 0%, #1de9b6 100%);
-    color: #006666; border: none; 
+    color: #006666; border: none;
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    transition: transform 0.18s, box-shadow 0.18s, background 0.18s; 
+    transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
 }
-.practice-options button:hover { 
+.practice-options button:hover {
     transform: scale(1.08) rotate(-2deg);
     background: linear-gradient(90deg, #1de9b6 0%, #ffe082 100%);
     box-shadow: 0 4px 18px rgba(0,0,0,0.13);
 }
-.practice-options button.active-option-btn { 
+.practice-options button.active-option-btn {
     background: linear-gradient(90deg, #ffb74d 0%, #00bdbd 100%);
     color: #fff; box-shadow: 0 2px 16px #ffe08299; transform: scale(1.12);
 }
@@ -309,78 +309,78 @@ button:active, select:active { transform: translateY(1px); filter: brightness(95
    Forms & Inputs
    ========================================================================== */
 input[type="text"], select { /* Select already styled with buttons, this targets text inputs primarily */
-    border-radius: 0.3rem; padding: 0.6em 1em; font-size: var(--font-size-small, 0.9rem); 
-    margin-bottom: 10px; min-width: 200px; 
+    border-radius: 0.3rem; padding: 0.6em 1em; font-size: var(--font-size-small, 0.9rem);
+    margin-bottom: 10px; min-width: 200px;
     text-align: center; border: 1px solid var(--border-color);
     background-color: var(--light-grey); color: var(--text-color-dark);
-    max-width: 350px; 
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
+    max-width: 350px;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 input[type="text"]:focus, select:focus { /* select:focus already handled */
-    border-color: var(--primary-color); 
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); 
-    background-color: #fff; 
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    background-color: #fff;
 }
-.exercise-input { 
-    max-width: 300px; margin-left: auto; margin-right: auto; display: block; 
+.exercise-input {
+    max-width: 300px; margin-left: auto; margin-right: auto; display: block;
 }
 
 /* ==========================================================================
    Exercise Common Styles
    ========================================================================== */
-.exercise-container { 
-    background-color: #fff; 
-    border-radius: 8px; padding: 15px; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
-    max-width: 600px; margin: 15px auto; 
+.exercise-container {
+    background-color: #fff;
+    border-radius: 8px; padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    max-width: 600px; margin: 15px auto;
 }
-.exercise-header { 
-    font-size: 1.1rem; color: var(--primary-color); margin-bottom: 15px; 
+.exercise-header {
+    font-size: 1.1rem; color: var(--primary-color); margin-bottom: 15px;
     font-weight: bold; text-align: center;
 }
-.exercise-prompt, .gender-prompt, .verb-prompt { 
-    font-size: 1.1rem; margin-bottom: 15px; 
+.exercise-prompt, .gender-prompt, .verb-prompt {
+    font-size: 1.1rem; margin-bottom: 15px;
     color: var(--text-color-dark); font-weight: 500; text-align: center;
 }
 .exercise-feedback {
-    margin: 10px 0; padding: 0.75em; 
+    margin: 10px 0; padding: 0.75em;
     min-height: 2em; border-radius: 4px;
     font-size: 0.9rem; text-align: center;
-    border: 1px solid transparent; 
+    border: 1px solid transparent;
 }
-.exercise-feedback.correct, .exercise-feedback span[style*="#27ae60"] { 
+.exercise-feedback.correct, .exercise-feedback span[style*="#27ae60"] {
     color: var(--success-text); background-color: var(--success-bg);
-    border-color: var(--success-border); display: block; 
+    border-color: var(--success-border); display: block;
 }
 .exercise-feedback.incorrect, .exercise-feedback span[style*="#e74c3c"] {
     color: var(--error-text); background-color: var(--error-bg);
-    border-color: var(--error-border); display: block; 
+    border-color: var(--error-border); display: block;
 }
-#tf-feedback, #choose4-feedback, #match-feedback { font-size: 0.9rem; } 
+#tf-feedback, #choose4-feedback, #match-feedback { font-size: 0.9rem; }
 #tf-feedback span, #choose4-feedback span, #match-feedback span { animation: bounceIn 0.5s cubic-bezier(.23,1.01,.32,1); }
 
 .word-pool, .letter-pool {
     gap: 8px; margin: 15px 0; padding: 10px; background: var(--light-grey); border-radius: 6px;
 }
 .word-tile, .letter-tile {
-    padding: 8px 10px; background: var(--primary-color); color: var(--text-color-light); 
+    padding: 8px 10px; background: var(--primary-color); color: var(--text-color-light);
     border-radius: 4px; cursor: grab; user-select: none;
-    min-width: 35px; min-height: 35px; 
+    min-width: 35px; min-height: 35px;
     display: flex; justify-content: center; align-items: center;
-    font-size: 0.9rem; margin: 3px; border: none; 
+    font-size: 0.9rem; margin: 3px; border: none;
     transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 .word-tile:hover, .letter-tile:hover {
     transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     background-color: var(--primary-hover-color);
 }
-.letter-tile.dragging { opacity: 0.6; transform: scale(1.1); } 
+.letter-tile.dragging { opacity: 0.6; transform: scale(1.1); }
 .word-slots, .letter-slots { display:flex; justify-content:center; gap: 5px; margin: 15px 0; } /* Added justify-content */
 .word-slot, .letter-slot {
     min-width: 35px; min-height: 35px; background: var(--medium-grey);
-    border: 1px dashed var(--dark-grey); border-radius: 4px; 
+    border: 1px dashed var(--dark-grey); border-radius: 4px;
 }
-.letter-slot.hovered { background: var(--light-grey); border-style: solid; } 
+.letter-slot.hovered { background: var(--light-grey); border-style: solid; }
 
 /* ==========================================================================
    Specific Exercise Type Styles
@@ -396,34 +396,34 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
 .example { font-style: italic; color: var(--dark-grey); margin-left: 10px; font-size: 0.9em; }
 .word-display-container { text-align: center; padding: 10px 15px; }
 .word-display { font-size: 1.8rem; font-weight: bold; margin: 10px 0; padding:10px; background-color: var(--light-grey); border-radius: 4px; color: var(--primary-color); }
-.word-actions { gap: 10px; margin-bottom: 10px; display: flex; justify-content: center; } 
-.word-exercise-options { gap: 8px; margin-top: 10px; display: flex; justify-content: center; } 
+.word-actions { gap: 10px; margin-bottom: 10px; display: flex; justify-content: center; }
+.word-exercise-options { gap: 8px; margin-top: 10px; display: flex; justify-content: center; }
 .opposites-exercise { text-align: center; padding: 15px; }
-.word-pair { gap: 10px; margin: 15px 0; display: flex; justify-content: center; align-items: center; } 
+.word-pair { gap: 10px; margin: 15px 0; display: flex; justify-content: center; align-items: center; }
 .word-box { padding: 8px 15px; background: var(--medium-grey); color: var(--text-color-dark); border-radius: 6px; font-size: 1.1rem; }
 .opposite-arrow { font-size: 1.5rem; color: var(--dark-grey); }
 .opposite-answer { background: #fff; border: 2px dashed var(--primary-color); }
-.exercise-actions { gap: 10px; margin-top: 15px; display: flex; justify-content: center; } 
+.exercise-actions { gap: 10px; margin-top: 15px; display: flex; justify-content: center; }
 .build-word-exercise { background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 500px; margin: 15px auto; text-align: center; }
-.vocabulary-image { 
-    max-width: 200px; max-height: 150px; display: block; margin: 15px auto; 
-    border: 1px solid var(--medium-grey); border-radius: 4px; 
-    transition: transform 0.2s ease-in-out; 
+.vocabulary-image {
+    max-width: 200px; max-height: 150px; display: block; margin: 15px auto;
+    border: 1px solid var(--medium-grey); border-radius: 4px;
+    transition: transform 0.2s ease-in-out;
 }
 .vocabulary-image:hover { transform: scale(1.05); }
 
 .match-container { display: flex; justify-content: space-around; gap: 15px; margin: 15px 0; }
 .match-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-.match-item { 
-    padding: 10px; margin: 0; 
-    border: 1px solid var(--medium-grey); border-radius: 4px; cursor: pointer; 
-    background-color: #fff; 
+.match-item {
+    padding: 10px; margin: 0;
+    border: 1px solid var(--medium-grey); border-radius: 4px; cursor: pointer;
+    background-color: #fff;
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.15s ease-in-out;
 }
 .match-item:hover { border-color: var(--primary-color); background-color: var(--light-grey); }
 .match-item.selected { border-color: var(--primary-color); background-color: var(--primary-color); color: var(--text-color-light); transform: scale(1.05); }
 .match-item.matched { border-color: var(--success-border); background-color: var(--success-bg); color: var(--success-text); cursor: default; }
-.match-item.disabled { pointer-events: none; opacity: 0.7; } 
+.match-item.disabled { pointer-events: none; opacity: 0.7; }
 .match-item.incorrect-flash { animation: incorrectFlash 0.5s; }
 
 /* Grammar Exercise Styles (if any more specific than .exercise-container are needed) */
@@ -438,47 +438,47 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
     color: var(--text-color-light);
     padding: 8px 12px; border-radius: 4px;
     font-size: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    z-index: 1000; 
-    transition: transform 0.3s ease-in-out; 
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
 }
 #cosy-gamestats.levelup { animation: gamestatsLevelUp 1.2s ease-out; }
 
 .cosy-toast {
     position: fixed; bottom: 20px; left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(0,0,0,0.8); 
-    color: #fff; padding: 12px 22px; 
+    background-color: rgba(0,0,0,0.8);
+    color: #fff; padding: 12px 22px;
     border-radius: 25px; font-size: 0.9rem;
-    z-index: 1001; box-shadow: 0 2px 8px rgba(0,0,0,0.25); 
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; 
+    z-index: 1001; box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 #floating-help-btn {
     position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
     background-color: var(--primary-color); color: var(--text-color-light);
-    border: none; border-radius: 50%; font-size: 1.5rem; 
+    border: none; border-radius: 50%; font-size: 1.5rem;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; z-index: 999;
     transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 #floating-help-btn:hover { background-color: var(--primary-hover-color); transform: scale(1.1); }
 
-.floating-popup { 
+.floating-popup {
     position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
-    background-color: #fff; padding: 20px; border-radius: 8px; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
-    z-index: 1002; width: 90%; max-width: 400px; 
-    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; 
+    background-color: #fff; padding: 20px; border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1002; width: 90%; max-width: 400px;
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 .floating-popup .popup-header {
-    font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; 
+    font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;
     color: var(--primary-color);
 }
-.floating-popup .popup-content { margin-bottom: 15px; font-size: 0.9rem; line-height: 1.5; } 
+.floating-popup .popup-content { margin-bottom: 15px; font-size: 0.9rem; line-height: 1.5; }
 .floating-popup .popup-actions { text-align: right; }
-.floating-popup .close-btn { 
-    background: none; border: none; font-size: 1.2rem; 
-    color: var(--dark-grey); cursor: pointer; padding: 5px; 
+.floating-popup .close-btn {
+    background: none; border: none; font-size: 1.2rem;
+    color: var(--dark-grey); cursor: pointer; padding: 5px;
     transition: color 0.2s ease-in-out;
 }
 .floating-popup .close-btn:hover { color: var(--primary-color); }
@@ -494,7 +494,7 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
 .choose4-container { gap: 10px; margin: 15px 0 10px 0; }
 .choose4-question { font-size: 1.1rem; color: var(--primary-color); margin-bottom: 5px; }
 .choose4-options { gap: 8px; }
-#reset-progress-btn { 
+#reset-progress-btn {
     padding: 0.6em 1.2em; font-size: 0.9rem; font-weight: bold;
     color: var(--text-color-dark); background-color: var(--medium-grey);
     border: 1px solid var(--dark-grey); border-radius: 0.3rem; cursor: pointer;
@@ -533,7 +533,7 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
 .letter-tile {
     /* display: inline-flex; /* Already flex, inline-flex might be redundant if parent is flex */
     /* Ensure cursor indicates interactivity */
-    cursor: pointer; 
+    cursor: pointer;
 }
 
 .letter-tile.selected {
@@ -553,7 +553,7 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
     /* So, .used might be more for tiles *in slots*. */
     /* If a tile is in a slot, it should not also be in the pool. */
     /* Let's assume .used is for tiles in slots for now, or tiles that were moved */
-    background-color: var(--medium-grey); 
+    background-color: var(--medium-grey);
     color: var(--dark-grey);
     /* cursor: default; /* Tiles in slots can be clicked to be returned */
     opacity: 0.7; /* Make it look "used" if it were to remain in pool */
@@ -600,7 +600,7 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
     50% { transform: scale(1.15) rotate(-3deg); box-shadow: 0 4px 10px rgba(0,123,255,0.5); } /* Assuming var(--primary-color-rgb) is 0,123,255 */
     100% { transform: scale(1); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 }
-.result-area span[style*='#27ae60']::after { 
+.result-area span[style*='#27ae60']::after {
   content: ' ✨';
   animation: sparkle 0.7s linear;
 }
@@ -610,16 +610,16 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
   100% { opacity: 0; transform: scale(0.7) rotate(-10deg); }
 }
 @keyframes incorrectFlash { 0%, 100% { background-color: var(--error-bg); } 50% { background-color: #fff; } }
-.bg-sparkle { 
+.bg-sparkle {
   position: fixed; pointer-events: none; z-index: 0;
   animation: sparkleFloat 3.5s infinite ease-in-out; opacity: 0.7;
 }
-@keyframes sparkleFloat { 
+@keyframes sparkleFloat {
   0% { opacity: 0.7; transform: translateY(0) scale(1); }
   50% { opacity: 1; transform: translateY(-18px) scale(1.15); }
   100% { opacity: 0.7; transform: translateY(0) scale(1); }
 }
-@keyframes bounceIn { 
+@keyframes bounceIn {
   0% { transform: scale(0.8); opacity: 0.2; }
   60% { transform: scale(1.15); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
@@ -636,23 +636,23 @@ input[type="text"]:focus, select:focus { /* select:focus already handled */
 /* ==========================================================================
    Media Queries
    ========================================================================== */
-@media (max-width: 900px) { 
+@media (max-width: 900px) {
     .container { width: 95%; padding: 15px; }
     h1 { font-size: 1.8rem; }
 }
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
     body { padding: 0; }
-    .container { width: 100%; max-width: 100vw; margin: 0; border-radius: 0; padding: 15px 10px; } 
-    h1 { font-size: 1.5rem; margin-bottom: 15px; } 
+    .container { width: 100%; max-width: 100vw; margin: 0; border-radius: 0; padding: 15px 10px; }
+    h1 { font-size: 1.5rem; margin-bottom: 15px; }
     label { font-size: 0.9rem; }
     .result-area { font-size: 0.9rem; padding: 15px 10px; }
     .practice-types { flex-direction: column; gap: 8px; }
     .practice-options { gap: 8px; margin: 15px 0; }
-    .practice-options button { font-size: 0.85rem; padding: 0.6em 1em; } 
+    .practice-options button { font-size: 0.85rem; padding: 0.6em 1em; }
 
-    .word-display { font-size: 1.5rem; } 
-    .word-box { font-size: 1rem; padding: 8px 12px; } 
-    .opposite-arrow { font-size: 1.2rem; } 
+    .word-display { font-size: 1.5rem; }
+    .word-box { font-size: 1rem; padding: 8px 12px; }
+    .opposite-arrow { font-size: 1.2rem; }
     .letter-tile { font-size: 1rem; padding: 6px 8px; min-width: 30px; min-height: 30px; }
     .letter-slot { min-width: 30px; min-height: 30px; }
     .match-item { padding: 8px; font-size: 0.9rem; }
@@ -670,8 +670,8 @@ button.btn-primary, button.btn-secondary, button.btn-emoji {
 
 .practice-options button {
     /* This already has specific styling (gradients, etc.) that overrides .btn defaults */
-    margin: 5px; 
-    padding: 0.7em 1.3em; 
+    margin: 5px;
+    padding: 0.7em 1.3em;
 }
 
 /* --- Language Flag Backgrounds --- */
@@ -752,9 +752,129 @@ body.flag-COSYtatarça #choose-practice-label::before {
 body.flag-ԾՈՍՅհայկական #choose-practice-label::before {
     content: "🧭 Ընտրեք ձեր վարժությունը:";
 }
-/* Note: The Bashkir (COSYbashkort) translation for selectPractice was missing in the provided translations.js. 
-   I will add a rule for it using the English text as a fallback. 
+/* Note: The Bashkir (COSYbashkort) translation for selectPractice was missing in the provided translations.js.
+   I will add a rule for it using the English text as a fallback.
    If a Bashkir translation becomes available, this CSS should be updated. */
 body.flag-COSYbashkort #choose-practice-label::before {
     content: "🧭 Choose Your Practice:"; /* Fallback for Bashkir */
+}
+
+/* Match Pictures and Words Exercise */
+.match-pictures-words-exercise {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.match-pw-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    justify-content: space-around;
+    margin-bottom: 20px;
+    gap: 20px; /* Gap between images area and words area */
+}
+
+.match-pw-images-area {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates 2 columns */
+    gap: 15px; /* Gap between image items */
+    flex: 2; /* Takes more space */
+    min-width: 300px; /* Minimum width for images area */
+}
+
+.match-pw-image-item {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.match-pw-image {
+    max-width: 100%; /* Responsive image */
+    height: auto;   /* Maintain aspect ratio */
+    max-height: 120px; /* Max height for consistency */
+    margin-bottom: 10px;
+    border-radius: 4px;
+    /* cursor: pointer; /* If images themselves are clickable */
+}
+
+.match-pw-word-slot {
+    border: 2px dashed #ddd;
+    min-height: 40px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer; /* Indicates it's a clickable target */
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.match-pw-word-slot.selected-image-slot {
+    border-color: #007bff; /* Blue border for selection */
+    background-color: #e6f2ff; /* Light blue background */
+}
+
+.match-pw-word-slot.correct {
+    background-color: #d4edda; /* Green for correct */
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.match-pw-word-slot.incorrect {
+    background-color: #f8d7da; /* Red for incorrect */
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.match-pw-word-slot.revealed {
+    background-color: #e2e3e5; /* Grey for revealed */
+    border-color: #d6d8db;
+    color: #383d41;
+    cursor: default;
+}
+
+.match-pw-words-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1; /* Takes less space */
+    min-width: 180px; /* Minimum width for words area */
+}
+
+.match-pw-word-option {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    background-color: #fff;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.match-pw-word-option.disabled {
+    opacity: 0.6;
+    cursor: default;
+    background-color: #e9ecef;
+    text-decoration: line-through;
+}
+
+.match-pw-word-option:hover:not(.disabled) {
+    background-color: #f0f0f0;
+}
+
+#match-pw-feedback {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* Ensure exercise actions are spaced out */
+.match-pictures-words-exercise .exercise-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
 }
