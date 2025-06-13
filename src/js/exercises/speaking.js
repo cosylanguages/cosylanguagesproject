@@ -1,17 +1,6 @@
 // Speaking Exercises
 
 // Placeholder functions for specific speaking exercises
-async function showDailySpeaking() {
-    const resultArea = document.getElementById('result');
-    const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
-    resultArea.innerHTML = `
-        <div class="speaking-exercise-container">
-            <h3>${currentTranslations.dailySpeaking || 'Daily Speaking'}</h3>
-            <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
-        </div>`;
-}
-
 async function showQuestionPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
@@ -22,14 +11,14 @@ async function showQuestionPractice() {
         return;
     }
 
-    const days = getSelectedDays(); 
+    const days = getSelectedDays();
     if (!days || days.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.selectDay || 'Please select a day or a range of days first.'}</p>`;
         return;
     }
-    const day = days[0]; 
+    const day = days[0];
 
-    const questions = await loadSpeakingQuestions(language, day); 
+    const questions = await loadSpeakingQuestions(language, day);
 
     if (!questions || questions.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
@@ -51,7 +40,7 @@ async function showQuestionPractice() {
         if (questionTextElement) questionTextElement.textContent = questionText;
         if (prevBtn) prevBtn.disabled = currentQuestionIndex === 0;
         if (nextBtn) nextBtn.disabled = currentQuestionIndex === questions.length - 1;
-        
+
         if (transcriptEl) transcriptEl.textContent = '';
         if (feedbackEl) feedbackEl.textContent = '';
     }
@@ -66,14 +55,14 @@ async function showQuestionPractice() {
             console.error("Required UI elements for recording are missing.");
             return;
         }
-        
+
         // Use the global 'recognition' object and its 'recognizing' flag
         if (typeof recognition !== 'undefined' && recognition.recognizing) {
-            recognition.stop(); 
+            recognition.stop();
             // Button state will be handled by onEndCallback
             return;
         }
-        
+
         // Ensure `translations` and `language` are available in this scope for callbacks
         const langCode = mapLanguageToSpeechCode(language);
 
@@ -116,7 +105,7 @@ async function showQuestionPractice() {
             recordButton.textContent = '🎤';
             // Clear "Listening..." if it was the last message from global and no result/error changed it
             if (feedbackDiv.textContent === (currentTranslations.feedbackListening || 'Listening...')) {
-                 feedbackDiv.textContent = ''; 
+                 feedbackDiv.textContent = '';
             }
         };
 
@@ -133,7 +122,7 @@ async function showQuestionPractice() {
             onEndCallback
         );
     }
-    
+
     function checkSpeakingAnswer(question, transcript) {
         const feedbackDiv = document.getElementById('speaking-feedback');
         if (!feedbackDiv) return;
@@ -144,16 +133,16 @@ async function showQuestionPractice() {
         } else {
             const questionWords = question.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2);
             const transcriptWords = transcript.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
-            
+
             let commonWordCount = 0;
             if (questionWords.length > 0) {
                 commonWordCount = transcriptWords.filter(tWord => questionWords.some(qWord => qWord === tWord || tWord.includes(qWord) || qWord.includes(tWord))).length;
             }
 
-            if (commonWordCount > 0 || transcriptWords.length > 2) { 
+            if (commonWordCount > 0 || transcriptWords.length > 2) {
                 feedbackMsg = currentTranslations.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
                  if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
-                    CosyAppInteractive.addXP(3); 
+                    CosyAppInteractive.addXP(3);
                 }
             } else if (transcriptWords.length > 0) {
                  feedbackMsg = currentTranslations.tryAgainSpeakingShort || "Try to give a more detailed answer.";
@@ -162,7 +151,7 @@ async function showQuestionPractice() {
             }
         }
         // This function now directly sets the feedback, which is fine as it's called by onResultCallback
-        feedbackDiv.textContent = feedbackMsg; 
+        feedbackDiv.textContent = feedbackMsg;
     }
 
     resultArea.innerHTML = `
@@ -195,7 +184,7 @@ async function showQuestionPractice() {
 
     document.getElementById('speaking-record-btn').addEventListener('click', handleSpeakingRecording);
 
-    displayCurrentQuestion(); 
+    displayCurrentQuestion();
 }
 
 
@@ -226,11 +215,10 @@ async function practiceAllSpeaking() {
 }
 
 async function startRandomSpeakingPractice() {
-    const implementedExercises = [showQuestionPractice]; 
-    await showQuestionPractice(); 
+    const implementedExercises = [showQuestionPractice];
+    await showQuestionPractice();
 }
 
-showDailySpeaking = patchExerciseForRandomizeButton(showDailySpeaking, '.speaking-exercise-container', startRandomSpeakingPractice);
 showQuestionPractice = patchExerciseForRandomizeButton(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
 showMonologuePractice = patchExerciseForRandomizeButton(showMonologuePractice, '.speaking-exercise-container', startRandomSpeakingPractice);
 showRolePlayPractice = patchExerciseForRandomizeButton(showRolePlayPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
@@ -239,5 +227,3 @@ showRolePlayPractice = patchExerciseForRandomizeButton(showRolePlayPractice, '.s
 // For now, assuming `translations` is global as it was in index.html
 // and `getSelectedDays`, `loadSpeakingQuestions` are also available globally.
 // `patchExerciseForRandomizeButton` is assumed to be global from another utils file.
-
-[end of src/js/exercises/speaking.js]
