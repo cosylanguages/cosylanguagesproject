@@ -412,18 +412,76 @@ textarea.exercise-input { /* Specific for textarea if it uses exercise-input */
 }
 .vocabulary-image:hover { transform: scale(1.05); }
 
-.match-container { display: flex; justify-content: space-around; gap: 15px; margin: 15px 0; }
-.match-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-.match-item { 
-    padding: 10px; margin: 0; 
-    border: 1px solid var(--medium-grey); border-radius: 4px; cursor: pointer; 
-    background-color: #fff; 
-    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.15s ease-in-out;
+/* Styles for Matching Exercises (e.g., Match Opposites, Match Image-Word) */
+.match-container {
+    display: flex;
+    justify-content: space-around; /* Distributes space around columns */
+    align-items: flex-start;    /* Aligns columns to the top */
+    flex-wrap: wrap;            /* Allows columns to wrap on smaller screens */
+    gap: 20px;                  /* Space between columns */
+    margin-bottom: 20px;        /* Space below the container */
 }
-.match-item:hover { border-color: var(--primary-color); background-color: var(--light-grey); }
-.match-item.selected { border-color: var(--primary-color); background-color: var(--primary-color); color: var(--text-color-light); transform: scale(1.05); }
-.match-item.matched { border-color: var(--success-border); background-color: var(--success-bg); color: var(--success-text); cursor: default; }
-.match-item.disabled { pointer-events: none; opacity: 0.7; } 
+
+.match-col {
+    display: flex;
+    flex-direction: column;     /* Items stack vertically */
+    align-items: stretch;       /* Stretches items to fill column width */
+    gap: 10px;                  /* Space between items in a column */
+    flex-basis: 45%;            /* Each column aims for 45% of container width */
+    min-width: 180px;           /* Minimum width before wrapping */
+    padding: 10px;              /* Padding inside each column */
+    border: 1px solid var(--border-color, #eee); /* Subtle border for columns */
+    border-radius: 5px;         /* Rounded corners for columns */
+    background-color: rgba(255, 255, 255, 0.5); /* Slight background tint for columns */
+}
+
+.match-item {
+    padding: 12px 15px; /* Increased padding for better touch targets */
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    background-color: var(--light-grey, #f9f9f9);
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    font-size: var(--font-size-normal, 1rem);
+    word-break: break-word; /* Prevent long words from overflowing */
+}
+
+.match-item:hover {
+    background-color: var(--medium-grey, #f0f0f0);
+    border-color: var(--primary-color); /* Highlight border on hover */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.match-item.selected {
+    background-color: var(--primary-color) !important; /* Use important if needed to override */
+    color: var(--text-color-light) !important;
+    border-color: var(--primary-hover-color) !important;
+    box-shadow: 0 0 8px rgba(0,123,255,0.4);
+    transform: scale(1.03); /* Slight scale effect */
+}
+
+.match-item.matched {
+    background-color: var(--success-bg, #d4edda);
+    border-color: var(--success-border, #c3e6cb);
+    color: var(--success-text, #155724);
+    cursor: default;
+    opacity: 0.8; /* Slightly faded but still readable */
+    transform: scale(0.97); /* Slight shrink effect */
+}
+
+.match-item.disabled { /* Often used with .matched */
+    pointer-events: none;
+}
+
+/* Styles for images within match items, if any (e.g., for match-image-word) */
+.match-item img {
+    max-width: 100px;   /* Max width of image inside item */
+    max-height: 80px;  /* Max height of image */
+    display: block;
+    margin: 0 auto 5px auto; /* Center image and add space below if text follows */
+    object-fit: contain; /* Ensures image aspect ratio is maintained */
+}
 .match-item.incorrect-flash { animation: incorrectFlash 0.5s; }
 
 .gender-exercise .gender-prompt { font-weight: 500; margin-bottom: 10px; } /* Already specific */
