@@ -6,12 +6,16 @@ const UserProgress = {
         lastActive: null,
         completedLessons: [],
         achievements: [],
-        level: 1
+        level: 1,
+        firstTimeTodayForDay1: {}
     },
     load() {
         const saved = localStorage.getItem('userProgress');
         if (saved) {
             this.data = JSON.parse(saved);
+            if (!this.data.firstTimeTodayForDay1) {
+                this.data.firstTimeTodayForDay1 = {};
+            }
         }
     },
     save() {
