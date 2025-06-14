@@ -194,7 +194,6 @@ async function showMonologuePractice() {
     const currentTranslations = translations[language] || translations.COSYenglish;
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
-            <h3>${currentTranslations.monologue || 'Monologue'}</h3>
             <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
         </div>`;
 }
@@ -205,7 +204,6 @@ async function showRolePlayPractice() {
     const currentTranslations = translations[language] || translations.COSYenglish;
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
-            <h3>${currentTranslations.rolePlay || 'Role Play'}</h3>
             <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
         </div>`;
 }

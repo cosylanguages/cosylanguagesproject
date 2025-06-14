@@ -703,4 +703,10 @@ showMatchVerbsPronouns = patchExerciseForRandomizeButton(showMatchVerbsPronouns,
 showFillGaps = patchExerciseForRandomizeButton(showFillGaps, '.fill-gap-exercise', startVerbsPractice);
 showWordOrder = patchExerciseForRandomizeButton(showWordOrder, '.word-order-exercise', startVerbsPractice);
 
+// Patching for possessives exercises (currently placeholders)
+// When showTypePossessive is implemented, ensure its main container has class "possessive-exercise"
+// showTypePossessive = patchExerciseForRandomizeButton(showTypePossessive, '.possessive-exercise', startPossessivesPractice);
+// When showMatchPossessives is implemented, ensure its main container has class "match-exercise" (or a specific one)
+// showMatchPossessives = patchExerciseForRandomizeButton(showMatchPossessives, '.match-exercise', startPossessivesPractice);
+
 document.addEventListener('DOMContentLoaded', initGrammarPractice);

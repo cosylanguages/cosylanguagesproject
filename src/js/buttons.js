@@ -21,8 +21,13 @@ function initButtons() {
             } else {
                 // Hide all main buttons except this one
                 hideOtherMainPracticeTypes(`${type}-btn`);
-                hideAllOptions();
+                // The line hideAllOptions(); was removed from here.
+                // index.html's handler should already have hidden other options panels.
                 document.getElementById(`${type}-options`).style.display = 'block';
+                if(type === 'vocabulary') {
+                    // Always re-initialize vocabulary option handlers
+                    if(typeof initVocabularyPractice === 'function') initVocabularyPractice();
+                }
             }
         });
     });
@@ -83,7 +88,7 @@ setupOptionToggle('speaking-options', [
     practiceAllSpeaking
 ]);
 setupOptionToggle('writing-options', [
-    'question-btn', 'storytelling-btn', 'diary-btn'
+    'writing-question-btn', 'storytelling-btn', 'diary-btn'
 ], [
     showQuestionWriting,
     showStorytellingPractice,

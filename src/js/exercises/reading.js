@@ -8,7 +8,6 @@ async function showStoryPractice() { // Assuming 'story-btn' maps to this
     const currentTranslations = translations[language] || translations.COSYenglish;
     resultArea.innerHTML = `
         <div class="reading-exercise-container">
-            <h3>📖 ${currentTranslations.story || 'Story'}</h3>
             <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
         </div>`;
 }
@@ -19,7 +18,6 @@ async function showInterestingFactPractice() {
     const currentTranslations = translations[language] || translations.COSYenglish;
     resultArea.innerHTML = `
         <div class="reading-exercise-container">
-            <h3>💡 ${currentTranslations.interestingFact || 'Interesting Fact'}</h3>
             <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
         </div>`;
 }

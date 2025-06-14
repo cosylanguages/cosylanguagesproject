@@ -203,9 +203,8 @@ async function showRandomWord() {
         alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
-
     const words = await loadVocabulary(language, days);
-    if (!words.length) {
+    if (!Array.isArray(words) || !words.length) {
         showNoDataMessage();
         return;
     }

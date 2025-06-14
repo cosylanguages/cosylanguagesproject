@@ -119,7 +119,6 @@ async function showStorytellingPractice() {
     const currentTranslations = translations[language] || translations.COSYenglish;
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <h3>📖 ${currentTranslations.storytelling || 'Storytelling'}</h3>
             <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
         </div>`;
 }
@@ -130,7 +129,6 @@ async function showDiaryPractice() {
     const currentTranslations = translations[language] || translations.COSYenglish;
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <h3>✍️ ${currentTranslations.diary || 'Diary'}</h3>
             <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
         </div>`;
 }

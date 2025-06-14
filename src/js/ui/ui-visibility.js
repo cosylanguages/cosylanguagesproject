@@ -21,129 +21,107 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     const writingOptionsEl = document.getElementById('writing-options');
 
     // Speaking sub-option buttons
-    const questionPracticeBtn = document.getElementById('question-practice-btn'); // For speaking
+    const questionPracticeBtn = document.getElementById('question-practice-btn'); 
     const monologueBtn = document.getElementById('monologue-btn');
     const rolePlayBtn = document.getElementById('role-play-btn');
     const practiceAllSpeakingBtn = document.getElementById('practice-all-speaking-btn');
 
     // Writing sub-option buttons
-    const writingQuestionBtn = document.getElementById('question-btn'); 
+    const writingQuestionBtn = document.getElementById('writing-question-btn'); 
     const storytellingBtn = document.getElementById('storytelling-btn');
     const diaryBtn = document.getElementById('diary-btn');
 
-    // Initial checks for element existence 
-    if (!grammarOptionsEl || !grammarOptionsContainer) {
-        console.warn("UI Warn: Grammar options elements not found!");
-    }
-    if (!readingBtnEl || !readingOptionsEl) {
-        console.warn("UI Warn: Reading button or options element not found!");
-    }
-    if (!speakingBtnEl || !speakingOptionsEl) {
-        console.warn("UI Warn: Speaking button or options element not found!");
-    }
-    if (!writingBtnEl || !writingOptionsEl) {
-        console.warn("UI Warn: Writing button or options element not found!");
-    }
+    // Initial checks for element existence (optional, for debugging)
+    // ... console.warn if elements not found ...
     
     // --- Handle Invalid Day Globally for all sections first ---
     if (isNaN(day) || day <= 0) {
-        console.log(`DEBUG: Day is invalid (${selectedDay}). Hiding all day-dependent sections.`);
         if (grammarOptionsEl) grammarOptionsEl.style.display = 'none';
         if (grammarOptionsContainer) grammarOptionsContainer.innerHTML = '';
-        
         if (readingBtnEl) readingBtnEl.style.display = 'none';
         if (readingOptionsEl) readingOptionsEl.style.display = 'none';
-        
         if (speakingBtnEl) speakingBtnEl.style.display = 'none'; 
         if (speakingOptionsEl) speakingOptionsEl.style.display = 'none';
-
         if (writingBtnEl) writingBtnEl.style.display = 'none'; 
         if (writingOptionsEl) writingOptionsEl.style.display = 'none';
-        return; // Exit early if day is invalid
+        return; 
     }
+
+    // --- Default visibility for main category buttons (can be overridden below) ---
+    // Vocabulary button is always visible if day is valid.
+    // Assuming grammarBtnEl, readingBtnEl etc. are defined or checked before use.
+    const grammarBtnMain = document.getElementById('grammar-btn'); // Defined here for safety
+    const vocabBtnMain = document.getElementById('vocabulary-btn'); // For completeness
+
+    if(vocabBtnMain) vocabBtnMain.style.display = 'inline-block';
+    if (grammarBtnMain) grammarBtnMain.style.display = 'inline-block';
+    if (readingBtnEl) readingBtnEl.style.display = 'inline-block';
+    if (speakingBtnEl) speakingBtnEl.style.display = 'inline-block';
+    if (writingBtnEl) writingBtnEl.style.display = 'inline-block';
+
 
     // --- Grammar Section Visibility ---
     if (grammarOptionsEl && grammarOptionsContainer) {
-        grammarOptionsContainer.innerHTML = ''; // Clear previous options first for any Day 1 scenario or change.
-        
-        if (day === 1) {
-            if (selectedLanguage === 'COSYenglish') {
-                grammarOptionsEl.style.display = 'none'; // Hide the entire grammar options section for English Day 1
-                console.log("DEBUG: English Day 1, hiding grammar options section.");
-            } else {
-                grammarOptionsEl.style.display = 'block'; // Ensure container is visible for other languages
-                const genderBtn = document.createElement('button');
-                genderBtn.textContent = currentTranslations.gender || 'Gender';
-                genderBtn.className = 'btn-secondary btn-small grammar-option-btn'; 
-                genderBtn.onclick = function() {
-                    const allBtns = grammarOptionsContainer.querySelectorAll('.grammar-option-btn');
-                    allBtns.forEach(b => b.classList.remove('active-grammar-btn')); // Clear other active states
-                    allBtns.forEach(b => { if (b !== genderBtn) b.style.display = 'none'; }); // Hide others
-                    genderBtn.classList.add('active-grammar-btn'); // Set current as active
-                    
-                    if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
-                    if (typeof practiceGrammar === 'function') {
-                        practiceGrammar('gender');
-                    } else {
-                        console.error("practiceGrammar function is not defined.");
-                    }
-                };
-                grammarOptionsContainer.appendChild(genderBtn);
-                console.log(`DEBUG: Non-English Day 1 (${selectedLanguage}), showing Gender button.`);
-            }
+        grammarOptionsContainer.innerHTML = ''; 
+        if (day === 1 && selectedLanguage === 'COSYenglish') {
+             if(grammarBtnMain) grammarBtnMain.style.display = 'none';
+             if(grammarOptionsEl) grammarOptionsEl.style.display = 'none'; // Also hide the panel
+        } else if (day === 1 && selectedLanguage !== 'COSYenglish') {
+            if(grammarBtnMain) grammarBtnMain.style.display = 'inline-block';
+            updateGrammarOptions(); 
         } else if (day > 1) {
-            grammarOptionsEl.style.display = 'block'; // Ensure container is visible for Day > 1
-            if (typeof updateGrammarOptions === 'function') {
-                updateGrammarOptions(); // This function should handle clearing and populating grammarOptionsContainer
-                console.log(`DEBUG: Day > 1 (${day}), calling updateGrammarOptions.`);
-            } else {
-                console.error("UI Error: updateGrammarOptions function is not defined globally.");
-                grammarOptionsContainer.innerHTML = '<p class="no-data">Error: Could not load grammar options.</p>';
-            }
+            if(grammarBtnMain) grammarBtnMain.style.display = 'inline-block';
+            updateGrammarOptions();
         }
     } 
 
-    // --- Reading Section Visibility ---
-    if (readingBtnEl && readingOptionsEl) {
+    // --- Reading Section Visibility (Main button) ---
+    if (readingBtnEl) { 
         if (day === 1) { 
-            readingBtnEl.style.display = 'none';
-            readingOptionsEl.style.display = 'none'; 
+            readingBtnEl.style.display = 'none'; 
         } else { 
             readingBtnEl.style.display = 'inline-block'; 
         }
     }
     
-    // --- Speaking Section Overall & Sub-Options Visibility ---
-    if (speakingBtnEl) speakingBtnEl.style.display = 'inline-block'; 
-
-    if (speakingOptionsEl && questionPracticeBtn && monologueBtn && rolePlayBtn && practiceAllSpeakingBtn) {
+    // --- Speaking Sub-Options Visibility (within speakingOptionsEl) ---
+    if (speakingOptionsEl) { 
+        [questionPracticeBtn, monologueBtn, rolePlayBtn, practiceAllSpeakingBtn].forEach(btn => {
+            if (btn) btn.style.display = ''; 
+        });
         if (day === 1) {
-            questionPracticeBtn.style.display = 'inline-block';
-            monologueBtn.style.display = 'none';
-            rolePlayBtn.style.display = 'inline-block';
-            practiceAllSpeakingBtn.style.display = 'inline-block';
-        } else { 
-            questionPracticeBtn.style.display = 'inline-block';
-            monologueBtn.style.display = 'inline-block';
-            rolePlayBtn.style.display = 'inline-block';
-            practiceAllSpeakingBtn.style.display = 'inline-block';
+            if (monologueBtn) monologueBtn.style.display = 'none';
         }
     }
 
-    // --- Writing Section Overall & Sub-Options Visibility ---
-    if (writingBtnEl) writingBtnEl.style.display = 'inline-block'; 
-
-    if (writingOptionsEl && writingQuestionBtn && storytellingBtn && diaryBtn) {
+    // --- Writing Sub-Options Visibility (within writingOptionsEl) ---
+    if (writingOptionsEl) { 
+        [writingQuestionBtn, storytellingBtn, diaryBtn].forEach(btn => {
+            if (btn) btn.style.display = '';
+        });
         if (day === 1) {
-            writingQuestionBtn.style.display = 'inline-block';
-            storytellingBtn.style.display = 'none';
-            diaryBtn.style.display = 'none';
-        } else { 
-            writingQuestionBtn.style.display = 'inline-block';
-            storytellingBtn.style.display = 'inline-block';
-            diaryBtn.style.display = 'inline-block';
+            if (storytellingBtn) storytellingBtn.style.display = 'none';
+            if (diaryBtn) diaryBtn.style.display = 'none';
         }
     }
+
+    // Ensure the main options panels themselves are hidden by default after day change,
+    // index.html click handlers will show the one corresponding to a clicked main button.
+    // ---- START: Lines to be commented out ----
+    // if (typeof vocabularyOptions !== 'undefined' && vocabularyOptions) vocabularyOptions.style.display = 'none'; 
+    // if (grammarOptionsEl) grammarOptionsEl.style.display = 'none';
+    // if (readingOptionsEl) readingOptionsEl.style.display = 'none';
+    // if (speakingOptionsEl) speakingOptionsEl.style.display = 'none';
+    // if (writingOptionsEl) writingOptionsEl.style.display = 'none';
+    
+    // Show the main practice types, which might have been changed by hideOtherMainPracticeTypes
+    // This ensures that after a day/language change, the main menu is visible.
+    // const practiceAllMainBtn = document.getElementById('practice-all-btn');
+    // if (practiceAllMainBtn && practiceAllMainBtn.style.display === 'none') { 
+    //    if(typeof showAllMainPracticeTypes === 'function') showAllMainPracticeTypes(); 
+    // }
+    // ---- END: Lines to be commented out ----
+
 
     console.log(`DEBUG: updateUIVisibilityForDay finished for Day: ${day}, Language: ${selectedLanguage}`);
 }
@@ -153,89 +131,75 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
 function updateGrammarOptions() {
     const lang = document.getElementById('language').value;
     const t = translations[lang] || translations['COSYenglish'];
-    const days = getSelectedDays(); // Assumes getSelectedDays is available globally or in this scope
+    const days = getSelectedDays(); 
     const grammarOptionsContainer = document.querySelector('#grammar-options .grammar-options');
 
     if (!grammarOptionsContainer) return;
-    grammarOptionsContainer.innerHTML = '';
+    grammarOptionsContainer.innerHTML = ''; 
 
-    if (!days.length) {
+    if (!days || !days.length) { 
         const noDayMsg = document.createElement('p');
-        noDayMsg.textContent = t.selectDay;
+        noDayMsg.textContent = t.selectDay || "Please select a day."; 
         grammarOptionsContainer.appendChild(noDayMsg);
         return;
     }
     
-    const day = parseInt(days[0]);
+    const day = parseInt(days[0]); 
 
-    function hideOtherGrammarOptionBtns(selectedBtn) {
-        const btns = grammarOptionsContainer.querySelectorAll('.grammar-option-btn');
-        btns.forEach(btn => {
-            if (btn !== selectedBtn) {
-                btn.style.display = 'none';
-            } else {
-                btn.classList.add('active-grammar-btn');
-            }
-        });
-    }
-
-    // Fix: For day 3, ONLY show gender, verbs, possessives (no duplicates)
-    if (day === 3) {
-        const genderBtn = document.createElement('button');
-        genderBtn.textContent = t.gender;
-        genderBtn.className = 'btn-secondary btn-small grammar-option-btn';
-        genderBtn.onclick = function() {
-            hideOtherGrammarOptionBtns(genderBtn);
-            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
-            if (typeof practiceGrammar === 'function') practiceGrammar('gender');
-        };
-        grammarOptionsContainer.appendChild(genderBtn);
-
-        const verbBtn = document.createElement('button');
-        verbBtn.textContent = t.verbs;
-        verbBtn.className = 'btn-secondary btn-small grammar-option-btn';
-        verbBtn.onclick = function() {
-            hideOtherGrammarOptionBtns(verbBtn);
-            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
-            if (typeof practiceGrammar === 'function') practiceGrammar('verbs');
-        };
-        grammarOptionsContainer.appendChild(verbBtn);
-
-        const possBtn = document.createElement('button');
-        possBtn.textContent = t.possessives;
-        possBtn.className = 'btn-secondary btn-small grammar-option-btn';
-        possBtn.onclick = function() {
-            hideOtherGrammarOptionBtns(possBtn);
-            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
-            if (typeof practiceGrammar === 'function') practiceGrammar('possessives');
-        };
-        grammarOptionsContainer.appendChild(possBtn);
+    if (day === 1 && lang === 'COSYenglish') {
         return;
     }
+    
+    let optionsAdded = false; // Flag to check if any button is added
 
-    if (day >= 1) {
+    if (day >= 1) { 
         const genderBtn = document.createElement('button');
-        genderBtn.textContent = t.gender;
-        genderBtn.className = 'btn-secondary grammar-option-btn'; // Removed btn-small
-        genderBtn.onclick = function() {
-            hideOtherGrammarOptionBtns(genderBtn);
-            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
-            if (typeof practiceGrammar === 'function') practiceGrammar('gender');
-        };
+        genderBtn.id = 'gender-btn'; // Use static ID for setupOptionToggle
+        genderBtn.textContent = t.gender || 'Gender';
+        genderBtn.className = 'btn-secondary option-btn'; 
         grammarOptionsContainer.appendChild(genderBtn);
+        optionsAdded = true;
     }
     if (day >= 2) {
         const verbBtn = document.createElement('button');
-        verbBtn.textContent = t.verbs;
-        verbBtn.className = 'btn-secondary grammar-option-btn'; // Removed btn-small
-        verbBtn.onclick = function() {
-            hideOtherGrammarOptionBtns(verbBtn);
-            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
-            if (typeof practiceGrammar === 'function') practiceGrammar('verbs');
-        };
+        verbBtn.id = 'verbs-btn'; // Use static ID
+        verbBtn.textContent = t.verbs || 'Verbs';
+        verbBtn.className = 'btn-secondary option-btn';
         grammarOptionsContainer.appendChild(verbBtn);
+        optionsAdded = true;
     }
-    // Removed makeToggleHandler and related past/future tense buttons as they are not in the original index.html
+    if (day >= 3) {
+        const possBtn = document.createElement('button');
+        possBtn.id = 'possessives-btn'; // Use static ID
+        possBtn.textContent = t.possessives || 'Possessives';
+        possBtn.className = 'btn-secondary option-btn';
+        grammarOptionsContainer.appendChild(possBtn);
+        optionsAdded = true;
+    }
+  
+    if (optionsAdded){ // Only add "Practice All" if there are other options
+        const practiceAllGrammarBtn = document.createElement('button');
+        practiceAllGrammarBtn.id = 'practice-all-grammar-btn'; // Use static ID
+        practiceAllGrammarBtn.textContent = t.practiceAll || 'Practice All';
+        practiceAllGrammarBtn.className = 'btn-secondary option-btn';
+        grammarOptionsContainer.appendChild(practiceAllGrammarBtn);
+    }
+
+    // Re-apply setupOptionToggle from buttons.js to these dynamically created buttons
+    // This assumes setupOptionToggle can be safely called multiple times or handles it internally.
+    // Or, buttons.js needs to be aware of dynamic button creation.
+    // For now, this relies on the global setupOptionToggle in buttons.js being robust.
+    if (typeof setupOptionToggle === 'function' && grammarOptionsContainer.children.length > 0) {
+        const buttonIds = Array.from(grammarOptionsContainer.children).map(btn => btn.id).filter(id => id);
+        const practiceFns = buttonIds.map(id => {
+            if (id === 'gender-btn') return () => practiceGrammar('gender');
+            if (id === 'verbs-btn') return () => practiceGrammar('verbs');
+            if (id === 'possessives-btn') return () => practiceGrammar('possessives');
+            if (id === 'practice-all-grammar-btn') return practiceAllGrammar;
+            return () => {}; // Default empty function
+        });
+        setupOptionToggle('grammar-options', buttonIds, practiceFns);
+    }
 }
 
 // --- Hide/show day and day-from/day-to options depending on selection ---
@@ -244,7 +208,7 @@ function updateDaySelectors() {
     const dayFromSelect = document.getElementById('day-from');
     const dayToSelect = document.getElementById('day-to');
 
-    if (!daySelect || !dayFromSelect || !dayToSelect) return; // Elements not found
+    if (!daySelect || !dayFromSelect || !dayToSelect) return; 
 
     const day = daySelect.value;
     const dayFrom = dayFromSelect.value;
@@ -253,20 +217,17 @@ function updateDaySelectors() {
     const dayFromParent = dayFromSelect.parentElement;
     const dayToParent = dayToSelect.parentElement;
 
-    if (!dayFromParent || !dayToParent) return; // Parent elements not found
+    if (!dayFromParent || !dayToParent) return; 
 
     if (day) {
-        // Hide range selectors
         dayFromParent.style.display = 'none';
         dayToParent.style.display = 'none';
-        daySelect.style.display = ''; // Ensure single day selector is visible
+        daySelect.style.display = ''; 
     } else if (dayFrom || dayTo) {
-        // Hide single day selector
         daySelect.style.display = 'none';
-        dayFromParent.style.display = ''; // Ensure range selectors are visible
+        dayFromParent.style.display = ''; 
         dayToParent.style.display = '';
     } else {
-        // Show all
         daySelect.style.display = '';
         dayFromParent.style.display = '';
         dayToParent.style.display = '';
