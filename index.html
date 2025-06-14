@@ -128,23 +128,73 @@
         const readingBtn = document.getElementById('reading-btn');
         const speakingBtn = document.getElementById('speaking-btn');
         const writingBtn = document.getElementById('writing-btn');
-        
+
         const vocabularyOptions = document.getElementById('vocabulary-options');
         const grammarOptions = document.getElementById('grammar-options');
-        const grammarOptionsContainer = grammarOptions.querySelector('.grammar-options');
         const readingOptions = document.getElementById('reading-options');
         const speakingOptions = document.getElementById('speaking-options');
         const writingOptions = document.getElementById('writing-options');
-        
+
         // Hide all options initially
         vocabularyOptions.style.display = 'none';
         grammarOptions.style.display = 'none';
         readingOptions.style.display = 'none';
         speakingOptions.style.display = 'none';
         writingOptions.style.display = 'none';
+
         // Show Practice All button on load
         const practiceAllBtn = document.getElementById('practice-all-btn');
         practiceAllBtn.style.display = 'block';
+
+        // Add click handlers to main menu buttons to show/hide options
+        vocabularyBtn.addEventListener('click', function() {
+            vocabularyOptions.style.display = 'block';
+            grammarOptions.style.display = 'none';
+            readingOptions.style.display = 'none';
+            speakingOptions.style.display = 'none';
+            writingOptions.style.display = 'none';
+            practiceAllBtn.style.display = 'none';
+        });
+        grammarBtn.addEventListener('click', function() {
+            vocabularyOptions.style.display = 'none';
+            grammarOptions.style.display = 'block';
+            readingOptions.style.display = 'none';
+            speakingOptions.style.display = 'none';
+            writingOptions.style.display = 'none';
+            practiceAllBtn.style.display = 'none';
+        });
+        readingBtn.addEventListener('click', function() {
+            vocabularyOptions.style.display = 'none';
+            grammarOptions.style.display = 'none';
+            readingOptions.style.display = 'block';
+            speakingOptions.style.display = 'none';
+            writingOptions.style.display = 'none';
+            practiceAllBtn.style.display = 'none';
+        });
+        speakingBtn.addEventListener('click', function() {
+            vocabularyOptions.style.display = 'none';
+            grammarOptions.style.display = 'none';
+            readingOptions.style.display = 'none';
+            speakingOptions.style.display = 'block';
+            writingOptions.style.display = 'none';
+            practiceAllBtn.style.display = 'none';
+        });
+        writingBtn.addEventListener('click', function() {
+            vocabularyOptions.style.display = 'none';
+            grammarOptions.style.display = 'none';
+            readingOptions.style.display = 'none';
+            speakingOptions.style.display = 'none';
+            writingOptions.style.display = 'block';
+            practiceAllBtn.style.display = 'none';
+        });
+        practiceAllBtn.addEventListener('click', function() {
+            vocabularyOptions.style.display = 'none';
+            grammarOptions.style.display = 'none';
+            readingOptions.style.display = 'none';
+            speakingOptions.style.display = 'none';
+            writingOptions.style.display = 'none';
+            practiceAllBtn.style.display = 'block';
+        });
 
 
 
@@ -280,8 +330,11 @@ function hideOtherMainPracticeTypes(selectedId) {
             showAllMainPracticeTypes();
             showAllVocabularyOptions();
             showAllGrammarOptions();
+            showAllReadingOptions();
+            showAllSpeakingOptions();
             vocabularyOptions.style.display = 'none';
             grammarOptions.style.display = 'none';
+            readingOptions.style.display = 'none';
             speakingOptions.style.display = 'none';
             practiceAllBtn.style.display = 'block';
             // Optionally clear result area

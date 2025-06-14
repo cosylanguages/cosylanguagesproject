@@ -150,10 +150,6 @@ const VOCABULARY_PRACTICE_TYPES = {
 
 // Initialize vocabulary practice
 function initVocabularyPractice() {
-    // Daily Word Button
-    document.getElementById('daily-word-btn')?.addEventListener('click', () => {
-        showDailyWords();
-    });
 
     // Random Word Button
     document.getElementById('random-word-btn')?.addEventListener('click', () => {
@@ -174,130 +170,6 @@ function initVocabularyPractice() {
     document.getElementById('practice-all-vocab-btn')?.addEventListener('click', () => {
         practiceAllVocabulary();
     });
-
-    // Add event listeners for daily reading, writing, and speaking buttons
-    document.getElementById('daily-reading-btn')?.addEventListener('click', showDailyReading);
-    document.getElementById('daily-writing-btn')?.addEventListener('click', showDailyWriting);
-    document.getElementById('daily-speaking-btn')?.addEventListener('click', showDailySpeaking);
-}
-
-// Show Daily Words from dictionaries
-async function showDailyWords() {
-    const language = document.getElementById('language').value;
-    const currentTranslations = translations[language] || translations.COSYenglish;
-    const container = document.getElementById('result');
-    container.innerHTML = `<div class="exercise-header daily-header">${currentTranslations.dailyWord || 'Daily Words'}</div><div class="daily-words-container" id="daily-words-list"><div class="loading-spinner"></div></div>`;
-    const list = document.getElementById('daily-words-list');
-    try {
-        const dailyWords = await fetchDailyWordsFromDictionaries(language); // This function uses static examples
-        list.innerHTML = dailyWords.map(level => `
-            <div class="daily-word-level ${level.level}">
-                <b>${level.word}</b> <span>– ${level.definition}</span>
-                <div class="example">${level.example}</div>
-            </div>
-        `).join('');
-    } catch (e) {
-        list.innerHTML = `<div class="incorrect">${currentTranslations.couldNotFetchDailyWords || 'Could not fetch daily words. Try again later.'}</div>`;
-    }
-}
-
-// Fetch daily words from online dictionaries (Cambridge, Oxford, etc.)
-async function fetchDailyWordsFromDictionaries(language) {
-    // This is a stub. In production, you would use real APIs or web scraping.
-    // For demo, we link to dictionary pages and use static examples.
-    // You can expand this with real API keys and fetch logic for each dictionary.
-    const levels = ['beginner','elementary','intermediate','advanced'];
-    const dictUrls = {
-        'english': 'https://dictionary.cambridge.org/dictionary/english/',
-        'french': 'https://www.larousse.fr/dictionnaires/francais-monolingue/',
-        'italian': 'https://dizionari.corriere.it/dizionario_italiano/',
-        'spanish': 'https://dle.rae.es/',
-        'portuguese': 'https://dicionario.priberam.org/',
-        'german': 'https://www.verbformen.de/',
-        'greek': 'https://www.greek-language.gr/greekLang/modern_greek/tools/lexica/triantafyllides/search.html?lq=',
-        'russian': 'https://gramota.ru/biblioteka/slovari/bolshoj-tolkovyj-slovar/',
-        'tatar': 'https://suzlek.antat.ru/',
-        'armenian': 'https://bararanonline.com/',
-        'bashkir': 'https://ru.wiktionary.org/wiki/'
-    };
-    // Example static words for demo
-    const demoWords = {
-        'english': [
-            {word:'cat',def:'a small animal kept as a pet',ex:'The cat is sleeping.'},
-            {word:'house',def:'a building for people to live in',ex:'They live in a big house.'},
-            {word:'discover',def:'to find something for the first time',ex:'She discovered a new planet.'},
-            {word:'resilient',def:'able to recover quickly',ex:'She is resilient in difficult times.'}
-        ],
-        'french': [
-            {word:'chat',def:'animal domestique félin',ex:'Le chat dort.'},
-            {word:'maison',def:'bâtiment pour habiter',ex:'Ils habitent une grande maison.'},
-            {word:'découvrir',def:'trouver pour la première fois',ex:'Elle a découvert une planète.'},
-            {word:'résilient',def:'qui résiste aux difficultés',ex:'Elle est très résiliente.'}
-        ],
-        'italian': [
-            {word:'gatto',def:'animale domestico felino',ex:'Il gatto dorme.'},
-            {word:'casa',def:'edificio in cui si abita',ex:'Vivono in una grande casa.'},
-            {word:'scoprire',def:'trovare per la prima volta',ex:'Ha scoperto un nuovo pianeta.'},
-            {word:'resiliente',def:'che resiste alle difficoltà',ex:'Lei è molto resiliente.'}
-        ],
-        'spanish': [
-            {word:'gato',def:'animal doméstico felino',ex:'El gato duerme.'},
-            {word:'casa',def:'edificio para vivir',ex:'Viven en una casa grande.'},
-            {word:'descubrir',def:'encontrar por primera vez',ex:'Ella descubrió un planeta.'},
-            {word:'resiliente',def:'que resiste las dificultades',ex:'Ella es muy resiliente.'}
-        ],
-        'portuguese': [
-            {word:'gato',def:'animal doméstico felino',ex:'O gato está dormindo.'},
-            {word:'casa',def:'edifício para morar',ex:'Eles moram em uma casa grande.'},
-            {word:'descobrir',def:'encontrar pela primeira vez',ex:'Ela descobriu um planeta.'},
-            {word:'resiliente',def:'que resiste às dificuldades',ex:'Ela é muito resiliente.'}
-        ],
-        'german': [
-            {word:'Katze',def:'ein kleines Haustier',ex:'Die Katze schläft.'},
-            {word:'Haus',def:'Gebäude zum Wohnen',ex:'Sie wohnen in einem großen Haus.'},
-            {word:'entdecken',def:'etwas zum ersten Mal finden',ex:'Sie hat einen neuen Planeten entdeckt.'},
-            {word:'resilient',def:'kann sich schnell erholen',ex:'Sie ist sehr resilient.'}
-        ],
-        'greek': [
-            {word:'γάτα',def:'οικόσιτη γάτα',ex:'Η γάτα κοιμάται.'},
-            {word:'σπίτι',def:'κτίριο για να ζεις',ex:'Μένουν σε ένα μεγάλο σπίτι.'},
-            {word:'ανακαλύπτω',def:'βρίσκω για πρώτη φορά',ex:'Ανακάλυψε έναν νέο πλανήτη.'},
-            {word:'ανθεκτικός',def:'που αντέχει στις δυσκολίες',ex:'Είναι πολύ ανθεκτική.'}
-        ],
-        'russian': [
-            {word:'кот',def:'домашнее животное',ex:'Кот спит.'},
-            {word:'дом',def:'здание для жилья',ex:'Они живут в большом доме.'},
-            {word:'открывать',def:'находить впервые',ex:'Она открыла новую планету.'},
-            {word:'устойчивый',def:'способен быстро восстанавливаться',ex:'Она очень устойчива.'}
-        ],
-        'tatar': [
-            {word:'песи',def:'өйдә яши торган хайван',ex:'Песи йоклый.'},
-            {word:'өй',def:'яшәү өчен бина',ex:'Алар зур өйдә яшиләр.'},
-            {word:'ачу',def:'беренче тапкыр табу',ex:'Ул яңа планета ачты.'},
-            {word:'түземле',def:'авырлыкларга чыдый',ex:'Ул бик түземле.'}
-        ]
-        // Add more languages as needed
-    };
-    // Map language select value to demoWords key
-    const langMap = {
-        'COSYenglish': 'english',
-        'COSYfrançais': 'french',
-        'COSYitaliano': 'italian',
-        'COSYespañol': 'spanish',
-        'COSYportuguês': 'portuguese',
-        'COSYdeutsch': 'german',
-        'ΚΟΖΥελληνικά': 'greek',
-        'ТАКОЙрусский': 'russian',
-        'COSYtatarça': 'tatar'
-    };
-    const langKey = langMap[language] || 'english';
-    const words = demoWords[langKey] || demoWords['english'];
-    return levels.map((level, i) => ({
-        level,
-        word: `<a href='${dictUrls[langKey] || dictUrls['english']}${encodeURIComponent(words[i]?.word||'')}' target='_blank'>${words[i]?.word||'-'}</a>`,
-        definition: words[i]?.def||'-',
-        example: words[i]?.ex||'-'
-    }));
 }
 
 // Start random word practice with random exercise type
@@ -433,7 +305,6 @@ async function showOppositesExercise(baseWord = null) {
 async function showMatchOpposites() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
-    const t = translations[language] || translations.COSYenglish;
     
     if (!language || !days.length) {
         alert(t.alertLangDay || 'Please select language and day(s) first');
@@ -1235,6 +1106,270 @@ const _showMatchSoundWord = showMatchSoundWord;
 showMatchSoundWord = async function() {
     await _showMatchSoundWord.apply(this, arguments);
     addRandomizeButton('match-sound-exercise', startListeningPractice);
+};
+
+// --- PATCH: Always include required pairs for day 1 in match opposites and match image-word ---
+const REQUIRED_DAY1_OPPOSITES = [
+    { base: 'hello', opposite: 'goodbye' },
+    { base: 'yes', opposite: 'no' },
+    { base: 'thank you', opposite: "you're welcome" }
+];
+
+// Helper to get translations for required pairs in current language
+async function getRequiredDay1Pairs(language) {
+    // Load day 1 vocabulary and opposites
+    const words = await loadVocabulary(language, '1');
+    const opposites = await loadOpposites(language, '1');
+    // Try to find the actual translations for the required pairs
+    let pairs = [];
+    for (const req of REQUIRED_DAY1_OPPOSITES) {
+        // Find the word in the vocabulary that matches the English base/opposite (case-insensitive)
+        let baseWord = words.find(w => w.toLowerCase() === req.base.toLowerCase());
+        let oppWord = words.find(w => w.toLowerCase() === req.opposite.toLowerCase());
+        // If not found, try to find by reverse (for languages where the order is swapped)
+        if (!baseWord && opposites) {
+            baseWord = Object.keys(opposites).find(w => opposites[w]?.toLowerCase() === req.opposite.toLowerCase());
+        }
+        if (!oppWord && opposites) {
+            oppWord = Object.values(opposites).find(v => v.toLowerCase() === req.opposite.toLowerCase());
+        }
+        // Fallback to English if not found
+        pairs.push({
+            word: baseWord || req.base,
+            opposite: oppWord || req.opposite
+        });
+    }
+    return pairs;
+}
+
+// PATCH showMatchOpposites
+const _origShowMatchOpposites = showMatchOpposites;
+showMatchOpposites = async function() {
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
+    // If day 1 is selected (alone or in range), always include required pairs
+    if (days && days.includes('1')) {
+        const t = translations[language] || translations.COSYenglish;
+        const words = await loadVocabulary(language, days);
+        const opposites = await loadOpposites(language, days);
+        let selectedPairs = await getRequiredDay1Pairs(language);
+        // Add additional random pairs if needed
+        const availableWords = [...words];
+        // Remove required words from availableWords
+        selectedPairs.forEach(pair => {
+            const idx = availableWords.indexOf(pair.word);
+            if (idx !== -1) availableWords.splice(idx, 1);
+        });
+        while (selectedPairs.length < 4 && availableWords.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableWords.length);
+            const word = availableWords[randomIndex];
+            if (opposites[word]) {
+                selectedPairs.push({ word, opposite: opposites[word] });
+                availableWords.splice(randomIndex, 1);
+            }
+        }
+        // Shuffle columns
+        const wordsColumn = [...selectedPairs].sort(() => Math.random() - 0.5);
+        const oppositesColumn = [...selectedPairs].map(pair => pair.opposite).sort(() => Math.random() - 0.5);
+        const resultArea = document.getElementById('result');
+        resultArea.innerHTML = `
+            <div class="match-exercise" role="region" aria-label="${t.matchOppositesExercise || 'Match Opposites Exercise'}">
+                <div class="match-container">
+                    <div class="match-col" id="words-col" aria-label="${t.wordsColumn || 'Words column'}">
+                        ${wordsColumn.map((pair, index) => `
+                            <div class="match-item" data-word="${pair.word}" role="button" tabindex="0" aria-label="${t.wordLabel || 'Word'}: ${pair.word}">${pair.word}</div>
+                        `).join('')}
+                    </div>
+                    <div class="match-col" id="opposites-col" aria-label="${t.oppositesColumn || 'Opposites column'}">
+                        ${oppositesColumn.map((opposite, index) => `
+                            <div class="match-item" data-opposite="${opposite}" role="button" tabindex="0" aria-label="${t.oppositeLabel || 'Opposite'}: ${opposite}">${opposite} </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div id="match-feedback" class="exercise-feedback" aria-live="polite"></div>
+                <button id="check-matches" class="btn-primary" aria-label="${t.checkMatches || 'Check Matches'}">✅ ${translations[language]?.check || 'Check'} ${t.matches || 'Matches'}</button>
+                <button id="new-match" class="btn-secondary" aria-label="${t.newExercise || 'New Exercise'}">🔄 ${t.newExercise || 'New Exercise'}</button>
+            </div>
+        `;
+        // ...existing code for event listeners...
+        let selectedWord = null;
+        let selectedOpposite = null;
+        document.querySelectorAll('#words-col .match-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedWord = this.getAttribute('data-word');
+            });
+        });
+        document.querySelectorAll('#opposites-col .match-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (!selectedWord) return;
+                document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedOpposite = this.getAttribute('data-opposite');
+                const correctOpposite = selectedPairs.find(p => p.word === selectedWord)?.opposite;
+                const feedback = document.getElementById('match-feedback');
+                if (selectedOpposite === correctOpposite) {
+                    feedback.innerHTML = '<span class="correct">✅ Correct match!</span>';
+                    document.querySelector(`[data-word="${selectedWord}"]`).classList.add('matched');
+                    this.classList.add('matched');
+                } else {
+                    feedback.innerHTML = '<span class="incorrect">❌ Not a match. Try again!</span>';
+                }
+                selectedWord = null;
+                selectedOpposite = null;
+            });
+        });
+        document.getElementById('check-matches').addEventListener('click', () => {
+            const feedback = document.getElementById('match-feedback');
+            feedback.innerHTML = 'Showing all correct matches...';
+            selectedPairs.forEach(pair => {
+                document.querySelector(`[data-word="${pair.word}"]`).classList.add('matched');
+                document.querySelector(`[data-opposite="${pair.opposite}"]`).classList.add('matched');
+            });
+            setTimeout(() => {
+                showMatchOpposites();
+            }, 2000);
+        });
+        document.getElementById('new-match').addEventListener('click', () => {
+            showMatchOpposites();
+        });
+        return;
+    }
+    // ...existing code...
+    await _origShowMatchOpposites.apply(this, arguments);
+};
+
+// PATCH showMatchImageWord
+const _origShowMatchImageWord = showMatchImageWord;
+showMatchImageWord = async function() {
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
+    if (days && days.includes('1')) {
+        const t = translations[language] || translations.COSYenglish;
+        const images = await loadImageVocabulary(language, days);
+        const words = await loadVocabulary(language, days);
+        // Find required image-word pairs for day 1
+        let requiredPairs = [];
+        for (const req of REQUIRED_DAY1_OPPOSITES) {
+            // Find image for base word
+            const imageItem = images.find(img => img.translations && img.translations[language] && img.translations[language].toLowerCase() === req.base.toLowerCase());
+            if (imageItem) {
+                requiredPairs.push({
+                    type: 'image',
+                    src: imageItem.src,
+                    alt: imageItem.alt,
+                    answer: imageItem.translations[language]
+                });
+            }
+        }
+        // Add 4 random images if needed
+        const usedIndices = new Set();
+        images.forEach((img, idx) => {
+            if (requiredPairs.find(p => p.answer === img.translations[language])) usedIndices.add(idx);
+        });
+        while (requiredPairs.length < 4 && usedIndices.size < images.length) {
+            const randomIndex = Math.floor(Math.random() * images.length);
+            if (!usedIndices.has(randomIndex)) {
+                usedIndices.add(randomIndex);
+                const imageItem = images[randomIndex];
+                requiredPairs.push({
+                    type: 'image',
+                    src: imageItem.src,
+                    alt: imageItem.alt,
+                    answer: imageItem.translations[language]
+                });
+            }
+        }
+        // Add 4 random words (some might be correct matches)
+        const selectedItems = [...requiredPairs];
+        const wordIndices = new Set();
+        requiredPairs.forEach(pair => {
+            const idx = words.indexOf(pair.answer);
+            if (idx !== -1) wordIndices.add(idx);
+        });
+        while (selectedItems.length < 8 && wordIndices.size < words.length) {
+            const randomIndex = Math.floor(Math.random() * words.length);
+            if (!wordIndices.has(randomIndex)) {
+                wordIndices.add(randomIndex);
+                selectedItems.push({
+                    type: 'word',
+                    text: words[randomIndex]
+                });
+            }
+        }
+        // Shuffle the items
+        const shuffledItems = shuffleArray(selectedItems);
+        const resultArea = document.getElementById('result');
+        resultArea.innerHTML = `
+            <div class="match-image-word-exercise">
+                <h3>${t.matchEachImageWithWord || 'Match each image with its word'}</h3>
+                <div class="match-grid">
+                    ${shuffledItems.map(item => `
+                        ${item.type === 'image' ? `
+                            <div class="match-item image-item" data-answer="${item.answer}">
+                                <img src="${item.src}" alt="${item.alt}">
+                            </div>
+                        ` : `
+                            <div class="match-item word-item" data-word="${item.text}">
+                                ${item.text}
+                            </div>
+                        `}
+                    `).join('')}
+                </div>
+                <div id="match-image-feedback"></div>
+                <button id="check-image-matches" class="btn-primary">${translations[language]?.buttons?.check || 'Check'} Matches</button>
+                <button id="new-image-match" class="btn-secondary" aria-label="${t.newExercise || 'New Exercise'}">🔄 ${t.newExercise || 'New Exercise'}</button>
+            </div>
+        `;
+        // ...existing code for event listeners...
+        let selectedImage = null;
+        let selectedWord = null;
+        document.querySelectorAll('.image-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedImage = this.getAttribute('data-answer');
+                selectedWord = null;
+            });
+        });
+        document.querySelectorAll('.word-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (!selectedImage) return;
+                
+                document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedWord = this.getAttribute('data-word');
+                const feedback = document.getElementById('match-image-feedback');
+                if (selectedWord === selectedImage) {
+                    feedback.innerHTML = '<span class="correct">✅ Correct match!</span>';
+                    document.querySelector(`[data-answer="${selectedImage}"]`).classList.add('matched');
+                    this.classList.add('matched');
+                } else {
+                    feedback.innerHTML = '<span class="incorrect">❌ Not a match. Try again!</span>';
+                }
+                selectedImage = null;
+                selectedWord = null;
+            });
+        });
+        document.getElementById('check-image-matches').addEventListener('click', () => {
+            const feedback = document.getElementById('match-image-feedback');
+            feedback.innerHTML = 'Showing all correct matches...';
+            requiredPairs.forEach(imageItem => {
+                document.querySelector(`[data-answer="${imageItem.answer}"]`).classList.add('matched');
+                document.querySelector(`[data-word="${imageItem.answer}"]`)?.classList.add('matched');
+            });
+            setTimeout(() => {
+                showMatchImageWord();
+            }, 2000);
+        });
+        document.getElementById('new-image-match').addEventListener('click', () => {
+            showMatchImageWord();
+        });
+        return;
+    }
+    // ...existing code...
+    await _origShowMatchImageWord.apply(this, arguments);
 };
 
 // Initialize when DOM is loaded
