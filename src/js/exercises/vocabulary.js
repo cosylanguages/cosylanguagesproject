@@ -953,85 +953,15 @@ function showNoDataMessage() {
     resultArea.innerHTML = '<p class="no-data">No data available for selected day/language.</p>';
 }
 
-// Helper: Add randomize button to exercise containers
-function addRandomizeButton(containerId, randomizeFn) {
-    const container = document.getElementById(containerId) || document.querySelector(`.${containerId}`);
-    if (!container) return;
-    // Remove any existing randomize button to avoid duplicates
-    const existingBtn = container.querySelector('.btn-randomize');
-    if (existingBtn) existingBtn.remove();
-    let btn = document.createElement('button');
-    btn.className = 'btn-randomize';
-    const language = document.getElementById('language')?.value || 'COSYenglish';
-    btn.setAttribute('aria-label', (translations[language]?.buttons?.randomize || 'Randomize exercise'));
-    btn.title = translations[language]?.buttons?.randomize || 'Randomize exercise';
-    btn.innerHTML = translations[language]?.buttons?.randomize || '🎲';
-    btn.style.marginLeft = '10px';
-    btn.onclick = randomizeFn;
-    btn.style.float = 'right';
-    btn.style.fontSize = '1.5rem';
-    btn.style.background = 'linear-gradient(90deg,#ffe082,#1de9b6)';
-    btn.style.border = 'none';
-    btn.style.borderRadius = '50%';
-    btn.style.width = '44px';
-    btn.style.height = '44px';
-    btn.style.boxShadow = '0 2px 8px #ccc';
-    btn.style.cursor = 'pointer';
-    btn.style.transition = 'transform 0.2s';
-    btn.onmouseover = () => btn.style.transform = 'scale(1.15)';
-    btn.onmouseout = () => btn.style.transform = '';
-    container.prepend(btn);
-}
-
-// Patch all main exercise renderers to add the randomize button
-const _showRandomWord = showRandomWord;
-showRandomWord = async function() {
-    clearResultArea();
-    await _showRandomWord.apply(this, arguments);
-    addRandomizeButton('word-display-container', startRandomWordPractice);
-};
-const _showOppositesExercise = showOppositesExercise;
-showOppositesExercise = async function() {
-    clearResultArea();
-    await _showOppositesExercise.apply(this, arguments);
-    addRandomizeButton('opposites-exercise', startRandomWordPractice);
-};
-const _showMatchOpposites = showMatchOpposites;
-showMatchOpposites = async function() {
-    clearResultArea();
-    await _showMatchOpposites.apply(this, arguments);
-    addRandomizeButton('match-exercise', startRandomWordPractice);
-};
-const _showBuildWord = showBuildWord;
-showBuildWord = async function() {
-    clearResultArea();
-    await _showBuildWord.apply(this, arguments);
-    addRandomizeButton('build-word-exercise', startRandomWordPractice);
-};
-const _showIdentifyImage = showIdentifyImage;
-showIdentifyImage = async function() {
-    clearResultArea();
-    await _showIdentifyImage.apply(this, arguments);
-    addRandomizeButton('image-exercise', startRandomImagePractice);
-};
-const _showMatchImageWord = showMatchImageWord;
-showMatchImageWord = async function() {
-    clearResultArea();
-    await _showMatchImageWord.apply(this, arguments);
-    addRandomizeButton('match-image-word-exercise', startRandomImagePractice);
-};
-const _showTranscribeWord = showTranscribeWord;
-showTranscribeWord = async function() {
-    clearResultArea();
-    await _showTranscribeWord.apply(this, arguments);
-    addRandomizeButton('listening-exercise', startListeningPractice);
-};
-const _showMatchSoundWord = showMatchSoundWord;
-showMatchSoundWord = async function() {
-    clearResultArea();
-    await _showMatchSoundWord.apply(this, arguments);
-    addRandomizeButton('match-sound-exercise', startListeningPractice);
-};
+// Patch all main vocabulary exercise renderers for randomize button and unified container
+showRandomWord = patchExerciseForRandomizeButton(showRandomWord, '.word-display-container', startRandomWordPractice);
+showOppositesExercise = patchExerciseForRandomizeButton(showOppositesExercise, '.opposites-exercise', startRandomWordPractice);
+showMatchOpposites = patchExerciseForRandomizeButton(showMatchOpposites, '.match-exercise', startRandomWordPractice);
+showBuildWord = patchExerciseForRandomizeButton(showBuildWord, '.build-word-exercise', startRandomWordPractice);
+showIdentifyImage = patchExerciseForRandomizeButton(showIdentifyImage, '.image-exercise', startRandomImagePractice);
+showMatchImageWord = patchExerciseForRandomizeButton(showMatchImageWord, '.match-image-word-exercise', startRandomImagePractice);
+showTranscribeWord = patchExerciseForRandomizeButton(showTranscribeWord, '.listening-exercise', startListeningPractice);
+showMatchSoundWord = patchExerciseForRandomizeButton(showMatchSoundWord, '.match-sound-exercise', startListeningPractice);
 
 // --- PATCH: Always include required pairs for day 1 in match opposites and match image-word ---
 const REQUIRED_DAY1_OPPOSITES = [
