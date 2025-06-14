@@ -14,6 +14,11 @@ function showNoDataMessage() {
     resultArea.innerHTML = '<p class="no-data">No data available for selected day/language.</p>';
 }
 
+function clearResultArea() {
+    const resultArea = document.getElementById('result');
+    if (resultArea) resultArea.innerHTML = '';
+}
+
 // Helper: Add randomize button to exercise containers
 function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to accept element directly
     let container = containerIdOrElement;
