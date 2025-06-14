@@ -92,6 +92,60 @@ async function loadPossessivesGrammar(language, day) {
     return data && data[day] ? data[day] : [];
 }
 
+const LANGUAGE_GENDER_SYSTEMS = {
+    'COSYitaliano': 2,
+    'COSYfrançais': 2,
+    'COSYespañol': 2,
+    'COSYdeutsch': 3,
+    'COSYportuguês': 2,
+    'ΚΟΖΥελληνικά': 3,
+    'ТАКОЙрусский': 3,
+    'COSYbrezhoneg': 2
+};
+
+const ARTICLE_CATEGORIES = {
+    'COSYfrançais': {
+        "le": "masculine",
+        "la": "feminine",
+        "l'": "both",
+        "le/la": "both"
+    },
+    'COSYdeutsch': {
+        "der": "masculine",
+        "die": "feminine",
+        "das": "neuter"
+    },
+    'COSYitaliano': {
+        "il": "masculine",
+        "lo": "masculine",
+        "la": "feminine",
+        "l'": "both",
+        "l": "both",
+        "il/la": "both"
+    },
+    'COSYespañol': {
+        "el": "masculine",
+        "la": "feminine",
+        "el/la": "both"
+    },
+    'COSYportuguês': {
+        "o": "masculine",
+        "a": "feminine",
+        "o/a": "both"
+    },
+    'ΚΟΖΥελληνικά': { // Greek
+        "ο": "masculine",
+        "η": "feminine",
+        "το": "neuter",
+        "ο/η": "both"
+    },
+    'ТАКОЙрусский': { // Russian
+        "он": "masculine",
+        "она": "feminine",
+        "оно": "neuter"
+    }
+};
+
 // Grammar Practice Types
 const GRAMMAR_PRACTICE_TYPES = {
     'gender': {
@@ -203,25 +257,107 @@ async function showMatchArticlesWords() {
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
     const currentTranslations = translations[language] || translations.COSYenglish;
+    const DESIRED_ITEM_COUNT = 4;
 
     if (!language || !days.length) {
         alert(currentTranslations.alertLangDay || 'Please select language and day(s) first');
         return;
     }
     const genderData = await loadGenderGrammar(language, days);
-    if (genderData.length < 4) {
+    if (!genderData || genderData.length === 0) { // Ensure genderData is not null and not empty
         showNoDataMessage();
         return;
     }
-    const selectedItems = [];
-    const usedIndices = new Set();
-    while (selectedItems.length < 4 && usedIndices.size < genderData.length) {
-        const randomIndex = Math.floor(Math.random() * genderData.length);
-        if (!usedIndices.has(randomIndex)) {
-            usedIndices.add(randomIndex);
-            selectedItems.push(genderData[randomIndex]);
+    
+    let selectedItems = [];
+    const langGenderSystem = LANGUAGE_GENDER_SYSTEMS[language];
+    const langArticleCategories = ARTICLE_CATEGORIES[language];
+
+    // Fallback or intelligent selection
+    if (!langGenderSystem || !langArticleCategories || genderData.length < DESIRED_ITEM_COUNT) {
+        // Fallback to original random selection if system/categories undefined or not enough data for full strategy
+        const usedIndices = new Set();
+        const availableGenderData = [...genderData]; // Create a mutable copy for random selection
+        shuffleArray(availableGenderData); // Shuffle for randomness
+
+        while (selectedItems.length < DESIRED_ITEM_COUNT && availableGenderData.length > 0) {
+            const item = availableGenderData.pop(); // Take a random item
+            if (!usedIndices.has(item)) { // Ensure item uniqueness, though pop from shuffled unique list is inherently unique
+                selectedItems.push(item);
+                usedIndices.add(item); // Keep track if items could somehow be duplicated in source
+            }
+        }
+    } else {
+        // New intelligent selection logic
+        let targetCategories = [];
+        if (langGenderSystem === 2) {
+            targetCategories = ['masculine', 'feminine', 'both'];
+        } else if (langGenderSystem === 3) {
+            targetCategories = ['masculine', 'feminine', 'neuter'];
+            if (langArticleCategories && Object.values(langArticleCategories).includes('both')) {
+                 if (Object.keys(langArticleCategories).some(article => langArticleCategories[article] === 'both')) {
+                    targetCategories.push('both');
+                }
+            }
+        }
+
+        const itemsByCategory = {};
+        genderData.forEach(item => {
+            const category = langArticleCategories[item.article];
+            if (category) {
+                if (!itemsByCategory[category]) {
+                    itemsByCategory[category] = [];
+                }
+                // Ensure item has word and article before adding
+                if (item.word && item.article) { 
+                    itemsByCategory[category].push(item);
+                }
+            }
+        });
+        
+        // Shuffle items within each category for randomness
+        for (const category in itemsByCategory) {
+            shuffleArray(itemsByCategory[category]);
+        }
+
+        const pickedItemsSet = new Set(); 
+
+        for (const category of targetCategories) {
+            if (selectedItems.length >= DESIRED_ITEM_COUNT) break; // Stop if we already have enough
+            if (itemsByCategory[category]) {
+                for (const item of itemsByCategory[category]) { // Iterate through shuffled items of the category
+                    if (!pickedItemsSet.has(item)) {
+                        selectedItems.push(item);
+                        pickedItemsSet.add(item);
+                        break; // Got one for this category
+                    }
+                }
+            }
+        }
+        
+        // Fill remaining slots if not enough items were picked by category strategy
+        if (selectedItems.length < DESIRED_ITEM_COUNT) {
+            const allItemsShuffled = shuffleArray([...genderData]); // Get a shuffled list of all items
+            for (const item of allItemsShuffled) {
+                if (selectedItems.length >= DESIRED_ITEM_COUNT) break;
+                if (!pickedItemsSet.has(item) && item.word && item.article) { // Check item.word and item.article
+                    selectedItems.push(item);
+                    pickedItemsSet.add(item);
+                }
+            }
+        }
+        // Ensure we don't have more than DESIRED_ITEM_COUNT.
+        if (selectedItems.length > DESIRED_ITEM_COUNT) {
+            shuffleArray(selectedItems); 
+            selectedItems = selectedItems.slice(0, DESIRED_ITEM_COUNT);
         }
     }
+
+    if (selectedItems.length < 2) { // Minimum 2 items to make a matching exercise
+        showNoDataMessage();
+        return;
+    }
+
     const articles = selectedItems.map(item => item.article);
     const words = selectedItems.map(item => item.word);
     const shuffledArticles = shuffleArray([...articles]);
@@ -242,13 +378,12 @@ async function showMatchArticlesWords() {
             <button id="new-match" class="btn-secondary" aria-label="${currentTranslations.aria?.newExercise || 'New Exercise'}">🔄 ${currentTranslations.buttons?.newExercise || 'New Exercise'}</button>
         </div>
     `;
-    let selectedArticle = null, selectedWordElement = null; // selectedWord was used, changed to selectedWordElement to avoid confusion
+    let selectedArticle = null, selectedWordElement = null; 
     document.querySelectorAll('#articles-col .match-item').forEach(item => {
         item.addEventListener('click', function() {
-            document.querySelectorAll('#articles-col .match-item').forEach(i => i.classList.remove('selected')); // Only deselect in its own column
+            document.querySelectorAll('#articles-col .match-item').forEach(i => i.classList.remove('selected')); 
             this.classList.add('selected');
             selectedArticle = this.getAttribute('data-article');
-            // If a word was previously selected, attempt match
             if (selectedWordElement) {
                 const currentWord = selectedWordElement.getAttribute('data-word');
                 const correctWordForItem = selectedItems.find(s => s.article === selectedArticle)?.word;
@@ -257,10 +392,9 @@ async function showMatchArticlesWords() {
                     feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectMatch || '✅ Correct match!'}</span>`;
                     document.querySelector(`[data-article="${selectedArticle}"]`).classList.add('matched', 'disabled');
                     selectedWordElement.classList.add('matched', 'disabled');
-                    selectedArticle = null; selectedWordElement = null; // Reset
+                    selectedArticle = null; selectedWordElement = null; 
                 } else {
                     feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotAMatch || '❌ Not a match. Try again!'}</span>`;
-                    // Optionally reset selection or flash incorrect
                     this.classList.remove('selected'); 
                     selectedWordElement.classList.remove('selected');
                     selectedArticle = null; selectedWordElement = null;
@@ -270,10 +404,9 @@ async function showMatchArticlesWords() {
     });
     document.querySelectorAll('#words-col .match-item').forEach(item => {
         item.addEventListener('click', function() {
-            document.querySelectorAll('#words-col .match-item').forEach(i => i.classList.remove('selected')); // Only deselect in its own column
+            document.querySelectorAll('#words-col .match-item').forEach(i => i.classList.remove('selected')); 
             this.classList.add('selected');
-            selectedWordElement = this; // Store the element
-            // If an article was previously selected, attempt match
+            selectedWordElement = this; 
             if (selectedArticle) {
                 const currentWord = this.getAttribute('data-word');
                 const correctWordForItem = selectedItems.find(s => s.article === selectedArticle)?.word;
@@ -282,7 +415,7 @@ async function showMatchArticlesWords() {
                     feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectMatch || '✅ Correct match!'}</span>`;
                     document.querySelector(`[data-article="${selectedArticle}"]`).classList.add('matched', 'disabled');
                     this.classList.add('matched', 'disabled');
-                    selectedArticle = null; selectedWordElement = null; // Reset
+                    selectedArticle = null; selectedWordElement = null; 
                 } else {
                     feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotAMatch || '❌ Not a match. Try again!'}</span>`;
                     document.querySelector(`[data-article="${selectedArticle}"]`).classList.remove('selected');
@@ -295,8 +428,15 @@ async function showMatchArticlesWords() {
     document.getElementById('check-matches').addEventListener('click', () => {
         document.getElementById('match-feedback').innerHTML = currentTranslations.feedbackShowingCorrectMatches || 'Showing all correct matches...';
         selectedItems.forEach(item => {
-            document.querySelector(`[data-article="${item.article}"]`)?.classList.add('matched', 'disabled');
-            document.querySelector(`[data-word="${item.word}"]`)?.classList.add('matched', 'disabled');
+            // Ensure item and item.article/word are defined before trying to select
+            if (item && item.article) {
+                const articleEl = document.querySelector(`[data-article="${item.article}"]`);
+                if (articleEl) articleEl.classList.add('matched', 'disabled');
+            }
+            if (item && item.word) {
+                const wordEl = document.querySelector(`[data-word="${item.word}"]`);
+                if (wordEl) wordEl.classList.add('matched', 'disabled');
+            }
         });
         setTimeout(() => showMatchArticlesWords(), 3000);
     });
