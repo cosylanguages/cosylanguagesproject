@@ -19,7 +19,6 @@ function updateUIForLanguage(language) {
   document.getElementById('practice-all-btn').textContent = t.practiceAll;
 
   // Update vocabulary options
-  document.getElementById('daily-word-btn').textContent = t.dailyWord;
   document.getElementById('random-word-btn').textContent = t.randomWord;
   document.getElementById('random-image-btn').textContent = t.randomImage;
   document.getElementById('listening-btn').textContent = t.listening;
@@ -32,19 +31,16 @@ function updateUIForLanguage(language) {
   document.getElementById('practice-all-grammar-btn').textContent = t.practiceAll;
 
   // Update reading options
-  document.getElementById('daily-reading-btn').textContent = t.dailyReading;
   document.getElementById('story-btn').textContent = t.story;
   document.getElementById('interesting-fact-btn').textContent = t.interestingFacts;
 
   // Update speaking options
-  document.getElementById('daily-speaking-btn').textContent = t.dailySpeaking;
   document.getElementById('question-practice-btn').textContent = t.question;
   document.getElementById('monologue-btn').textContent = t.monologue;
   document.getElementById('role-play-btn').textContent = t.rolePlay;
   document.getElementById('practice-all-speaking-btn').textContent = t.practiceAll;
 
   // Update writing options
-  document.getElementById('daily-writing-btn').textContent = t.dailyWriting;
   document.getElementById('question-btn').textContent = t.question;
   document.getElementById('storytelling-btn').textContent = t.storytelling;
   document.getElementById('diary-btn').textContent = t.diary;

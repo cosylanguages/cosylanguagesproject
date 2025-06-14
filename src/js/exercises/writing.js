@@ -1,16 +1,6 @@
 // Writing Exercises
 
 // Placeholder functions for specific writing exercises
-async function showDailyWriting() {
-    const resultArea = document.getElementById('result');
-    const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
-    resultArea.innerHTML = `
-        <div class="writing-exercise-container">
-            <h3>${currentTranslations.dailyWriting || 'Daily Writing'}</h3>
-            <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
-        </div>`;
-}
 
 async function showQuestionWriting() {
     const resultArea = document.getElementById('result');
@@ -149,7 +139,6 @@ async function showDiaryPractice() {
 async function startRandomWritingPractice() {
     // For now, let's assume Question Writing is the primary one to randomize into
     // const exercises = [
-    //     showDailyWriting,
     //     showQuestionWriting,
     //     showStorytellingPractice,
     //     showDiaryPractice
@@ -160,7 +149,6 @@ async function startRandomWritingPractice() {
 }
 
 // Patch the exercise functions to add the randomize button
-showDailyWriting = patchExerciseForRandomizeButton(showDailyWriting, '.writing-exercise-container', startRandomWritingPractice);
 showQuestionWriting = patchExerciseForRandomizeButton(showQuestionWriting, '.writing-exercise-container', startRandomWritingPractice);
 showStorytellingPractice = patchExerciseForRandomizeButton(showStorytellingPractice, '.writing-exercise-container', startRandomWritingPractice);
 showDiaryPractice = patchExerciseForRandomizeButton(showDiaryPractice, '.writing-exercise-container', startRandomWritingPractice);

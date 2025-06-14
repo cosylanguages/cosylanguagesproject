@@ -899,7 +899,7 @@ async function practiceAllVocabulary() {
         return;
     }
 
-    // Get all exercise types except daily word
+    // Get all exercise types
     const allExercises = [
         'random-word', 'random-image', 'listening'
     ];
@@ -937,88 +937,6 @@ async function practiceAllVocabulary() {
             resultArea.appendChild(feedback);
         });
     }
-}
-
-// --- Daily Reading Feature ---
-async function showDailyReading() {
-    const language = document.getElementById('language').value;
-    const container = document.getElementById('result');
-    container.innerHTML = `<div class="exercise-header daily-header">Daily Reading</div><div class="daily-reading-container" id="daily-reading-list"><div class="loading-spinner"></div></div>`;
-    const list = document.getElementById('daily-reading-list');
-    try {
-        const readings = await fetchDailyReadings(language);
-        list.innerHTML = readings.map(level => `
-            <div class="daily-level-label">${level.levelLabel}</div>
-            <div class="daily-reading-text">${level.text}</div>
-        `).join('');
-    } catch (e) {
-        list.innerHTML = `<div class="incorrect">Could not fetch daily readings. Try again later.</div>`;
-    }
-}
-
-// Fetch daily readings related to daily words
-async function fetchDailyReadings(language) {
-    // For demo, generate short texts related to demo words
-    const dailyWords = await fetchDailyWordsFromDictionaries(language);
-    const levels = ['Beginner','Elementary','Intermediate','Advanced'];
-    return levels.map((level, i) => ({
-        levelLabel: level,
-        text: `This is a short reading for the word <b>${dailyWords[i].word.replace(/<[^>]+>/g,'')}</b>.` // Replace with real fetch/generation logic
-    }));
-}
-
-// --- Daily Writing Feature ---
-async function showDailyWriting() {
-    const language = document.getElementById('language').value;
-    const container = document.getElementById('result');
-    container.innerHTML = `<div class="exercise-header daily-header">Daily Writing</div><div class="daily-writing-container" id="daily-writing-list"><div class="loading-spinner"></div></div>`;
-    const list = document.getElementById('daily-writing-list');
-    try {
-        const prompts = await fetchDailyWritingPrompts(language);
-        list.innerHTML = prompts.map(level => `
-            <div class="daily-level-label">${level.levelLabel}</div>
-            <div class="daily-writing-prompt">${level.prompt}</div>
-        `).join('');
-    } catch (e) {
-        list.innerHTML = `<div class="incorrect">Could not fetch daily writing prompts. Try again later.</div>`;
-    }
-}
-
-// Fetch/generate daily writing prompts related to daily words
-async function fetchDailyWritingPrompts(language) {
-    const dailyWords = await fetchDailyWordsFromDictionaries(language);
-    const levels = ['Beginner','Elementary','Intermediate','Advanced'];
-    return levels.map((level, i) => ({
-        levelLabel: level,
-        prompt: `Write a sentence or short story using the word <b>${dailyWords[i].word.replace(/<[^>]+>/g,'')}</b>.` // Replace with real prompt logic
-    }));
-}
-
-// --- Daily Speaking Feature ---
-async function showDailySpeaking() {
-    const language = document.getElementById('language').value;
-    const container = document.getElementById('result');
-    container.innerHTML = `<div class="exercise-header daily-header">Daily Speaking</div><div class="daily-speaking-container" id="daily-speaking-list"><div class="loading-spinner"></div></div>`;
-    const list = document.getElementById('daily-speaking-list');
-    try {
-        const prompts = await fetchDailySpeakingPrompts(language);
-        list.innerHTML = prompts.map(level => `
-            <div class="daily-level-label">${level.levelLabel}</div>
-            <div class="daily-speaking-prompt">${level.prompt}</div>
-        `).join('');
-    } catch (e) {
-        list.innerHTML = `<div class="incorrect">Could not fetch daily speaking prompts. Try again later.</div>`;
-    }
-}
-
-// Fetch/generate daily speaking prompts related to daily words
-async function fetchDailySpeakingPrompts(language) {
-    const dailyWords = await fetchDailyWordsFromDictionaries(language);
-    const levels = ['Beginner','Elementary','Intermediate','Advanced'];
-    return levels.map((level, i) => ({
-        levelLabel: level,
-        prompt: `Say something about <b>${dailyWords[i].word.replace(/<[^>]+>/g,'')}</b> or use it in a sentence.` // Replace with real prompt logic
-    }));
 }
 
 // Helper functions
@@ -1069,41 +987,49 @@ function addRandomizeButton(containerId, randomizeFn) {
 // Patch all main exercise renderers to add the randomize button
 const _showRandomWord = showRandomWord;
 showRandomWord = async function() {
+    clearResultArea();
     await _showRandomWord.apply(this, arguments);
     addRandomizeButton('word-display-container', startRandomWordPractice);
 };
 const _showOppositesExercise = showOppositesExercise;
 showOppositesExercise = async function() {
+    clearResultArea();
     await _showOppositesExercise.apply(this, arguments);
     addRandomizeButton('opposites-exercise', startRandomWordPractice);
 };
 const _showMatchOpposites = showMatchOpposites;
 showMatchOpposites = async function() {
+    clearResultArea();
     await _showMatchOpposites.apply(this, arguments);
     addRandomizeButton('match-exercise', startRandomWordPractice);
 };
 const _showBuildWord = showBuildWord;
 showBuildWord = async function() {
+    clearResultArea();
     await _showBuildWord.apply(this, arguments);
     addRandomizeButton('build-word-exercise', startRandomWordPractice);
 };
 const _showIdentifyImage = showIdentifyImage;
 showIdentifyImage = async function() {
+    clearResultArea();
     await _showIdentifyImage.apply(this, arguments);
     addRandomizeButton('image-exercise', startRandomImagePractice);
 };
 const _showMatchImageWord = showMatchImageWord;
 showMatchImageWord = async function() {
+    clearResultArea();
     await _showMatchImageWord.apply(this, arguments);
     addRandomizeButton('match-image-word-exercise', startRandomImagePractice);
 };
 const _showTranscribeWord = showTranscribeWord;
 showTranscribeWord = async function() {
+    clearResultArea();
     await _showTranscribeWord.apply(this, arguments);
     addRandomizeButton('listening-exercise', startListeningPractice);
 };
 const _showMatchSoundWord = showMatchSoundWord;
 showMatchSoundWord = async function() {
+    clearResultArea();
     await _showMatchSoundWord.apply(this, arguments);
     addRandomizeButton('match-sound-exercise', startListeningPractice);
 };
@@ -1227,9 +1153,7 @@ showMatchOpposites = async function() {
                 document.querySelector(`[data-word="${pair.word}"]`).classList.add('matched');
                 document.querySelector(`[data-opposite="${pair.opposite}"]`).classList.add('matched');
             });
-            setTimeout(() => {
-                showMatchOpposites();
-            }, 2000);
+            // Removed setTimeout for immediate UI update
         });
         document.getElementById('new-match').addEventListener('click', () => {
             showMatchOpposites();
@@ -1359,9 +1283,7 @@ showMatchImageWord = async function() {
                 document.querySelector(`[data-answer="${imageItem.answer}"]`).classList.add('matched');
                 document.querySelector(`[data-word="${imageItem.answer}"]`)?.classList.add('matched');
             });
-            setTimeout(() => {
-                showMatchImageWord();
-            }, 2000);
+            // Removed setTimeout for immediate UI update
         });
         document.getElementById('new-image-match').addEventListener('click', () => {
             showMatchImageWord();

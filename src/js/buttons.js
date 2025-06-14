@@ -59,9 +59,9 @@ function setupOptionToggle(groupId, btnIds, startExerciseFns) {
 
 // Setup for all option groups
 setupOptionToggle('vocabulary-options', [
-    'daily-word-btn', 'random-word-btn', 'random-image-btn', 'listening-btn', 'practice-all-vocab-btn'
+    'random-word-btn', 'random-image-btn', 'listening-btn', 'practice-all-vocab-btn'
 ], [
-    showDailyWords, startRandomWordPractice, startRandomImagePractice, startListeningPractice, practiceAllVocabulary
+    startRandomWordPractice, startRandomImagePractice, startListeningPractice, practiceAllVocabulary
 ]);
 setupOptionToggle('grammar-options', [
     'gender-btn', 'verbs-btn', 'possessives-btn', 'practice-all-grammar-btn'
@@ -69,25 +69,22 @@ setupOptionToggle('grammar-options', [
     startGenderPractice, startVerbsPractice, startPossessivesPractice, practiceAllGrammar
 ]);
 setupOptionToggle('reading-options', [
-    'daily-reading-btn', 'story-btn', 'interesting-fact-btn'
+    'story-btn', 'interesting-fact-btn'
 ], [
-    showDailyReading,
     showStoryPractice, 
     showInterestingFactPractice
 ]);
 setupOptionToggle('speaking-options', [
-    'daily-speaking-btn', 'question-practice-btn', 'monologue-btn', 'role-play-btn', 'practice-all-speaking-btn'
+    'question-practice-btn', 'monologue-btn', 'role-play-btn', 'practice-all-speaking-btn'
 ], [
-    showDailySpeaking,
     showQuestionPractice,
     showMonologuePractice,
     showRolePlayPractice,
     practiceAllSpeaking
 ]);
 setupOptionToggle('writing-options', [
-    'daily-writing-btn', 'question-btn', 'storytelling-btn', 'diary-btn'
+    'question-btn', 'storytelling-btn', 'diary-btn'
 ], [
-    showDailyWriting,
     showQuestionWriting,
     showStorytellingPractice,
     showDiaryPractice
