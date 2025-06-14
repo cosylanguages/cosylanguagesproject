@@ -21,14 +21,12 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     const writingOptionsEl = document.getElementById('writing-options');
 
     // Speaking sub-option buttons
-    const dailySpeakingBtn = document.getElementById('daily-speaking-btn');
     const questionPracticeBtn = document.getElementById('question-practice-btn'); // For speaking
     const monologueBtn = document.getElementById('monologue-btn');
     const rolePlayBtn = document.getElementById('role-play-btn');
     const practiceAllSpeakingBtn = document.getElementById('practice-all-speaking-btn');
 
     // Writing sub-option buttons
-    const dailyWritingBtn = document.getElementById('daily-writing-btn');
     const writingQuestionBtn = document.getElementById('question-btn'); 
     const storytellingBtn = document.getElementById('storytelling-btn');
     const diaryBtn = document.getElementById('diary-btn');
@@ -118,15 +116,13 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     // --- Speaking Section Overall & Sub-Options Visibility ---
     if (speakingBtnEl) speakingBtnEl.style.display = 'inline-block'; 
 
-    if (speakingOptionsEl && dailySpeakingBtn && questionPracticeBtn && monologueBtn && rolePlayBtn && practiceAllSpeakingBtn) {
+    if (speakingOptionsEl && questionPracticeBtn && monologueBtn && rolePlayBtn && practiceAllSpeakingBtn) {
         if (day === 1) {
-            dailySpeakingBtn.style.display = 'none';
             questionPracticeBtn.style.display = 'inline-block';
             monologueBtn.style.display = 'none';
             rolePlayBtn.style.display = 'inline-block';
             practiceAllSpeakingBtn.style.display = 'inline-block';
         } else { 
-            dailySpeakingBtn.style.display = 'inline-block';
             questionPracticeBtn.style.display = 'inline-block';
             monologueBtn.style.display = 'inline-block';
             rolePlayBtn.style.display = 'inline-block';
@@ -137,14 +133,12 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     // --- Writing Section Overall & Sub-Options Visibility ---
     if (writingBtnEl) writingBtnEl.style.display = 'inline-block'; 
 
-    if (writingOptionsEl && dailyWritingBtn && writingQuestionBtn && storytellingBtn && diaryBtn) {
+    if (writingOptionsEl && writingQuestionBtn && storytellingBtn && diaryBtn) {
         if (day === 1) {
-            dailyWritingBtn.style.display = 'none';
             writingQuestionBtn.style.display = 'inline-block';
             storytellingBtn.style.display = 'none';
             diaryBtn.style.display = 'none';
         } else { 
-            dailyWritingBtn.style.display = 'inline-block';
             writingQuestionBtn.style.display = 'inline-block';
             storytellingBtn.style.display = 'inline-block';
             diaryBtn.style.display = 'inline-block';
