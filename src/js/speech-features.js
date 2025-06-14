@@ -38,8 +38,10 @@ let recognition;
  */
 function pronounceWord(word, language) {
   if ('speechSynthesis' in window) {
+    // Map app language code to Web Speech API code
+    const speechLang = mapLanguageToSpeechCode(language);
     const utterance = new SpeechSynthesisUtterance(word);
-    utterance.lang = language;
+    utterance.lang = speechLang;
     window.speechSynthesis.speak(utterance);
   } else {
     alert('Sorry, your browser does not support text to speech!');
@@ -89,7 +91,7 @@ function startPronunciationCheck(
 
     recognition.onstart = () => {
       recognition.recognizing = true;
-      if (feedbackEl) feedbackEl.textContent = 'Listening...'; // Default behavior (add translations)
+      if (feedbackEl) feedbackEl.innerHTML = '<span class="listening" aria-label="Listening">👂 Listening...</span>'; // Default behavior (add translations)
       if (onStartCallback) onStartCallback();
     };
 
@@ -105,12 +107,12 @@ function startPronunciationCheck(
         const processedTargetWord = typeof removeAccents === 'function' ? removeAccents(targetWord.toLowerCase()) : targetWord.toLowerCase();
         if (processedSpokenWord === processedTargetWord) {
           if (feedbackEl) {
-            feedbackEl.textContent = `Correct! You said: "${transcript}"`; // (add translations)
+            feedbackEl.innerHTML = '<span class="correct" aria-label="Correct">✅🗣️ Correct! You said: "${transcript}"</span>'; // (add translations)
             feedbackEl.style.color = 'green';
           }
         } else {
           if (feedbackEl) {
-            feedbackEl.textContent = `Incorrect. You said: "${transcript}". Expected: "${targetWord}"`; // (add translations)
+            feedbackEl.innerHTML = '<span class="incorrect" aria-label="Incorrect">❌🤔 Incorrect. You said: "${transcript}". Expected: "${targetWord}"</span>'; // (add translations)
             feedbackEl.style.color = 'red';
           }
         }

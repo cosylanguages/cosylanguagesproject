@@ -36,7 +36,7 @@ function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to 
 
     btn.setAttribute('aria-label', currentTranslations.aria?.randomize || 'Randomize exercise');
     btn.title = currentTranslations.aria?.randomize || 'Randomize exercise';
-    btn.innerHTML = currentTranslations.buttons?.randomize || '🎲';
+    btn.innerHTML = currentTranslations.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
     // Inline styles and mouse event handlers removed
     btn.onclick = randomizeFn; // Assign the passed randomizeFn directly
 

@@ -151,12 +151,12 @@ async function showQuestionPractice() {
             }
         }
         // This function now directly sets the feedback, which is fine as it's called by onResultCallback
-        feedbackDiv.textContent = feedbackMsg; 
+        feedbackDiv.innerHTML = feedbackMsg; 
     }
 
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
-            <h3>${currentTranslations.speakingQuestionTitle || 'Question Practice'}</h3>
+            <h3>🗣️ ${currentTranslations.speakingQuestionTitle || 'Question Practice'}</h3>
             <div id="speaking-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 20px; min-height: 40px;"></div>
             <div class="navigation-buttons" style="margin-bottom: 20px;">
                 <button id="prev-speaking-question-btn" class="btn-secondary btn-small">&lt; ${currentTranslations.buttons?.previous || 'Previous'}</button>

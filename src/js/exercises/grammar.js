@@ -189,9 +189,9 @@ async function showArticleWord() {
         let feedback = '';
         if (!userInput) feedback = `<span style="color:#e67e22;">${currentTranslations.feedbackPleaseType || 'Please type your answer above.'}</span>`;
         else if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
-            feedback = `<span style="color:#27ae60;">${currentTranslations.feedbackCorrect || '✅ Correct!'}</span>`;
+            feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
             setTimeout(() => showArticleWord(), 1200);
-        } else feedback = `<span style="color:#e74c3c;">${currentTranslations.feedbackNotQuite || '❌ Not quite. The correct answer is: '}<b>${variation.answer}</b></span>`;
+        } else feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${variation.answer}</b></span>`;
         document.getElementById('gender-answer-feedback').innerHTML = feedback;
     };
     document.getElementById('new-gender-exercise').onclick = () => showArticleWord();
@@ -357,9 +357,9 @@ async function showTypeVerb() {
         let feedback = '';
         if (!userInput) feedback = `<span style="color:#e67e22;">${currentTranslations.feedbackPleaseType || 'Please type your answer above.'}</span>`;
         else if (userInput.toLowerCase() === correctAnswer.toLowerCase()) {
-            feedback = `<span style="color:#27ae60;">${currentTranslations.feedbackCorrect || '✅ Correct!'}</span>`;
+            feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
             setTimeout(() => showTypeVerb(), 1200);
-        } else feedback = `<span style="color:#e74c3c;">${currentTranslations.feedbackNotQuite || '❌ Not quite. The correct answer is: '}<b>${correctAnswer}</b></span>`;
+        } else feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${correctAnswer}</b></span>`;
         document.getElementById('verb-answer-feedback').innerHTML = feedback;
     };
     document.getElementById('new-verb-exercise').onclick = () => showTypeVerb();
@@ -404,7 +404,7 @@ async function showMatchVerbsPronouns() {
 
     resultArea.innerHTML = `
         <div class="match-exercise">
-            <h3>${currentTranslations.matchVerbPronounTitle || 'Match each verb with its pronoun'}</h3>
+            <h3>📚 ${currentTranslations.matchVerbPronounTitle || 'Match each verb with its pronoun'}</h3>
             <div class="match-container">
                 <div class="match-col" id="verbs-col">${shuffledVerbs.map(v => `<div class="match-item" data-verb="${v}">${v}</div>`).join('')}</div>
                 <div class="match-col" id="pronouns-col">${shuffledPronouns.map(p => `<div class="match-item" data-pronoun="${p}">${p}</div>`).join('')}</div>

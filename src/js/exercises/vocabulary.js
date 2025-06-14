@@ -286,10 +286,10 @@ async function showOppositesExercise(baseWord = null) {
         const userAnswer = document.getElementById('opposite-input').value.trim();
         const feedback = document.getElementById('opposite-feedback');
         if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
-            feedback.innerHTML = `<span class="correct">${t.correct || '✅ Correct!'}</span>`;
+            feedback.innerHTML = `<span class="correct" aria-label="Correct">✅👏 ${t.correct || 'Correct!'}</span>`;
             document.getElementById('opposite-answer').textContent = opposite;
         } else {
-            feedback.innerHTML = `<span class="incorrect">${t.feedbackNotQuiteTryAgain || '❌ Try again!'}</span>`;
+            feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.feedbackNotQuiteTryAgain || 'Try again!'}</span>`;
         }
     });
     document.getElementById('reveal-opposite').addEventListener('click', () => {
@@ -595,7 +595,7 @@ async function showIdentifyImage() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="image-exercise">
-            <h3>${t.whatIsThis || 'What is this?'}</h3>
+            <h3>🖼️ ${t.whatIsThis || 'What is this?'}</h3>
             <img src="${imageItem.src}" alt="${imageItem.alt}" class="vocabulary-image">
             <input type="text" id="image-answer" placeholder="${t.typeTheWord || 'Type the word...'}">
             <button id="check-image" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
@@ -611,9 +611,9 @@ async function showIdentifyImage() {
         const feedback = document.getElementById('image-feedback');
         
         if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-            feedback.innerHTML = '<span class="correct">✅ Correct!</span>';
+            feedback.innerHTML = '<span class="correct" aria-label="Correct">✅👏 Correct!</span>';
         } else {
-            feedback.innerHTML = '<span class="incorrect">❌ Not quite. Try again!</span>';
+            feedback.innerHTML = '<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. Try again!</span>';
         }
     });
 
@@ -677,7 +677,7 @@ async function showMatchImageWord() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="match-image-word-exercise">
-            <h3>${t.matchEachImageWithWord || 'Match each image with its word'}</h3>
+            <h3>🖼️ ${t.matchEachImageWithWord || 'Match each image with its word'}</h3>
             <div class="match-grid">
                 ${shuffledItems.map(item => `
                     ${item.type === 'image' ? `
@@ -1227,7 +1227,7 @@ showMatchImageWord = async function() {
         const resultArea = document.getElementById('result');
         resultArea.innerHTML = `
             <div class="match-image-word-exercise">
-                <h3>${t.matchEachImageWithWord || 'Match each image with its word'}</h3>
+                <h3>🖼️ ${t.matchEachImageWithWord || 'Match each image with its word'}</h3>
                 <div class="match-grid">
                     ${shuffledItems.map(item => `
                         ${item.type === 'image' ? `

@@ -75,12 +75,12 @@ async function showQuestionWriting() {
                  feedbackMsg += ` ${currentTranslations.tryToElaborate || 'Try to elaborate more in your answer.'}`;
             }
         }
-        if (feedbackArea) feedbackArea.textContent = feedbackMsg;
+        if (feedbackArea) feedbackArea.innerHTML = `<span class="correct" aria-label="Correct">✅📝 ${feedbackMsg}</span>`;
     }
 
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <h3>${currentTranslations.writingQuestionTitle || 'Question Practice'}</h3>
+            <h3>📝 ${currentTranslations.writingQuestionTitle || 'Question Practice'}</h3>
             <div id="writing-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #007bff; min-height: 40px;"></div>
             <div class="navigation-buttons" style="margin-bottom: 15px;">
                 <button id="prev-writing-question-btn" class="btn-secondary btn-small">&lt; ${currentTranslations.buttons.previous || 'Previous'}</button>
@@ -119,7 +119,7 @@ async function showStorytellingPractice() {
     const currentTranslations = translations[language] || translations.COSYenglish;
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <h3>${currentTranslations.storytelling || 'Storytelling'}</h3>
+            <h3>📖 ${currentTranslations.storytelling || 'Storytelling'}</h3>
             <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
         </div>`;
 }
@@ -130,7 +130,7 @@ async function showDiaryPractice() {
     const currentTranslations = translations[language] || translations.COSYenglish;
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <h3>${currentTranslations.diary || 'Diary'}</h3>
+            <h3>✍️ ${currentTranslations.diary || 'Diary'}</h3>
             <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
         </div>`;
 }
