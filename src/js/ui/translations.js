@@ -196,6 +196,7 @@ const translations = {
     buttons: {
       check: 'Check',
       newExercise: 'New Exercise',
+      newWord: 'New Word', // ADDED HERE
       revealAnswer: 'Reveal Answer',
       randomize: '🎲',
       previous: 'Previous', // ADDED HERE
@@ -404,6 +405,7 @@ const translations = {
     buttons: {
       check: 'Vérifier',
       newExercise: 'Nouvel exercice',
+      newWord: 'Nouveau mot', // ADDED HERE
       revealAnswer: 'Révéler la réponse',
       randomize: '🎲',
       previous: 'Précédent', // ADDED HERE
@@ -613,6 +615,7 @@ COSYitaliano: {
   buttons: {
     check: 'Verifica',
     newExercise: 'Nuovo esercizio',
+      newWord: 'Nuova parola', // ADDED HERE
     revealAnswer: 'Mostra risposta',
     randomize: '🎲',
     previous: 'Precedente',
@@ -834,6 +837,7 @@ COSYitaliano: {
     buttons: {
       check: 'Comprobar',
       newExercise: 'Nuevo ejercicio',
+      newWord: 'Nueva palabra', // ADDED HERE
       revealAnswer: 'Mostrar respuesta',
       randomize: '🎲',
       next: 'Siguiente',
@@ -1054,6 +1058,7 @@ COSYitaliano: {
     buttons: {
       check: 'Verificar',
       newExercise: 'Novo exercício',
+      newWord: 'Nova palavra', // ADDED HERE
       revealAnswer: 'Mostrar resposta',
       randomize: '🎲',
       next: 'Próximo',
@@ -1274,6 +1279,7 @@ COSYitaliano: {
     buttons: {
       check: 'Gwiriañ',
       newExercise: 'Pleustr nevez',
+      newWord: 'Ger nevez', // ADDED HERE
       revealAnswer: 'Diskouez ar respont',
       randomize: '🎲',
       next: 'Da-heul',
@@ -1494,6 +1500,7 @@ COSYitaliano: {
     buttons: {
       check: 'Überprüfen',
       newExercise: 'Neue Übung',
+      newWord: 'Neues Wort', // ADDED HERE
       revealAnswer: 'Antwort zeigen',
       randomize: '🎲',
       next: 'Weiter',
@@ -1714,6 +1721,7 @@ COSYitaliano: {
     buttons: {
       check: 'Έλεγχος',
       newExercise: 'Νέα άσκηση',
+      newWord: 'Νέα λέξη', // ADDED HERE
       revealAnswer: 'Εμφάνιση απάντησης',
       randomize: '🎲',
       next: 'Επόμενο',
@@ -1934,6 +1942,7 @@ COSYitaliano: {
     buttons: {
       check: 'Проверить',
       newExercise: 'Новое упражнение',
+      newWord: 'Новое слово', // ADDED HERE
       revealAnswer: 'Показать ответ',
       randomize: '🎲',
       next: 'Далее',
@@ -2154,6 +2163,7 @@ COSYitaliano: {
     buttons: {
       check: 'Тикшерү',
       newExercise: 'Яңа күнегү',
+      newWord: 'Яңа сүз', // ADDED HERE
       revealAnswer: 'Җавапны күрсәтү',
       randomize: '🎲',
       next: 'Алға',
@@ -2361,6 +2371,7 @@ COSYitaliano: {
   buttons: {
     check: 'Тиҙлек',
     newExercise: 'Яңы күнегеү',
+      newWord: 'Яңы һүҙ', // ADDED HERE
     revealAnswer: 'Яуапты күрһәтеү',
     randomize: '🎲',
     previous: 'Әүәға',
@@ -2582,6 +2593,7 @@ COSYitaliano: {
     buttons: {
       check: 'Ստուգել',
       newExercise: 'Նոր վարժություն',
+      newWord: 'Նոր բառ', // ADDED HERE
       revealAnswer: 'Ցուցադրել պատասխանը',
       randomize: '🎲',
       next: 'Հաջորդ',

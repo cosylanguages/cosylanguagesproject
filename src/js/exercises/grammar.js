@@ -149,7 +149,7 @@ const ARTICLE_CATEGORIES = {
 // Grammar Practice Types
 const GRAMMAR_PRACTICE_TYPES = {
     'gender': {
-        exercises: ['article-word', 'match-articles-words', 'select-article'], // Added 'select-article'
+        exercises: ['article-word', 'match-articles-words', 'select-article'], 
         name: 'Gender' 
     },
     'verbs': {
@@ -184,7 +184,7 @@ async function startGenderPractice() {
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
     if (randomExercise === 'article-word') await showArticleWord();
     else if (randomExercise === 'match-articles-words') await showMatchArticlesWords();
-    else if (randomExercise === 'select-article') await showSelectArticleExercise(); // Added this line
+    else if (randomExercise === 'select-article') await showSelectArticleExercise(); 
 }
 
 async function showArticleWord() {
@@ -204,8 +204,8 @@ async function showArticleWord() {
     }
     const item = items[Math.floor(Math.random() * items.length)];
     const variations = [
-        { type: 'article', question: `"${item.word}"`, answer: item.article }, // Asking for the article of a given word
-        { type: 'word', question: `"${item.article}"`, answer: item.word }    // Asking for a word of a given article
+        { type: 'article', question: `"${item.word}"`, answer: item.article }, 
+        { type: 'word', question: `"${item.article}"`, answer: item.word }    
     ];
     const variation = variations[Math.floor(Math.random() * variations.length)];
     const wordToPronounce = variation.type === 'article' ? item.word : item.article;
@@ -224,11 +224,10 @@ async function showArticleWord() {
 
     const pronounceButton = document.getElementById('pronounce-gender-item');
     if (pronounceButton && typeof pronounceWord === 'function') {
-        // Initial pronunciation based on what is being asked (word or article)
         if (variation.type === 'article' && item.word) {
              pronounceWord(item.word, language);
         } else if (variation.type === 'word' && item.article) {
-             pronounceWord(item.article, language); // If asking for the word, pronounce the article as a hint
+             pronounceWord(item.article, language); 
         }
         pronounceButton.addEventListener('click', () => {
             if (variation.type === 'article' && item.word) {
@@ -239,20 +238,20 @@ async function showArticleWord() {
         });
     }
 
-    document.getElementById('check-gender-answer-btn').onclick = async function() { // Make it async if needed for new data loading
+    document.getElementById('check-gender-answer-btn').onclick = async function() { 
         const userInput = document.getElementById('gender-answer-input').value.trim();
         let feedback = '';
         if (!userInput) {
             feedback = `<span style="color:#e67e22;">${currentTranslations.feedbackPleaseType || 'Please type your answer above.'}</span>`;
         } else {
-            if (variation.type === 'article') { // User is guessing the article for a given word
+            if (variation.type === 'article') { 
                 if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
                     feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
                     setTimeout(() => showArticleWord(), 1200);
                 } else {
                     feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${variation.answer}</b></span>`;
                 }
-            } else { // User is guessing a word for a given article (variation.type === 'word')
+            } else { 
                 const targetArticle = item.article; 
                 const isValidWordForArticle = items.some(i => i.article.toLowerCase() === targetArticle.toLowerCase() && i.word.toLowerCase() === userInput.toLowerCase());
                 if (isValidWordForArticle) {
@@ -274,213 +273,152 @@ async function showMatchArticlesWords() {
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
     const currentTranslations = translations[language] || translations.COSYenglish;
-    const DESIRED_ITEM_COUNT = 4;
 
     if (!language || !days.length) {
         alert(currentTranslations.alertLangDay || 'Please select language and day(s) first');
         return;
     }
     const genderData = await loadGenderGrammar(language, days);
-    if (!genderData || genderData.length === 0) { 
+    if (!genderData || genderData.length === 0) {
         showNoDataMessage();
         return;
     }
-    
+
     let selectedItems = [];
-    const langGenderSystem = LANGUAGE_GENDER_SYSTEMS[language];
-    const langArticleCategories = ARTICLE_CATEGORIES[language];
+    const langGenderSystem = LANGUAGE_GENDER_SYSTEMS[language]; 
+    const langArticleCategories = ARTICLE_CATEGORIES[language]; 
+
+    const itemsByArticle = {};
+    const itemsByCategory = {};
+
+    genderData.forEach(item => {
+        if (item.word && item.article) {
+            const category = langArticleCategories ? langArticleCategories[item.article] : null;
+            if (category) {
+                if (!itemsByCategory[category]) itemsByCategory[category] = [];
+                itemsByCategory[category].push(item);
+            }
+            if (!itemsByArticle[item.article]) itemsByArticle[item.article] = [];
+            itemsByArticle[item.article].push(item);
+        }
+    });
+
+    for (const category in itemsByCategory) shuffleArray(itemsByCategory[category]);
+    for (const article in itemsByArticle) shuffleArray(itemsByArticle[article]);
+    
     const pickedArticlesSet = new Set(); 
+    const pickedGenderCategoriesForPuzzle = new Set();
+    let desiredItemCount = 0; // Will be set per language type
 
     if (language === 'COSYenglish') {
-        const targetEnglishArticles = ['he', 'she', 'it', 'he/she'];
-        shuffleArray(targetEnglishArticles); 
-        const itemsByArticle = {};
-        genderData.forEach(item => {
-            if (item.word && item.article) { 
-                if (!itemsByArticle[item.article]) {
-                    itemsByArticle[item.article] = [];
-                }
-                itemsByArticle[item.article].push(item);
-            }
-        });
-
-        for (const articleKey in itemsByArticle) {
-            shuffleArray(itemsByArticle[articleKey]);
-        }
-
-        for (const article of targetEnglishArticles) {
-            if (selectedItems.length >= DESIRED_ITEM_COUNT) break;
-            if (itemsByArticle[article] && itemsByArticle[article].length > 0) {
-                const itemToAdd = itemsByArticle[article].shift(); 
-                if (!pickedArticlesSet.has(itemToAdd.article)) { 
+        const englishArticlesTarget = ['he', 'she', 'it', 'he/she'];
+        desiredItemCount = englishArticlesTarget.length;
+        for (const articleTarget of englishArticlesTarget) {
+            if (selectedItems.length >= desiredItemCount) break;
+            if (itemsByArticle[articleTarget] && itemsByArticle[articleTarget].length > 0) {
+                const itemToAdd = itemsByArticle[articleTarget].find(i => !pickedArticlesSet.has(i.article)); // Should always be the articleTarget
+                if (itemToAdd) { // Should always find if itemsByArticle[articleTarget] is not empty
                     selectedItems.push(itemToAdd);
                     pickedArticlesSet.add(itemToAdd.article);
+                    pickedGenderCategoriesForPuzzle.add(itemToAdd.article); // Treat article as category
+                }
+            }
+        }
+    } else if (langGenderSystem === 2 && langArticleCategories) { // Spanish, Portuguese, French, Italian
+        let baseCategories = ['masculine', 'feminine', 'both'];
+        if (language === 'COSYespañol' || language === 'COSYportuguês') {
+            desiredItemCount = 3;
+        } else if (language === 'COSYfrançais' || language === 'COSYitaliano') {
+            desiredItemCount = (Math.random() < 0.5 && Object.keys(langArticleCategories).length >=3) ? 3 : 4; 
+            if (genderData.filter(i => langArticleCategories[i.article] && i.word).length < desiredItemCount) desiredItemCount = 3; // Fallback if not enough data
+        }
+
+        for (const category of baseCategories) {
+            if (selectedItems.length >= desiredItemCount && !( (language === 'COSYfrançais' || language === 'COSYitaliano') && selectedItems.length < 4 && desiredItemCount === 4) ) break;
+            if (itemsByCategory[category]) {
+                const itemFound = itemsByCategory[category].find(item => !pickedArticlesSet.has(item.article));
+                if (itemFound) {
+                    selectedItems.push(itemFound);
+                    pickedArticlesSet.add(itemFound.article);
+                    pickedGenderCategoriesForPuzzle.add(category);
                 }
             }
         }
         
-        if (selectedItems.length < DESIRED_ITEM_COUNT) {
-            const allItemsShuffled = shuffleArray([...genderData]);
-            for (const item of allItemsShuffled) {
-                if (selectedItems.length >= DESIRED_ITEM_COUNT) break;
-                if (item.word && item.article && !pickedArticlesSet.has(item.article)) { 
-                    if (!selectedItems.some(si => si.word === item.word)) {
-                        selectedItems.push(item);
-                        pickedArticlesSet.add(item.article);
-                    }
+        if ((language === 'COSYfrançais' || language === 'COSYitaliano') && selectedItems.length < desiredItemCount && desiredItemCount === 4) {
+            const allPossibleArticlesForLang = Object.keys(langArticleCategories);
+            shuffleArray(allPossibleArticlesForLang);
+            for (const article of allPossibleArticlesForLang) {
+                if (selectedItems.length >= desiredItemCount) break;
+                if (!pickedArticlesSet.has(article) && itemsByArticle[article] && itemsByArticle[article].length > 0) {
+                    selectedItems.push(itemsByArticle[article][0]);
+                    pickedArticlesSet.add(article);
+                    break; 
                 }
             }
         }
-    } else if (!langGenderSystem || !langArticleCategories || genderData.length < DESIRED_ITEM_COUNT) {
-        const usedItemsSet = new Set(); 
-        const availableGenderData = [...genderData]; 
-        shuffleArray(availableGenderData); 
 
-        let tempSelectedItems = [];
-        for (const item of availableGenderData) {
-            if (tempSelectedItems.length >= DESIRED_ITEM_COUNT) break;
-            if (item.word && item.article && !pickedArticlesSet.has(item.article) && !usedItemsSet.has(item)) {
-                tempSelectedItems.push(item);
-                pickedArticlesSet.add(item.article);
-                usedItemsSet.add(item);
+    } else if (langGenderSystem === 3 && langArticleCategories) { // German, Greek, Russian
+        let baseCategories = ['masculine', 'feminine', 'neuter'];
+        desiredItemCount = 3;
+        if (language === 'ΚΟΖΥελληνικά' && Object.values(langArticleCategories).includes('both')) {
+            if (Math.random() < 0.5 || Object.keys(langArticleCategories).length >=4 ) { // Try for 4 if data allows
+                 baseCategories.push('both');
+                 desiredItemCount = 4;
             }
-        }
-        selectedItems.push(...tempSelectedItems);
-
-        if (selectedItems.length < DESIRED_ITEM_COUNT) {
-            for (const item of availableGenderData) {
-                if (selectedItems.length >= DESIRED_ITEM_COUNT) break;
-                if (item.word && item.article && !usedItemsSet.has(item)) {
-                    selectedItems.push(item);
-                    usedItemsSet.add(item); 
-                }
-            }
-        }
-        if (selectedItems.length > DESIRED_ITEM_COUNT) {
-            shuffleArray(selectedItems);
-            selectedItems = selectedItems.slice(0, DESIRED_ITEM_COUNT);
-        }
-
-    } else {
-        let targetCategories = [];
-        let targetArticlesToSelect = [];
-
-        if (langGenderSystem === 2) { 
-            targetArticlesToSelect = Object.keys(langArticleCategories);
-            shuffleArray(targetArticlesToSelect); 
-        } else if (langGenderSystem === 3) { 
-            targetCategories = ['masculine', 'feminine', 'neuter'];
-            if (Object.values(langArticleCategories).includes('both') && 
-                Object.keys(langArticleCategories).some(article => langArticleCategories[article] === 'both')) {
-                targetCategories.push('both');
-            }
-        }
-
-        const itemsByArticle = {};
-        genderData.forEach(item => {
-            if (item.word && item.article) { 
-                if (!itemsByArticle[item.article]) {
-                    itemsByArticle[item.article] = [];
-                }
-                itemsByArticle[item.article].push(item);
-            }
-        });
-
-        for (const articleKey in itemsByArticle) {
-            shuffleArray(itemsByArticle[articleKey]);
+            if (genderData.filter(i => langArticleCategories[i.article] && i.word).length < desiredItemCount) desiredItemCount = 3; // Fallback
         }
         
-        if (langGenderSystem === 2 && targetArticlesToSelect.length > 0) {
-            for (const article of targetArticlesToSelect) {
-                if (selectedItems.length >= DESIRED_ITEM_COUNT) break;
-                if (itemsByArticle[article] && itemsByArticle[article].length > 0) {
-                    const itemToAdd = itemsByArticle[article].shift(); 
-                    if (!pickedArticlesSet.has(itemToAdd.article)) {
-                        selectedItems.push(itemToAdd);
-                        pickedArticlesSet.add(itemToAdd.article);
-                    }
-                }
-            }
-        } else if (langGenderSystem === 3 && targetCategories.length > 0) { 
-            const itemsByCategory = {};
-            genderData.forEach(item => { 
-                const category = langArticleCategories[item.article];
-                if (category) {
-                    if (!itemsByCategory[category]) {
-                        itemsByCategory[category] = [];
-                    }
-                    if (item.word && item.article) {
-                        itemsByCategory[category].push(item);
-                    }
-                }
-            });
-            for (const category in itemsByCategory) {
-                shuffleArray(itemsByCategory[category]);
-            }
-
-            for (const category of targetCategories) {
-                if (selectedItems.length >= DESIRED_ITEM_COUNT) break;
-                if (itemsByCategory[category]) {
-                    for (const item of itemsByCategory[category]) {
-                        if (item.word && item.article && !pickedArticlesSet.has(item.article)) { 
-                            selectedItems.push(item);
-                            pickedArticlesSet.add(item.article);
-                            break; 
-                        }
-                    }
+        for (const category of baseCategories) {
+            if (selectedItems.length >= desiredItemCount) break;
+            if (itemsByCategory[category]) {
+                 const itemFound = itemsByCategory[category].find(item => !pickedArticlesSet.has(item.article));
+                if (itemFound) {
+                    selectedItems.push(itemFound);
+                    pickedArticlesSet.add(itemFound.article);
+                    pickedGenderCategoriesForPuzzle.add(category);
                 }
             }
         }
-        
-        if (selectedItems.length < DESIRED_ITEM_COUNT) {
-            const allItemsShuffled = shuffleArray([...genderData]); 
-            for (const item of allItemsShuffled) {
-                if (selectedItems.length >= DESIRED_ITEM_COUNT) break;
-                if (item.word && item.article && !pickedArticlesSet.has(item.article)) { 
-                    if (!selectedItems.some(si => si.word === item.word)) {
-                        selectedItems.push(item);
-                        pickedArticlesSet.add(item.article);
-                    }
-                }
+    } else { // Fallback for languages not covered by specific logic (e.g. no langArticleCategories)
+        console.warn(`Using fallback selection for ${language} in showMatchArticlesWords.`);
+        desiredItemCount = 3;
+        const allItemsShuffled = shuffleArray([...genderData]);
+        for (const item of allItemsShuffled) {
+            if (selectedItems.length >= desiredItemCount) break;
+            if (item.word && item.article && !pickedArticlesSet.has(item.article)) {
+                 selectedItems.push(item);
+                 pickedArticlesSet.add(item.article);
             }
-        }
-
-        if (selectedItems.length < DESIRED_ITEM_COUNT) {
-            const allItemsShuffled = shuffleArray([...genderData]);
-            const currentSelectedWords = new Set(selectedItems.map(si => si.word));
-            for (const item of allItemsShuffled) {
-                if (selectedItems.length >= DESIRED_ITEM_COUNT) break;
-                if (item.word && item.article && !currentSelectedWords.has(item.word)) {
-                    selectedItems.push(item);
-                    currentSelectedWords.add(item.word); 
-                }
-            }
-        }
-
-        if (selectedItems.length > DESIRED_ITEM_COUNT) {
-            shuffleArray(selectedItems); 
-            selectedItems = selectedItems.slice(0, DESIRED_ITEM_COUNT);
         }
     }
-
-    if (selectedItems.length < 2) { 
+    
+    if (selectedItems.length > desiredItemCount && desiredItemCount > 0) { 
+         selectedItems = selectedItems.slice(0, desiredItemCount);
+    } else if (selectedItems.length < Math.min(desiredItemCount,2) && desiredItemCount > 1) { 
+         showNoDataMessage();
+         return;
+    }
+     if (selectedItems.length < 2) { 
         showNoDataMessage();
         return;
     }
 
-    const articles = selectedItems.map(item => item.article);
-    const words = selectedItems.map(item => item.word);
-    const shuffledArticles = shuffleArray([...articles]);
-    const shuffledWords = shuffleArray([...words]);
+    shuffleArray(selectedItems); 
+    const displayArticles = selectedItems.map(item => item.article);
+    const displayWords = selectedItems.map(item => item.word);
+    const shuffledDisplayArticles = shuffleArray([...displayArticles]); 
+    const shuffledDisplayWords = shuffleArray([...displayWords]);     
+
 
     resultArea.innerHTML = `
         <div class="match-exercise" role="region" aria-label="${currentTranslations.aria?.matchArticlesWords || 'Match Articles and Words'}">
             <div class="match-container">
                 <div class="match-col" id="articles-col" aria-label="${currentTranslations.aria?.articlesColumn || 'Articles column'}">
-                    ${shuffledArticles.map(article => `<div class="match-item" data-article="${article}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.articleAriaLabel || 'Article:'} ${article}">${article} </div>`).join('')}
+                    ${shuffledDisplayArticles.map(article => `<div class="match-item" data-article="${article}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.articleAriaLabel || 'Article:'} ${article}">${article} </div>`).join('')}
                 </div>
                 <div class="match-col" id="words-col" aria-label="${currentTranslations.aria?.wordsColumn || 'Words column'}">
-                    ${shuffledWords.map(word => `<div class="match-item" data-word="${word}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.wordAriaLabel || 'Word:'} ${word}">${word}</div>`).join('')}
+                    ${shuffledDisplayWords.map(word => `<div class="match-item" data-word="${word}" role="button" tabindex="0" aria-label="${currentTranslations.aria?.wordAriaLabel || 'Word:'} ${word}">${word}</div>`).join('')}
                 </div>
             </div>
             <div id="match-feedback" class="exercise-feedback" aria-live="polite"></div>
@@ -488,64 +426,63 @@ async function showMatchArticlesWords() {
             <button id="new-match" class="btn-secondary" aria-label="${currentTranslations.aria?.newExercise || 'New Exercise'}">🔄 ${currentTranslations.buttons?.newExercise || 'New Exercise'}</button>
         </div>
     `;
-    let selectedArticle = null, selectedWordElement = null; 
+
+    let selectedArticleEl = null, selectedWordEl = null;
     document.querySelectorAll('#articles-col .match-item').forEach(item => {
         item.addEventListener('click', function() {
-            document.querySelectorAll('#articles-col .match-item').forEach(i => i.classList.remove('selected')); 
-            this.classList.add('selected');
-            selectedArticle = this.getAttribute('data-article');
-            if (selectedWordElement) {
-                const currentWord = selectedWordElement.getAttribute('data-word');
-                const correctWordForItem = selectedItems.find(s => s.article === selectedArticle)?.word;
-                const feedback = document.getElementById('match-feedback');
-                if (correctWordForItem === currentWord) {
-                    feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectMatch || '✅ Correct match!'}</span>`;
-                    document.querySelector(`[data-article="${selectedArticle}"]`).classList.add('matched', 'disabled');
-                    selectedWordElement.classList.add('matched', 'disabled');
-                    selectedArticle = null; selectedWordElement = null; 
-                } else {
-                    feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotAMatch || '❌ Not a match. Try again!'}</span>`;
-                    this.classList.remove('selected'); 
-                    selectedWordElement.classList.remove('selected');
-                    selectedArticle = null; selectedWordElement = null;
-                }
-            }
+            if (this.classList.contains('matched')) return;
+            document.querySelectorAll('#articles-col .match-item').forEach(i => { if (i !== this) i.classList.remove('selected');});
+            this.classList.toggle('selected');
+            selectedArticleEl = this.classList.contains('selected') ? this : null;
+            checkMatchAttempt();
         });
     });
     document.querySelectorAll('#words-col .match-item').forEach(item => {
         item.addEventListener('click', function() {
-            document.querySelectorAll('#words-col .match-item').forEach(i => i.classList.remove('selected')); 
-            this.classList.add('selected');
-            selectedWordElement = this; 
-            if (selectedArticle) {
-                const currentWord = this.getAttribute('data-word');
-                const correctWordForItem = selectedItems.find(s => s.article === selectedArticle)?.word;
-                const feedback = document.getElementById('match-feedback');
-                if (correctWordForItem === currentWord) {
-                    feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectMatch || '✅ Correct match!'}</span>`;
-                    document.querySelector(`[data-article="${selectedArticle}"]`).classList.add('matched', 'disabled');
-                    this.classList.add('matched', 'disabled');
-                    selectedArticle = null; selectedWordElement = null; 
-                } else {
-                    feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotAMatch || '❌ Not a match. Try again!'}</span>`;
-                    document.querySelector(`[data-article="${selectedArticle}"]`).classList.remove('selected');
-                    this.classList.remove('selected');
-                    selectedArticle = null; selectedWordElement = null;
-                }
-            }
+            if (this.classList.contains('matched')) return;
+            document.querySelectorAll('#words-col .match-item').forEach(i => { if (i !== this) i.classList.remove('selected');});
+            this.classList.toggle('selected');
+            selectedWordEl = this.classList.contains('selected') ? this : null;
+            checkMatchAttempt();
         });
     });
+
+    function checkMatchAttempt() {
+        if (selectedArticleEl && selectedWordEl) {
+            const articleValue = selectedArticleEl.getAttribute('data-article');
+            const wordValue = selectedWordEl.getAttribute('data-word');
+            const feedback = document.getElementById('match-feedback');
+
+            const correctPair = selectedItems.find(s => s.article === articleValue && s.word === wordValue);
+
+            if (correctPair) {
+                feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectMatch || '✅ Correct match!'}</span>`;
+                selectedArticleEl.classList.add('matched', 'disabled');
+                selectedWordEl.classList.add('matched', 'disabled');
+                selectedArticleEl.classList.remove('selected');
+                selectedWordEl.classList.remove('selected');
+                
+                const allMatched = selectedItems.length === document.querySelectorAll('.match-item.matched').length / 2;
+                if (allMatched) {
+                    feedback.innerHTML += `<br><span class="correct">${currentTranslations.feedbackAllMatchesCompleted || 'All pairs matched!'}</span>`;
+                    setTimeout(() => showMatchArticlesWords(), 2000);
+                }
+            } else {
+                feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotAMatch || '❌ Not a match. Try again!'}</span>`;
+                selectedArticleEl.classList.remove('selected');
+                selectedWordEl.classList.remove('selected');
+            }
+            selectedArticleEl = null; selectedWordEl = null;
+        }
+    }
+
     document.getElementById('check-matches').addEventListener('click', () => {
         document.getElementById('match-feedback').innerHTML = currentTranslations.feedbackShowingCorrectMatches || 'Showing all correct matches...';
         selectedItems.forEach(item => {
-            if (item && item.article) {
-                const articleEl = document.querySelector(`[data-article="${item.article}"]`);
-                if (articleEl) articleEl.classList.add('matched', 'disabled');
-            }
-            if (item && item.word) {
-                const wordEl = document.querySelector(`[data-word="${item.word}"]`);
-                if (wordEl) wordEl.classList.add('matched', 'disabled');
-            }
+            const articleElToMatch = document.querySelector(`#articles-col .match-item[data-article="${item.article}"]:not(.matched)`);
+            const wordElToMatch = document.querySelector(`#words-col .match-item[data-word="${item.word}"]:not(.matched)`);
+            if (articleElToMatch) articleElToMatch.classList.add('matched', 'disabled');
+            if (wordElToMatch) wordElToMatch.classList.add('matched', 'disabled');
         });
         setTimeout(() => showMatchArticlesWords(), 3000);
     });
@@ -594,20 +531,17 @@ async function showSelectArticleExercise() {
     }
     
     const articleOptions = shuffleArray([correctArticle, ...distractorArticles]);
-    // Ensure NUM_ARTICLE_OPTIONS is not exceeded, even if few distractors available.
-    // And ensure there's at least one distractor if possible.
     while (articleOptions.length > NUM_ARTICLE_OPTIONS || (articleOptions.length < NUM_ARTICLE_OPTIONS && distractorArticles.length < (NUM_ARTICLE_OPTIONS -1) && articleOptions.length === allArticlesForLang.length )) {
         if (articleOptions.length > NUM_ARTICLE_OPTIONS) {
-            articleOptions.pop(); // Remove excess if shuffle resulted in too many (shouldn't happen with slice)
+            articleOptions.pop(); 
         } else {
-            break; // Avoid infinite loop if not enough unique articles to fill options
+            break; 
         }
     }
 
-
     resultArea.innerHTML = `
         <div class="select-article-exercise" role="form" aria-label="${currentTranslations.aria?.selectArticleExercise || 'Select the Article Exercise'}">
-            <div class="exercise-prompt" aria-label="${currentTranslations.selectArticleFor || 'Select the article for:'} ${wordToShow}">${currentTranslations.selectArticleFor || 'Select the article for:'} <strong>"${wordToShow}"</strong></div>
+            <div class="exercise-prompt" aria-label="${wordToShow}">${wordToShow}</div>
             <button id="pronounce-select-article-word" class="btn-emoji" title="${currentTranslations.aria?.pronounce || 'Pronounce'}">🔊</button>
             <div class="article-options-container">
                 ${articleOptions.map(article => `

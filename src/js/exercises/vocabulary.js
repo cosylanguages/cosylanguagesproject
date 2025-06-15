@@ -218,7 +218,7 @@ async function showRandomWord() {
             <div class="word-actions">
                 <button id="pronounce-word" class="btn-emoji" aria-label="${t.pronounceWord || 'Pronounce word'}">🔊</button>
                 <button id="say-word-mc" class="btn-emoji" title="Say it (Microphone Check)">🎤</button> 
-                <button id="next-word" class="btn-emoji" aria-label="${t.nextWord || 'Next word'}">🔄</button>
+                <button id="next-word" class="btn-emoji" aria-label="${t.buttons?.newWord || t.nextWord || 'New Word'}">🔄 ${t.buttons?.newWord || 'New Word'}</button>
             </div>
             <div id="pronunciation-feedback" style="margin-top:10px; text-align:center;"></div>
             <div class="word-exercise-options">
@@ -276,7 +276,7 @@ async function showOppositesExercise(baseWord = null) {
             <div id="opposite-feedback" class="exercise-feedback" aria-live="polite"></div>
             <div class="exercise-actions">
                 <button id="reveal-opposite" class="btn-secondary" aria-label="${t.revealAnswer || 'Reveal Answer'}">👁️ ${t.revealAnswer || 'Reveal Answer'}</button>
-                <button id="new-opposite" class="btn-secondary" aria-label="${t.newWord || 'New Word'}">🔄 ${t.newWord || 'New Word'}</button>
+                <button id="new-opposite" class="btn-secondary" aria-label="${t.buttons?.newWord || t.newWord || 'New Word'}">🔄 ${t.buttons?.newWord || 'New Word'}</button>
             </div>
         </div>
     `;
@@ -456,7 +456,7 @@ async function showBuildWord(baseWord = null) {
             <div class="build-actions">
                 <button id="check-build" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
                 <button id="reset-build" class="btn-secondary">${translations[language]?.buttons?.reset || 'Reset'}</button>
-                <button id="new-build" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Word'}</button>
+                <button id="new-build" class="btn-secondary">🔄 ${t.buttons?.newWord || 'New Word'}</button>
             </div>
         </div>
     `;
@@ -599,7 +599,7 @@ async function showIdentifyImage() {
             <input type="text" id="image-answer" placeholder="${t.typeTheWord || 'Type the word...'}">
             <button id="check-image" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
             <div id="image-feedback"></div>
-            <button id="new-image" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Image'}</button>
+            <button id="new-image" class="btn-secondary">🔄 ${t.buttons?.newWord || 'New Word'}</button>
         </div>
     `;
 
@@ -794,7 +794,7 @@ async function showTranscribeWord() {
             <input type="text" id="transcription" placeholder="${t.typeWhatYouHear || 'Type what you hear...'}">
             <button id="check-transcription" class="btn-primary">${translations[language]?.buttons?.check || 'Check'}</button>
             <div id="transcription-feedback"></div>
-            <button id="new-transcription" class="btn-secondary">${translations[language]?.buttons?.newExercise || 'New Word'}</button>
+            <button id="new-transcription" class="btn-secondary">🔄 ${t.buttons?.newWord || 'New Word'}</button>
         </div>
     `;
 
