@@ -272,3 +272,19 @@ function createStandardRandomizeButton(categoryName, currentExerciseFunctionName
     };
     return btn;
 }
+
+function playSound(soundName) {
+    const validSounds = ['click', 'success', 'error', 'select'];
+    if (!validSounds.includes(soundName)) {
+        console.warn(`Attempted to play an unknown sound: "${soundName}". Expected one of: ${validSounds.join(', ')}.`);
+        // Optionally, play a default sound or do nothing. For now, just warn.
+        // return; // Or proceed to try to play it anyway if assets might have other sounds.
+    }
+
+    const audioPath = `assets/sounds/${soundName}.mp3`;
+    const audio = new Audio(audioPath);
+    audio.play().catch(error => {
+        console.error(`Error playing sound "${soundName}" from path "${audioPath}":`, error);
+        // This can happen due to browser autoplay policies, or if the file is missing/corrupt.
+    });
+}
