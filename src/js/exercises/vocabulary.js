@@ -972,27 +972,37 @@ const REQUIRED_DAY1_OPPOSITES = [
 
 // Helper to get translations for required pairs in current language
 async function getRequiredDay1Pairs(language) {
-    // Load day 1 vocabulary and opposites
     const words = await loadVocabulary(language, '1');
-    const opposites = await loadOpposites(language, '1');
-    // Try to find the actual translations for the required pairs
+    const opposites = await loadOpposites(language, '1'); // Language-specific opposites
     let pairs = [];
+
     for (const req of REQUIRED_DAY1_OPPOSITES) {
-        // Find the word in the vocabulary that matches the English base/opposite (case-insensitive)
         let baseWord = words.find(w => w.toLowerCase() === req.base.toLowerCase());
-        let oppWord = words.find(w => w.toLowerCase() === req.opposite.toLowerCase());
-        // If not found, try to find by reverse (for languages where the order is swapped)
-        if (!baseWord && opposites) {
-            baseWord = Object.keys(opposites).find(w => opposites[w]?.toLowerCase() === req.opposite.toLowerCase());
+        let oppWord = null;
+
+        if (baseWord) { // Only proceed if baseWord is found in the target language
+            // Try to find the direct opposite in the target language's opposites map
+            if (opposites[baseWord]) {
+                oppWord = opposites[baseWord];
+            } else {
+                // If not in map, try to find the English opposite word in the target language's general word list
+                // This assumes the English 'req.opposite' might exist as a standalone word.
+                oppWord = words.find(w => w.toLowerCase() === req.opposite.toLowerCase());
+            }
         }
-        if (!oppWord && opposites) {
-            oppWord = Object.values(opposites).find(v => v.toLowerCase() === req.opposite.toLowerCase());
+        
+        // If both baseWord and oppWord were successfully found (i.e., translated/existed in target language)
+        if (baseWord && oppWord) {
+            // Ensure this pair is actually an opposite in the target language's data, if possible.
+            // This check is a bit redundant if opposites[baseWord] was used, but good for the alternative path.
+            // For Day 1 required pairs, trust the structure even if not explicitly in opposites.json for the target lang
+            // (e.g. "thank you" / "you're welcome" might not be formal opposites but are a pair)
+             pairs.push({
+                word: baseWord,
+                opposite: oppWord
+            });
         }
-        // Fallback to English if not found
-        pairs.push({
-            word: baseWord || req.base,
-            opposite: oppWord || req.opposite
-        });
+        // If baseWord or oppWord is not found in the target language, this pair is skipped (no English fallback).
     }
     return pairs;
 }

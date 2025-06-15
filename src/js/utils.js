@@ -140,3 +140,135 @@ async function loadSpeakingQuestions(language, day) {
         return [];
     }
 }
+
+
+// Content from uiFeatures.js starts here
+
+const activeExerciseTimers = {
+    autoAdvance: null
+};
+
+function cancelAutoAdvanceTimer() {
+    if (activeExerciseTimers.autoAdvance) {
+        clearTimeout(activeExerciseTimers.autoAdvance);
+        activeExerciseTimers.autoAdvance = null;
+    }
+}
+
+async function startRandomExerciseInCategory(categoryName, currentExerciseFunctionNameAsString, allPracticeTypesObject) {
+    if (!allPracticeTypesObject || !allPracticeTypesObject[categoryName] || !allPracticeTypesObject[categoryName].exercises) {
+        console.error(`Error: Category "${categoryName}" or its exercises not found in practice types object.`);
+        return;
+    }
+
+    const exercisesInCat = allPracticeTypesObject[categoryName].exercises;
+    if (!exercisesInCat || exercisesInCat.length === 0) {
+        console.error(`Error: No exercises listed for category "${categoryName}".`);
+        return;
+    }
+
+    let availableExercises = exercisesInCat.filter(name => name !== currentExerciseFunctionNameAsString);
+
+    let targetFunctionName;
+    if (availableExercises.length > 0) {
+        targetFunctionName = availableExercises[Math.floor(Math.random() * availableExercises.length)];
+    } else if (exercisesInCat.length > 0) { // If filtering left no options, but there were options
+        console.warn(`No other exercises available in "${categoryName}" besides "${currentExerciseFunctionNameAsString}". Picking from original list.`);
+        targetFunctionName = exercisesInCat[Math.floor(Math.random() * exercisesInCat.length)];
+    } else { // Should not happen if initial checks pass
+        console.error(`Error: Could not determine a target exercise for category "${categoryName}".`);
+        return;
+    }
+    
+    if (targetFunctionName) {
+        if (typeof window[targetFunctionName] === 'function') {
+            try {
+                // Assuming exercise functions might be async and we should wait for them
+                await window[targetFunctionName]();
+            } catch (error) {
+                console.error(`Error executing exercise function "${targetFunctionName}":`, error);
+            }
+        } else {
+            console.error(`Error: Target exercise function "${targetFunctionName}" not found or not a function.`);
+        }
+    } else {
+        console.error(`Error: No target function name determined for category "${categoryName}".`);
+    }
+}
+
+function startAutoAdvanceTimer(categoryName, currentExerciseFunctionNameAsString, allPracticeTypesObject, durationMs = 3000) { // Default duration 3s
+    cancelAutoAdvanceTimer(); // Clear any existing timer
+    activeExerciseTimers.autoAdvance = setTimeout(async () => { // Make sure the async nature of startRandomExerciseInCategory is handled
+        await startRandomExerciseInCategory(categoryName, currentExerciseFunctionNameAsString, allPracticeTypesObject);
+    }, durationMs);
+}
+
+function setupExerciseCompletionFeedbackObserver(feedbackElement, categoryName, currentExerciseFunctionNameAsString, allPracticeTypesObject, timerDurationMs = 3000) {
+    if (!feedbackElement) {
+        // console.warn("setupExerciseCompletionFeedbackObserver: feedbackElement is null.");
+        return;
+    }
+
+    const observer = new MutationObserver((mutationsList, obs) => {
+        let completionDetected = false;
+        for (const mutation of mutationsList) {
+            // Check for added nodes or character data changes that indicate feedback
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                // Check if any added node contains typical feedback classes or text
+                for (const node of mutation.addedNodes) {
+                    if (node.nodeType === Node.ELEMENT_NODE) { // Check if it's an element
+                        if (node.classList.contains('correct') || node.classList.contains('incorrect') || (node.textContent && node.textContent.trim() !== '')) {
+                            completionDetected = true;
+                            break;
+                        }
+                    } else if (node.nodeType === Node.TEXT_NODE && node.textContent && node.textContent.trim() !== '') {
+                        completionDetected = true;
+                        break;
+                    }
+                }
+            } else if (mutation.type === 'characterData') {
+                 if (mutation.target.textContent && mutation.target.textContent.trim() !== '') {
+                    completionDetected = true;
+                 }
+            }
+            if (completionDetected) break;
+        }
+
+        if (completionDetected) {
+            // console.log("Completion feedback detected, starting auto-advance timer.");
+            startAutoAdvanceTimer(categoryName, currentExerciseFunctionNameAsString, allPracticeTypesObject, timerDurationMs);
+            obs.disconnect(); // Stop observing once completion is detected and timer is set
+        }
+    });
+
+    observer.observe(feedbackElement, { childList: true, characterData: true, subtree: true });
+    // console.log("Feedback observer set up for:", feedbackElement);
+}
+
+function createStandardRandomizeButton(categoryName, currentExerciseFunctionNameAsString, allPracticeTypesObject) {
+    const btn = document.createElement('button');
+    btn.className = 'btn-randomize randomizer-button'; // Standardized class
+    
+    // Attempt to get translations, similar to addRandomizeButton in utils.js
+    // This assumes `translations` is a global variable and `document.getElementById('language').value` is accessible
+    let label = '🎲';
+    let title = 'Randomize exercise';
+    try {
+        const language = document.getElementById('language')?.value || 'COSYenglish';
+        const currentTranslations = window.translations[language] || window.translations.COSYenglish;
+        label = currentTranslations.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
+        title = currentTranslations.aria?.randomize || 'Randomize exercise';
+    } catch (e) {
+        // console.warn("Could not get translations for randomize button, using defaults.", e);
+    }
+
+    btn.innerHTML = label;
+    btn.title = title;
+    btn.setAttribute('aria-label', title); // Ensure aria-label is set, especially if innerHTML is an icon
+
+    btn.onclick = async () => { // Make sure the async nature of startRandomExerciseInCategory is handled
+        cancelAutoAdvanceTimer();
+        await startRandomExerciseInCategory(categoryName, currentExerciseFunctionNameAsString, allPracticeTypesObject);
+    };
+    return btn;
+}
