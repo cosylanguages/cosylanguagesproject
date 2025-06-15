@@ -32,7 +32,7 @@ async function loadGenderGrammar(language, day) {
     return data && data[day] ? data[day] : [];
 }
 
-async function loadVerbGrammar(language, day) {
+async function loadVerbGrammar(language, days) { 
     const fileMap = {
         'COSYenglish': 'data/grammar/verbs/grammar_verbs_english.json',
         'COSYitaliano': 'data/grammar/verbs/grammar_verbs_italian.json',
@@ -59,8 +59,107 @@ async function loadVerbGrammar(language, day) {
         return [];
     }
     const data = loadResult.data;
-    return data && data[day] ? data[day] : [];
+    if (!data) {
+        console.error(`No data found in ${file} for language ${language}`);
+        return [];
+    }
+
+    let combinedVerbData = [];
+    let seenItems = new Set();
+
+    if (!days || days.length === 0) { // Handle empty or undefined days array
+        return [];
+    }
+
+    let startDay, endDay;
+    const dayNumbers = days.map(d => parseInt(d));
+
+    if (dayNumbers.length === 1) {
+        startDay = 1;
+        endDay = dayNumbers[0];
+    } else {
+        startDay = Math.min(...dayNumbers);
+        endDay = Math.max(...dayNumbers);
+    }
+
+    for (let i = startDay; i <= endDay; i++) {
+        const currentDayKey = String(i);
+        const dayData = data[currentDayKey] ? data[currentDayKey] : [];
+        
+        for (const item of dayData) {
+            const stringifiedItem = JSON.stringify(item); 
+            if (!seenItems.has(stringifiedItem)) {
+                seenItems.add(stringifiedItem);
+                combinedVerbData.push(item);
+            }
+        }
+    }
+    return combinedVerbData;
 }
+
+async function loadVocabularyData(language, days) {
+    const fileMap = {
+        'COSYenglish': 'data/vocabulary/words/english.json',
+        'COSYitaliano': 'data/vocabulary/words/italian.json',
+        'COSYfrançais': 'data/vocabulary/words/french.json',
+        'COSYespañol': 'data/vocabulary/words/spanish.json',
+        'COSYdeutsch': 'data/vocabulary/words/german.json',
+        'COSYportuguês': 'data/vocabulary/words/portuguese.json',
+        'ΚΟΖΥελληνικά': 'data/vocabulary/words/greek.json',
+        'ТАКОЙрусский': 'data/vocabulary/words/russian.json',
+        'COSYbrezhoneg': 'data/vocabulary/words/breton.json',
+        'COSYtatarça': 'data/vocabulary/words/tatar.json',
+        'COSYbashkort': 'data/vocabulary/words/bashkir.json',
+        'ԾՈՍՅհայկական': 'data/vocabulary/words/armenian.json',
+    };
+    const file = fileMap[language];
+    if (!file) {
+        console.error(`Error loading vocabulary: No file mapped for language ${language}`);
+        return [];
+    }
+    const loadResult = await loadData(file);
+    if (loadResult.error) {
+        console.error(`Error loading vocabulary for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
+        return [];
+    }
+    const vocabData = loadResult.data; // Renamed from 'data' to 'vocabData' for clarity
+    if (!vocabData) {
+        console.error(`No data found in ${file} for language ${language}`);
+        return [];
+    }
+
+    let combinedVocabularyWords = [];
+    let seenVocabItems = new Set(); 
+
+    if (!days || days.length === 0) { // Handle empty or undefined days array
+        return [];
+    }
+
+    let startDay, endDay;
+    const dayNumbers = days.map(d => parseInt(d));
+
+    if (dayNumbers.length === 1) {
+        startDay = 1;
+        endDay = dayNumbers[0];
+    } else {
+        startDay = Math.min(...dayNumbers);
+        endDay = Math.max(...dayNumbers);
+    }
+
+    for (let i = startDay; i <= endDay; i++) {
+        const currentDayKey = String(i);
+        const dayVocab = vocabData[currentDayKey] ? vocabData[currentDayKey] : [];
+        for (const wordObj of dayVocab) { 
+            const stringifiedWordObj = JSON.stringify(wordObj);
+            if (wordObj.word && !seenVocabItems.has(stringifiedWordObj)) {
+                seenVocabItems.add(stringifiedWordObj);
+                combinedVocabularyWords.push(wordObj.word); 
+            }
+        }
+    }
+    return combinedVocabularyWords;
+}
+
 
 async function loadPossessivesGrammar(language, day) {
     const fileMap = {
@@ -651,69 +750,107 @@ async function showMatchVerbsPronouns() {
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
     const currentTranslations = translations[language] || translations.COSYenglish;
-    
+
     if (!language || !days.length) { alert(currentTranslations.alertLangDay || 'Please select language and day(s) first'); return; }
-    const verbData = await loadVerbGrammar(language, days);
-    if (verbData.length < 2) { showNoDataMessage(); return; }
-    const pronouns = getPronounsForLanguage(language);
-    if (pronouns.length < 2) { showNoDataMessage(); return; }
-
-    let selectedVerbs = [], selectedPronouns = [];
-    const usedVerbIndices = new Set(), usedPronounIndices = new Set();
-    while (selectedVerbs.length < 2 && usedVerbIndices.size < verbData.length) { 
-        const randomIndex = Math.floor(Math.random() * verbData.length);
-        if (!usedVerbIndices.has(randomIndex)) {
-            usedVerbIndices.add(randomIndex);
-            selectedVerbs.push(verbData[randomIndex]);
-        }
+    
+    const selectedItems = await loadVerbGrammar(language, days); 
+    if (!selectedItems || selectedItems.length < 1) { 
+        showNoDataMessage(); 
+        console.log("No items loaded from loadVerbGrammar or not enough items.");
+        return; 
     }
-    while (selectedPronouns.length < 2 && usedPronounIndices.size < pronouns.length) { 
-        const randomIndex = Math.floor(Math.random() * pronouns.length);
-        if (!usedPronounIndices.has(randomIndex)) {
-            usedPronounIndices.add(randomIndex);
-            selectedPronouns.push(pronouns[randomIndex]);
-        }
-     }
-    if(selectedVerbs.length < 2 || selectedPronouns.length < 2) { showNoDataMessage(); return; }
 
+    const suitableItems = selectedItems.filter(item => typeof item.prompt !== 'undefined' && typeof item.answer !== 'undefined');
+    if (suitableItems.length < 2) {
+        showNoDataMessage(); 
+        console.log("Not enough suitable items (prompt/answer pairs) for match exercise. Need at least 2.");
+        return; 
+    }
+    
+    const itemsForGame = shuffleArray(suitableItems).slice(0, Math.min(suitableItems.length, 5));
 
-    const verbs = selectedVerbs.map(v => v.infinitive); 
-    const pronounsList = [...selectedPronouns];
-    const shuffledVerbs = shuffleArray(verbs);
-    const shuffledPronouns = shuffleArray(pronounsList);
+    const prompts = itemsForGame.map(item => item.prompt);
+    const answersToMatch = itemsForGame.map(item => item.answer);
+
+    const shuffledPrompts = shuffleArray([...prompts]);
+    const shuffledAnswers = shuffleArray([...answersToMatch]);
 
     resultArea.innerHTML = `
         <div class="match-exercise">
-            <h3>📚 ${currentTranslations.matchVerbPronounTitle || 'Match each verb with its pronoun'}</h3>
             <div class="match-container">
-                <div class="match-col" id="verbs-col">${shuffledVerbs.map(v => `<div class="match-item" data-verb="${v}">${v}</div>`).join('')}</div>
-                <div class="match-col" id="pronouns-col">${shuffledPronouns.map(p => `<div class="match-item" data-pronoun="${p}">${p}</div>`).join('')}</div>
+                <div class="match-col" id="prompts-col">${shuffledPrompts.map(p => `<div class="match-item" data-prompt="${p}" role="button" tabindex="0">${p}</div>`).join('')}</div>
+                <div class="match-col" id="answers-col">${shuffledAnswers.map(a => `<div class="match-item" data-answer="${a}" role="button" tabindex="0">${a}</div>`).join('')}</div>
             </div>
-            <div id="match-feedback" class="exercise-feedback"></div>
+            <div id="match-feedback" class="exercise-feedback" aria-live="polite"></div>
             <button id="check-matches" class="btn-primary">${currentTranslations.buttons?.check || 'Check'} Matches</button>
             <button id="new-match" class="btn-secondary">${currentTranslations.buttons?.newExercise || 'New Exercise'}</button>
         </div>
     `;
-    let localSelectedVerb = null, localSelectedPronoun = null;
-    document.querySelectorAll('#verbs-col .match-item').forEach(item => {item.addEventListener('click', function() {
-        document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected')); this.classList.add('selected');
-        localSelectedVerb = this.getAttribute('data-verb'); localSelectedPronoun = null;
-    });});
-    document.querySelectorAll('#pronouns-col .match-item').forEach(item => {item.addEventListener('click', function() {
-        if (!localSelectedVerb) return;
-        document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected')); this.classList.add('selected');
-        localSelectedPronoun = this.getAttribute('data-pronoun');
-        const feedback = document.getElementById('match-feedback');
-        if (isCompatibleVerbPronoun(localSelectedVerb, localSelectedPronoun, language)) {
-            feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackGoodMatch || '✅ Good match!'}</span>`;
-            document.querySelector(`[data-verb="${localSelectedVerb}"]`).classList.add('matched', 'disabled'); this.classList.add('matched', 'disabled');
-        } else {
-            feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotCompatible || '❌ Not compatible. Try again!'}</span>`;
+
+    let selectedPromptEl = null, selectedAnswerEl = null;
+
+    document.querySelectorAll('#prompts-col .match-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (this.classList.contains('matched')) return;
+            if (selectedPromptEl && selectedPromptEl !== this) selectedPromptEl.classList.remove('selected');
+            this.classList.toggle('selected');
+            selectedPromptEl = this.classList.contains('selected') ? this : null;
+            checkMatchAttempt();
+        });
+    });
+
+    document.querySelectorAll('#answers-col .match-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (this.classList.contains('matched')) return;
+            if (selectedAnswerEl && selectedAnswerEl !== this) selectedAnswerEl.classList.remove('selected');
+            this.classList.toggle('selected');
+            selectedAnswerEl = this.classList.contains('selected') ? this : null;
+            checkMatchAttempt();
+        });
+    });
+
+    function checkMatchAttempt() {
+        if (selectedPromptEl && selectedAnswerEl) {
+            const promptValue = selectedPromptEl.getAttribute('data-prompt');
+            const answerValue = selectedAnswerEl.getAttribute('data-answer');
+            const feedback = document.getElementById('match-feedback');
+
+            const isCorrectPair = itemsForGame.some(item => item.prompt === promptValue && item.answer === answerValue);
+
+            if (isCorrectPair) {
+                feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackGoodMatch || '✅ Good match!'}</span>`;
+                selectedPromptEl.classList.add('matched', 'disabled');
+                selectedAnswerEl.classList.add('matched', 'disabled');
+                selectedPromptEl.classList.remove('selected');
+                selectedAnswerEl.classList.remove('selected');
+
+                const allMatched = itemsForGame.length === document.querySelectorAll('.match-item.matched').length / 2;
+                if (allMatched) {
+                    feedback.innerHTML += `<br><span class="correct">${currentTranslations.feedbackAllMatchesCompleted || 'All pairs matched!'}</span>`;
+                    setTimeout(() => showMatchVerbsPronouns(), 2000);
+                }
+            } else {
+                feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotCompatible || '❌ Not compatible. Try again!'}</span>`;
+                selectedPromptEl.classList.remove('selected'); 
+                selectedAnswerEl.classList.remove('selected');
+            }
+            selectedPromptEl = null; 
+            selectedAnswerEl = null;
         }
-        localSelectedVerb = null; localSelectedPronoun = null;
-    });});
+    }
+
     document.getElementById('check-matches').addEventListener('click', () => {
-        document.getElementById('match-feedback').innerHTML = currentTranslations.feedbackAllMatchesCompleted || 'All possible matches completed!';
+        document.getElementById('match-feedback').innerHTML = currentTranslations.feedbackShowingCorrectMatches || 'Revealing correct matches...';
+        itemsForGame.forEach(item => {
+            const promptEl = document.querySelector(`#prompts-col .match-item[data-prompt="${item.prompt}"]`);
+            const answerEl = document.querySelector(`#answers-col .match-item[data-answer="${item.answer}"]`);
+            if (promptEl && !promptEl.classList.contains('matched')) {
+                promptEl.classList.add('matched-reveal', 'disabled');
+            }
+            if (answerEl && !answerEl.classList.contains('matched')) {
+                answerEl.classList.add('matched-reveal', 'disabled');
+            }
+        });
         setTimeout(() => showMatchVerbsPronouns(), 3000);
     });
     document.getElementById('new-match').addEventListener('click', () => showMatchVerbsPronouns());
@@ -737,25 +874,25 @@ async function showFillGaps() {
         case 'positive':
             const pronoun = getRandomPronounForLanguage(language);
             const conjugatedVerb = conjugateVerb(verbItem.infinitive, pronoun, language);
-            sentence = `${pronoun} ___ (${verbItem.infinitive}) ${getRandomObject(language)}`;
+            sentence = `${pronoun} ___ (${verbItem.infinitive}) ${await getRandomObject(language, days)}`; 
             correctAnswer = conjugatedVerb;
             break;
         case 'negative':
             const pronoun2 = getRandomPronounForLanguage(language);
             const negativeElement = getNegativeElement(pronoun2, language); 
-            sentence = `${pronoun2} ___ (${negativeElement.replace('...', verbItem.infinitive)}) ${getRandomObject(language)}`;
+            sentence = `${pronoun2} ___ (${negativeElement.replace('...', verbItem.infinitive)}) ${await getRandomObject(language, days)}`; 
             if (negativeElement.includes("...")) { 
                  correctAnswer = conjugateVerb(verbItem.infinitive, pronoun2, language) + " " + negativeElement.split("...")[1].trim(); 
-                 sentence = `${pronoun2} ${negativeElement.split("...")[0].trim()} ___ (${verbItem.infinitive}) ${negativeElement.split("...")[1].trim()} ${getRandomObject(language)}`;
+                 sentence = `${pronoun2} ${negativeElement.split("...")[0].trim()} ___ (${verbItem.infinitive}) ${negativeElement.split("...")[1].trim()} ${await getRandomObject(language, days)}`; 
             } else {
-                 sentence = `${pronoun2} ___ (${negativeElement} ${verbItem.infinitive}) ${getRandomObject(language)}`;
+                 sentence = `${pronoun2} ___ (${negativeElement} ${verbItem.infinitive}) ${await getRandomObject(language, days)}`; 
                  correctAnswer = negativeElement + " " + conjugateVerb(verbItem.infinitive, pronoun2, language); 
             }
             break;
         case 'question':
             const pronoun3 = getRandomPronounForLanguage(language);
             const questionElement = getQuestionElement(pronoun3, language); 
-            sentence = `${questionElement} ${pronoun3} ___ (${verbItem.infinitive}) ${getRandomObject(language)}?`;
+            sentence = `${questionElement} ${pronoun3} ___ (${verbItem.infinitive}) ${await getRandomObject(language, days)}?`; 
             correctAnswer = conjugateVerb(verbItem.infinitive, pronoun3, language);
             break;
     }
@@ -792,31 +929,57 @@ async function showWordOrder() {
 
     if (!language || !days.length) { alert(currentTranslations.alertLangDay || 'Please select language and day(s) first'); return; }
     const verbData = await loadVerbGrammar(language, days);
-    if (!verbData.length) { showNoDataMessage(); return; }
+    if (!verbData || verbData.length === 0) { showNoDataMessage(); return; } 
+
     const verbItem = verbData[Math.floor(Math.random() * verbData.length)];
+    if (!verbItem) { showNoDataMessage(); console.error("Selected verbItem is undefined."); return; }
+
     const exerciseTypes = ['positive', 'negative', 'question'];
     const exerciseType = exerciseTypes[Math.floor(Math.random() * exerciseTypes.length)];
     let sentenceParts = [];
-     switch(exerciseType) {
+    const randomObject = await getRandomObject(language, days); 
+    const randomTime = getRandomTimeExpression(language);
+
+    const isToBeForm = verbItem.prompt && verbItem.answer && !verbItem.infinitive;
+
+    switch(exerciseType) {
         case 'positive':
-            const pronoun = getRandomPronounForLanguage(language);
-            sentenceParts = [pronoun, conjugateVerb(verbItem.infinitive, pronoun, language), getRandomObject(language), getRandomTimeExpression(language)].filter(p => p);
+            if (isToBeForm) {
+                sentenceParts = [verbItem.prompt, verbItem.answer, randomObject, randomTime].filter(p => p);
+            } else {
+                const pronoun = getRandomPronounForLanguage(language);
+                sentenceParts = [pronoun, conjugateVerb(verbItem.infinitive, pronoun, language), randomObject, randomTime].filter(p => p);
+            }
             break;
         case 'negative':
-            const pronoun2 = getRandomPronounForLanguage(language);
-            const negPart = getNegativeElement(pronoun2, language);
-            if (negPart.includes("...")) { 
-                sentenceParts = [pronoun2, negPart.split("...")[0].trim(), conjugateVerb(verbItem.infinitive, pronoun2, language), negPart.split("...")[1].trim(), getRandomObject(language), getRandomTimeExpression(language)].filter(p => p);
-            } else { 
-                 sentenceParts = [pronoun2, negPart, verbItem.infinitive, getRandomObject(language), getRandomTimeExpression(language)].filter(p => p);
+            if (isToBeForm) {
+                let notWord = "not"; 
+                if (language === 'COSYfrançais' && verbItem.prompt) { 
+                     sentenceParts = [verbItem.prompt, "ne", verbItem.answer, "pas", randomObject, randomTime].filter(p => p);
+                } else {
+                    sentenceParts = [verbItem.prompt, verbItem.answer, notWord, randomObject, randomTime].filter(p => p);
+                }
+
+            } else {
+                const pronoun2 = getRandomPronounForLanguage(language);
+                const negPart = getNegativeElement(pronoun2, language); 
+                if (negPart.includes("...")) { 
+                    sentenceParts = [pronoun2, negPart.split("...")[0].trim(), conjugateVerb(verbItem.infinitive, pronoun2, language), negPart.split("...")[1].trim(), randomObject, randomTime].filter(p => p);
+                } else { 
+                     sentenceParts = [pronoun2, negPart, conjugateVerb(verbItem.infinitive, pronoun2, language), randomObject, randomTime].filter(p => p); // Corrected to use conjugated verb
+                }
             }
             break;
         case 'question':
-            const pronoun3 = getRandomPronounForLanguage(language);
-            sentenceParts = [getQuestionElement(pronoun3, language), pronoun3, conjugateVerb(verbItem.infinitive, pronoun3, language), getRandomObject(language), getRandomTimeExpression(language)+"?"].filter(p => p);
+            if (isToBeForm) {
+                sentenceParts = [verbItem.answer, verbItem.prompt, randomObject, randomTime + "?"].filter(p => p);
+            } else {
+                const pronoun3 = getRandomPronounForLanguage(language);
+                sentenceParts = [getQuestionElement(pronoun3, language), pronoun3, conjugateVerb(verbItem.infinitive, pronoun3, language), randomObject, randomTime+"?"].filter(p => p);
+            }
             break;
     }
-    sentenceParts = sentenceParts.filter(p => p && p.trim() !== ''); 
+    sentenceParts = sentenceParts.filter(p => p && String(p).trim() !== ''); 
 
 
     const shuffledParts = shuffleArray([...sentenceParts]);
@@ -862,44 +1025,63 @@ function getPronounsForLanguage(language) {
     switch(language) {
         case 'COSYenglish': return ['I', 'you', 'he', 'she', 'it', 'we', 'they'];
         case 'COSYfrançais': return ['je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles'];
-        default: return ['I', 'you', 'he', 'she', 'it', 'we', 'they'];
+        default: return ['I', 'you', 'he', 'she', 'it', 'we', 'they']; // Fallback
     }
 }
 function getRandomPronounForLanguage(language) { const p = getPronounsForLanguage(language); return p[Math.floor(Math.random() * p.length)]; }
+
 function conjugateVerb(verb, pronoun, language) { 
     switch(language) {
-        case 'COSYenglish': if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return verb; else return verb + 's';
-        case 'COSYfrançais':
-            if (pronoun === 'je') return verb.replace(/er$/, 'e'); if (pronoun === 'tu') return verb.replace(/er$/, 'es');
+        case 'COSYenglish': 
+            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return verb; 
+            else return verb + 's'; 
+        case 'COSYfrançais': 
+            if (pronoun === 'je') return verb.replace(/er$/, 'e'); 
+            if (pronoun === 'tu') return verb.replace(/er$/, 'es');
             if (pronoun === 'il' || pronoun === 'elle' || pronoun === 'on') return verb.replace(/er$/, 'e');
-            if (pronoun === 'nous') return verb.replace(/er$/, 'ons'); if (pronoun === 'vous') return verb.replace(/er$/, 'ez');
-            if (pronoun === 'ils' || pronoun === 'elles') return verb.replace(/er$/, 'ent'); return verb;
-        default: return verb;
+            if (pronoun === 'nous') return verb.replace(/er$/, 'ons'); 
+            if (pronoun === 'vous') return verb.replace(/er$/, 'ez');
+            if (pronoun === 'ils' || pronoun === 'elles') return verb.replace(/er$/, 'ent'); 
+            return verb; 
+        default: return verb; 
     }
 }
+
 function getNegativeElement(pronoun, language) { 
     switch(language) {
-        case 'COSYenglish': if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return "don't"; else return "doesn't";
-        case 'COSYfrançais': return "ne ... pas";
+        case 'COSYenglish': 
+            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return "don't"; 
+            else return "doesn't";
+        case 'COSYfrançais': return "ne ... pas"; 
         default: return "not";
     }
 }
+
 function getQuestionElement(pronoun, language) { 
     switch(language) {
-        case 'COSYenglish': if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return "Do"; else return "Does";
+        case 'COSYenglish': 
+            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return "Do"; 
+            else return "Does";
         case 'COSYfrançais': return "Est-ce que";
-        default: return "Do";
+        default: return "Do"; 
     }
  }
-function getRandomObject(language) { 
-    const objects = {'COSYenglish': ['apples', 'books', 'the car'], 'COSYfrançais': ['des pommes', 'des livres', 'la voiture']};
-    const langObjects = objects[language] || objects['COSYenglish']; return langObjects[Math.floor(Math.random() * langObjects.length)];
+
+async function getRandomObject(language, days) { 
+    const vocabulary = await loadVocabularyData(language, days);
+    if (!vocabulary || vocabulary.length === 0) {
+        const fallbackObjects = {'COSYenglish': ['an apple', 'a book', 'the house'], 'COSYfrançais': ['une pomme', 'un livre', 'la maison']};
+        const langFallback = fallbackObjects[language] || fallbackObjects['COSYenglish'];
+        return langFallback[Math.floor(Math.random() * langFallback.length)];
+    }
+    return vocabulary[Math.floor(Math.random() * vocabulary.length)];
 }
+
 function getRandomTimeExpression(language) { 
-    const times = {'COSYenglish': ['every day', 'now', 'often'], 'COSYfrançais': ['tous les jours', 'maintenant', 'souvent']};
+    const times = {'COSYenglish': ['every day', 'now', 'often', 'sometimes'], 'COSYfrançais': ['tous les jours', 'maintenant', 'souvent', 'parfois']};
     const langTimes = times[language] || times['COSYenglish']; return langTimes[Math.floor(Math.random() * langTimes.length)];
 }
-function isCompatibleVerbPronoun(verb, pronoun, language) { return true; }
+// function isCompatibleVerbPronoun(verb, pronoun, language) { return true; } // This function is no longer needed
 
 async function startPossessivesPractice() { }
 async function showTypePossessive() { }
