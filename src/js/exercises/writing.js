@@ -56,6 +56,9 @@ async function showQuestionWriting() {
 
         if (!writtenAnswer.trim()) {
             feedbackMsg = currentTranslations.pleaseWriteAnswer || 'Please write an answer before submitting.';
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) {
+                CosyAppInteractive.awardIncorrectAnswer();
+            }
         } else {
             const questionWords = (questionText.toLowerCase().match(/\b(\w+)\b/g) || []).filter(w => w.length > 2);
             const answerWords = (writtenAnswer.toLowerCase().match(/\b(\w+)\b/g) || []).filter(w => w.length > 2);
@@ -64,8 +67,9 @@ async function showQuestionWriting() {
 
             if (commonKeywords.length > 0) {
                 feedbackMsg = `${currentTranslations.goodAnswerWriting || "Good! You've used some keywords from the question"}: ${commonKeywords.slice(0,3).join(', ')}.`;
-                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
-                    CosyAppInteractive.addXP(5); // Award XP for writing
+                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) {
+                    CosyAppInteractive.awardCorrectAnswer();
+                    CosyAppInteractive.scheduleReview(language, 'writing-prompt', questionText, true);
                 }
             } else {
                 feedbackMsg = currentTranslations.answerSubmittedWriting || 'Answer submitted. Try to incorporate more elements from the question.';

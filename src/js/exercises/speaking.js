@@ -130,6 +130,9 @@ async function showQuestionPractice() {
         let feedbackMsg = '';
         if (!transcript || !transcript.trim()) {
             feedbackMsg = currentTranslations.noSpeechDetected || 'No speech detected. Please try again.';
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) {
+                CosyAppInteractive.awardIncorrectAnswer();
+            }
         } else {
             const questionWords = question.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2);
             const transcriptWords = transcript.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
@@ -141,13 +144,20 @@ async function showQuestionPractice() {
 
             if (commonWordCount > 0 || transcriptWords.length > 2) { 
                 feedbackMsg = currentTranslations.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
-                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
-                    CosyAppInteractive.addXP(3); 
+                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) {
+                    CosyAppInteractive.awardCorrectAnswer();
+                    CosyAppInteractive.scheduleReview(language, 'speaking-phrase', question, true);
                 }
             } else if (transcriptWords.length > 0) {
                  feedbackMsg = currentTranslations.tryAgainSpeakingShort || "Try to give a more detailed answer.";
+                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) {
+                    CosyAppInteractive.awardIncorrectAnswer();
+                }
             } else {
                 feedbackMsg = currentTranslations.tryAgainSpeaking || "Try to address the question more directly.";
+                if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) {
+                    CosyAppInteractive.awardIncorrectAnswer();
+                }
             }
         }
         // This function now directly sets the feedback, which is fine as it's called by onResultCallback

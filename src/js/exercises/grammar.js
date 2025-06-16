@@ -346,18 +346,24 @@ async function showArticleWord() {
             if (variation.type === 'article') { 
                 if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
                     feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
+                    CosyAppInteractive.awardCorrectAnswer();
+                    if (variation.type === 'article') CosyAppInteractive.scheduleReview(language, 'gender', item.word, true);
                     setTimeout(() => showArticleWord(), 1200);
                 } else {
                     feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${variation.answer}</b></span>`;
+                    CosyAppInteractive.awardIncorrectAnswer();
                 }
             } else { 
                 const targetArticle = item.article; 
                 const isValidWordForArticle = items.some(i => i.article.toLowerCase() === targetArticle.toLowerCase() && i.word.toLowerCase() === userInput.toLowerCase());
                 if (isValidWordForArticle) {
                     feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
+                    CosyAppInteractive.awardCorrectAnswer();
+                    CosyAppInteractive.scheduleReview(language, 'gender', item.word, true);
                     setTimeout(() => showArticleWord(), 1200);
                 } else {
                     feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not a valid word for "${targetArticle}". The expected example was: <b>${variation.answer}</b>. Other valid words might exist.</span>`;
+                    CosyAppInteractive.awardIncorrectAnswer();
                 }
             }
         }
@@ -556,6 +562,7 @@ async function showMatchArticlesWords() {
 
             if (correctPair) {
                 feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectMatch || '✅ Correct match!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
                 selectedArticleEl.classList.add('matched', 'disabled');
                 selectedWordEl.classList.add('matched', 'disabled');
                 selectedArticleEl.classList.remove('selected');
@@ -568,6 +575,7 @@ async function showMatchArticlesWords() {
                 }
             } else {
                 feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotAMatch || '❌ Not a match. Try again!'}</span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
                 selectedArticleEl.classList.remove('selected');
                 selectedWordEl.classList.remove('selected');
             }
@@ -662,15 +670,19 @@ async function showSelectArticleExercise() {
 
     document.querySelectorAll('.article-option-btn').forEach(btn => {
         btn.onclick = function() {
+            playSound('select'); // Play select sound on option click
             const selectedArticleByUser = this.getAttribute('data-article');
             let feedback = '';
             if (selectedArticleByUser.toLowerCase() === correctArticle.toLowerCase()) {
                 feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
+                CosyAppInteractive.awardCorrectAnswer();
+                CosyAppInteractive.scheduleReview(language, 'gender', selectedItem.word, true);
                 document.querySelectorAll('.article-option-btn').forEach(b => b.disabled = true);
                 this.classList.add('correct-selection'); 
                 setTimeout(() => showSelectArticleExercise(), 1500);
             } else {
                 feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct article is: <b>${correctArticle}</b></span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
                 this.classList.add('incorrect-selection'); 
                 this.disabled = true; 
             }
@@ -737,8 +749,13 @@ async function showTypeVerb() {
         if (!userInput) feedback = `<span style="color:#e67e22;">${currentTranslations.feedbackPleaseType || 'Please type your answer above.'}</span>`;
         else if (userInput.toLowerCase() === correctAnswer.toLowerCase()) {
             feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
+            CosyAppInteractive.awardCorrectAnswer();
+            CosyAppInteractive.scheduleReview(language, 'verb', item.infinitive, true);
             setTimeout(() => showTypeVerb(), 1200);
-        } else feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${correctAnswer}</b></span>`;
+        } else {
+            feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${correctAnswer}</b></span>`;
+            CosyAppInteractive.awardIncorrectAnswer();
+        }
         document.getElementById('verb-answer-feedback').innerHTML = feedback;
     };
     document.getElementById('new-verb-exercise').onclick = () => showTypeVerb();
@@ -819,6 +836,7 @@ async function showMatchVerbsPronouns() {
 
             if (isCorrectPair) {
                 feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackGoodMatch || '✅ Good match!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
                 selectedPromptEl.classList.add('matched', 'disabled');
                 selectedAnswerEl.classList.add('matched', 'disabled');
                 selectedPromptEl.classList.remove('selected');
@@ -831,6 +849,7 @@ async function showMatchVerbsPronouns() {
                 }
             } else {
                 feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotCompatible || '❌ Not compatible. Try again!'}</span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
                 selectedPromptEl.classList.remove('selected'); 
                 selectedAnswerEl.classList.remove('selected');
             }
@@ -912,9 +931,12 @@ async function showFillGaps() {
         const feedback = document.getElementById('gap-feedback');
         if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
              feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectWellDone || '✅ Correct! Well done!'}</span>`;
+             CosyAppInteractive.awardCorrectAnswer();
+             CosyAppInteractive.scheduleReview(language, 'verb', verbItem.infinitive, true);
              setTimeout(() => showFillGaps(), 1200);
         } else {
             feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotQuite || '❌ Not quite. The correct answer is: '}<b>${correctAnswer}</b></span>`;
+            CosyAppInteractive.awardIncorrectAnswer();
         }
     });
     document.getElementById('new-gap').addEventListener('click', () => showFillGaps());
@@ -1007,9 +1029,11 @@ async function showWordOrder() {
         const feedback = document.getElementById('order-feedback');
         if (builtSentence === correctSentence) {
             feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectWellDone || '✅ Correct! Well done!'}</span>`;
+            CosyAppInteractive.awardCorrectAnswer();
             setTimeout(() => showWordOrder(), 3000);
         } else {
             feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotQuiteCorrectOrder || '❌ Not quite. The correct order is: '}<b>${correctSentence}</b></span>`;
+            CosyAppInteractive.awardIncorrectAnswer();
         }
     });
     document.getElementById('reset-order').addEventListener('click', () => { 

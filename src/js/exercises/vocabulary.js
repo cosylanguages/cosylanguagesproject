@@ -286,6 +286,11 @@ async function showOppositesExercise(baseWord = null) {
         const feedback = document.getElementById('opposite-feedback');
         if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
             feedback.innerHTML = `<span class="correct" aria-label="Correct">✅👏 ${t.correct || 'Correct!'}</span>`;
+            CosyAppInteractive.awardCorrectAnswer();
+            CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, true);
+            if (opposite !== (t.noOppositeFound || 'No opposite found')) { // Only schedule if a real opposite exists
+                CosyAppInteractive.scheduleReview(language, 'vocabulary-word', opposite, true);
+            }
             document.getElementById('opposite-answer').textContent = opposite;
         } else {
             feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.feedbackNotQuiteTryAgain || 'Try again!'}</span>`;
@@ -1059,32 +1064,74 @@ showMatchOpposites = async function() {
         // ...existing code for event listeners...
         let selectedWord = null;
         let selectedOpposite = null;
+        let selectedWordEl = null; // To store the element itself
+        let selectedOppositeEl = null; // To store the element itself
+
         document.querySelectorAll('#words-col .match-item').forEach(item => {
             item.addEventListener('click', function() {
-                document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+                if (this.classList.contains('matched')) return;
+                playSound('select');
+                if (selectedWordEl) selectedWordEl.classList.remove('selected');
                 this.classList.add('selected');
+                selectedWordEl = this;
                 selectedWord = this.getAttribute('data-word');
+                // If an opposite is already selected, attempt to match
+                if (selectedOppositeEl) checkOppositesMatchAttemptPatched();
             });
         });
+
         document.querySelectorAll('#opposites-col .match-item').forEach(item => {
             item.addEventListener('click', function() {
-                if (!selectedWord) return;
-                document.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+                if (this.classList.contains('matched')) return;
+                playSound('select');
+                if (!selectedWordEl) { // Nothing selected in the first column yet
+                    CosyAppInteractive.showToast(t.selectWordFirstToast || "Please select a word from the first column first.");
+                    return;
+                }
+                if (selectedOppositeEl) selectedOppositeEl.classList.remove('selected');
                 this.classList.add('selected');
+                selectedOppositeEl = this;
                 selectedOpposite = this.getAttribute('data-opposite');
-                const correctOpposite = selectedPairs.find(p => p.word === selectedWord)?.opposite;
+                checkOppositesMatchAttemptPatched();
+            });
+        });
+
+        function checkOppositesMatchAttemptPatched() {
+            if (selectedWordEl && selectedOppositeEl) {
+                const wordValue = selectedWord; // Already stored
+                const oppositeValue = selectedOpposite; // Already stored
+                const correctOppositePair = selectedPairs.find(p => p.word === wordValue);
                 const feedback = document.getElementById('match-feedback');
-                if (selectedOpposite === correctOpposite) {
+
+                if (correctOppositePair && oppositeValue === correctOppositePair.opposite) {
                     feedback.innerHTML = '<span class="correct">✅ Correct match!</span>';
-                    document.querySelector(`[data-word="${selectedWord}"]`).classList.add('matched');
-                    this.classList.add('matched');
+                    CosyAppInteractive.awardCorrectAnswer();
+                    if (wordValue && oppositeValue) { 
+                        CosyAppInteractive.scheduleReview(language, 'vocabulary-word', wordValue, true);
+                        CosyAppInteractive.scheduleReview(language, 'vocabulary-word', oppositeValue, true);
+                    }
+                    selectedWordEl.classList.add('matched', 'disabled');
+                    selectedOppositeEl.classList.add('matched', 'disabled');
+                    selectedWordEl.classList.remove('selected');
+                    selectedOppositeEl.classList.remove('selected');
+                    
+                    const allMatched = selectedPairs.length === document.querySelectorAll('.match-item.matched').length / 2;
+                    if (allMatched) {
+                        feedback.innerHTML += `<br><span class="correct">${t.feedbackAllMatchesCompleted || 'All pairs matched!'}</span>`;
+                        setTimeout(() => showMatchOpposites(), 2000);
+                    }
                 } else {
                     feedback.innerHTML = '<span class="incorrect">❌ Not a match. Try again!</span>';
+                    CosyAppInteractive.awardIncorrectAnswer();
+                    selectedWordEl.classList.remove('selected');
+                    selectedOppositeEl.classList.remove('selected');
                 }
                 selectedWord = null;
                 selectedOpposite = null;
-            });
-        });
+                selectedWordEl = null;
+                selectedOppositeEl = null;
+            }
+        }
         document.getElementById('check-matches').addEventListener('click', () => {
             const feedback = document.getElementById('match-feedback');
             feedback.innerHTML = 'Showing all correct matches...';
