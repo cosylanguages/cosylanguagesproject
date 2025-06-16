@@ -1,3 +1,6 @@
+import UserProgress from '../user-progress.js';
+import AudioFeedback from '../audio-feedback.js';
+
 // Functions moved to utils.js: shuffleArray, showNoDataMessage, addRandomizeButton
 
 // Data loading functions
@@ -284,10 +287,18 @@ async function showOppositesExercise(baseWord = null) {
     document.getElementById('check-opposite').addEventListener('click', () => {
         const userAnswer = document.getElementById('opposite-input').value.trim();
         const feedback = document.getElementById('opposite-feedback');
-        if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
+        const isCorrect = userAnswer.toLowerCase() === opposite.toLowerCase();
+        // Assume 'word' is the itemId and 'vocabulary' is the itemType
+        const itemId = word;
+        const itemType = 'vocabulary';
+        UserProgress.recordAnswer(isCorrect, itemId, itemType);
+        if (isCorrect) {
+            AudioFeedback.playSuccessSound();
             feedback.innerHTML = `<span class="correct" aria-label="Correct">✅👏 ${t.correct || 'Correct!'}</span>`;
             document.getElementById('opposite-answer').textContent = opposite;
+            // Optionally: UserProgress.addLearnedItem(itemId, itemType);
         } else {
+            AudioFeedback.playErrorSound();
             feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.feedbackNotQuiteTryAgain || 'Try again!'}</span>`;
         }
     });
@@ -1235,3 +1246,8 @@ showMatchImageWord = async function() {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', initVocabularyPractice);
+
+// CONCEPTUAL: How item selection might change with weighted learning
+// const allWordsRaw = await fetchAllVocabularyWordsForLanguage(language); // Fetch all possible words
+// const selectionPool = UserProgress.getWeightedLearnableItems(allWordsRaw, 'vocabulary');
+// const word = selectionPool[Math.floor(Math.random() * selectionPool.length)]; // Pick from weighted pool

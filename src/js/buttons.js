@@ -1,3 +1,5 @@
+import AudioFeedback from './audio-feedback.js';
+
 // Initialize all buttons
 function initButtons() {
     // Helper to hide all options
@@ -12,6 +14,7 @@ function initButtons() {
     ['vocabulary','grammar','reading','speaking','writing'].forEach(type => {
         const btn = document.getElementById(`${type}-btn`);
         btn?.addEventListener('click', function() {
+            AudioFeedback.playClickSound();
             const isActive = btn.classList.contains('active-main-btn');
             if (isActive) {
                 // If already active, reset to main menu
@@ -39,6 +42,7 @@ function setupOptionToggle(groupId, btnIds, startExerciseFns) {
         const btn = document.getElementById(btnId);
         if (!btn) return;
         btn.addEventListener('click', function() {
+            AudioFeedback.playSelectSound();
             const group = document.getElementById(groupId);
             const isActive = btn.classList.contains('active-option-btn');
             const allBtns = group.querySelectorAll('button');

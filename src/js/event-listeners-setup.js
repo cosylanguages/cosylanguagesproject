@@ -1,3 +1,4 @@
+import AudioFeedback from './audio-feedback.js';
 // Event Listeners Setup (Core Logic)
 
 // Placeholder stub for updateGrammarOptions
@@ -44,6 +45,7 @@ function initializeEventListeners() {
 
     if (languageSelectElement) {
         languageSelectElement.addEventListener('change', function() {
+            AudioFeedback.playSelectSound();
             const lang = this.value;
 
             // Determine current day for context
@@ -78,6 +80,7 @@ function initializeEventListeners() {
     daySelectors.forEach(selector => {
         if (selector) {
             selector.addEventListener('change', function() {
+                AudioFeedback.playSelectSound();
                 // from ui-visibility.js or index.html
                 updateDaySelectors(); 
                 
