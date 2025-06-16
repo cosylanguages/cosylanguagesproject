@@ -141,8 +141,8 @@ async function showQuestionPractice() {
 
             if (commonWordCount > 0 || transcriptWords.length > 2) { 
                 feedbackMsg = currentTranslations.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
-                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
-                    CosyAppInteractive.addXP(3); 
+                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) {
+                    CosyAppInteractive.awardCorrectAnswer();
                 }
             } else if (transcriptWords.length > 0) {
                  feedbackMsg = currentTranslations.tryAgainSpeakingShort || "Try to give a more detailed answer.";

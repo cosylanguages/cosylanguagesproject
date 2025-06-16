@@ -22,24 +22,66 @@ window.CosyAppInteractive = {};
 
     class GameState {
         constructor() {
-            this.xp = parseInt(localStorage.getItem('cosy_xp') || '0');
-            this.level = parseInt(localStorage.getItem('cosy_level') || '1');
-            this.streak = parseInt(localStorage.getItem('cosy_streak') || '0');
+            const savedState = localStorage.getItem('cosyGameState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                this.xp = state.xp || 0;
+                this.level = state.level || 1;
+                this.streak = state.streak || 0;
+                this.lastActiveDate = state.lastActiveDate || null;
+                this.completedLessons = state.completedLessons || [];
+                this.achievements = state.achievements || [];
+                this.firstTimeTodayForDay1 = state.firstTimeTodayForDay1 || {};
+            } else {
+                // Attempt to migrate from old localStorage keys
+                this.xp = parseInt(localStorage.getItem('cosy_xp') || '0');
+                this.level = parseInt(localStorage.getItem('cosy_level') || '1');
+                this.streak = parseInt(localStorage.getItem('cosy_streak') || '0');
+
+                // Initialize new properties
+                this.lastActiveDate = null;
+                this.completedLessons = [];
+                this.achievements = [];
+                this.firstTimeTodayForDay1 = {};
+
+                // If old data was found, or if it's a completely new user,
+                // save the initial state in the new format.
+                let oldDataExisted = localStorage.getItem('cosy_xp') !== null ||
+                                     localStorage.getItem('cosy_level') !== null ||
+                                     localStorage.getItem('cosy_streak') !== null;
+
+                if (this.xp !== 0 || this.level !== 1 || this.streak !== 0 || oldDataExisted) {
+                    this.save(); // Save the potentially migrated or default state
+                }
+
+                // Clean up old keys if they existed
+                if (localStorage.getItem('cosy_xp') !== null) localStorage.removeItem('cosy_xp');
+                if (localStorage.getItem('cosy_level') !== null) localStorage.removeItem('cosy_level');
+                if (localStorage.getItem('cosy_streak') !== null) localStorage.removeItem('cosy_streak');
+            }
         }
 
         save() {
-            localStorage.setItem('cosy_xp', this.xp);
-            localStorage.setItem('cosy_level', this.level);
-            localStorage.setItem('cosy_streak', this.streak);
+            const stateToSave = {
+                xp: this.xp,
+                level: this.level,
+                streak: this.streak,
+                lastActiveDate: this.lastActiveDate,
+                completedLessons: this.completedLessons,
+                achievements: this.achievements,
+                firstTimeTodayForDay1: this.firstTimeTodayForDay1
+            };
+            localStorage.setItem('cosyGameState', JSON.stringify(stateToSave));
         }
 
         addXP(amount) {
             const t = getCurrentTranslations();
             this.xp += amount;
-            if (this.xp >= this.level * 10) {
-                this.xp = 0;
-                this.level++;
-                playSound('success');
+            playSound('success'); // Play sound for any XP gain
+            const newLevel = Math.floor(this.xp / 50) + 1; // Logic from user-progress.js
+            if (newLevel > this.level) {
+                this.level = newLevel;
+                // playSound('success'); // Already played above
                 let levelUpMsg = t.levelUpToast || `🎉 Level up! You are now level {level}!`;
                 CosyAppInteractive.showToast(levelUpMsg.replace('{level}', this.level));
                 this.showLevelUpEffect();
@@ -48,8 +90,26 @@ window.CosyAppInteractive = {};
             this.updateUI();
         }
 
-        addStreak() { this.streak++; this.save(); this.updateUI(); }
-        resetStreak() { this.streak = 0; this.save(); this.updateUI(); }
+        updateStreak() {
+            const today = new Date().toDateString();
+            if (this.lastActiveDate !== today) {
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+                if (this.lastActiveDate === yesterday) {
+                    this.streak += 1;
+                } else {
+                    this.streak = 1; // Start new streak at 1
+                }
+                this.lastActiveDate = today;
+                this.save();
+            }
+        }
+
+        completeLesson(lessonId) {
+            if (!this.completedLessons.includes(lessonId)) {
+                this.completedLessons.push(lessonId);
+                this.addXP(10); // Award 10 XP. addXP calls save() and updateUI().
+            }
+        }
 
         updateUI() {
             const t = getCurrentTranslations();
@@ -69,11 +129,11 @@ window.CosyAppInteractive = {};
                 stats.classList.add('levelup');
                 setTimeout(() => stats.classList.remove('levelup'), 1200);
             }
-            showConfetti(); 
+            showConfetti();
         }
     }
-    CosyAppInteractive.GameState = GameState; 
-    const gameState = new GameState(); 
+    CosyAppInteractive.GameState = GameState;
+    const gameState = new GameState();
 
     function showToast(msg) {
         let toast = document.createElement('div');
@@ -82,34 +142,43 @@ window.CosyAppInteractive = {};
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 1800);
     }
-    CosyAppInteractive.showToast = showToast; 
+    CosyAppInteractive.showToast = showToast;
 
-    function showConfetti() { /* ... (no translatable strings) ... */ 
+    function showConfetti() { /* ... (no translatable strings) ... */
         for (let i = 0; i < 30; i++) {
             let c = document.createElement('div');
             c.textContent = '🎊';
-            c.className = 'confetti'; 
+            c.className = 'confetti';
             document.body.appendChild(c);
             setTimeout(() => c.remove(), 1400);
         }
     }
-    
+
     function originalAddXP(amount) { gameState.addXP(amount); }
-    const _addXP = originalAddXP; 
-    let PatchedAddXP = function(amount) { 
-      const prevLevel = gameState.level; 
-      _addXP(amount); 
+    const _addXP = originalAddXP;
+    let PatchedAddXP = function(amount) {
+      const prevLevel = gameState.level;
+      _addXP(amount);
       // Confetti is now part of GameState.addXP via showLevelUpEffect
     };
-    CosyAppInteractive.addXP = PatchedAddXP; 
+    CosyAppInteractive.addXP = PatchedAddXP;
 
-    function awardCorrectAnswer() { gameState.addXP(3); gameState.addStreak(); }
+    function awardCorrectAnswer() {
+        gameState.addXP(3);
+        gameState.updateStreak();
+        gameState.updateUI();
+    }
     CosyAppInteractive.awardCorrectAnswer = awardCorrectAnswer;
+
+    CosyAppInteractive.awardIncorrectAnswer = function() {
+        playSound('error');
+        // Future: Could also call gameState.resetStreak() or a specific method for incorrect answer penalties.
+    };
 
     function markAndAward(el) {
       if (!el.classList.contains('xp-awarded')) {
         el.classList.add('xp-awarded');
-        awardCorrectAnswer(); 
+        awardCorrectAnswer();
       }
     }
     CosyAppInteractive.markAndAward = markAndAward;
@@ -123,11 +192,11 @@ window.CosyAppInteractive = {};
     });
 
     function getSRSKey(language, type, value) { return `cosy_srs_${language}_${type}_${value}`; }
-    CosyAppInteractive.scheduleReview = function scheduleReview(language, type, value, correct) { /* ... (no translatable strings, uses localStorage) ... */ 
+    CosyAppInteractive.scheduleReview = function scheduleReview(language, type, value, correct) { /* ... (no translatable strings, uses localStorage) ... */
         const key = getSRSKey(language, type, value);
         let data = JSON.parse(localStorage.getItem(key) || '{}');
         const now = Date.now();
-        if (!data.interval) data.interval = 1 * 60 * 60 * 1000; 
+        if (!data.interval) data.interval = 1 * 60 * 60 * 1000;
         if (!data.ease) data.ease = 2.5;
         if (!data.due) data.due = now;
         if (!data.reps) data.reps = 0;
@@ -135,12 +204,12 @@ window.CosyAppInteractive = {};
             data.reps++; data.interval = Math.round(data.interval * data.ease);
             data.due = now + data.interval; data.ease = Math.min(data.ease + 0.15, 3.0);
         } else {
-            data.reps = 0; data.interval = 1 * 60 * 60 * 1000; 
+            data.reps = 0; data.interval = 1 * 60 * 60 * 1000;
             data.due = now + data.interval; data.ease = Math.max(data.ease - 0.2, 1.3);
         }
         localStorage.setItem(key, JSON.stringify(data));
     };
-    CosyAppInteractive.getDueReviews = function getDueReviews(language, type, items) { /* ... (no translatable strings) ... */ 
+    CosyAppInteractive.getDueReviews = function getDueReviews(language, type, items) { /* ... (no translatable strings) ... */
         const now = Date.now();
         return items.filter(value => {
             const key = getSRSKey(language, type, value);
@@ -161,9 +230,9 @@ window.CosyAppInteractive = {};
       }
       btn.textContent = t.reviewDueBtnLabel || '🔁 Review Due';
       btn.onclick = async function() {
-        const due = CosyAppInteractive.getDueReviews(language, type, items); 
+        const due = CosyAppInteractive.getDueReviews(language, type, items);
         if (!due.length) {
-          CosyAppInteractive.showToast(t.noItemsDueReviewToast || 'No items due for review!'); 
+          CosyAppInteractive.showToast(t.noItemsDueReviewToast || 'No items due for review!');
           return;
         }
         const itemToReview = due[Math.floor(Math.random()*due.length)];
@@ -173,19 +242,19 @@ window.CosyAppInteractive = {};
     }
     CosyAppInteractive.showRevisionButton = showRevisionButton;
 
-    const _originalPracticeVocabulary = window.practiceVocabulary; 
-    const _originalPracticeGrammar = window.practiceGrammar; 
+    const _originalPracticeVocabulary = window.practiceVocabulary;
+    const _originalPracticeGrammar = window.practiceGrammar;
 
-    CosyAppInteractive.practiceVocabulary = async function(type, forceWord) { /* ... (TODOs and console logs are fine) ... */ 
+    CosyAppInteractive.practiceVocabulary = async function(type, forceWord) { /* ... (TODOs and console logs are fine) ... */
         const language = document.getElementById('language').value;
         if (forceWord) {
             console.log(`TODO SRS Review: practiceVocabulary for ${type}, word: ${forceWord}, lang: ${language}`);
-            return; 
+            return;
         }
         if (typeof _originalPracticeVocabulary === 'function') await _originalPracticeVocabulary(type);
         else console.error("Original practiceVocabulary function not found on window.");
     };
-    CosyAppInteractive.practiceGrammar = async function(type, forceItem) {  /* ... (TODOs and console logs are fine) ... */ 
+    CosyAppInteractive.practiceGrammar = async function(type, forceItem) {  /* ... (TODOs and console logs are fine) ... */
         const language = document.getElementById('language').value;
         if (forceItem) {
             console.log(`TODO SRS Review: practiceGrammar for ${type}, item: ${forceItem}, lang: ${language}`);
@@ -198,17 +267,17 @@ window.CosyAppInteractive = {};
         else console.error("Original practiceGrammar or specific start function not found.");
     };
 
-    function showEmojiFeedback(isCorrect) { 
+    function showEmojiFeedback(isCorrect) {
       const t = getCurrentTranslations();
       CosyAppInteractive.showToast(isCorrect ? (t.feedbackSticks || '🎉 Great! That sticks!') : (t.feedbackTryAgainEncouragement || '🤔 Try again, you can do it!'));
     }
-    
+
     function showFunFact(language) { // language parameter is passed now
       const t = getCurrentTranslations(); // Uses current language from UI
       const facts = t.funFacts || [];
       if (facts.length > 0) CosyAppInteractive.showToast(facts[Math.floor(Math.random()*facts.length)]);
     }
-    
+
     const practiceAllTypes = ['vocabulary', 'grammar', 'speaking', 'match', 'truefalse', 'choose4audio', 'choose4image'];
     CosyAppInteractive.practiceAllTypes = practiceAllTypes;
 
@@ -242,7 +311,7 @@ window.CosyAppInteractive = {};
       // document.getElementById('choose4-feedback').innerHTML = isCorrect ? `<span class="color-green">✅ ${currentTranslations.correct || 'Correct!'}</span>` : ...
       // showFunFact(language); // Call with language
     };
-    CosyAppInteractive.getLangCode = function getLangCode(language) { /* ... (no translatable strings) ... */ 
+    CosyAppInteractive.getLangCode = function getLangCode(language) { /* ... (no translatable strings) ... */
         switch(language) {
             case 'COSYenglish': return 'en'; case 'COSYitaliano': return 'it'; case 'COSYfrançais': return 'fr';
             case 'COSYespañol': return 'es'; case 'COSYdeutsch': return 'de'; case 'COSYportuguês': return 'pt';
@@ -257,7 +326,7 @@ window.CosyAppInteractive = {};
       // Example: if (!images.length) return CosyAppInteractive.showToast(currentTranslations.noImages || 'No images available!');
       // showFunFact(language); // Call with language
     };
-    CosyAppInteractive.getLangFileName = function getLangFileName(language) { /* ... (no translatable strings) ... */ 
+    CosyAppInteractive.getLangFileName = function getLangFileName(language) { /* ... (no translatable strings) ... */
         switch(language) {
             case 'COSYenglish': return 'english'; case 'COSYitaliano': return 'italian'; case 'COSYfrançais': return 'french';
             case 'COSYespañol': return 'spanish'; case 'COSYdeutsch': return 'german'; case 'COSYportuguês': return 'portuguese';
@@ -281,9 +350,9 @@ window.CosyAppInteractive = {};
 
     const practiceAllBtnElement = document.getElementById('practice-all-btn');
     if (practiceAllBtnElement) {
-        const origPracticeAllOnClick = practiceAllBtnElement.onclick; 
+        const origPracticeAllOnClick = practiceAllBtnElement.onclick;
         practiceAllBtnElement.onclick = async function() {
-            const days = getSelectedDays(); 
+            const days = getSelectedDays();
             const language = document.getElementById('language').value;
             const currentTranslations = translations[language] || translations.COSYenglish;
             if (!days.length || !language) return CosyAppInteractive.showToast(currentTranslations.alertLangDay || 'Select language and day!');
@@ -299,7 +368,7 @@ window.CosyAppInteractive = {};
         };
     }
 
-    CosyAppInteractive.showTranslationHelper = async function(text, contextType = 'word', originalLang = null) { 
+    CosyAppInteractive.showTranslationHelper = async function(text, contextType = 'word', originalLang = null) {
         const t = getCurrentTranslations(); // For popup UI
         // ... (rest of logic from original, update hardcoded strings)
         // Example: container.innerHTML = `<div class="font-size-12 margin-bottom-18">🌍 ${countryName ? countryName + ': ' : ''}${t.translationPopupTitle || 'Translation'}<br><b>${text}</b></div>...`
@@ -320,7 +389,7 @@ window.CosyAppInteractive = {};
         }
         return text;
     }
-    
+
     CosyAppInteractive.getRandomTip = function getRandomTip() {
         const t = getCurrentTranslations();
         const facts = t.funFacts || [];
@@ -333,11 +402,23 @@ window.CosyAppInteractive = {};
 
     document.addEventListener('DOMContentLoaded', function() {
         if (gameState && typeof gameState.updateUI === 'function') gameState.updateUI();
-        setupEnterKeySupportInternal(); 
+        setupEnterKeySupportInternal();
+
+        // Generic click sound for common buttons
+        document.body.addEventListener('click', function(event) {
+            if (event.target.matches('button:not(.btn-emoji, #speaking-record-btn), .article-option-btn, .word-option, .match-item')) {
+                // Check if the button is part of an exercise that might already play a sound on click (e.g. options that give immediate feedback)
+                // For now, this is a broad approach. Refine if specific buttons cause double sounds.
+                // Exclude emoji buttons and the speaking record button as they have special sound/UI interactions.
+                if (!event.target.closest('.no-generic-click-sound')) { // Add class 'no-generic-click-sound' to parent of buttons to exclude
+                     playSound('click');
+                }
+            }
+        }, true); // Use capture phase
 
         const helpBtn = document.getElementById('floating-help-btn');
         const tipPopup = document.getElementById('floating-tip-popup');
-        const tipText = document.getElementById('floating-tip-text'); 
+        const tipText = document.getElementById('floating-tip-text');
         const closeTipBtn = tipPopup?.querySelector('.close-tip');
         const translateTipBtn = tipPopup?.querySelector('.translate-tip');
         const translationPopup = document.getElementById('translation-popup');

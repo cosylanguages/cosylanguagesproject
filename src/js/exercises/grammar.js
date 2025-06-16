@@ -18,21 +18,21 @@ async function loadGenderGrammar(language, day) {
     const file = fileMap[language];
     if (!file) {
         console.error(`Error loading gender grammar: No file mapped for language ${language}`);
-        return []; 
+        return [];
     }
-    
-    const loadResult = await loadData(file); 
-    
+
+    const loadResult = await loadData(file);
+
     if (loadResult.error) {
         console.error(`Error loading gender grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
-        return []; 
+        return [];
     }
-    
-    const data = loadResult.data; 
+
+    const data = loadResult.data;
     return data && data[day] ? data[day] : [];
 }
 
-async function loadVerbGrammar(language, days) { 
+async function loadVerbGrammar(language, days) {
     const fileMap = {
         'COSYenglish': 'data/grammar/verbs/grammar_verbs_english.json',
         'COSYitaliano': 'data/grammar/verbs/grammar_verbs_italian.json',
@@ -52,8 +52,8 @@ async function loadVerbGrammar(language, days) {
         console.error(`Error loading verb grammar: No file mapped for language ${language}`);
         return [];
     }
-    const loadResult = await loadData(file); 
-    
+    const loadResult = await loadData(file);
+
     if (loadResult.error) {
         console.error(`Error loading verb grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
         return [];
@@ -85,9 +85,9 @@ async function loadVerbGrammar(language, days) {
     for (let i = startDay; i <= endDay; i++) {
         const currentDayKey = String(i);
         const dayData = data[currentDayKey] ? data[currentDayKey] : [];
-        
+
         for (const item of dayData) {
-            const stringifiedItem = JSON.stringify(item); 
+            const stringifiedItem = JSON.stringify(item);
             if (!seenItems.has(stringifiedItem)) {
                 seenItems.add(stringifiedItem);
                 combinedVerbData.push(item);
@@ -129,7 +129,7 @@ async function loadVocabularyData(language, days) {
     }
 
     let combinedVocabularyWords = [];
-    let seenVocabItems = new Set(); 
+    let seenVocabItems = new Set();
 
     if (!days || days.length === 0) { // Handle empty or undefined days array
         return [];
@@ -149,11 +149,11 @@ async function loadVocabularyData(language, days) {
     for (let i = startDay; i <= endDay; i++) {
         const currentDayKey = String(i);
         const dayVocab = vocabData[currentDayKey] ? vocabData[currentDayKey] : [];
-        for (const wordObj of dayVocab) { 
+        for (const wordObj of dayVocab) {
             const stringifiedWordObj = JSON.stringify(wordObj);
             if (wordObj.word && !seenVocabItems.has(stringifiedWordObj)) {
                 seenVocabItems.add(stringifiedWordObj);
-                combinedVocabularyWords.push(wordObj.word); 
+                combinedVocabularyWords.push(wordObj.word);
             }
         }
     }
@@ -181,8 +181,8 @@ async function loadPossessivesGrammar(language, day) {
         console.error(`Error loading possessives grammar: No file mapped for language ${language}`);
         return [];
     }
-    const loadResult = await loadData(file); 
-    
+    const loadResult = await loadData(file);
+
     if (loadResult.error) {
         console.error(`Error loading possessives grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
         return [];
@@ -248,16 +248,16 @@ const ARTICLE_CATEGORIES = {
 // Grammar Practice Types
 const GRAMMAR_PRACTICE_TYPES = {
     'gender': {
-        exercises: ['article-word', 'match-articles-words', 'select-article'], 
-        name: 'Gender' 
+        exercises: ['article-word', 'match-articles-words', 'select-article'],
+        name: 'Gender'
     },
     'verbs': {
         exercises: ['type-verb', 'match-verbs-pronouns', 'fill-gaps', 'word-order'],
-        name: 'Verbs' 
+        name: 'Verbs'
     },
     'possessives': {
         exercises: ['type-possessive', 'match-possessives'],
-        name: 'Possessives' 
+        name: 'Possessives'
     },
     'plurals': {
         exercises: ['type-plural', 'match-singular-plural'],
@@ -283,7 +283,7 @@ async function startGenderPractice() {
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
     if (randomExercise === 'article-word') await showArticleWord();
     else if (randomExercise === 'match-articles-words') await showMatchArticlesWords();
-    else if (randomExercise === 'select-article') await showSelectArticleExercise(); 
+    else if (randomExercise === 'select-article') await showSelectArticleExercise();
 }
 
 async function showArticleWord() {
@@ -303,8 +303,8 @@ async function showArticleWord() {
     }
     const item = items[Math.floor(Math.random() * items.length)];
     const variations = [
-        { type: 'article', question: `"${item.word}"`, answer: item.article }, 
-        { type: 'word', question: `"${item.article}"`, answer: item.word }    
+        { type: 'article', question: `"${item.word}"`, answer: item.article },
+        { type: 'word', question: `"${item.article}"`, answer: item.word }
     ];
     const variation = variations[Math.floor(Math.random() * variations.length)];
     const wordToPronounce = variation.type === 'article' ? item.word : item.article;
@@ -326,7 +326,7 @@ async function showArticleWord() {
         if (variation.type === 'article' && item.word) {
              pronounceWord(item.word, language);
         } else if (variation.type === 'word' && item.article) {
-             pronounceWord(item.article, language); 
+             pronounceWord(item.article, language);
         }
         pronounceButton.addEventListener('click', () => {
             if (variation.type === 'article' && item.word) {
@@ -337,24 +337,26 @@ async function showArticleWord() {
         });
     }
 
-    document.getElementById('check-gender-answer-btn').onclick = async function() { 
+    document.getElementById('check-gender-answer-btn').onclick = async function() {
         const userInput = document.getElementById('gender-answer-input').value.trim();
         let feedback = '';
         if (!userInput) {
             feedback = `<span style="color:#e67e22;">${currentTranslations.feedbackPleaseType || 'Please type your answer above.'}</span>`;
         } else {
-            if (variation.type === 'article') { 
+            if (variation.type === 'article') {
                 if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
                     feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
+                    CosyAppInteractive.awardCorrectAnswer();
                     setTimeout(() => showArticleWord(), 1200);
                 } else {
                     feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${variation.answer}</b></span>`;
                 }
-            } else { 
-                const targetArticle = item.article; 
+            } else {
+                const targetArticle = item.article;
                 const isValidWordForArticle = items.some(i => i.article.toLowerCase() === targetArticle.toLowerCase() && i.word.toLowerCase() === userInput.toLowerCase());
                 if (isValidWordForArticle) {
                     feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
+                    CosyAppInteractive.awardCorrectAnswer();
                     setTimeout(() => showArticleWord(), 1200);
                 } else {
                     feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not a valid word for "${targetArticle}". The expected example was: <b>${variation.answer}</b>. Other valid words might exist.</span>`;
@@ -384,8 +386,8 @@ async function showMatchArticlesWords() {
     }
 
     let selectedItems = [];
-    const langGenderSystem = LANGUAGE_GENDER_SYSTEMS[language]; 
-    const langArticleCategories = ARTICLE_CATEGORIES[language]; 
+    const langGenderSystem = LANGUAGE_GENDER_SYSTEMS[language];
+    const langArticleCategories = ARTICLE_CATEGORIES[language];
 
     const itemsByArticle = {};
     const itemsByCategory = {};
@@ -404,8 +406,8 @@ async function showMatchArticlesWords() {
 
     for (const category in itemsByCategory) shuffleArray(itemsByCategory[category]);
     for (const article in itemsByArticle) shuffleArray(itemsByArticle[article]);
-    
-    const pickedArticlesSet = new Set(); 
+
+    const pickedArticlesSet = new Set();
     const pickedGenderCategoriesForPuzzle = new Set();
     let desiredItemCount = 0; // Will be set per language type
 
@@ -428,7 +430,7 @@ async function showMatchArticlesWords() {
         if (language === 'COSYespañol' || language === 'COSYportuguês') {
             desiredItemCount = 3;
         } else if (language === 'COSYfrançais' || language === 'COSYitaliano') {
-            desiredItemCount = (Math.random() < 0.5 && Object.keys(langArticleCategories).length >=3) ? 3 : 4; 
+            desiredItemCount = (Math.random() < 0.5 && Object.keys(langArticleCategories).length >=3) ? 3 : 4;
             if (genderData.filter(i => langArticleCategories[i.article] && i.word).length < desiredItemCount) desiredItemCount = 3; // Fallback if not enough data
         }
 
@@ -443,7 +445,7 @@ async function showMatchArticlesWords() {
                 }
             }
         }
-        
+
         if ((language === 'COSYfrançais' || language === 'COSYitaliano') && selectedItems.length < desiredItemCount && desiredItemCount === 4) {
             const allPossibleArticlesForLang = Object.keys(langArticleCategories);
             shuffleArray(allPossibleArticlesForLang);
@@ -452,7 +454,7 @@ async function showMatchArticlesWords() {
                 if (!pickedArticlesSet.has(article) && itemsByArticle[article] && itemsByArticle[article].length > 0) {
                     selectedItems.push(itemsByArticle[article][0]);
                     pickedArticlesSet.add(article);
-                    break; 
+                    break;
                 }
             }
         }
@@ -467,7 +469,7 @@ async function showMatchArticlesWords() {
             }
             if (genderData.filter(i => langArticleCategories[i.article] && i.word).length < desiredItemCount) desiredItemCount = 3; // Fallback
         }
-        
+
         for (const category of baseCategories) {
             if (selectedItems.length >= desiredItemCount) break;
             if (itemsByCategory[category]) {
@@ -491,23 +493,23 @@ async function showMatchArticlesWords() {
             }
         }
     }
-    
-    if (selectedItems.length > desiredItemCount && desiredItemCount > 0) { 
+
+    if (selectedItems.length > desiredItemCount && desiredItemCount > 0) {
          selectedItems = selectedItems.slice(0, desiredItemCount);
-    } else if (selectedItems.length < Math.min(desiredItemCount,2) && desiredItemCount > 1) { 
+    } else if (selectedItems.length < Math.min(desiredItemCount,2) && desiredItemCount > 1) {
          showNoDataMessage();
          return;
     }
-     if (selectedItems.length < 2) { 
+     if (selectedItems.length < 2) {
         showNoDataMessage();
         return;
     }
 
-    shuffleArray(selectedItems); 
+    shuffleArray(selectedItems);
     const displayArticles = selectedItems.map(item => item.article);
     const displayWords = selectedItems.map(item => item.word);
-    const shuffledDisplayArticles = shuffleArray([...displayArticles]); 
-    const shuffledDisplayWords = shuffleArray([...displayWords]);     
+    const shuffledDisplayArticles = shuffleArray([...displayArticles]);
+    const shuffledDisplayWords = shuffleArray([...displayWords]);
 
 
     resultArea.innerHTML = `
@@ -556,11 +558,12 @@ async function showMatchArticlesWords() {
 
             if (correctPair) {
                 feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectMatch || '✅ Correct match!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
                 selectedArticleEl.classList.add('matched', 'disabled');
                 selectedWordEl.classList.add('matched', 'disabled');
                 selectedArticleEl.classList.remove('selected');
                 selectedWordEl.classList.remove('selected');
-                
+
                 const allMatched = selectedItems.length === document.querySelectorAll('.match-item.matched').length / 2;
                 if (allMatched) {
                     feedback.innerHTML += `<br><span class="correct">${currentTranslations.feedbackAllMatchesCompleted || 'All pairs matched!'}</span>`;
@@ -593,7 +596,7 @@ async function showSelectArticleExercise() {
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
     const currentTranslations = translations[language] || translations.COSYenglish;
-    const NUM_ARTICLE_OPTIONS = 4; 
+    const NUM_ARTICLE_OPTIONS = 4;
 
     if (!language || !days.length) {
         alert(currentTranslations.alertLangDay || 'Please select language and day(s) first');
@@ -612,7 +615,7 @@ async function showSelectArticleExercise() {
     let allArticlesForLang = [];
     if (ARTICLE_CATEGORIES[language]) {
         allArticlesForLang = Object.keys(ARTICLE_CATEGORIES[language]);
-    } else if (language === 'COSYenglish') { 
+    } else if (language === 'COSYenglish') {
         allArticlesForLang = ['he', 'she', 'it', 'he/she'];
     } else {
         const uniqueArticles = new Set(items.map(i => i.article));
@@ -625,16 +628,16 @@ async function showSelectArticleExercise() {
 
     if (allArticlesForLang.length < 2) { // Need at least correct + 1 distractor
          resultArea.innerHTML = `<p>${currentTranslations.notEnoughDataForExercise || 'Not enough data for this exercise type.'}</p>`;
-         setTimeout(startGenderPractice, 2000); 
+         setTimeout(startGenderPractice, 2000);
          return;
     }
-    
+
     const articleOptions = shuffleArray([correctArticle, ...distractorArticles]);
     while (articleOptions.length > NUM_ARTICLE_OPTIONS || (articleOptions.length < NUM_ARTICLE_OPTIONS && distractorArticles.length < (NUM_ARTICLE_OPTIONS -1) && articleOptions.length === allArticlesForLang.length )) {
         if (articleOptions.length > NUM_ARTICLE_OPTIONS) {
-            articleOptions.pop(); 
+            articleOptions.pop();
         } else {
-            break; 
+            break;
         }
     }
 
@@ -653,10 +656,10 @@ async function showSelectArticleExercise() {
             <button id="new-select-article-exercise" class="btn-secondary">🔄 ${currentTranslations.buttons?.newExercise || 'New Exercise'}</button>
         </div>
     `;
-    
+
     const pronounceButton = document.getElementById('pronounce-select-article-word');
      if (pronounceButton && typeof pronounceWord === 'function') {
-         pronounceWord(wordToShow, language); 
+         pronounceWord(wordToShow, language);
          pronounceButton.addEventListener('click', () => pronounceWord(wordToShow, language));
      }
 
@@ -666,13 +669,14 @@ async function showSelectArticleExercise() {
             let feedback = '';
             if (selectedArticleByUser.toLowerCase() === correctArticle.toLowerCase()) {
                 feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
+                CosyAppInteractive.awardCorrectAnswer();
                 document.querySelectorAll('.article-option-btn').forEach(b => b.disabled = true);
-                this.classList.add('correct-selection'); 
+                this.classList.add('correct-selection');
                 setTimeout(() => showSelectArticleExercise(), 1500);
             } else {
                 feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct article is: <b>${correctArticle}</b></span>`;
-                this.classList.add('incorrect-selection'); 
-                this.disabled = true; 
+                this.classList.add('incorrect-selection');
+                this.disabled = true;
             }
             document.getElementById('select-article-feedback').innerHTML = feedback;
         };
@@ -737,6 +741,7 @@ async function showTypeVerb() {
         if (!userInput) feedback = `<span style="color:#e67e22;">${currentTranslations.feedbackPleaseType || 'Please type your answer above.'}</span>`;
         else if (userInput.toLowerCase() === correctAnswer.toLowerCase()) {
             feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
+            CosyAppInteractive.awardCorrectAnswer();
             setTimeout(() => showTypeVerb(), 1200);
         } else feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${correctAnswer}</b></span>`;
         document.getElementById('verb-answer-feedback').innerHTML = feedback;
@@ -752,21 +757,21 @@ async function showMatchVerbsPronouns() {
     const currentTranslations = translations[language] || translations.COSYenglish;
 
     if (!language || !days.length) { alert(currentTranslations.alertLangDay || 'Please select language and day(s) first'); return; }
-    
-    const selectedItems = await loadVerbGrammar(language, days); 
-    if (!selectedItems || selectedItems.length < 1) { 
-        showNoDataMessage(); 
+
+    const selectedItems = await loadVerbGrammar(language, days);
+    if (!selectedItems || selectedItems.length < 1) {
+        showNoDataMessage();
         console.log("No items loaded from loadVerbGrammar or not enough items.");
-        return; 
+        return;
     }
 
     const suitableItems = selectedItems.filter(item => typeof item.prompt !== 'undefined' && typeof item.answer !== 'undefined');
     if (suitableItems.length < 2) {
-        showNoDataMessage(); 
+        showNoDataMessage();
         console.log("Not enough suitable items (prompt/answer pairs) for match exercise. Need at least 2.");
-        return; 
+        return;
     }
-    
+
     const itemsForGame = shuffleArray(suitableItems).slice(0, Math.min(suitableItems.length, 5));
 
     const prompts = itemsForGame.map(item => item.prompt);
@@ -819,6 +824,7 @@ async function showMatchVerbsPronouns() {
 
             if (isCorrectPair) {
                 feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackGoodMatch || '✅ Good match!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
                 selectedPromptEl.classList.add('matched', 'disabled');
                 selectedAnswerEl.classList.add('matched', 'disabled');
                 selectedPromptEl.classList.remove('selected');
@@ -831,10 +837,10 @@ async function showMatchVerbsPronouns() {
                 }
             } else {
                 feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotCompatible || '❌ Not compatible. Try again!'}</span>`;
-                selectedPromptEl.classList.remove('selected'); 
+                selectedPromptEl.classList.remove('selected');
                 selectedAnswerEl.classList.remove('selected');
             }
-            selectedPromptEl = null; 
+            selectedPromptEl = null;
             selectedAnswerEl = null;
         }
     }
@@ -874,25 +880,25 @@ async function showFillGaps() {
         case 'positive':
             const pronoun = getRandomPronounForLanguage(language);
             const conjugatedVerb = conjugateVerb(verbItem.infinitive, pronoun, language);
-            sentence = `${pronoun} ___ (${verbItem.infinitive}) ${await getRandomObject(language, days)}`; 
+            sentence = `${pronoun} ___ (${verbItem.infinitive}) ${await getRandomObject(language, days)}`;
             correctAnswer = conjugatedVerb;
             break;
         case 'negative':
             const pronoun2 = getRandomPronounForLanguage(language);
-            const negativeElement = getNegativeElement(pronoun2, language); 
-            sentence = `${pronoun2} ___ (${negativeElement.replace('...', verbItem.infinitive)}) ${await getRandomObject(language, days)}`; 
-            if (negativeElement.includes("...")) { 
-                 correctAnswer = conjugateVerb(verbItem.infinitive, pronoun2, language) + " " + negativeElement.split("...")[1].trim(); 
-                 sentence = `${pronoun2} ${negativeElement.split("...")[0].trim()} ___ (${verbItem.infinitive}) ${negativeElement.split("...")[1].trim()} ${await getRandomObject(language, days)}`; 
+            const negativeElement = getNegativeElement(pronoun2, language);
+            sentence = `${pronoun2} ___ (${negativeElement.replace('...', verbItem.infinitive)}) ${await getRandomObject(language, days)}`;
+            if (negativeElement.includes("...")) {
+                 correctAnswer = conjugateVerb(verbItem.infinitive, pronoun2, language) + " " + negativeElement.split("...")[1].trim();
+                 sentence = `${pronoun2} ${negativeElement.split("...")[0].trim()} ___ (${verbItem.infinitive}) ${negativeElement.split("...")[1].trim()} ${await getRandomObject(language, days)}`;
             } else {
-                 sentence = `${pronoun2} ___ (${negativeElement} ${verbItem.infinitive}) ${await getRandomObject(language, days)}`; 
-                 correctAnswer = negativeElement + " " + conjugateVerb(verbItem.infinitive, pronoun2, language); 
+                 sentence = `${pronoun2} ___ (${negativeElement} ${verbItem.infinitive}) ${await getRandomObject(language, days)}`;
+                 correctAnswer = negativeElement + " " + conjugateVerb(verbItem.infinitive, pronoun2, language);
             }
             break;
         case 'question':
             const pronoun3 = getRandomPronounForLanguage(language);
-            const questionElement = getQuestionElement(pronoun3, language); 
-            sentence = `${questionElement} ${pronoun3} ___ (${verbItem.infinitive}) ${await getRandomObject(language, days)}?`; 
+            const questionElement = getQuestionElement(pronoun3, language);
+            sentence = `${questionElement} ${pronoun3} ___ (${verbItem.infinitive}) ${await getRandomObject(language, days)}?`;
             correctAnswer = conjugateVerb(verbItem.infinitive, pronoun3, language);
             break;
     }
@@ -906,12 +912,13 @@ async function showFillGaps() {
             <button id="new-gap" class="btn-secondary">${currentTranslations.buttons?.newExercise || 'New Exercise'}</button>
         </div>
     `;
-    const gapAnswerInput = document.getElementById('gap-answer'); 
+    const gapAnswerInput = document.getElementById('gap-answer');
     document.getElementById('check-gap').addEventListener('click', () => {
         const userAnswer = gapAnswerInput.value.trim();
         const feedback = document.getElementById('gap-feedback');
         if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
              feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectWellDone || '✅ Correct! Well done!'}</span>`;
+             CosyAppInteractive.awardCorrectAnswer();
              setTimeout(() => showFillGaps(), 1200);
         } else {
             feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotQuite || '❌ Not quite. The correct answer is: '}<b>${correctAnswer}</b></span>`;
@@ -929,7 +936,7 @@ async function showWordOrder() {
 
     if (!language || !days.length) { alert(currentTranslations.alertLangDay || 'Please select language and day(s) first'); return; }
     const verbData = await loadVerbGrammar(language, days);
-    if (!verbData || verbData.length === 0) { showNoDataMessage(); return; } 
+    if (!verbData || verbData.length === 0) { showNoDataMessage(); return; }
 
     const verbItem = verbData[Math.floor(Math.random() * verbData.length)];
     if (!verbItem) { showNoDataMessage(); console.error("Selected verbItem is undefined."); return; }
@@ -937,7 +944,7 @@ async function showWordOrder() {
     const exerciseTypes = ['positive', 'negative', 'question'];
     const exerciseType = exerciseTypes[Math.floor(Math.random() * exerciseTypes.length)];
     let sentenceParts = [];
-    const randomObject = await getRandomObject(language, days); 
+    const randomObject = await getRandomObject(language, days);
     const randomTime = getRandomTimeExpression(language);
 
     const isToBeForm = verbItem.prompt && verbItem.answer && !verbItem.infinitive;
@@ -953,8 +960,8 @@ async function showWordOrder() {
             break;
         case 'negative':
             if (isToBeForm) {
-                let notWord = "not"; 
-                if (language === 'COSYfrançais' && verbItem.prompt) { 
+                let notWord = "not";
+                if (language === 'COSYfrançais' && verbItem.prompt) {
                      sentenceParts = [verbItem.prompt, "ne", verbItem.answer, "pas", randomObject, randomTime].filter(p => p);
                 } else {
                     sentenceParts = [verbItem.prompt, verbItem.answer, notWord, randomObject, randomTime].filter(p => p);
@@ -962,10 +969,10 @@ async function showWordOrder() {
 
             } else {
                 const pronoun2 = getRandomPronounForLanguage(language);
-                const negPart = getNegativeElement(pronoun2, language); 
-                if (negPart.includes("...")) { 
+                const negPart = getNegativeElement(pronoun2, language);
+                if (negPart.includes("...")) {
                     sentenceParts = [pronoun2, negPart.split("...")[0].trim(), conjugateVerb(verbItem.infinitive, pronoun2, language), negPart.split("...")[1].trim(), randomObject, randomTime].filter(p => p);
-                } else { 
+                } else {
                      sentenceParts = [pronoun2, negPart, conjugateVerb(verbItem.infinitive, pronoun2, language), randomObject, randomTime].filter(p => p); // Corrected to use conjugated verb
                 }
             }
@@ -979,7 +986,7 @@ async function showWordOrder() {
             }
             break;
     }
-    sentenceParts = sentenceParts.filter(p => p && String(p).trim() !== ''); 
+    sentenceParts = sentenceParts.filter(p => p && String(p).trim() !== '');
 
 
     const shuffledParts = shuffleArray([...sentenceParts]);
@@ -996,8 +1003,8 @@ async function showWordOrder() {
             </div>
         </div>
     `;
-    const wordTiles = document.querySelectorAll('.word-tile'); 
-    const wordSlots = document.querySelectorAll('.word-slot'); 
+    const wordTiles = document.querySelectorAll('.word-tile');
+    const wordSlots = document.querySelectorAll('.word-slot');
     wordTiles.forEach(tile => tile.addEventListener('dragstart', dragStart));
     wordSlots.forEach(slot => { slot.addEventListener('dragover', dragOver); slot.addEventListener('drop', drop); slot.addEventListener('dragenter', dragEnter); slot.addEventListener('dragleave', dragLeave); });
 
@@ -1007,12 +1014,13 @@ async function showWordOrder() {
         const feedback = document.getElementById('order-feedback');
         if (builtSentence === correctSentence) {
             feedback.innerHTML = `<span class="correct">${currentTranslations.feedbackCorrectWellDone || '✅ Correct! Well done!'}</span>`;
+            CosyAppInteractive.awardCorrectAnswer();
             setTimeout(() => showWordOrder(), 3000);
         } else {
             feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotQuiteCorrectOrder || '❌ Not quite. The correct order is: '}<b>${correctSentence}</b></span>`;
         }
     });
-    document.getElementById('reset-order').addEventListener('click', () => { 
+    document.getElementById('reset-order').addEventListener('click', () => {
         document.getElementById('word-pool').innerHTML = shuffledParts.map(part => `<div class="word-tile" data-word="${part}" draggable="true">${part}</div>`).join('');
         document.querySelectorAll('.word-slot').forEach(slot => slot.innerHTML = '');
         document.getElementById('order-feedback').innerHTML = '';
@@ -1021,7 +1029,7 @@ async function showWordOrder() {
     document.getElementById('new-order').addEventListener('click', () => showWordOrder());
 }
 
-function getPronounsForLanguage(language) { 
+function getPronounsForLanguage(language) {
     switch(language) {
         case 'COSYenglish': return ['I', 'you', 'he', 'she', 'it', 'we', 'they'];
         case 'COSYfrançais': return ['je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles'];
@@ -1030,44 +1038,44 @@ function getPronounsForLanguage(language) {
 }
 function getRandomPronounForLanguage(language) { const p = getPronounsForLanguage(language); return p[Math.floor(Math.random() * p.length)]; }
 
-function conjugateVerb(verb, pronoun, language) { 
+function conjugateVerb(verb, pronoun, language) {
     switch(language) {
-        case 'COSYenglish': 
-            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return verb; 
-            else return verb + 's'; 
-        case 'COSYfrançais': 
-            if (pronoun === 'je') return verb.replace(/er$/, 'e'); 
+        case 'COSYenglish':
+            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return verb;
+            else return verb + 's';
+        case 'COSYfrançais':
+            if (pronoun === 'je') return verb.replace(/er$/, 'e');
             if (pronoun === 'tu') return verb.replace(/er$/, 'es');
             if (pronoun === 'il' || pronoun === 'elle' || pronoun === 'on') return verb.replace(/er$/, 'e');
-            if (pronoun === 'nous') return verb.replace(/er$/, 'ons'); 
+            if (pronoun === 'nous') return verb.replace(/er$/, 'ons');
             if (pronoun === 'vous') return verb.replace(/er$/, 'ez');
-            if (pronoun === 'ils' || pronoun === 'elles') return verb.replace(/er$/, 'ent'); 
-            return verb; 
-        default: return verb; 
+            if (pronoun === 'ils' || pronoun === 'elles') return verb.replace(/er$/, 'ent');
+            return verb;
+        default: return verb;
     }
 }
 
-function getNegativeElement(pronoun, language) { 
+function getNegativeElement(pronoun, language) {
     switch(language) {
-        case 'COSYenglish': 
-            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return "don't"; 
+        case 'COSYenglish':
+            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return "don't";
             else return "doesn't";
-        case 'COSYfrançais': return "ne ... pas"; 
+        case 'COSYfrançais': return "ne ... pas";
         default: return "not";
     }
 }
 
-function getQuestionElement(pronoun, language) { 
+function getQuestionElement(pronoun, language) {
     switch(language) {
-        case 'COSYenglish': 
-            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return "Do"; 
+        case 'COSYenglish':
+            if (pronoun === 'I' || pronoun === 'you' || pronoun === 'we' || pronoun === 'they') return "Do";
             else return "Does";
         case 'COSYfrançais': return "Est-ce que";
-        default: return "Do"; 
+        default: return "Do";
     }
  }
 
-async function getRandomObject(language, days) { 
+async function getRandomObject(language, days) {
     const vocabulary = await loadVocabularyData(language, days);
     if (!vocabulary || vocabulary.length === 0) {
         const fallbackObjects = {'COSYenglish': ['an apple', 'a book', 'the house'], 'COSYfrançais': ['une pomme', 'un livre', 'la maison']};
@@ -1077,7 +1085,7 @@ async function getRandomObject(language, days) {
     return vocabulary[Math.floor(Math.random() * vocabulary.length)];
 }
 
-function getRandomTimeExpression(language) { 
+function getRandomTimeExpression(language) {
     const times = {'COSYenglish': ['every day', 'now', 'often', 'sometimes'], 'COSYfrançais': ['tous les jours', 'maintenant', 'souvent', 'parfois']};
     const langTimes = times[language] || times['COSYenglish']; return langTimes[Math.floor(Math.random() * langTimes.length)];
 }
@@ -1092,7 +1100,7 @@ async function practiceAllGrammar() {
     const days = getSelectedDays();
     const currentTranslations = translations[language] || translations.COSYenglish;
     if (!language || !days.length) { alert(currentTranslations.alertLangDay || 'Please select language and day(s) first'); return; }
-    
+
     const availableTypes = [];
     const day = parseInt(days[0]);
     if (day >= 1 && language !== 'COSYenglish') availableTypes.push('gender');
@@ -1100,17 +1108,17 @@ async function practiceAllGrammar() {
     if (day >= 3) availableTypes.push('possessives');
     if (availableTypes.length === 0) { showNoDataMessage(); return; }
     const shuffledTypes = shuffleArray(availableTypes);
-    
+
     for (const type of shuffledTypes) {
         if (type === 'gender') await startGenderPractice();
         else if (type === 'verbs') await startVerbsPractice();
         else if (type === 'possessives') await startPossessivesPractice();
-        
+
         await new Promise(resolve => {
             const continueBtn = document.createElement('button');
             continueBtn.className = 'btn-primary';
             continueBtn.textContent = currentTranslations.buttons?.continue || 'Continue';
-            continueBtn.addEventListener('click', resolve, { once: true }); 
+            continueBtn.addEventListener('click', resolve, { once: true });
             const resultArea = document.getElementById('result');
             const feedbackDiv = document.createElement('div');
             feedbackDiv.className = 'continue-prompt';

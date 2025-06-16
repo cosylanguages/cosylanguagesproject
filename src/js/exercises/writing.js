@@ -64,8 +64,8 @@ async function showQuestionWriting() {
 
             if (commonKeywords.length > 0) {
                 feedbackMsg = `${currentTranslations.goodAnswerWriting || "Good! You've used some keywords from the question"}: ${commonKeywords.slice(0,3).join(', ')}.`;
-                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
-                    CosyAppInteractive.addXP(5); // Award XP for writing
+                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) {
+                    CosyAppInteractive.awardCorrectAnswer();
                 }
             } else {
                 feedbackMsg = currentTranslations.answerSubmittedWriting || 'Answer submitted. Try to incorporate more elements from the question.';

@@ -286,6 +286,7 @@ async function showOppositesExercise(baseWord = null) {
         const feedback = document.getElementById('opposite-feedback');
         if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
             feedback.innerHTML = `<span class="correct" aria-label="Correct">✅👏 ${t.correct || 'Correct!'}</span>`;
+            CosyAppInteractive.awardCorrectAnswer();
             document.getElementById('opposite-answer').textContent = opposite;
         } else {
             feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.feedbackNotQuiteTryAgain || 'Try again!'}</span>`;
