@@ -4,16 +4,14 @@ import {
     startRandomWordPractice, 
     startRandomImagePractice, 
     startListeningPractice, 
-    practiceAllVocabulary,
-    initVocabularyPractice
+    practiceAllVocabulary
 } from './exercises/vocabulary.js';
 
 import { 
     startGenderPractice, 
     startVerbsPractice, 
     startPossessivesPractice, 
-    practiceAllGrammar,
-    initGrammarPractice
+    practiceAllGrammar
 } from './exercises/grammar.js';
 
 import {
@@ -61,10 +59,6 @@ function initButtons() {
                 // The line hideAllOptions(); was removed from here.
                 // index.html's handler should already have hidden other options panels.
                 document.getElementById(`${type}-options`).style.display = 'block';
-                if(type === 'vocabulary') {
-                    // Always re-initialize vocabulary option handlers
-                    if(typeof initVocabularyPractice === 'function') initVocabularyPractice();
-                }
             }
         });
     });
