@@ -1147,34 +1147,6 @@ async function practiceAllGrammar() {
     }
 }
 
-function addRandomizeButton(containerId, randomizeFn) {
-    const container = document.getElementById(containerId) || document.querySelector(`.${containerId}`);
-    if (!container) return;
-    const existingBtn = container.querySelector('.btn-randomize');
-    if (existingBtn) existingBtn.remove();
-    let btn = document.createElement('button');
-    btn.className = 'btn-randomize';
-    const language = document.getElementById('language')?.value || 'COSYenglish';
-    btn.setAttribute('aria-label', (translations[language]?.buttons?.randomize || 'Randomize exercise'));
-    btn.title = translations[language]?.buttons?.randomize || 'Randomize exercise';
-    btn.innerHTML = translations[language]?.buttons?.randomize || '🎲';
-    btn.style.marginLeft = '10px';
-    btn.onclick = randomizeFn;
-    btn.style.float = 'right';
-    btn.style.fontSize = '1.5rem';
-    btn.style.background = 'linear-gradient(90deg,#ffe082,#1de9b6)';
-    btn.style.border = 'none';
-    btn.style.borderRadius = '50%';
-    btn.style.width = '44px';
-    btn.style.height = '44px';
-    btn.style.boxShadow = '0 2px 8px #ccc';
-    btn.style.cursor = 'pointer';
-    btn.style.transition = 'transform 0.2s';
-    btn.onmouseover = () => btn.style.transform = 'scale(1.15)';
-    btn.onmouseout = () => btn.style.transform = '';
-    container.prepend(btn);
-}
-
 showArticleWord = patchExerciseForRandomizeButton(showArticleWord, '.gender-exercise', startGenderPractice);
 showMatchArticlesWords = patchExerciseForRandomizeButton(showMatchArticlesWords, '.match-exercise', startGenderPractice);
 showSelectArticleExercise = patchExerciseForRandomizeButton(showSelectArticleExercise, '.select-article-exercise', startGenderPractice);

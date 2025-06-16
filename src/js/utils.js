@@ -21,15 +21,17 @@ function clearResultArea() {
 
 // Helper: Add randomize button to exercise containers
 function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to accept element directly
+    console.log(`addRandomizeButton called for: ${containerIdOrElement}`);
     let container = containerIdOrElement;
     if (typeof containerIdOrElement === 'string') {
-        container = document.getElementById(containerIdOrElement) || document.querySelector(`.${containerIdOrElement}`);
+        container = document.querySelector(containerIdOrElement);
     }
     
     if (!container) {
-        // console.warn(`Container not found for randomize button: ${containerIdOrElement}`);
+        console.error(`[addRandomizeButton] Critical: Container NOT FOUND for selector/element: ${containerIdOrElement}. Button will not be added.`);
         return;
     }
+    // console.log(`[addRandomizeButton] Container found for ${containerIdOrElement}. Proceeding to add button.`); // Optional: can be noisy
     // Remove any existing randomize button to avoid duplicates
     const existingBtn = container.querySelector('.btn-randomize');
     if (existingBtn) existingBtn.remove();

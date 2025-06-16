@@ -22,43 +22,66 @@ window.CosyAppInteractive = {};
 
     class GameState {
         constructor() {
+            this.xp = 0;
+            this.level = 1;
+            this.streak = 0;
+            this.lastActiveDate = null; // YYYY-MM-DD
+            this.completedLessons = [];
+            this.achievements = [];
+            // this.firstTimeTodayForDay1 removed, logic incorporated into updateStreak
+
+            this.load();
+        }
+
+        load() {
             const savedState = localStorage.getItem('cosyGameState');
             if (savedState) {
                 const state = JSON.parse(savedState);
                 this.xp = state.xp || 0;
-                this.level = state.level || 1;
+                this.level = state.level || 1; // Level will be recalculated based on XP anyway
                 this.streak = state.streak || 0;
                 this.lastActiveDate = state.lastActiveDate || null;
                 this.completedLessons = state.completedLessons || [];
                 this.achievements = state.achievements || [];
-                this.firstTimeTodayForDay1 = state.firstTimeTodayForDay1 || {};
             } else {
-                // Attempt to migrate from old localStorage keys
-                this.xp = parseInt(localStorage.getItem('cosy_xp') || '0');
-                this.level = parseInt(localStorage.getItem('cosy_level') || '1');
-                this.streak = parseInt(localStorage.getItem('cosy_streak') || '0');
-                
-                // Initialize new properties
-                this.lastActiveDate = null; 
-                this.completedLessons = [];
-                this.achievements = [];
-                this.firstTimeTodayForDay1 = {};
-
-                // If old data was found, or if it's a completely new user,
-                // save the initial state in the new format.
-                let oldDataExisted = localStorage.getItem('cosy_xp') !== null ||
-                                     localStorage.getItem('cosy_level') !== null ||
-                                     localStorage.getItem('cosy_streak') !== null;
-
-                if (this.xp !== 0 || this.level !== 1 || this.streak !== 0 || oldDataExisted) {
-                    this.save(); // Save the potentially migrated or default state
+                console.log("No 'cosyGameState' found. Attempting migration...");
+                // Try migrating from 'userProgress' first
+                const oldUserProgressString = localStorage.getItem('userProgress');
+                if (oldUserProgressString) {
+                    console.log("Found 'userProgress'. Migrating...");
+                    const oldUserProgress = JSON.parse(oldUserProgressString);
+                    this.xp = parseInt(oldUserProgress.xp) || 0;
+                    // Level will be recalculated from XP.
+                    this.streak = parseInt(oldUserProgress.streak) || 0;
+                    this.lastActiveDate = oldUserProgress.lastActiveDate || null; // Expects YYYY-MM-DD
+                    this.completedLessons = oldUserProgress.completedLessons || [];
+                    this.achievements = oldUserProgress.achievements || [];
+                    localStorage.removeItem('userProgress'); // Remove after migration
+                    console.log("Migration from 'userProgress' complete. Old item removed.");
+                } else {
+                    // Fallback to individual cosy_ keys if userProgress not found
+                    console.log("No 'userProgress'. Trying individual 'cosy_*' keys for migration...");
+                    this.xp = parseInt(localStorage.getItem('cosy_xp') || '0');
+                    this.streak = parseInt(localStorage.getItem('cosy_streak') || '0');
+                    // Note: cosy_level is ignored, will be recalculated.
+                    // lastActiveDate, completedLessons, achievements were not in individual cosy_* keys.
+                    
+                    // Clean up old individual cosy keys if they existed
+                    if (localStorage.getItem('cosy_xp') !== null) localStorage.removeItem('cosy_xp');
+                    if (localStorage.getItem('cosy_level') !== null) localStorage.removeItem('cosy_level'); // remove even if not directly used
+                    if (localStorage.getItem('cosy_streak') !== null) localStorage.removeItem('cosy_streak');
+                    console.log("Migration from individual 'cosy_*' keys attempted.");
                 }
-
-                // Clean up old keys if they existed
-                if (localStorage.getItem('cosy_xp') !== null) localStorage.removeItem('cosy_xp');
-                if (localStorage.getItem('cosy_level') !== null) localStorage.removeItem('cosy_level');
-                if (localStorage.getItem('cosy_streak') !== null) localStorage.removeItem('cosy_streak');
+                // Save immediately after any migration attempt (or if no old data)
+                // This establishes 'cosyGameState' as the source of truth.
+                this.save();
             }
+            // Always recalculate level based on XP after loading state for consistency.
+            this.level = Math.floor(this.xp / 50) + 1;
+            // Potentially update streak on load if it's a new day.
+            // this.updateStreak(); // Consider implications: should this happen on every load or specific user actions?
+                                 // For now, let actions like addXP trigger streak updates.
+            this.updateUI();
         }
 
         save() {
@@ -69,7 +92,7 @@ window.CosyAppInteractive = {};
                 lastActiveDate: this.lastActiveDate,
                 completedLessons: this.completedLessons,
                 achievements: this.achievements,
-                firstTimeTodayForDay1: this.firstTimeTodayForDay1
+                // firstTimeTodayForDay1 is no longer saved
             };
             localStorage.setItem('cosyGameState', JSON.stringify(stateToSave));
         }
@@ -77,37 +100,59 @@ window.CosyAppInteractive = {};
         addXP(amount) {
             const t = getCurrentTranslations();
             this.xp += amount;
-            playSound('success'); // Play sound for any XP gain
-            const newLevel = Math.floor(this.xp / 50) + 1; // Logic from user-progress.js
+            playSound('success'); 
+
+            // Call updateStreak whenever XP is added, as this signifies user activity.
+            this.updateStreak(); 
+
+            const newLevel = Math.floor(this.xp / 50) + 1; 
             if (newLevel > this.level) {
                 this.level = newLevel;
-                // playSound('success'); // Already played above
                 let levelUpMsg = t.levelUpToast || `🎉 Level up! You are now level {level}!`;
                 CosyAppInteractive.showToast(levelUpMsg.replace('{level}', this.level));
                 this.showLevelUpEffect();
             }
-            this.save();
+            this.save(); // save is called by updateStreak, but good to have here too for direct addXP effects
             this.updateUI();
         }
 
         updateStreak() {
-            const today = new Date().toDateString();
-            if (this.lastActiveDate !== today) {
-                const yesterday = new Date(Date.now() - 86400000).toDateString();
-                if (this.lastActiveDate === yesterday) {
-                    this.streak += 1;
-                } else {
-                    this.streak = 1; // Start new streak at 1
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+
+            if (this.lastActiveDate === today) {
+                // Already active today. If streak was 0, it means this is the first XP gain of the day
+                // after a break, making today day 1.
+                if (this.streak === 0) {
+                    this.streak = 1;
+                    console.log("Streak was 0, first activity today. Set to 1.");
+                    this.save(); // Save change
                 }
-                this.lastActiveDate = today;
-                this.save(); 
+                // else: Streak is already >0 and activity is for today, no change needed.
+                return; // No further processing if active today.
             }
+
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+            if (this.lastActiveDate === yesterdayStr) {
+                this.streak++;
+                console.log("Active yesterday, incrementing streak to:", this.streak);
+            } else {
+                // Missed a day or more, or first time ever.
+                this.streak = 1; // Reset to 1 for today's activity.
+                console.log("Missed a day or more, or first time user. Resetting/setting streak to 1.");
+            }
+            this.lastActiveDate = today;
+            this.save();
+            // updateUI is typically called by the caller of updateStreak (e.g. addXP) or on load.
         }
 
         completeLesson(lessonId) {
             if (!this.completedLessons.includes(lessonId)) {
                 this.completedLessons.push(lessonId);
-                this.addXP(10); // Award 10 XP. addXP calls save() and updateUI().
+                console.log(`Lesson ${lessonId} completed.`);
+                this.addXP(10); // Award 10 XP. addXP calls updateStreak, save() and updateUI().
             }
         }
 
@@ -117,10 +162,19 @@ window.CosyAppInteractive = {};
             if (!stats) {
                 stats = document.createElement('div');
                 stats.id = 'cosy-gamestats';
-                stats.className = 'game-stats'; // Ensure this class is styled
-                document.body.appendChild(stats);
+                stats.className = 'game-stats'; 
+                // Prepend to body instead of append, to make it less likely to be covered by other fixed elements
+                document.body.prepend(stats); 
             }
             stats.innerHTML = `${t.statsXp || 'XP:'} ${this.xp} | ${t.statsLevel || 'Level:'} ${this.level} | ${t.statsStreak || 'Streak:'} ${this.streak}`;
+            
+            // Update revision button as UI for GameState changes
+            // Consider what types are relevant for the revision button.
+            // For now, using a common set. This could be configured elsewhere.
+            const reviewableTypes = ['vocabulary-word', 'verb', 'gender']; // Add more as they become reviewable
+            if (typeof CosyAppInteractive.showRevisionButton === 'function') {
+                 await CosyAppInteractive.showRevisionButton(document.getElementById('language')?.value || 'COSYenglish', reviewableTypes);
+            }
         }
 
         showLevelUpEffect() {
@@ -164,15 +218,18 @@ window.CosyAppInteractive = {};
     CosyAppInteractive.addXP = PatchedAddXP; 
 
     function awardCorrectAnswer() { 
+        // gameState.addXP calls updateStreak, save, and updateUI.
+        // So, just need to call addXP here.
         gameState.addXP(3); 
-        gameState.updateStreak(); 
-        gameState.updateUI(); 
     }
     CosyAppInteractive.awardCorrectAnswer = awardCorrectAnswer;
 
     CosyAppInteractive.awardIncorrectAnswer = function() {
         playSound('error');
-        // Future: Could also call gameState.resetStreak() or a specific method for incorrect answer penalties.
+        // Resetting streak on incorrect answer might be too harsh.
+        // Consider if gameState.updateStreak() should be called to ensure lastActiveDate is set,
+        // but without incrementing. The current updateStreak logic handles this by returning if active today.
+        // gameState.updateStreak(); // Ensures lastActiveDate is set for today if it's the first interaction.
     };
 
     function markAndAward(el) {
