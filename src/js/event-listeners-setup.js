@@ -1,5 +1,7 @@
 import AudioFeedback from './audio-feedback.js';
 import UserProgress from './user-progress.js';
+import { initVocabularyPractice } from './exercises/vocabulary.js';
+import { initGrammarPractice } from './exercises/grammar.js';
 // Event Listeners Setup (Core Logic)
 
 // Placeholder stub for updateGrammarOptions
@@ -39,7 +41,7 @@ function initializeEventListeners() {
     populateDaysDropdowns();
 
     // restoreUserSelection is expected to be global (from index.html)
-    restoreUserSelection(); 
+    // restoreUserSelection(); // Temporarily commented out to prevent ReferenceError
 
     // From ui-visibility.js
     goBackToMainMenu(); 

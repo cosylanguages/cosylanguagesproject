@@ -1,7 +1,10 @@
+import UserProgress from '../user-progress.js';
+import AudioFeedback from '../audio-feedback.js';
+
 // Speaking Exercises
 
 // Placeholder functions for specific speaking exercises
-async function showQuestionPractice() {
+export async function showQuestionPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
@@ -27,8 +30,7 @@ async function showQuestionPractice() {
 
     questions.sort(() => 0.5 - Math.random());
     let currentQuestionIndex = 0;
-    // Local 'recognition' instance is removed. We will use the global 'recognition' from speech-features.js
-
+    
     function displayCurrentQuestion() {
         const questionText = questions[currentQuestionIndex];
         const questionTextElement = document.getElementById('speaking-question-text');
@@ -48,34 +50,28 @@ async function showQuestionPractice() {
     function handleSpeakingRecording() {
         const questionText = questions[currentQuestionIndex];
         const recordButton = document.getElementById('speaking-record-btn');
-        const feedbackDiv = document.getElementById('speaking-feedback'); // For specific messages
-        const transcriptDiv = document.getElementById('speaking-transcript'); // For transcript
+        const feedbackDiv = document.getElementById('speaking-feedback'); 
+        const transcriptDiv = document.getElementById('speaking-transcript'); 
 
         if (!recordButton || !feedbackDiv || !transcriptDiv) {
             console.error("Required UI elements for recording are missing.");
             return;
         }
         
-        // Use the global 'recognition' object and its 'recognizing' flag
         if (typeof recognition !== 'undefined' && recognition.recognizing) {
             recognition.stop(); 
-            // Button state will be handled by onEndCallback
             return;
         }
         
-        // Ensure `translations` and `language` are available in this scope for callbacks
         const langCode = mapLanguageToSpeechCode(language);
 
         const onStartCallback = () => {
             recordButton.classList.add('recording');
             recordButton.textContent = currentTranslations.recordingInProgress || 'Recording...';
-            feedbackDiv.textContent = ''; // Clear previous specific feedback
-            // Global startPronunciationCheck will set its own "Listening..."
+            feedbackDiv.textContent = ''; 
         };
 
         const onResultCallback = (transcript) => {
-            // Global startPronunciationCheck updates transcriptDiv by default.
-            // We just need to call our domain-specific checker.
             checkSpeakingAnswer(questionText, transcript);
         };
 
@@ -98,24 +94,23 @@ async function showQuestionPractice() {
                 errorMsg = `${currentTranslations.errorInRecognition || 'Error in recognition'}: ${event.error}`;
             }
             feedbackDiv.textContent = errorMsg;
+            UserProgress.recordAnswer(false, questionText, 'speaking_error'); // Record error as incorrect
+            AudioFeedback.playErrorSound();
         };
 
         const onEndCallback = () => {
             recordButton.classList.remove('recording');
             recordButton.textContent = '🎤';
-            // Clear "Listening..." if it was the last message from global and no result/error changed it
             if (feedbackDiv.textContent === (currentTranslations.feedbackListening || 'Listening...')) {
                  feedbackDiv.textContent = ''; 
             }
         };
-
-        // Call the global function from speech-features.js
-        // It will handle its own 'recognition' instance.
+        
         startPronunciationCheck(
-            questionText,       // targetWord for comparison (can be null if only transcript is needed)
-            langCode,           // language code like 'en-US'
-            'speaking-transcript', // ID for transcript display
-            'speaking-feedback',   // ID for feedback display
+            questionText,       
+            langCode,           
+            'speaking-transcript', 
+            'speaking-feedback',   
             onStartCallback,
             onResultCallback,
             onErrorCallback,
@@ -128,8 +123,11 @@ async function showQuestionPractice() {
         if (!feedbackDiv) return;
 
         let feedbackMsg = '';
+        let isCorrect = false;
+
         if (!transcript || !transcript.trim()) {
             feedbackMsg = currentTranslations.noSpeechDetected || 'No speech detected. Please try again.';
+            isCorrect = false;
         } else {
             const questionWords = question.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2);
             const transcriptWords = transcript.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
@@ -141,16 +139,22 @@ async function showQuestionPractice() {
 
             if (commonWordCount > 0 || transcriptWords.length > 2) { 
                 feedbackMsg = currentTranslations.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
-                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
+                isCorrect = true;
+                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) { // This seems to be an old XP system
                     CosyAppInteractive.addXP(3); 
                 }
             } else if (transcriptWords.length > 0) {
                  feedbackMsg = currentTranslations.tryAgainSpeakingShort || "Try to give a more detailed answer.";
+                 isCorrect = false;
             } else {
                 feedbackMsg = currentTranslations.tryAgainSpeaking || "Try to address the question more directly.";
+                isCorrect = false;
             }
         }
-        // This function now directly sets the feedback, which is fine as it's called by onResultCallback
+        
+        UserProgress.recordAnswer(isCorrect, question, 'speaking_question');
+        if(isCorrect) AudioFeedback.playSuccessSound(); else AudioFeedback.playErrorSound();
+
         feedbackDiv.innerHTML = feedbackMsg; 
     }
 
@@ -188,7 +192,7 @@ async function showQuestionPractice() {
 }
 
 
-async function showMonologuePractice() {
+export async function showMonologuePractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
@@ -198,7 +202,7 @@ async function showMonologuePractice() {
         </div>`;
 }
 
-async function showRolePlayPractice() {
+export async function showRolePlayPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
@@ -208,13 +212,17 @@ async function showRolePlayPractice() {
         </div>`;
 }
 
-async function practiceAllSpeaking() {
+export async function practiceAllSpeaking() {
     await startRandomSpeakingPractice();
 }
 
 async function startRandomSpeakingPractice() {
+    // For now, only showQuestionPractice is fully implemented with interaction
+    // Other speaking exercises are placeholders
     const implementedExercises = [showQuestionPractice]; 
-    await showQuestionPractice(); 
+    // const randomExerciseFunction = implementedExercises[Math.floor(Math.random() * implementedExercises.length)];
+    // await randomExerciseFunction();
+    await showQuestionPractice(); // Directly call the main implemented one for now
 }
 
 showQuestionPractice = patchExerciseForRandomizeButton(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
@@ -225,3 +233,4 @@ showRolePlayPractice = patchExerciseForRandomizeButton(showRolePlayPractice, '.s
 // For now, assuming `translations` is global as it was in index.html
 // and `getSelectedDays`, `loadSpeakingQuestions` are also available globally.
 // `patchExerciseForRandomizeButton` is assumed to be global from another utils file.
+// `mapLanguageToSpeechCode` and `startPronunciationCheck` are assumed global from speech-features.js

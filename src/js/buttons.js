@@ -1,5 +1,39 @@
 import AudioFeedback from './audio-feedback.js';
 
+import { 
+    startRandomWordPractice, 
+    startRandomImagePractice, 
+    startListeningPractice, 
+    practiceAllVocabulary,
+    initVocabularyPractice
+} from './exercises/vocabulary.js';
+
+import { 
+    startGenderPractice, 
+    startVerbsPractice, 
+    startPossessivesPractice, 
+    practiceAllGrammar,
+    initGrammarPractice
+} from './exercises/grammar.js';
+
+import {
+    showStoryPractice,
+    showInterestingFactPractice
+} from './exercises/reading.js';
+
+import {
+    showQuestionPractice,
+    showMonologuePractice,
+    showRolePlayPractice,
+    practiceAllSpeaking
+} from './exercises/speaking.js';
+
+import {
+    showQuestionWriting,
+    showStorytellingPractice,
+    showDiaryPractice
+} from './exercises/writing.js';
+
 // Initialize all buttons
 function initButtons() {
     // Helper to hide all options
