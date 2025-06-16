@@ -7,220 +7,225 @@
     <link rel="stylesheet" href="src/css/main.css">
 </head>
 <body>
-    <div class="container">
-        <h1>COSYlanguages</h1>
-        
-        <div class="menu-section">
-            <label for="language">🌎 Choose Your Language:</label>
-            <select id="language">
-                <option value="">Your Language</option>
-                <option value="COSYenglish" data-bg="COSYenglish">COSYenglish</option>
-                <option value="COSYfrançais" data-bg="COSYfrançais">COSYfrançais</option>
-                <option value="COSYitaliano" data-bg="COSYitaliano">COSYitaliano</option>
-                <option value="COSYespañol" data-bg="COSYespañol">COSYespañol</option>
-                <option value="COSYportuguês" data-bg="COSYportuguês">COSYportuguês</option>
-                <option value="COSYdeutsch" data-bg="COSYdeutsch">COSYdeutsch</option>
-                <option value="ΚΟΖΥελληνικά" data-bg="ΚΟΖΥελληνικά">ΚΟΖΥελληνικά</option>
-                <option value="ТАКОЙрусский" data-bg="ТАКОЙрусский">ТАКОЙрусский</option>
-                <option value="ԾՈՍՅհայկական" data-bg="ԾՈՍՅհայկական">ԾՈՍՅհայկական</option>
-                <option value="COSYbrezhoneg" data-bg="COSYbrezhoneg">COSYbrezhoneg</option>
-                <option value="COSYtatarça" data-bg="COSYtatarça">COSYtatarça</option>
-                <option value="COSYbashkort" data-bg="COSYbashkort">COSYbashkort</option>
-            </select>
-        </div>
-        
-        <div class="menu-section">
-            <label for="day">📅 Choose Your Day:</label>
-            <select id="day" aria-label="Choose your day">
-                <option value="">Day</option>
-                <!-- Days will be populated by JavaScript -->
-            </select>
-            <div class="day-range">
-                <div>
-                    <label for="day-from">Day From:</label>
-                    <select id="day-from" aria-label="Day from">
-                        <option value="">From</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="day-to">Day To:</label>
-                    <select id="day-to" aria-label="Day to">
-                        <option value="">To</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <div class="menu-section">
-            <label id="choose-practice-label">🧭 Choose Your Practice:</label>
-            <div class="practice-types" role="navigation" aria-label="Practice type menu">
-                <button id="vocabulary-btn" class="btn-primary" aria-label="Vocabulary" title="Vocabulary" role="button">🔠 Vocabulary</button>
-                <button id="grammar-btn" class="btn-primary" aria-label="Grammar" title="Grammar" role="button">🧩 Grammar</button>
-                <button id="reading-btn" class="btn-primary" aria-label="Reading" title="Reading" role="button">📚 Reading</button>
-                <button id="speaking-btn" class="btn-primary" aria-label="Speaking" title="Speaking" role="button">🗣️ Speaking</button>
-                <button id="writing-btn" class="btn-primary" aria-label="Writing" title="Writing" role="button">✍️ Writing</button>
-                <button id="practice-all-btn" class="btn-primary option-btn" aria-label="Practice All" title="Practice All" role="button">🔄 Practice All</button>
-            </div>
-            
-            <div id="vocabulary-options" class="practice-options" aria-label="Vocabulary options" role="region">
-                <div class="vocabulary-options">
-                    <button id="random-word-btn" class="btn-secondary option-btn" aria-label="Random Word" title="Random Word" role="button">🔤 Random Word</button>
-                    <button id="random-image-btn" class="btn-secondary option-btn" aria-label="Random Image" title="Random Image" role="button">🖼️ Random Image</button>
-                    <button id="listening-btn" class="btn-secondary option-btn" aria-label="Listening" title="Listening" role="button">🎧 Listening</button>
-                    <button id="practice-all-vocab-btn" class="btn-secondary option-btn" aria-label="Practice All Vocabulary" title="Practice All Vocabulary" role="button">🔄 Practice All</button>
-                </div>
-            </div>
-            
-            <div id="grammar-options" class="practice-options" aria-label="Grammar options" role="region">
-                <div class="grammar-options">
-                    <button id="gender-btn" class="btn-secondary option-btn" aria-label="Gender" title="Gender" role="button">✨ Gender</button>
-                    <button id="verbs-btn" class="btn-secondary option-btn" aria-label="Verbs" title="Verbs" role="button">🧩 Verbs</button>
-                    <button id="possessives-btn" class="btn-secondary option-btn" aria-label="Possessives" title="Possessives" role="button">🔠 Possessives</button>
-                    <button id="practice-all-grammar-btn" class="btn-secondary option-btn" aria-label="Practice All Grammar" title="Practice All Grammar" role="button">🔄 Practice All</button>
-                </div>
-            </div>
+     <div class="container">
+         <h1>COSYlanguages</h1>
++        <div class="user-stats" style="padding: 10px; text-align: center; background-color: #f0f0f0; border-bottom: 1px solid #ccc;">
++            <span id="xp-display" style="margin-right: 20px; font-weight: bold;">XP: 0</span>
++            <span id="level-display" style="margin-right: 20px; font-weight: bold;">Level: 1</span>
++            <span id="streak-display" style="font-weight: bold;">Streak: 0</span>
++        </div>
+         
+         <div class="menu-section">
+             <label for="language">🌎 Choose Your Language:</label>
+             <select id="language">
+                 <option value="">Your Language</option>
+                 <option value="COSYenglish" data-bg="COSYenglish">COSYenglish</option>
+                 <option value="COSYfrançais" data-bg="COSYfrançais">COSYfrançais</option>
+                 <option value="COSYitaliano" data-bg="COSYitaliano">COSYitaliano</option>
+                 <option value="COSYespañol" data-bg="COSYespañol">COSYespañol</option>
+                 <option value="COSYportuguês" data-bg="COSYportuguês">COSYportuguês</option>
+                 <option value="COSYdeutsch" data-bg="COSYdeutsch">COSYdeutsch</option>
+                 <option value="ΚΟΖΥελληνικά" data-bg="ΚΟΖΥελληνικά">ΚΟΖΥελληνικά</option>
+                 <option value="ТАКОЙрусский" data-bg="ТАКОЙрусский">ТАКОЙрусский</option>
+                 <option value="ԾՈՍՅհայկական" data-bg="ԾՈՍՅհայկական">ԾՈՍՅհայկական</option>
+                 <option value="COSYbrezhoneg" data-bg="COSYbrezhoneg">COSYbrezhoneg</option>
+                 <option value="COSYtatarça" data-bg="COSYtatarça">COSYtatarça</option>
+                 <option value="COSYbashkort" data-bg="COSYbashkort">COSYbashkort</option>
+             </select>
+         </div>
+         
+         <div class="menu-section">
+             <label for="day">📅 Choose Your Day:</label>
+             <select id="day" aria-label="Choose your day">
+                 <option value="">Day</option>
+                 <!-- Days will be populated by JavaScript -->
+             </select>
+             <div class="day-range">
+                 <div>
+                     <label for="day-from">Day From:</label>
+                     <select id="day-from" aria-label="Day from">
+                         <option value="">From</option>
+                     </select>
+                 </div>
+                 <div>
+                     <label for="day-to">Day To:</label>
+                     <select id="day-to" aria-label="Day to">
+                         <option value="">To</option>
+                     </select>
+                 </div>
+             </div>
+         </div>
+         
+         <div class="menu-section">
+             <label id="choose-practice-label">🧭 Choose Your Practice:</label>
+             <div class="practice-types" role="navigation" aria-label="Practice type menu">
+                 <button id="vocabulary-btn" class="btn-primary" aria-label="Vocabulary" title="Vocabulary" role="button">🔠 Vocabulary</button>
+                 <button id="grammar-btn" class="btn-primary" aria-label="Grammar" title="Grammar" role="button">🧩 Grammar</button>
+                 <button id="reading-btn" class="btn-primary" aria-label="Reading" title="Reading" role="button">📚 Reading</button>
+                 <button id="speaking-btn" class="btn-primary" aria-label="Speaking" title="Speaking" role="button">🗣️ Speaking</button>
+                 <button id="writing-btn" class="btn-primary" aria-label="Writing" title="Writing" role="button">✍️ Writing</button>
+                 <button id="practice-all-btn" class="btn-primary option-btn" aria-label="Practice All" title="Practice All" role="button">🔄 Practice All</button>
+             </div>
+             
+             <div id="vocabulary-options" class="practice-options" aria-label="Vocabulary options" role="region">
+                 <div class="vocabulary-options">
+                     <button id="random-word-btn" class="btn-secondary option-btn" aria-label="Random Word" title="Random Word" role="button">🔤 Random Word</button>
+                     <button id="random-image-btn" class="btn-secondary option-btn" aria-label="Random Image" title="Random Image" role="button">🖼️ Random Image</button>
+                     <button id="listening-btn" class="btn-secondary option-btn" aria-label="Listening" title="Listening" role="button">🎧 Listening</button>
+                     <button id="practice-all-vocab-btn" class="btn-secondary option-btn" aria-label="Practice All Vocabulary" title="Practice All Vocabulary" role="button">🔄 Practice All</button>
+                 </div>
+             </div>
+             
+             <div id="grammar-options" class="practice-options" aria-label="Grammar options" role="region">
+                 <div class="grammar-options">
+                     <button id="gender-btn" class="btn-secondary option-btn" aria-label="Gender" title="Gender" role="button">✨ Gender</button>
+                     <button id="verbs-btn" class="btn-secondary option-btn" aria-label="Verbs" title="Verbs" role="button">🧩 Verbs</button>
+                     <button id="possessives-btn" class="btn-secondary option-btn" aria-label="Possessives" title="Possessives" role="button">🔠 Possessives</button>
+                     <button id="practice-all-grammar-btn" class="btn-secondary option-btn" aria-label="Practice All Grammar" title="Practice All Grammar" role="button">🔄 Practice All</button>
+                 </div>
+             </div>
 
-            <div id="reading-options" class="practice-options" aria-label="Reading options" role="region">
-                <div class="reading-options">
-                    <button id="story-btn" class="btn-secondary option-btn" aria-label="Story" title="Story" role="button">📖 Story</button>
-                    <button id="interesting-fact-btn" class="btn-secondary option-btn" aria-label="Interesting facts" title="Interesting facts" role="button">🔄 Interesting facts</button>
-                </div>
-            </div>
-            
-            <div id="speaking-options" class="practice-options" aria-label="Speaking options" role="region">
-                <div class="speaking-options">
-                <button id="question-practice-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
-                <button id="monologue-btn" class="btn-secondary option-btn" aria-label="Monologue" title="Monologue" role="button">💬 Monologue</button>
-                <button id="role-play-btn" class="btn-secondary option-btn" aria-label="Role Play" title="Role Play" role="button">🎭 Role Play</button>
-                <button id="practice-all-speaking-btn" class="btn-secondary option-btn" aria-label="Practice All Speaking" title="Practice All Speaking" role="button">🔄 Practice All</button>
-                </div>
-            </div>
+             <div id="reading-options" class="practice-options" aria-label="Reading options" role="region">
+                 <div class="reading-options">
+                     <button id="story-btn" class="btn-secondary option-btn" aria-label="Story" title="Story" role="button">📖 Story</button>
+                     <button id="interesting-fact-btn" class="btn-secondary option-btn" aria-label="Interesting facts" title="Interesting facts" role="button">🔄 Interesting facts</button>
+                 </div>
+             </div>
+             
+             <div id="speaking-options" class="practice-options" aria-label="Speaking options" role="region">
+                 <div class="speaking-options">
+                 <button id="question-practice-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
+                 <button id="monologue-btn" class="btn-secondary option-btn" aria-label="Monologue" title="Monologue" role="button">💬 Monologue</button>
+                 <button id="role-play-btn" class="btn-secondary option-btn" aria-label="Role Play" title="Role Play" role="button">🎭 Role Play</button>
+                 <button id="practice-all-speaking-btn" class="btn-secondary option-btn" aria-label="Practice All Speaking" title="Practice All Speaking" role="button">🔄 Practice All</button>
+                 </div>
+             </div>
 
-            <div id="writing-options" class="practice-options" aria-label="Writing options" role="region">
-                <div class="writing-options">
-                <button id="writing-question-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
-                <button id="storytelling-btn" class="btn-secondary option-btn" aria-label="Storytelling" title="Storytelling" role="button">📜 Storytelling</button>
-                <button id="diary-btn" class="btn-secondary option-btn" aria-label="Diary" title="Diary" role="button">📔 Diary</button>
-                </div>
-            </div>  
-        </div>
-        
-        <div id="result" class="result-area flex-center"></div>
-    </div>
+             <div id="writing-options" class="practice-options" aria-label="Writing options" role="region">
+                 <div class="writing-options">
+                 <button id="writing-question-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
+                 <button id="storytelling-btn" class="btn-secondary option-btn" aria-label="Storytelling" title="Storytelling" role="button">📜 Storytelling</button>
+                 <button id="diary-btn" class="btn-secondary option-btn" aria-label="Diary" title="Diary" role="button">📔 Diary</button>
+                 </div>
+             </div>  
+         </div>
+         
+         <div id="result" class="result-area flex-center"></div>
+     </div>
 
-    <!-- Floating Help Button -->
-    <button id="floating-help-btn" title="Help / Fun Fact / Tip">❓</button>
-    <!-- Floating Fun Fact / Tip Popup -->    <div id="floating-tip-popup">
-      <span id="floating-tip-text"></span>
-      <button class="close-tip" title="Close">✖</button>
-      <button class="translate-tip" title="Translate">🌍</button>
-    </div>
-    <!-- Translation Popup -->    <div id="translation-popup">
-      <span id="translation-popup-text"></span>
-      <button class="close-translation" title="Close">✖</button>
-    </div>
+     <!-- Floating Help Button -->
+     <button id="floating-help-btn" title="Help / Fun Fact / Tip">❓</button>
+     <!-- Floating Fun Fact / Tip Popup -->    <div id="floating-tip-popup">
+       <span id="floating-tip-text"></span>
+       <button class="close-tip" title="Close">✖</button>
+       <button class="translate-tip" title="Translate">🌍</button>
+     </div>
+     <!-- Translation Popup -->    <div id="translation-popup">
+       <span id="translation-popup-text"></span>
+       <button class="close-translation" title="Close">✖</button>
+     </div>
 
-    <script>
+     <script>
 
-        // Practice type buttons
-        const vocabularyBtn = document.getElementById('vocabulary-btn');
-        const grammarBtn = document.getElementById('grammar-btn');
-        const readingBtn = document.getElementById('reading-btn');
-        const speakingBtn = document.getElementById('speaking-btn');
-        const writingBtn = document.getElementById('writing-btn');
+         // Practice type buttons
+         const vocabularyBtn = document.getElementById('vocabulary-btn');
+         const grammarBtn = document.getElementById('grammar-btn');
+         const readingBtn = document.getElementById('reading-btn');
+         const speakingBtn = document.getElementById('speaking-btn');
+         const writingBtn = document.getElementById('writing-btn');
 
-        const vocabularyOptions = document.getElementById('vocabulary-options');
-        const grammarOptions = document.getElementById('grammar-options');
-        const readingOptions = document.getElementById('reading-options');
-        const speakingOptions = document.getElementById('speaking-options');
-        const writingOptions = document.getElementById('writing-options');
+         const vocabularyOptions = document.getElementById('vocabulary-options');
+         const grammarOptions = document.getElementById('grammar-options');
+         const readingOptions = document.getElementById('reading-options');
+         const speakingOptions = document.getElementById('speaking-options');
+         const writingOptions = document.getElementById('writing-options');
 
-        // Hide all options initially
-        vocabularyOptions.style.display = 'none';
-        grammarOptions.style.display = 'none';
-        readingOptions.style.display = 'none';
-        speakingOptions.style.display = 'none';
-        writingOptions.style.display = 'none';
+         // Hide all options initially
+         vocabularyOptions.style.display = 'none';
+         grammarOptions.style.display = 'none';
+         readingOptions.style.display = 'none';
+         speakingOptions.style.display = 'none';
+         writingOptions.style.display = 'none';
 
-        // Show Practice All button on load
-        const practiceAllBtn = document.getElementById('practice-all-btn');
-        practiceAllBtn.style.display = 'block';
+         // Show Practice All button on load
+         const practiceAllBtn = document.getElementById('practice-all-btn');
+         practiceAllBtn.style.display = 'block';
 
-        // The following block (main button click handlers) has been removed:
-        // Add click handlers to main menu buttons to show/hide options
-        /* vocabularyBtn.addEventListener('click', function() {
-            if (vocabularyOptions.style.display === 'block') {
-                goBackToMainMenu(); // Hide options, show main menu
-            } else {
-                vocabularyOptions.style.display = 'block';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('vocabulary-btn'); // Hide other main buttons
-            }
-        });
-        grammarBtn.addEventListener('click', function() {
-            if (grammarOptions.style.display === 'block') {
-                goBackToMainMenu();
-            } else {
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'block';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('grammar-btn');
-            }
-        });
-        readingBtn.addEventListener('click', function() {
-            if (readingOptions.style.display === 'block') {
-                goBackToMainMenu();
-            } else {
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'block';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('reading-btn');
-            }
-        });
-        speakingBtn.addEventListener('click', function() {
-            if (speakingOptions.style.display === 'block') {
-                goBackToMainMenu();
-            } else {
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'block';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('speaking-btn');
-            }
-        });
-        writingBtn.addEventListener('click', function() {
-            if (writingOptions.style.display === 'block') {
-                goBackToMainMenu();
-            } else {
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'block';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('writing-btn');
-            }
-        });
-        practiceAllBtn.addEventListener('click', function() {
-            vocabularyOptions.style.display = 'none';
-            grammarOptions.style.display = 'none';
-            readingOptions.style.display = 'none';
-            speakingOptions.style.display = 'none';
-            writingOptions.style.display = 'none';
-            practiceAllBtn.style.display = 'block';
-        }); */
+         // The following block (main button click handlers) has been removed:
+         // Add click handlers to main menu buttons to show/hide options
+         /* vocabularyBtn.addEventListener('click', function() {
+             if (vocabularyOptions.style.display === 'block') {
+                 goBackToMainMenu(); // Hide options, show main menu
+             } else {
+                 vocabularyOptions.style.display = 'block';
+                 grammarOptions.style.display = 'none';
+                 readingOptions.style.display = 'none';
+                 speakingOptions.style.display = 'none';
+                 writingOptions.style.display = 'none';
+                 practiceAllBtn.style.display = 'none';
+                 hideOtherMainPracticeTypes('vocabulary-btn'); // Hide other main buttons
+             }
+         });
+         grammarBtn.addEventListener('click', function() {
+             if (grammarOptions.style.display === 'block') {
+                 goBackToMainMenu();
+             } else {
+                 vocabularyOptions.style.display = 'none';
+                 grammarOptions.style.display = 'block';
+                 readingOptions.style.display = 'none';
+                 speakingOptions.style.display = 'none';
+                 writingOptions.style.display = 'none';
+                 practiceAllBtn.style.display = 'none';
+                 hideOtherMainPracticeTypes('grammar-btn');
+             }
+         });
+         readingBtn.addEventListener('click', function() {
+             if (readingOptions.style.display === 'block') {
+                 goBackToMainMenu();
+             } else {
+                 vocabularyOptions.style.display = 'none';
+                 grammarOptions.style.display = 'none';
+                 readingOptions.style.display = 'block';
+                 speakingOptions.style.display = 'none';
+                 writingOptions.style.display = 'none';
+                 practiceAllBtn.style.display = 'none';
+                 hideOtherMainPracticeTypes('reading-btn');
+             }
+         });
+         speakingBtn.addEventListener('click', function() {
+             if (speakingOptions.style.display === 'block') {
+                 goBackToMainMenu();
+             } else {
+                 vocabularyOptions.style.display = 'none';
+                 grammarOptions.style.display = 'none';
+                 readingOptions.style.display = 'none';
+                 speakingOptions.style.display = 'block';
+                 writingOptions.style.display = 'none';
+                 practiceAllBtn.style.display = 'none';
+                 hideOtherMainPracticeTypes('speaking-btn');
+             }
+         });
+         writingBtn.addEventListener('click', function() {
+             if (writingOptions.style.display === 'block') {
+                 goBackToMainMenu();
+             } else {
+                 vocabularyOptions.style.display = 'none';
+                 grammarOptions.style.display = 'none';
+                 readingOptions.style.display = 'none';
+                 speakingOptions.style.display = 'none';
+                 writingOptions.style.display = 'block';
+                 practiceAllBtn.style.display = 'none';
+                 hideOtherMainPracticeTypes('writing-btn');
+             }
+         });
+         practiceAllBtn.addEventListener('click', function() {
+             vocabularyOptions.style.display = 'none';
+             grammarOptions.style.display = 'none';
+             readingOptions.style.display = 'none';
+             speakingOptions.style.display = 'none';
+             writingOptions.style.display = 'none';
+             practiceAllBtn.style.display = 'block';
+         }); */
 
 // Show all main practice types
 function showAllMainPracticeTypes() {
@@ -239,131 +244,132 @@ function hideOtherMainPracticeTypes(selectedId) {
         }
     });
 }
-        // --- Hide other options when one is selected ---
-        function hideOtherVocabularyOptions(selectedId) {
-            document.querySelectorAll('#vocabulary-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllVocabularyOptions() {
-            document.querySelectorAll('#vocabulary-options button').forEach(btn => {
-                btn.style.display = '';
-            });
-        }
-        function hideOtherGrammarOptions(selectedId) {
-            document.querySelectorAll('#grammar-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllGrammarOptions() {
-            document.querySelectorAll('#grammar-options button').forEach(btn => {
-                btn.style.display = '';
-            });
-        }
-        function hideOtherReadingOptions(selectedId) {
-            document.querySelectorAll('#reading-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllReadingOptions() {
-            document.querySelectorAll('#reading-options button').forEach(btn => {
-                btn.style.display = '';
-            });
-        }
-        function hideOtherSpeakingOptions(selectedId) {
-            document.querySelectorAll('#speaking-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllSpeakingOptions() {
-            document.querySelectorAll('#speaking-options button').forEach(btn => {
-                btn.style.display = '';
-            });
-        }
-        function hideOtherWritingOptions(selectedId) {
-            document.querySelectorAll('#writing-options button').forEach(btn => {
-                if (btn.id !== selectedId) btn.style.display = 'none';
-            });
-        }
-        function showAllWritingOptions() {
-            document.querySelectorAll('#writing-options button').forEach(btn => {
-                btn.style.display = '';
-            });
-        }
+         // --- Hide other options when one is selected ---
+         function hideOtherVocabularyOptions(selectedId) {
+             document.querySelectorAll('#vocabulary-options button').forEach(btn => {
+                 if (btn.id !== selectedId) btn.style.display = 'none';
+             });
+         }
+         function showAllVocabularyOptions() {
+             document.querySelectorAll('#vocabulary-options button').forEach(btn => {
+                 btn.style.display = '';
+             });
+         }
+         function hideOtherGrammarOptions(selectedId) {
+             document.querySelectorAll('#grammar-options button').forEach(btn => {
+                 if (btn.id !== selectedId) btn.style.display = 'none';
+             });
+         }
+         function showAllGrammarOptions() {
+             document.querySelectorAll('#grammar-options button').forEach(btn => {
+                 btn.style.display = '';
+             });
+         }
+         function hideOtherReadingOptions(selectedId) {
+             document.querySelectorAll('#reading-options button').forEach(btn => {
+                 if (btn.id !== selectedId) btn.style.display = 'none';
+             });
+         }
+         function showAllReadingOptions() {
+             document.querySelectorAll('#reading-options button').forEach(btn => {
+                 btn.style.display = '';
+             });
+         }
+         function hideOtherSpeakingOptions(selectedId) {
+             document.querySelectorAll('#speaking-options button').forEach(btn => {
+                 if (btn.id !== selectedId) btn.style.display = 'none';
+             });
+         }
+         function showAllSpeakingOptions() {
+             document.querySelectorAll('#speaking-options button').forEach(btn => {
+                 btn.style.display = '';
+             });
+         }
+         function hideOtherWritingOptions(selectedId) {
+             document.querySelectorAll('#writing-options button').forEach(btn => {
+                 if (btn.id !== selectedId) btn.style.display = 'none';
+             });
+         }
+         function showAllWritingOptions() {
+             document.querySelectorAll('#writing-options button').forEach(btn => {
+                 btn.style.display = '';
+             });
+         }
 
-        // Helper: go back to main menu
-        function goBackToMainMenu() {
-            showAllMainPracticeTypes();
-            showAllVocabularyOptions && showAllVocabularyOptions();
-            showAllGrammarOptions && showAllGrammarOptions();
-            showAllReadingOptions && showAllReadingOptions();
-            showAllSpeakingOptions && showAllSpeakingOptions();
-            showAllWritingOptions && showAllWritingOptions();
-            if (vocabularyOptions) vocabularyOptions.style.display = 'none';
-            if (grammarOptions) grammarOptions.style.display = 'none';
-            if (readingOptions) readingOptions.style.display = 'none';
-            if (speakingOptions) speakingOptions.style.display = 'none';
-            if (writingOptions) writingOptions.style.display = 'none';
-            if (practiceAllBtn) practiceAllBtn.style.display = 'block';
-            if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
-            showPracticeAllButtons();
-        }
+         // Helper: go back to main menu
+         function goBackToMainMenu() {
+             showAllMainPracticeTypes();
+             showAllVocabularyOptions && showAllVocabularyOptions();
+             showAllGrammarOptions && showAllGrammarOptions();
+             showAllReadingOptions && showAllReadingOptions();
+             showAllSpeakingOptions && showAllSpeakingOptions();
+             showAllWritingOptions && showAllWritingOptions();
+             if (vocabularyOptions) vocabularyOptions.style.display = 'none';
+             if (grammarOptions) grammarOptions.style.display = 'none';
+             if (readingOptions) readingOptions.style.display = 'none';
+             if (speakingOptions) speakingOptions.style.display = 'none';
+             if (writingOptions) writingOptions.style.display = 'none';
+             if (practiceAllBtn) practiceAllBtn.style.display = 'block';
+             if (document.getElementById('result')) document.getElementById('result').innerHTML = '';
+             showPracticeAllButtons();
+         }
 
-        // Change background flag on language select
-        const languageSelect = document.getElementById('language');
-        languageSelect.addEventListener('change', function() {
-            const lang = languageSelect.value;
-            // Remove any previous flag class
-            document.body.className = document.body.className
-                .split(' ') // split classes
-                .filter(c => !c.startsWith('flag-')) // remove flag- classes
-                .join(' ');
-            if (lang) {
-                document.body.classList.add('flag-' + lang);
-            }
-        });
-    
-        // On page load, set UI to default language
-        updateUIForLanguage(document.getElementById('language').value || 'COSYenglish');
+         // Change background flag on language select
+         const languageSelect = document.getElementById('language');
+         languageSelect.addEventListener('change', function() {
+             const lang = languageSelect.value;
+             // Remove any previous flag class
+             document.body.className = document.body.className
+                 .split(' ') // split classes
+                 .filter(c => !c.startsWith('flag-')) // remove flag- classes
+                 .join(' ');
+             if (lang) {
+                 document.body.classList.add('flag-' + lang);
+             }
+         });
+     
+-        // On page load, set UI to default language
+-        updateUIForLanguage(document.getElementById('language').value || 'COSYenglish');
++        // updateUIForLanguage(document.getElementById('language').value || 'COSYenglish'); // This call is handled by language-handler.js itself on DOMContentLoaded
+ 
+         // Helper: get selected days (single or range)
+         function getSelectedDays() {
+             const day = document.getElementById('day').value;
+             const dayFrom = document.getElementById('day-from').value;
+             const dayTo = document.getElementById('day-to').value;
+             console.log("DEBUG_SIM: getSelectedDays - day:", day, "dayFrom:", dayFrom, "dayTo:", dayTo);
 
-        // Helper: get selected days (single or range)
-        function getSelectedDays() {
-            const day = document.getElementById('day').value;
-            const dayFrom = document.getElementById('day-from').value;
-            const dayTo = document.getElementById('day-to').value;
-            console.log("DEBUG_SIM: getSelectedDays - day:", day, "dayFrom:", dayFrom, "dayTo:", dayTo);
+             if (day) {
+                 console.log("DEBUG_SIM: getSelectedDays - returning array:", [day]);
+                 return [day];
+             } else if (dayFrom && dayTo && Number(dayFrom) <= Number(dayTo)) {
+                 const from = Number(dayFrom);
+                 const to = Number(dayTo);
+                 const days = [];
+                 for (let i = from; i <= to; i++) days.push(String(i));
+                 console.log("DEBUG_SIM: getSelectedDays - returning array:", days);
+                 return days;
+             } else {
+                 console.log("DEBUG_SIM: getSelectedDays - returning empty array");
+                 return [];
+             }
+         }
 
-            if (day) {
-                console.log("DEBUG_SIM: getSelectedDays - returning array:", [day]);
-                return [day];
-            } else if (dayFrom && dayTo && Number(dayFrom) <= Number(dayTo)) {
-                const from = Number(dayFrom);
-                const to = Number(dayTo);
-                const days = [];
-                for (let i = from; i <= to; i++) days.push(String(i));
-                console.log("DEBUG_SIM: getSelectedDays - returning array:", days);
-                return days;
-            } else {
-                console.log("DEBUG_SIM: getSelectedDays - returning empty array");
-                return [];
-            }
-        }
-
-        // Restore all main practice type buttons when returning to menu
-        function restoreMenu() {
-            showAllMainPracticeTypes();
-            showAllVocabularyOptions();
-            showAllGrammarOptions();
-            showAllReadingOptions();
-            showAllSpeakingOptions();
-            vocabularyOptions.style.display = 'none';
-            grammarOptions.style.display = 'none';
-            readingOptions.style.display = 'none';
-            speakingOptions.style.display = 'none';
-            practiceAllBtn.style.display = 'block';
-            // Optionally clear result area
-            document.getElementById('result').innerHTML = '';
-        }
+         // Restore all main practice type buttons when returning to menu
+         function restoreMenu() {
+             showAllMainPracticeTypes();
+             showAllVocabularyOptions();
+             showAllGrammarOptions();
+             showAllReadingOptions();
+             showAllSpeakingOptions();
+             vocabularyOptions.style.display = 'none';
+             grammarOptions.style.display = 'none';
+             readingOptions.style.display = 'none';
+             speakingOptions.style.display = 'none';
+             practiceAllBtn.style.display = 'block';
+             // Optionally clear result area
+             document.getElementById('result').innerHTML = '';
+         }
 
 daySelect.addEventListener('change', updateDaySelectors);
 dayFromSelect.addEventListener('change', updateDaySelectors);
@@ -384,23 +390,35 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
   };
   statsContainer.appendChild(resetBtn);
 }
-    </script>
+     </script>
 
-    <script src="src/js/utils.js"></script>
-    <script src="src/js/ui/translations.js"></script>
-    <script src="src/js/exercises/vocabulary.js"></script>
-    <script src="src/js/speech-features.js"></script>
-    <script src="src/js/ui/ui-visibility.js"></script>
-    <script src="src/js/exercises/vocabulary_buttons.js"></script>
-    <script src="src/js/exercises/grammar.js"></script>
-    <script src="src/js/exercises/speaking.js"></script> 
-    <script src="src/js/exercises/writing.js"></script>
-    <script src="src/js/exercises/reading.js"></script> 
-    <script src="src/js/buttons.js"></script>
-    <script src="src/js/language-handler.js"></script>
-    <script src="src/js/event-listeners-setup.js"></script>
-    <!-- interactive.js should be loaded after all feature scripts -->
-    <script src="src/js/ui/interactive.js"></script>
+     <!-- Utility/Core Modules First -->
+     <script type="module" src="src/js/user-progress.js"></script>
+     <script type="module" src="src/js/audio-feedback.js"></script>
+
+     <!-- UI and Main Logic Modules -->
+     <script type="module" src="src/js/buttons.js"></script>
+     <script type="module" src="src/js/event-listeners-setup.js"></script> 
+     
+     <!-- Exercise Modules -->
+     <script type="module" src="src/js/exercises/vocabulary.js"></script> 
+     <!-- <script type="module" src="src/js/review.js"></script> --> <!-- review.js not confirmed to exist yet -->
+
+     <!-- Non-module scripts (order might also matter here) -->
+     <script src="src/js/utils.js"></script>
+     <script src="src/js/ui/translations.js"></script>
+     <script src="src/js/speech-features.js"></script>
+     <script src="src/js/ui/ui-visibility.js"></script>
+     <!-- <script src="src/js/exercises/vocabulary_buttons.js"></script> -->
+     <script src="src/js/exercises/grammar.js"></script>
+     <script src="src/js/exercises/speaking.js"></script> 
+     <script type="module" src="src/js/exercises/grammar.js"></script>
+     <script type="module" src="src/js/exercises/speaking.js"></script> 
+     <script type="module" src="src/js/exercises/writing.js"></script>
+     <script type="module" src="src/js/exercises/reading.js"></script> 
+     <script src="src/js/language-handler.js"></script>
+     <!-- interactive.js should be loaded after all feature scripts -->
+     <script src="src/js/ui/interactive.js"></script>
 
 
 

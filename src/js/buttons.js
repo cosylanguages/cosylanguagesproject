@@ -1,3 +1,37 @@
+import AudioFeedback from './audio-feedback.js';
+
+import { 
+    startRandomWordPractice, 
+    startRandomImagePractice, 
+    startListeningPractice, 
+    practiceAllVocabulary
+} from './exercises/vocabulary.js';
+
+import { 
+    startGenderPractice, 
+    startVerbsPractice, 
+    startPossessivesPractice, 
+    practiceAllGrammar
+} from './exercises/grammar.js';
+
+import {
+    showStoryPractice,
+    showInterestingFactPractice
+} from './exercises/reading.js';
+
+import {
+    showQuestionPractice,
+    showMonologuePractice,
+    showRolePlayPractice,
+    practiceAllSpeaking
+} from './exercises/speaking.js';
+
+import {
+    showQuestionWriting,
+    showStorytellingPractice,
+    showDiaryPractice
+} from './exercises/writing.js';
+
 // Initialize all buttons
 function initButtons() {
     // Helper to hide all options
@@ -12,6 +46,7 @@ function initButtons() {
     ['vocabulary','grammar','reading','speaking','writing'].forEach(type => {
         const btn = document.getElementById(`${type}-btn`);
         btn?.addEventListener('click', function() {
+            AudioFeedback.playClickSound();
             const isActive = btn.classList.contains('active-main-btn');
             if (isActive) {
                 // If already active, reset to main menu
@@ -24,10 +59,6 @@ function initButtons() {
                 // The line hideAllOptions(); was removed from here.
                 // index.html's handler should already have hidden other options panels.
                 document.getElementById(`${type}-options`).style.display = 'block';
-                if(type === 'vocabulary') {
-                    // Always re-initialize vocabulary option handlers
-                    if(typeof initVocabularyPractice === 'function') initVocabularyPractice();
-                }
             }
         });
     });
@@ -39,6 +70,7 @@ function setupOptionToggle(groupId, btnIds, startExerciseFns) {
         const btn = document.getElementById(btnId);
         if (!btn) return;
         btn.addEventListener('click', function() {
+            AudioFeedback.playSelectSound();
             const group = document.getElementById(groupId);
             const isActive = btn.classList.contains('active-option-btn');
             const allBtns = group.querySelectorAll('button');

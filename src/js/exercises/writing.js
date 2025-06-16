@@ -1,8 +1,11 @@
+import UserProgress from '../user-progress.js';
+import AudioFeedback from '../audio-feedback.js';
+
 // Writing Exercises
 
 // Placeholder functions for specific writing exercises
 
-async function showQuestionWriting() {
+export async function showQuestionWriting() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
@@ -20,16 +23,14 @@ async function showQuestionWriting() {
     const day = days[0]; // Use the first day in the range
 
     // Using loadSpeakingQuestions as it fetches questions suitable for this purpose too.
-    const questions = await loadSpeakingQuestions(language, day); // From utils.js
+    const questions = await loadSpeakingQuestions(language, day); // From utils.js or global
 
     if (!questions || questions.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
         return;
     }
 
-    // Shuffle the questions array in place
     questions.sort(() => 0.5 - Math.random());
-
     let currentQuestionIndex = 0;
 
     function displayCurrentWritingQuestion() {
@@ -53,9 +54,11 @@ async function showQuestionWriting() {
         const writtenAnswer = document.getElementById('writing-answer-area').value;
         const feedbackArea = document.getElementById('writing-feedback');
         let feedbackMsg = '';
+        let isCorrect = false; // For UserProgress
 
         if (!writtenAnswer.trim()) {
             feedbackMsg = currentTranslations.pleaseWriteAnswer || 'Please write an answer before submitting.';
+            isCorrect = false;
         } else {
             const questionWords = (questionText.toLowerCase().match(/\b(\w+)\b/g) || []).filter(w => w.length > 2);
             const answerWords = (writtenAnswer.toLowerCase().match(/\b(\w+)\b/g) || []).filter(w => w.length > 2);
@@ -64,18 +67,24 @@ async function showQuestionWriting() {
 
             if (commonKeywords.length > 0) {
                 feedbackMsg = `${currentTranslations.goodAnswerWriting || "Good! You've used some keywords from the question"}: ${commonKeywords.slice(0,3).join(', ')}.`;
-                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) {
-                    CosyAppInteractive.addXP(5); // Award XP for writing
+                isCorrect = true; // Consider it a "correct" attempt for XP
+                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.addXP) { // Old XP system
+                    CosyAppInteractive.addXP(5); 
                 }
             } else {
                 feedbackMsg = currentTranslations.answerSubmittedWriting || 'Answer submitted. Try to incorporate more elements from the question.';
+                isCorrect = false; // Or a partial correct, but for simplicity, false if no keywords
             }
             
             if (writtenAnswer.length < 20 && commonKeywords.length === 0) {
                  feedbackMsg += ` ${currentTranslations.tryToElaborate || 'Try to elaborate more in your answer.'}`;
             }
         }
-        if (feedbackArea) feedbackArea.innerHTML = `<span class="correct" aria-label="Correct">✅📝 ${feedbackMsg}</span>`;
+
+        UserProgress.recordAnswer(isCorrect, questionText, 'writing_question');
+        if(isCorrect) AudioFeedback.playSuccessSound(); else AudioFeedback.playErrorSound();
+        
+        if (feedbackArea) feedbackArea.innerHTML = `<span class="${isCorrect ? 'correct' : 'feedback-message'}" aria-label="Feedback">📝 ${feedbackMsg}</span>`;
     }
 
     resultArea.innerHTML = `
@@ -107,13 +116,10 @@ async function showQuestionWriting() {
     });
 
     document.getElementById('submit-writing-answer-btn').addEventListener('click', checkWritingAnswer);
-    // Add Enter key support for textarea (optional, often Shift+Enter for new line, Enter to submit)
-    // For simplicity, not adding Enter key for submission on textarea to allow new lines easily.
-
     displayCurrentWritingQuestion();
 }
 
-async function showStorytellingPractice() {
+export async function showStorytellingPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
@@ -123,7 +129,7 @@ async function showStorytellingPractice() {
         </div>`;
 }
 
-async function showDiaryPractice() {
+export async function showDiaryPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
@@ -135,15 +141,7 @@ async function showDiaryPractice() {
 
 // Main function to start a random writing exercise
 async function startRandomWritingPractice() {
-    // For now, let's assume Question Writing is the primary one to randomize into
-    // const exercises = [
-    //     showQuestionWriting,
-    //     showStorytellingPractice,
-    //     showDiaryPractice
-    // ];
-    // const randomExerciseFunction = exercises[Math.floor(Math.random() * exercises.length)];
-    // await randomExerciseFunction();
-    await showQuestionWriting(); // Default to the main implemented one for now
+    await showQuestionWriting(); 
 }
 
 // Patch the exercise functions to add the randomize button
@@ -151,5 +149,5 @@ showQuestionWriting = patchExerciseForRandomizeButton(showQuestionWriting, '.wri
 showStorytellingPractice = patchExerciseForRandomizeButton(showStorytellingPractice, '.writing-exercise-container', startRandomWritingPractice);
 showDiaryPractice = patchExerciseForRandomizeButton(showDiaryPractice, '.writing-exercise-container', startRandomWritingPractice);
 
-// As with speaking.js, button event listeners for main menu items (e.g. 'question-btn' under Writing)
-// are expected to be in buttons.js or index.html.
+// Global dependencies: getSelectedDays, loadSpeakingQuestions, translations, patchExerciseForRandomizeButton
+// These are assumed to be available in the global scope or loaded before this script.
