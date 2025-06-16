@@ -1,0 +1,19 @@
+```diff
+--- a/index.html
++++ b/index.html
+@@ -6,8 +6,12 @@
+     <link rel="stylesheet" href="src/css/main.css">
+ </head>
+ <body>
+     <div class="container">
+         <h1>COSYlanguages</h1>
++        <div class="user-stats" style="padding: 10px; text-align: center; background-color: #f0f0f0; border-bottom: 1px solid #ccc;">
++            <span id="xp-display" style="margin-right: 20px; font-weight: bold;">XP: 0</span>
++            <span id="level-display" style="margin-right: 20px; font-weight: bold;">Level: 1</span>
++            <span id="streak-display" style="font-weight: bold;">Streak: 0</span>
++        </div>
+         
+         <div class="menu-section">
+             <label for="language">🌎 Choose Your Language:</label>
+
+```

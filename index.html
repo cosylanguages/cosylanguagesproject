@@ -386,22 +386,31 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
 }
     </script>
 
+    <!-- Utility/Core Modules First -->
+    <script type="module" src="src/js/user-progress.js"></script>
+    <script type="module" src="src/js/audio-feedback.js"></script>
+
+    <!-- UI and Main Logic Modules -->
+    <script type="module" src="src/js/buttons.js"></script>
+    <script type="module" src="src/js/event-listeners-setup.js"></script> 
+    
+    <!-- Exercise Modules -->
+    <script type="module" src="src/js/exercises/vocabulary.js"></script> 
+    <!-- <script type="module" src="src/js/review.js"></script> --> <!-- review.js not confirmed to exist yet -->
+
+    <!-- Non-module scripts (order might also matter here) -->
     <script src="src/js/utils.js"></script>
     <script src="src/js/ui/translations.js"></script>
-    <script src="src/js/exercises/vocabulary.js"></script>
     <script src="src/js/speech-features.js"></script>
     <script src="src/js/ui/ui-visibility.js"></script>
-    <script src="src/js/exercises/vocabulary_buttons.js"></script>
+    <!-- <script src="src/js/exercises/vocabulary_buttons.js"></script> -->
     <script src="src/js/exercises/grammar.js"></script>
     <script src="src/js/exercises/speaking.js"></script> 
     <script src="src/js/exercises/writing.js"></script>
     <script src="src/js/exercises/reading.js"></script> 
-    <script src="src/js/buttons.js"></script>
     <script src="src/js/language-handler.js"></script>
-    <script src="src/js/event-listeners-setup.js"></script>
     <!-- interactive.js should be loaded after all feature scripts -->
     <script src="src/js/ui/interactive.js"></script>
-    <script type="module" src="src/js/audio-feedback.js"></script>
 
 
 

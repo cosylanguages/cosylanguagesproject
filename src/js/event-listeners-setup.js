@@ -1,4 +1,5 @@
 import AudioFeedback from './audio-feedback.js';
+import UserProgress from './user-progress.js';
 // Event Listeners Setup (Core Logic)
 
 // Placeholder stub for updateGrammarOptions
@@ -7,11 +8,17 @@ function updateGrammarOptions() {
 }
 
 function populateDaysDropdowns() {
+    console.log("DEBUG: populateDaysDropdowns called");
     const daySelect = document.getElementById('day');
     const dayFromSelect = document.getElementById('day-from');
     const dayToSelect = document.getElementById('day-to');
 
+    console.log("DEBUG: daySelect element:", daySelect);
+    console.log("DEBUG: dayFromSelect element:", dayFromSelect);
+    console.log("DEBUG: dayToSelect element:", dayToSelect);
+
     if (daySelect && dayFromSelect && dayToSelect) {
+        console.log("DEBUG: All day select elements found. Populating options...");
         for (let i = 1; i <= 30; i++) {
             const option = document.createElement('option');
             option.value = i;
@@ -20,6 +27,9 @@ function populateDaysDropdowns() {
             dayFromSelect.appendChild(option.cloneNode(true));
             dayToSelect.appendChild(option.cloneNode(true));
         }
+        console.log("DEBUG: Day options populated.");
+    } else {
+        console.error("DEBUG: One or more day select elements NOT found. 'day':", daySelect, "'day-from':", dayFromSelect, "'day-to':", dayToSelect);
     }
 }
 
@@ -125,6 +135,7 @@ function initializeEventListeners() {
     // from ui-visibility.js
     updateUIVisibilityForDay(initialDay, initialLang);
 
+    UserProgress.load();
     console.log("DEBUG: initializeEventListeners completed.");
 }
 
