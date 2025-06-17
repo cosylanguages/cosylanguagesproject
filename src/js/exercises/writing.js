@@ -11,14 +11,14 @@ async function showQuestionWriting() {
         return;
     }
 
-    const days = getSelectedDays(); 
+    const days = getSelectedDays();
     if (!days || days.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.selectDay || 'Please select a day or a range of days first.'}</p>`;
         return;
     }
-    const day = days[0]; 
+    const day = days[0];
 
-    const questions = await loadSpeakingQuestions(language, day); 
+    const questions = await loadSpeakingQuestions(language, day); // Assuming writing questions might come from speaking questions for now
 
     if (!questions || questions.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
@@ -39,7 +39,7 @@ async function showQuestionWriting() {
         if (questionElem) questionElem.textContent = questionText;
         if (prevBtn) prevBtn.disabled = currentQuestionIndex === 0;
         if (nextBtn) nextBtn.disabled = currentQuestionIndex === questions.length - 1;
-        
+
         if (answerArea) answerArea.value = '';
         if (feedbackArea) feedbackArea.textContent = '';
     }
@@ -58,7 +58,7 @@ async function showQuestionWriting() {
         } else {
             const questionWords = (questionText.toLowerCase().match(/\b(\w+)\b/g) || []).filter(w => w.length > 2);
             const answerWords = (writtenAnswer.toLowerCase().match(/\b(\w+)\b/g) || []).filter(w => w.length > 2);
-            
+
             const commonKeywords = answerWords.filter(word => questionWords.includes(word));
 
             if (commonKeywords.length > 0) {
@@ -70,12 +70,12 @@ async function showQuestionWriting() {
             } else {
                 feedbackMsg = currentTranslations.answerSubmittedWriting || 'Answer submitted. Try to incorporate more elements from the question.';
             }
-            
+
             if (writtenAnswer.length < 20 && commonKeywords.length === 0) {
                  feedbackMsg += ` ${currentTranslations.tryToElaborate || 'Try to elaborate more in your answer.'}`;
             }
         }
-        if (feedbackArea) feedbackArea.innerHTML = `<span class="feedback-message" aria-label="Feedback">📝 ${feedbackMsg}</span>`; // Standardized feedback class
+        if (feedbackArea) feedbackArea.innerHTML = `<span class="feedback-message" aria-label="Feedback">📝 ${feedbackMsg}</span>`;
 
         // Auto-progression
         if (window.writingPracticeTimer) {
@@ -96,7 +96,7 @@ async function showQuestionWriting() {
             </div>
             <textarea id="writing-answer-area" rows="8" spellcheck="true" placeholder="${currentTranslations.typeYourAnswerPlaceholder || 'Type your answer here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
             <button id="submit-writing-answer-btn" class="btn-primary" style="padding: 10px 20px; margin-bottom:10px;">${currentTranslations.submitAnswer || 'Submit Answer'}</button>
-            <div id="writing-feedback" class="feedback-area" style="margin-top: 10px; min-height: 20px; padding: 8px; border-radius: 4px;"></div>
+            <div id="writing-feedback" class="exercise-feedback" style="margin-top: 10px; min-height: 20px; padding: 8px; border-radius: 4px;"></div>
         </div>
     `;
 
@@ -117,18 +117,16 @@ async function showQuestionWriting() {
     const submitButton = document.getElementById('submit-writing-answer-btn');
     submitButton.addEventListener('click', checkWritingAnswer);
 
-    // Ctrl+Enter for submission in textarea
     const writingAnswerArea = document.getElementById('writing-answer-area');
     if (writingAnswerArea && submitButton) {
         writingAnswerArea.addEventListener('keydown', function(event) {
             if (event.ctrlKey && event.key === 'Enter') {
-                event.preventDefault(); 
+                event.preventDefault();
                 submitButton.click();
             }
         });
     }
-    
-    // Clear any pending timer from previous exercise instance
+
     if (window.writingPracticeTimer) {
         clearTimeout(window.writingPracticeTimer);
     }
@@ -140,13 +138,14 @@ async function showStorytellingPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
-    
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
+
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
             <h3>${currentTranslations.storytellingTitle || 'Storytelling Practice'}</h3>
             <p>${currentTranslations.exerciseNotImplementedStorytelling || 'This storytelling exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineStorytellingHere || 'Imagine you write a story here and then click continue.'}</p>
-            <button id="finish-storytelling-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-storytelling-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -161,7 +160,7 @@ async function showStorytellingPractice() {
         }
         window.writingPracticeTimer = setTimeout(() => {
             startRandomWritingPractice();
-        }, 1500); 
+        }, 1500);
     });
 }
 
@@ -169,13 +168,14 @@ async function showDiaryPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
-    
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
+
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
             <h3>${currentTranslations.diaryTitle || 'Diary Practice'}</h3>
             <p>${currentTranslations.exerciseNotImplementedDiary || 'This diary entry exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineDiaryHere || 'Imagine you write a diary entry here and then click continue.'}</p>
-            <button id="finish-diary-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-diary-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -198,7 +198,7 @@ async function startRandomWritingPractice() {
     if (window.writingPracticeTimer) {
         clearTimeout(window.writingPracticeTimer);
     }
-     if (typeof cancelAutoAdvanceTimer === 'function') { 
+     if (typeof cancelAutoAdvanceTimer === 'function') {
         cancelAutoAdvanceTimer();
     }
 
@@ -208,7 +208,7 @@ async function startRandomWritingPractice() {
         showDiaryPractice
     ];
     const randomExerciseFunction = exercises[Math.floor(Math.random() * exercises.length)];
-    
+
     const resultArea = document.getElementById('result');
     if(resultArea) resultArea.innerHTML = '';
 
@@ -216,7 +216,7 @@ async function startRandomWritingPractice() {
 }
 
 function initWritingPractice() {
-    const writingButton = document.getElementById('writing-practice-btn'); 
+    const writingButton = document.getElementById('writing-practice-btn');
     if (writingButton) {
         writingButton.addEventListener('click', () => {
             startRandomWritingPractice();
@@ -235,3 +235,5 @@ window.startRandomWritingPractice = startRandomWritingPractice;
 window.initWritingPractice = initWritingPractice;
 
 // document.addEventListener('DOMContentLoaded', initWritingPractice); // Assuming called from main script if needed.
+
+[end of src/js/exercises/writing.js]

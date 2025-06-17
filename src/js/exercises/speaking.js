@@ -14,14 +14,14 @@ async function showQuestionPractice() {
         return;
     }
 
-    const days = getSelectedDays(); 
+    const days = getSelectedDays();
     if (!days || days.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.selectDay || 'Please select a day or a range of days first.'}</p>`;
         return;
     }
-    const day = days[0]; 
+    const day = days[0];
 
-    const questions = await loadSpeakingQuestions(language, day); 
+    const questions = await loadSpeakingQuestions(language, day);
 
     if (!questions || questions.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
@@ -42,7 +42,7 @@ async function showQuestionPractice() {
         if (questionTextElement) questionTextElement.textContent = questionText;
         if (prevBtn) prevBtn.disabled = currentQuestionIndex === 0;
         if (nextBtn) nextBtn.disabled = currentQuestionIndex === questions.length - 1;
-        
+
         if (transcriptEl) transcriptEl.textContent = '';
         if (feedbackEl) feedbackEl.textContent = '';
          // Reset record button text if it was changed
@@ -56,25 +56,25 @@ async function showQuestionPractice() {
     function handleSpeakingRecording() {
         const questionText = questions[currentQuestionIndex];
         const recordButton = document.getElementById('speaking-record-btn');
-        const feedbackDiv = document.getElementById('speaking-feedback'); 
-        const transcriptDiv = document.getElementById('speaking-transcript'); 
+        const feedbackDiv = document.getElementById('speaking-feedback');
+        const transcriptDiv = document.getElementById('speaking-transcript');
 
         if (!recordButton || !feedbackDiv || !transcriptDiv) {
             console.error("Required UI elements for recording are missing.");
             return;
         }
-        
+
         if (typeof recognition !== 'undefined' && recognition.recognizing) {
-            recognition.stop(); 
+            recognition.stop();
             return;
         }
-        
+
         const langCode = mapLanguageToSpeechCode(language);
 
         const onStartCallback = () => {
             recordButton.classList.add('recording');
             recordButton.textContent = currentTranslations.recordingInProgress || 'Recording...';
-            feedbackDiv.textContent = ''; 
+            feedbackDiv.textContent = '';
         };
 
         const onResultCallback = (transcript) => {
@@ -109,22 +109,22 @@ async function showQuestionPractice() {
             recordButton.classList.remove('recording');
             recordButton.textContent = '🎤';
             if (feedbackDiv.textContent === (currentTranslations.feedbackListening || 'Listening...')) {
-                 feedbackDiv.textContent = ''; 
+                 feedbackDiv.textContent = '';
             }
         };
-        
+
         startPronunciationCheck(
-            questionText,       
-            langCode,           
-            'speaking-transcript', 
-            'speaking-feedback',   
+            questionText,
+            langCode,
+            'speaking-transcript',
+            'speaking-feedback',
             onStartCallback,
             onResultCallback,
             onErrorCallback,
             onEndCallback
         );
     }
-    
+
     function checkSpeakingAnswer(question, transcript) {
         const feedbackDiv = document.getElementById('speaking-feedback');
         if (!feedbackDiv) return;
@@ -138,13 +138,13 @@ async function showQuestionPractice() {
         } else {
             const questionWords = question.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2);
             const transcriptWords = transcript.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
-            
+
             let commonWordCount = 0;
             if (questionWords.length > 0) {
                 commonWordCount = transcriptWords.filter(tWord => questionWords.some(qWord => qWord === tWord || tWord.includes(qWord) || qWord.includes(tWord))).length;
             }
 
-            if (commonWordCount > 0 || transcriptWords.length > 2) { 
+            if (commonWordCount > 0 || transcriptWords.length > 2) {
                 feedbackMsg = currentTranslations.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
                  if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) {
                     CosyAppInteractive.awardCorrectAnswer();
@@ -162,7 +162,7 @@ async function showQuestionPractice() {
                 }
             }
         }
-        feedbackDiv.innerHTML = feedbackMsg; 
+        feedbackDiv.innerHTML = feedbackMsg;
 
         // Auto-progression
         if (window.speakingPracticeTimer) {
@@ -203,7 +203,7 @@ async function showQuestionPractice() {
 
     document.getElementById('speaking-record-btn').addEventListener('click', handleSpeakingRecording);
 
-    displayCurrentQuestion(); 
+    displayCurrentQuestion();
 }
 
 
@@ -214,13 +214,14 @@ async function showMonologuePractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
-    
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
+
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
             <h3>${currentTranslations.monologuePracticeTitle || 'Monologue Practice'}</h3>
             <p>${currentTranslations.exerciseNotImplementedMonologue || 'This monologue exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineMonologueHere || 'Imagine you record a monologue here and then click continue.'}</p>
-            <button id="finish-monologue-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-monologue-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -231,7 +232,7 @@ async function showMonologuePractice() {
         }
         window.speakingPracticeTimer = setTimeout(() => {
             startRandomSpeakingPractice();
-        }, 1500); 
+        }, 1500);
     });
 }
 
@@ -242,13 +243,14 @@ async function showRolePlayPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
-    
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
+
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
             <h3>${currentTranslations.rolePlayPracticeTitle || 'Role-Play Practice'}</h3>
             <p>${currentTranslations.exerciseNotImplementedRolePlay || 'This role-play exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineRolePlayHere || 'Imagine you participate in a role-play here and then click continue.'}</p>
-            <button id="finish-roleplay-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-roleplay-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -273,12 +275,12 @@ async function startRandomSpeakingPractice() {
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
     }
-    if (typeof cancelAutoAdvanceTimer === 'function') { 
+    if (typeof cancelAutoAdvanceTimer === 'function') {
         cancelAutoAdvanceTimer();
     }
 
     const resultArea = document.getElementById('result');
-    if(resultArea) resultArea.innerHTML = ''; 
+    if(resultArea) resultArea.innerHTML = '';
 
     const exercises = [
         showQuestionPractice,
@@ -290,7 +292,7 @@ async function startRandomSpeakingPractice() {
 }
 
 function initSpeakingPractice() {
-    const speakingButton = document.getElementById('speaking-practice-btn'); 
+    const speakingButton = document.getElementById('speaking-practice-btn');
     if (speakingButton) {
         speakingButton.addEventListener('click', () => {
             startRandomSpeakingPractice();
@@ -310,3 +312,5 @@ window.startRandomSpeakingPractice = startRandomSpeakingPractice;
 window.initSpeakingPractice = initSpeakingPractice;
 
 // document.addEventListener('DOMContentLoaded', initSpeakingPractice); // Assuming called from main script.
+
+[end of src/js/exercises/speaking.js]
