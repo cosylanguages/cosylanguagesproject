@@ -261,12 +261,66 @@ button:active, select:active {
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-.practice-types button { 
-    color: var(--text-color-light); background-color: var(--primary-color); border-color: var(--primary-color);
-    padding: 0.7em 1.3em; font-size: 0.95rem; 
+/* Unified style for "Next Item" or "New Exercise" type buttons */
+.btn-next-item {
+    background-color: var(--medium-grey);
+    color: var(--text-color-dark);
+    border: 1px solid var(--dark-grey);
+    padding: 0.5em 1em;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none; /* Ensure no underline if it's an <a> tag styled as button */
+    display: inline-flex; /* For aligning emoji and text */
+    align-items: center;
+    gap: 0.4em; /* Space between emoji (if present in HTML) and text */
 }
-.practice-types button:hover { /* This will inherit general button:hover enhancements, plus its specific background/color */
-    background-color: var(--primary-hover-color); border-color: var(--primary-hover-color);
+
+.btn-next-item:hover {
+    background-color: var(--dark-grey);
+    color: var(--text-color-light);
+    border-color: var(--dark-grey);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-next-item:active {
+    transform: translateY(0);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    filter: brightness(0.95);
+}
+
+.practice-types button {
+    color: var(--text-color-light);
+    background-image: linear-gradient(145deg, #1abc9c, #16a085); /* Teal gradient */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle light border */
+    border-radius: 25px; /* Pill shape */
+    padding: 0.8em 1.8em; /* Generous padding */
+    font-size: 0.9rem;   /* Slightly smaller font if padding is increased */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease-in-out;
+    margin: 8px; /* Increased margin for better spacing */
+    flex-grow: 1; /* Allow buttons to grow if needed */
+    min-width: 180px; /* Ensure a minimum width */
+    text-align: center; /* Ensure text is centered, useful if emojis make it uneven */
+}
+
+.practice-types button:hover {
+    background-image: linear-gradient(145deg, #1dd2af, #18b89a); /* Slightly lighter/brighter teals */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px) scale(1.03); /* More noticeable hover effect */
+    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--text-color-light); /* Ensure text color remains light on hover */
+}
+
+.practice-types button:active {
+    transform: translateY(-1px) scale(1); /* Slight press down */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    filter: brightness(0.95); /* Darken slightly */
 }
 
 .btn-small { padding: 0.4em 0.8em; font-size: 0.8rem; }
@@ -888,7 +942,751 @@ body.flag-COSYenglish #choose-practice-label::before { content: "🧭 Choose You
 body.flag-COSYfrançais #choose-practice-label::before { content: "🧭 Choisissez votre exercice :"; }
 body.flag-COSYitaliano #choose-practice-label::before { content: "🧭 Scegli il tuo esercizio:"; }
 body.flag-COSYespañol #choose-practice-label::before { content: "🧭 Elige tu práctica:"; }
-body.flag-COSYportuguês #choose-practice-label::before { content: "🧭 Escolha sua prática:"; }
+body.flag-COSYportuguês #choose-practice-label::before { content: "🧭 Escolha sua práctica:"; }
+body.flag-COSYdeutsch #choose-practice-label::before { content: "🧭 Wählen Sie Ihre Übung:"; }
+body.flag-ΚΟΖΥελληνικά #choose-practice-label::before { content: "🧭 Επιλέξτε την άσκησή σας:"; }
+body.flag-ТАКОЙрусский #choose-practice-label::before { content: "🧭 Выберите упражнение:"; }
+body.flag-COSYbrezhoneg #choose-practice-label::before { content: "🧭 Dibabit ho pleustr :"; }
+body.flag-COSYtatarça #choose-practice-label::before { content: "🧭 Практиканы сайлагыз:"; }
+body.flag-ԾՈՍՅհայկական #choose-practice-label::before { content: "🧭 Ընտրեք ձեր վարժությունը:"; }
+body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Your Practice:"; }
+
+/* ==========================================================================
+   Unified grid and item sizing for match-image-word-exercise
+   ========================================================================== */
+.match-image-word-exercise .match-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  justify-items: center;
+  align-items: center;
+  margin: 20px 0 24px 0;
+}
+.match-image-word-exercise .match-item {
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--medium-grey); border-radius: 8px; background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: 1.1rem; cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+  margin: 0; padding: 0; position: relative;
+}
+.match-image-word-exercise .match-item img {
+  max-width: 80px; max-height: 80px; object-fit: contain; display: block; margin: 0 auto;
+}
+.match-image-word-exercise .match-item.selected {
+  border-color: var(--primary-color); background: var(--primary-color);
+  color: var(--text-color-light); transform: scale(1.05);
+}
+.match-image-word-exercise .match-item.matched {
+  border-color: var(--success-border); background: var(--success-bg);
+  color: var(--success-text); cursor: default;
+}
+.match-image-word-exercise .match-item.disabled { pointer-events: none; opacity: 0.7; }
+.match-image-word-exercise .match-item.incorrect-flash { animation: incorrectFlash 0.5s; }
+.match-image-word-exercise .image-item,
+.match-image-word-exercise .word-item {
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; background: #fff; border-radius: 8px;
+  border: 1px solid var(--medium-grey); box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin: 0; padding: 0; position: relative;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+}
+.match-image-word-exercise .word-item {
+  font-weight: 600; color: var(--primary-color); text-align: center;
+  word-break: break-word; padding: 0 8px;
+}
+.match-image-word-exercise .image-item img {
+  max-width: 80px; max-height: 80px; object-fit: contain; display: block; margin: 0 auto;
+}
+@media (max-width: 700px) {
+  .match-image-word-exercise .match-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .match-image-word-exercise .match-item,
+  .match-image-word-exercise .image-item,
+  .match-image-word-exercise .word-item { width: 90px; height: 90px; font-size: 1rem; }
+  .match-image-word-exercise .match-item img,
+  .match-image-word-exercise .image-item img { max-width: 60px; max-height: 60px; }
+}
+
+/* Added styles for gender exercises (some might be redundant or overridden by general .btn styles) */
+.btn-primary, .btn-secondary, .btn-emoji, .article-option-btn {
+    /* padding, border-radius, border, font-size, font-weight, cursor, transition, margin, box-shadow already in .btn or general button */
+}
+.btn-primary { /* Already defined, specific overrides below */ }
+.btn-primary:hover { /* General .btn:hover applies, plus specific .btn-primary:hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15), 0 3px 7px rgba(0,0,0,0.15); /* Combined shadows */
+    transform: translateY(-2px); /* This might conflict if .btn:hover also has transform */
+}
+.btn-primary:active { /* General .btn:active applies */ }
+.btn-secondary { /* Already defined */ }
+.btn-secondary:hover { /* General button:hover applies, plus specific .btn-secondary:hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 3px 7px rgba(0,0,0,0.1); /* Combined shadows */
+    transform: translateY(-2px); /* This might conflict */
+}
+.btn-secondary:active { /* General button:active applies */ }
+.btn-emoji { /* Already defined */ }
+.btn-emoji:hover { /* General button:hover might apply some, plus specific .btn-emoji:hover */ }
+.article-options-container { display: flex; flex-wrap: wrap; justify-content: center; margin: 15px 0; }
+.article-option-btn {
+    background-color: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; 
+    margin: 5px; min-width: 80px; 
+}
+.article-option-btn:hover {
+    background-color: #bbdefb; border-color: #64b5f6;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15); transform: translateY(-1px);
+}
+.article-option-btn.correct-selection {
+    background-color: #a5d6a7 !important; color: #1b5e20 !important;
+    border-color: #66bb6a !important; transform: scale(1.05);
+}
+.article-option-btn.incorrect-selection {
+    background-color: #ef9a9a !important; color: #c62828 !important;
+    border-color: #e57373 !important; opacity: 0.7;
+}
+.article-option-btn:disabled:not(.correct-selection):not(.incorrect-selection) {
+    background-color: #f5f5f5; opacity: 0.6; cursor: not-allowed;
+}
+.exercise-feedback .correct { /* Already modified for animation */ }
+.exercise-feedback .incorrect { /* Already modified for animation */ }
+.exercise-feedback { margin-top: 15px; min-height: 30px; }
+.gender-exercise, .match-exercise, .select-article-exercise, .verb-exercise, .fill-gap-exercise, .word-order-exercise {
+    /* padding, margin, border-radius, background-color, box-shadow, max-width mostly from .exercise-container */
+    border: 1px solid #e0e0e0; 
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05); 
+    max-width: 600px; 
+}
+.gender-prompt, .verb-prompt, .exercise-prompt, .sentence-with-gap, .word-order-exercise h3, .fill-gap-exercise h3, .match-exercise h3 {
+    /* font-size, color, margin-bottom, text-align from .exercise-prompt */
+    font-size: 1.2em; 
+}
+.select-article-exercise .exercise-prompt strong { font-weight: 600; color: #1976d2; }
+.exercise-input { /* General input styling applies */ }
+.match-container { /* Already defined */ }
+.match-col { flex: 1; padding: 10px; margin: 0 5px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 8px; }
+.match-col h4 { text-align: center; color: #555; margin-bottom: 10px; }
+.match-item { /* General .match-item rules apply */
+    margin: 8px 0; /* Specific margin */
+    /* Other properties like padding, background, border, transition, box-shadow from general .match-item */
+}
+.match-item:hover { /* General .match-item:hover applies, plus specifics here */
+    background-color: #eef8ff; border-color: #aaccf0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Combined with general .btn:hover if applicable */
+    transform: scale(1.03); 
+}
+.match-item.selected { /* General .match-item.selected applies */
+    background-color: #cfe8fc; border-color: #79b7f7;
+    font-weight: bold; box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+.match-item.matched { /* General .match-item.matched applies */
+    background-color: #d4edda; color: #155724; border-color: #c3e6cb;
+    opacity: 0.7; transform: scale(0.95); 
+}
+/* End of added styles for gender exercises - some consolidation with .btn might be needed */
+
+/* Layout for multiple choice options */
+.word-options, .article-options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust gap as needed */
+    justify-content: center; /* Center items if they don't fill the line */
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.word-options button, .article-options-container button.article-option-btn {
+    flex-grow: 1; /* Allow buttons to grow */
+    flex-basis: calc(45% - 10px); /* Aim for 2 per line, considering gap. Adjust as needed. */
+    /* Min-width can be useful if content varies a lot */
+    /* min-width: 120px; */
+    text-align: center;
+    padding: 10px; /* Ensure decent button size */
+}
+
+/* Responsive adjustment: if container is narrow, stack them */
+@media (max-width: 600px) {
+    .word-options button, .article-options-container button.article-option-btn {
+        flex-basis: 100%; /* Stack on smaller screens */
+    }
+}
+
+/* Language Flag Backgrounds & CSS-only translation */
+/* ... (omitted for brevity) ... */
+body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYespañol { background-image: url('https://flagcdn.com/es.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYportuguês { background-image: url('https://flagcdn.com/pt.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbrezhoneg { background-image: url('/assets/icons/Flag_of_Brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYtatarça { background-image: url('/assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Bashkortostan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+
+#choose-practice-label { font-size: 0 !important; position: relative; }
+#choose-practice-label::before { font-size: 1rem; color: var(--text-color-light); }
+body.flag-COSYenglish #choose-practice-label::before { content: "🧭 Choose Your Practice:"; }
+body.flag-COSYfrançais #choose-practice-label::before { content: "🧭 Choisissez votre exercice :"; }
+body.flag-COSYitaliano #choose-practice-label::before { content: "🧭 Scegli il tuo esercizio:"; }
+body.flag-COSYespañol #choose-practice-label::before { content: "🧭 Elige tu práctica:"; }
+body.flag-COSYportuguês #choose-practice-label::before { content: "🧭 Escolha sua práctica:"; }
+body.flag-COSYdeutsch #choose-practice-label::before { content: "🧭 Wählen Sie Ihre Übung:"; }
+body.flag-ΚΟΖΥελληνικά #choose-practice-label::before { content: "🧭 Επιλέξτε την άσκησή σας:"; }
+body.flag-ТАКОЙрусский #choose-practice-label::before { content: "🧭 Выберите упражнение:"; }
+body.flag-COSYbrezhoneg #choose-practice-label::before { content: "🧭 Dibabit ho pleustr :"; }
+body.flag-COSYtatarça #choose-practice-label::before { content: "🧭 Практиканы сайлагыз:"; }
+body.flag-ԾՈՍՅհայկական #choose-practice-label::before { content: "🧭 Ընտրեք ձեր վարժությունը:"; }
+body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Your Practice:"; }
+
+/* ==========================================================================
+   Unified grid and item sizing for match-image-word-exercise
+   ========================================================================== */
+.match-image-word-exercise .match-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  justify-items: center;
+  align-items: center;
+  margin: 20px 0 24px 0;
+}
+.match-image-word-exercise .match-item {
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--medium-grey); border-radius: 8px; background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: 1.1rem; cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+  margin: 0; padding: 0; position: relative;
+}
+.match-image-word-exercise .match-item img {
+  max-width: 80px; max-height: 80px; object-fit: contain; display: block; margin: 0 auto;
+}
+.match-image-word-exercise .match-item.selected {
+  border-color: var(--primary-color); background: var(--primary-color);
+  color: var(--text-color-light); transform: scale(1.05);
+}
+.match-image-word-exercise .match-item.matched {
+  border-color: var(--success-border); background: var(--success-bg);
+  color: var(--success-text); cursor: default;
+}
+.match-image-word-exercise .match-item.disabled { pointer-events: none; opacity: 0.7; }
+.match-image-word-exercise .match-item.incorrect-flash { animation: incorrectFlash 0.5s; }
+.match-image-word-exercise .image-item,
+.match-image-word-exercise .word-item {
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; background: #fff; border-radius: 8px;
+  border: 1px solid var(--medium-grey); box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin: 0; padding: 0; position: relative;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+}
+.match-image-word-exercise .word-item {
+  font-weight: 600; color: var(--primary-color); text-align: center;
+  word-break: break-word; padding: 0 8px;
+}
+.match-image-word-exercise .image-item img {
+  max-width: 80px; max-height: 80px; object-fit: contain; display: block; margin: 0 auto;
+}
+@media (max-width: 700px) {
+  .match-image-word-exercise .match-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .match-image-word-exercise .match-item,
+  .match-image-word-exercise .image-item,
+  .match-image-word-exercise .word-item { width: 90px; height: 90px; font-size: 1rem; }
+  .match-image-word-exercise .match-item img,
+  .match-image-word-exercise .image-item img { max-width: 60px; max-height: 60px; }
+}
+
+/* Added styles for gender exercises (some might be redundant or overridden by general .btn styles) */
+.btn-primary, .btn-secondary, .btn-emoji, .article-option-btn {
+    /* padding, border-radius, border, font-size, font-weight, cursor, transition, margin, box-shadow already in .btn or general button */
+}
+.btn-primary { /* Already defined, specific overrides below */ }
+.btn-primary:hover { /* General .btn:hover applies, plus specific .btn-primary:hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15), 0 3px 7px rgba(0,0,0,0.15); /* Combined shadows */
+    transform: translateY(-2px); /* This might conflict if .btn:hover also has transform */
+}
+.btn-primary:active { /* General .btn:active applies */ }
+.btn-secondary { /* Already defined */ }
+.btn-secondary:hover { /* General button:hover applies, plus specific .btn-secondary:hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 3px 7px rgba(0,0,0,0.1); /* Combined shadows */
+    transform: translateY(-2px); /* This might conflict */
+}
+.btn-secondary:active { /* General button:active applies */ }
+.btn-emoji { /* Already defined */ }
+.btn-emoji:hover { /* General button:hover might apply some, plus specific .btn-emoji:hover */ }
+.article-options-container { display: flex; flex-wrap: wrap; justify-content: center; margin: 15px 0; }
+.article-option-btn {
+    background-color: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; 
+    margin: 5px; min-width: 80px; 
+}
+.article-option-btn:hover {
+    background-color: #bbdefb; border-color: #64b5f6;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15); transform: translateY(-1px);
+}
+.article-option-btn.correct-selection {
+    background-color: #a5d6a7 !important; color: #1b5e20 !important;
+    border-color: #66bb6a !important; transform: scale(1.05);
+}
+.article-option-btn.incorrect-selection {
+    background-color: #ef9a9a !important; color: #c62828 !important;
+    border-color: #e57373 !important; opacity: 0.7;
+}
+.article-option-btn:disabled:not(.correct-selection):not(.incorrect-selection) {
+    background-color: #f5f5f5; opacity: 0.6; cursor: not-allowed;
+}
+.exercise-feedback .correct { /* Already modified for animation */ }
+.exercise-feedback .incorrect { /* Already modified for animation */ }
+.exercise-feedback { margin-top: 15px; min-height: 30px; }
+.gender-exercise, .match-exercise, .select-article-exercise, .verb-exercise, .fill-gap-exercise, .word-order-exercise {
+    /* padding, margin, border-radius, background-color, box-shadow, max-width mostly from .exercise-container */
+    border: 1px solid #e0e0e0; 
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05); 
+    max-width: 600px; 
+}
+.gender-prompt, .verb-prompt, .exercise-prompt, .sentence-with-gap, .word-order-exercise h3, .fill-gap-exercise h3, .match-exercise h3 {
+    /* font-size, color, margin-bottom, text-align from .exercise-prompt */
+    font-size: 1.2em; 
+}
+.select-article-exercise .exercise-prompt strong { font-weight: 600; color: #1976d2; }
+.exercise-input { /* General input styling applies */ }
+.match-container { /* Already defined */ }
+.match-col { flex: 1; padding: 10px; margin: 0 5px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 8px; }
+.match-col h4 { text-align: center; color: #555; margin-bottom: 10px; }
+.match-item { /* General .match-item rules apply */
+    margin: 8px 0; /* Specific margin */
+    /* Other properties like padding, background, border, transition, box-shadow from general .match-item */
+}
+.match-item:hover { /* General .match-item:hover applies, plus specifics here */
+    background-color: #eef8ff; border-color: #aaccf0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Combined with general .btn:hover if applicable */
+    transform: scale(1.03); 
+}
+.match-item.selected { /* General .match-item.selected applies */
+    background-color: #cfe8fc; border-color: #79b7f7;
+    font-weight: bold; box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+.match-item.matched { /* General .match-item.matched applies */
+    background-color: #d4edda; color: #155724; border-color: #c3e6cb;
+    opacity: 0.7; transform: scale(0.95); 
+}
+/* End of added styles for gender exercises - some consolidation with .btn might be needed */
+
+/* Layout for multiple choice options */
+.word-options, .article-options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust gap as needed */
+    justify-content: center; /* Center items if they don't fill the line */
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.word-options button, .article-options-container button.article-option-btn {
+    flex-grow: 1; /* Allow buttons to grow */
+    flex-basis: calc(45% - 10px); /* Aim for 2 per line, considering gap. Adjust as needed. */
+    /* Min-width can be useful if content varies a lot */
+    /* min-width: 120px; */
+    text-align: center;
+    padding: 10px; /* Ensure decent button size */
+}
+
+/* Responsive adjustment: if container is narrow, stack them */
+@media (max-width: 600px) {
+    .word-options button, .article-options-container button.article-option-btn {
+        flex-basis: 100%; /* Stack on smaller screens */
+    }
+}
+
+/* Language Flag Backgrounds & CSS-only translation */
+/* ... (omitted for brevity) ... */
+body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYespañol { background-image: url('https://flagcdn.com/es.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYportuguês { background-image: url('https://flagcdn.com/pt.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbrezhoneg { background-image: url('/assets/icons/Flag_of_Brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYtatarça { background-image: url('/assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Bashkortostan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+
+#choose-practice-label { font-size: 0 !important; position: relative; }
+#choose-practice-label::before { font-size: 1rem; color: var(--text-color-light); }
+body.flag-COSYenglish #choose-practice-label::before { content: "🧭 Choose Your Practice:"; }
+body.flag-COSYfrançais #choose-practice-label::before { content: "🧭 Choisissez votre exercice :"; }
+body.flag-COSYitaliano #choose-practice-label::before { content: "🧭 Scegli il tuo esercizio:"; }
+body.flag-COSYespañol #choose-practice-label::before { content: "🧭 Elige tu práctica:"; }
+body.flag-COSYportuguês #choose-practice-label::before { content: "🧭 Escolha sua práctica:"; }
+body.flag-COSYdeutsch #choose-practice-label::before { content: "🧭 Wählen Sie Ihre Übung:"; }
+body.flag-ΚΟΖΥελληνικά #choose-practice-label::before { content: "🧭 Επιλέξτε την άσκησή σας:"; }
+body.flag-ТАКОЙрусский #choose-practice-label::before { content: "🧭 Выберите упражнение:"; }
+body.flag-COSYbrezhoneg #choose-practice-label::before { content: "🧭 Dibabit ho pleustr :"; }
+body.flag-COSYtatarça #choose-practice-label::before { content: "🧭 Практиканы сайлагыз:"; }
+body.flag-ԾՈՍՅհայկական #choose-practice-label::before { content: "🧭 Ընտրեք ձեր վարժությունը:"; }
+body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Your Practice:"; }
+
+/* ==========================================================================
+   Unified grid and item sizing for match-image-word-exercise
+   ========================================================================== */
+.match-image-word-exercise .match-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  justify-items: center;
+  align-items: center;
+  margin: 20px 0 24px 0;
+}
+.match-image-word-exercise .match-item {
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--medium-grey); border-radius: 8px; background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: 1.1rem; cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+  margin: 0; padding: 0; position: relative;
+}
+.match-image-word-exercise .match-item img {
+  max-width: 80px; max-height: 80px; object-fit: contain; display: block; margin: 0 auto;
+}
+.match-image-word-exercise .match-item.selected {
+  border-color: var(--primary-color); background: var(--primary-color);
+  color: var(--text-color-light); transform: scale(1.05);
+}
+.match-image-word-exercise .match-item.matched {
+  border-color: var(--success-border); background: var(--success-bg);
+  color: var(--success-text); cursor: default;
+}
+.match-image-word-exercise .match-item.disabled { pointer-events: none; opacity: 0.7; }
+.match-image-word-exercise .match-item.incorrect-flash { animation: incorrectFlash 0.5s; }
+.match-image-word-exercise .image-item,
+.match-image-word-exercise .word-item {
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; background: #fff; border-radius: 8px;
+  border: 1px solid var(--medium-grey); box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin: 0; padding: 0; position: relative;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+}
+.match-image-word-exercise .word-item {
+  font-weight: 600; color: var(--primary-color); text-align: center;
+  word-break: break-word; padding: 0 8px;
+}
+.match-image-word-exercise .image-item img {
+  max-width: 80px; max-height: 80px; object-fit: contain; display: block; margin: 0 auto;
+}
+@media (max-width: 700px) {
+  .match-image-word-exercise .match-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .match-image-word-exercise .match-item,
+  .match-image-word-exercise .image-item,
+  .match-image-word-exercise .word-item { width: 90px; height: 90px; font-size: 1rem; }
+  .match-image-word-exercise .match-item img,
+  .match-image-word-exercise .image-item img { max-width: 60px; max-height: 60px; }
+}
+
+/* Added styles for gender exercises (some might be redundant or overridden by general .btn styles) */
+.btn-primary, .btn-secondary, .btn-emoji, .article-option-btn {
+    /* padding, border-radius, border, font-size, font-weight, cursor, transition, margin, box-shadow already in .btn or general button */
+}
+.btn-primary { /* Already defined, specific overrides below */ }
+.btn-primary:hover { /* General .btn:hover applies, plus specific .btn-primary:hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15), 0 3px 7px rgba(0,0,0,0.15); /* Combined shadows */
+    transform: translateY(-2px); /* This might conflict if .btn:hover also has transform */
+}
+.btn-primary:active { /* General .btn:active applies */ }
+.btn-secondary { /* Already defined */ }
+.btn-secondary:hover { /* General button:hover applies, plus specific .btn-secondary:hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 3px 7px rgba(0,0,0,0.1); /* Combined shadows */
+    transform: translateY(-2px); /* This might conflict */
+}
+.btn-secondary:active { /* General button:active applies */ }
+.btn-emoji { /* Already defined */ }
+.btn-emoji:hover { /* General button:hover might apply some, plus specific .btn-emoji:hover */ }
+.article-options-container { display: flex; flex-wrap: wrap; justify-content: center; margin: 15px 0; }
+.article-option-btn {
+    background-color: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; 
+    margin: 5px; min-width: 80px; 
+}
+.article-option-btn:hover {
+    background-color: #bbdefb; border-color: #64b5f6;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15); transform: translateY(-1px);
+}
+.article-option-btn.correct-selection {
+    background-color: #a5d6a7 !important; color: #1b5e20 !important;
+    border-color: #66bb6a !important; transform: scale(1.05);
+}
+.article-option-btn.incorrect-selection {
+    background-color: #ef9a9a !important; color: #c62828 !important;
+    border-color: #e57373 !important; opacity: 0.7;
+}
+.article-option-btn:disabled:not(.correct-selection):not(.incorrect-selection) {
+    background-color: #f5f5f5; opacity: 0.6; cursor: not-allowed;
+}
+.exercise-feedback .correct { /* Already modified for animation */ }
+.exercise-feedback .incorrect { /* Already modified for animation */ }
+.exercise-feedback { margin-top: 15px; min-height: 30px; }
+.gender-exercise, .match-exercise, .select-article-exercise, .verb-exercise, .fill-gap-exercise, .word-order-exercise {
+    /* padding, margin, border-radius, background-color, box-shadow, max-width mostly from .exercise-container */
+    border: 1px solid #e0e0e0; 
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05); 
+    max-width: 600px; 
+}
+.gender-prompt, .verb-prompt, .exercise-prompt, .sentence-with-gap, .word-order-exercise h3, .fill-gap-exercise h3, .match-exercise h3 {
+    /* font-size, color, margin-bottom, text-align from .exercise-prompt */
+    font-size: 1.2em; 
+}
+.select-article-exercise .exercise-prompt strong { font-weight: 600; color: #1976d2; }
+.exercise-input { /* General input styling applies */ }
+.match-container { /* Already defined */ }
+.match-col { flex: 1; padding: 10px; margin: 0 5px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 8px; }
+.match-col h4 { text-align: center; color: #555; margin-bottom: 10px; }
+.match-item { /* General .match-item rules apply */
+    margin: 8px 0; /* Specific margin */
+    /* Other properties like padding, background, border, transition, box-shadow from general .match-item */
+}
+.match-item:hover { /* General .match-item:hover applies, plus specifics here */
+    background-color: #eef8ff; border-color: #aaccf0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Combined with general .btn:hover if applicable */
+    transform: scale(1.03); 
+}
+.match-item.selected { /* General .match-item.selected applies */
+    background-color: #cfe8fc; border-color: #79b7f7;
+    font-weight: bold; box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+.match-item.matched { /* General .match-item.matched applies */
+    background-color: #d4edda; color: #155724; border-color: #c3e6cb;
+    opacity: 0.7; transform: scale(0.95); 
+}
+/* End of added styles for gender exercises - some consolidation with .btn might be needed */
+
+/* Layout for multiple choice options */
+.word-options, .article-options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust gap as needed */
+    justify-content: center; /* Center items if they don't fill the line */
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.word-options button, .article-options-container button.article-option-btn {
+    flex-grow: 1; /* Allow buttons to grow */
+    flex-basis: calc(45% - 10px); /* Aim for 2 per line, considering gap. Adjust as needed. */
+    /* Min-width can be useful if content varies a lot */
+    /* min-width: 120px; */
+    text-align: center;
+    padding: 10px; /* Ensure decent button size */
+}
+
+/* Responsive adjustment: if container is narrow, stack them */
+@media (max-width: 600px) {
+    .word-options button, .article-options-container button.article-option-btn {
+        flex-basis: 100%; /* Stack on smaller screens */
+    }
+}
+
+/* Language Flag Backgrounds & CSS-only translation */
+/* ... (omitted for brevity) ... */
+body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYespañol { background-image: url('https://flagcdn.com/es.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYportuguês { background-image: url('https://flagcdn.com/pt.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbrezhoneg { background-image: url('/assets/icons/Flag_of_Brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYtatarça { background-image: url('/assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Bashkortostan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+
+#choose-practice-label { font-size: 0 !important; position: relative; }
+#choose-practice-label::before { font-size: 1rem; color: var(--text-color-light); }
+body.flag-COSYenglish #choose-practice-label::before { content: "🧭 Choose Your Practice:"; }
+body.flag-COSYfrançais #choose-practice-label::before { content: "🧭 Choisissez votre exercice :"; }
+body.flag-COSYitaliano #choose-practice-label::before { content: "🧭 Scegli il tuo esercizio:"; }
+body.flag-COSYespañol #choose-practice-label::before { content: "🧭 Elige tu práctica:"; }
+body.flag-COSYportuguês #choose-practice-label::before { content: "🧭 Escolha sua práctica:"; }
+body.flag-COSYdeutsch #choose-practice-label::before { content: "🧭 Wählen Sie Ihre Übung:"; }
+body.flag-ΚΟΖΥελληνικά #choose-practice-label::before { content: "🧭 Επιλέξτε την άσκησή σας:"; }
+body.flag-ТАКОЙрусский #choose-practice-label::before { content: "🧭 Выберите упражнение:"; }
+body.flag-COSYbrezhoneg #choose-practice-label::before { content: "🧭 Dibabit ho pleustr :"; }
+body.flag-COSYtatarça #choose-practice-label::before { content: "🧭 Практиканы сайлагыз:"; }
+body.flag-ԾՈՍՅհայկական #choose-practice-label::before { content: "🧭 Ընտրեք ձեր վարժությունը:"; }
+body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Your Practice:"; }
+
+/* ==========================================================================
+   Unified grid and item sizing for match-image-word-exercise
+   ========================================================================== */
+.match-image-word-exercise .match-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  justify-items: center;
+  align-items: center;
+  margin: 20px 0 24px 0;
+}
+.match-image-word-exercise .match-item {
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--medium-grey); border-radius: 8px; background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: 1.1rem; cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+  margin: 0; padding: 0; position: relative;
+}
+.match-image-word-exercise .match-item img {
+  max-width: 80px; max-height: 80px; object-fit: contain; display: block; margin: 0 auto;
+}
+.match-image-word-exercise .match-item.selected {
+  border-color: var(--primary-color); background: var(--primary-color);
+  color: var(--text-color-light); transform: scale(1.05);
+}
+.match-image-word-exercise .match-item.matched {
+  border-color: var(--success-border); background: var(--success-bg);
+  color: var(--success-text); cursor: default;
+}
+.match-image-word-exercise .match-item.disabled { pointer-events: none; opacity: 0.7; }
+.match-image-word-exercise .match-item.incorrect-flash { animation: incorrectFlash 0.5s; }
+.match-image-word-exercise .image-item,
+.match-image-word-exercise .word-item {
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; background: #fff; border-radius: 8px;
+  border: 1px solid var(--medium-grey); box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin: 0; padding: 0; position: relative;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+}
+.match-image-word-exercise .word-item {
+  font-weight: 600; color: var(--primary-color); text-align: center;
+  word-break: break-word; padding: 0 8px;
+}
+.match-image-word-exercise .image-item img {
+  max-width: 80px; max-height: 80px; object-fit: contain; display: block; margin: 0 auto;
+}
+@media (max-width: 700px) {
+  .match-image-word-exercise .match-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .match-image-word-exercise .match-item,
+  .match-image-word-exercise .image-item,
+  .match-image-word-exercise .word-item { width: 90px; height: 90px; font-size: 1rem; }
+  .match-image-word-exercise .match-item img,
+  .match-image-word-exercise .image-item img { max-width: 60px; max-height: 60px; }
+}
+
+/* Added styles for gender exercises (some might be redundant or overridden by general .btn styles) */
+.btn-primary, .btn-secondary, .btn-emoji, .article-option-btn {
+    /* padding, border-radius, border, font-size, font-weight, cursor, transition, margin, box-shadow already in .btn or general button */
+}
+.btn-primary { /* Already defined, specific overrides below */ }
+.btn-primary:hover { /* General .btn:hover applies, plus specific .btn-primary:hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15), 0 3px 7px rgba(0,0,0,0.15); /* Combined shadows */
+    transform: translateY(-2px); /* This might conflict if .btn:hover also has transform */
+}
+.btn-primary:active { /* General .btn:active applies */ }
+.btn-secondary { /* Already defined */ }
+.btn-secondary:hover { /* General button:hover applies, plus specific .btn-secondary:hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 3px 7px rgba(0,0,0,0.1); /* Combined shadows */
+    transform: translateY(-2px); /* This might conflict */
+}
+.btn-secondary:active { /* General button:active applies */ }
+.btn-emoji { /* Already defined */ }
+.btn-emoji:hover { /* General button:hover might apply some, plus specific .btn-emoji:hover */ }
+.article-options-container { display: flex; flex-wrap: wrap; justify-content: center; margin: 15px 0; }
+.article-option-btn {
+    background-color: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; 
+    margin: 5px; min-width: 80px; 
+}
+.article-option-btn:hover {
+    background-color: #bbdefb; border-color: #64b5f6;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15); transform: translateY(-1px);
+}
+.article-option-btn.correct-selection {
+    background-color: #a5d6a7 !important; color: #1b5e20 !important;
+    border-color: #66bb6a !important; transform: scale(1.05);
+}
+.article-option-btn.incorrect-selection {
+    background-color: #ef9a9a !important; color: #c62828 !important;
+    border-color: #e57373 !important; opacity: 0.7;
+}
+.article-option-btn:disabled:not(.correct-selection):not(.incorrect-selection) {
+    background-color: #f5f5f5; opacity: 0.6; cursor: not-allowed;
+}
+.exercise-feedback .correct { /* Already modified for animation */ }
+.exercise-feedback .incorrect { /* Already modified for animation */ }
+.exercise-feedback { margin-top: 15px; min-height: 30px; }
+.gender-exercise, .match-exercise, .select-article-exercise, .verb-exercise, .fill-gap-exercise, .word-order-exercise {
+    /* padding, margin, border-radius, background-color, box-shadow, max-width mostly from .exercise-container */
+    border: 1px solid #e0e0e0; 
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05); 
+    max-width: 600px; 
+}
+.gender-prompt, .verb-prompt, .exercise-prompt, .sentence-with-gap, .word-order-exercise h3, .fill-gap-exercise h3, .match-exercise h3 {
+    /* font-size, color, margin-bottom, text-align from .exercise-prompt */
+    font-size: 1.2em; 
+}
+.select-article-exercise .exercise-prompt strong { font-weight: 600; color: #1976d2; }
+.exercise-input { /* General input styling applies */ }
+.match-container { /* Already defined */ }
+.match-col { flex: 1; padding: 10px; margin: 0 5px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 8px; }
+.match-col h4 { text-align: center; color: #555; margin-bottom: 10px; }
+.match-item { /* General .match-item rules apply */
+    margin: 8px 0; /* Specific margin */
+    /* Other properties like padding, background, border, transition, box-shadow from general .match-item */
+}
+.match-item:hover { /* General .match-item:hover applies, plus specifics here */
+    background-color: #eef8ff; border-color: #aaccf0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Combined with general .btn:hover if applicable */
+    transform: scale(1.03); 
+}
+.match-item.selected { /* General .match-item.selected applies */
+    background-color: #cfe8fc; border-color: #79b7f7;
+    font-weight: bold; box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+.match-item.matched { /* General .match-item.matched applies */
+    background-color: #d4edda; color: #155724; border-color: #c3e6cb;
+    opacity: 0.7; transform: scale(0.95); 
+}
+/* End of added styles for gender exercises - some consolidation with .btn might be needed */
+
+/* Layout for multiple choice options */
+.word-options, .article-options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust gap as needed */
+    justify-content: center; /* Center items if they don't fill the line */
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.word-options button, .article-options-container button.article-option-btn {
+    flex-grow: 1; /* Allow buttons to grow */
+    flex-basis: calc(45% - 10px); /* Aim for 2 per line, considering gap. Adjust as needed. */
+    /* Min-width can be useful if content varies a lot */
+    /* min-width: 120px; */
+    text-align: center;
+    padding: 10px; /* Ensure decent button size */
+}
+
+/* Responsive adjustment: if container is narrow, stack them */
+@media (max-width: 600px) {
+    .word-options button, .article-options-container button.article-option-btn {
+        flex-basis: 100%; /* Stack on smaller screens */
+    }
+}
+
+/* Language Flag Backgrounds & CSS-only translation */
+/* ... (omitted for brevity) ... */
+body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYespañol { background-image: url('https://flagcdn.com/es.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYportuguês { background-image: url('https://flagcdn.com/pt.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYdeutsch { background-image: url('https://flagcdn.com/de.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ΚΟΖΥελληνικά { background-image: url('https://flagcdn.com/gr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ТАКОЙрусский { background-image: url('https://flagcdn.com/ru.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-ԾՈՍՅհայկական { background-image: url('https://flagcdn.com/am.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbrezhoneg { background-image: url('/assets/icons/Flag_of_Brittany.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYtatarça { background-image: url('/assets/icons/Flag_of_Tatarstan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+body.flag-COSYbashkort { background-image: url('/assets/icons/Flag_of_Bashkortostan.png'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
+
+#choose-practice-label { font-size: 0 !important; position: relative; }
+#choose-practice-label::before { font-size: 1rem; color: var(--text-color-light); }
+body.flag-COSYenglish #choose-practice-label::before { content: "🧭 Choose Your Practice:"; }
+body.flag-COSYfrançais #choose-practice-label::before { content: "🧭 Choisissez votre exercice :"; }
+body.flag-COSYitaliano #choose-practice-label::before { content: "🧭 Scegli il tuo esercizio:"; }
+body.flag-COSYespañol #choose-practice-label::before { content: "🧭 Elige tu práctica:"; }
+body.flag-COSYportuguês #choose-practice-label::before { content: "🧭 Escolha sua práctica:"; }
 body.flag-COSYdeutsch #choose-practice-label::before { content: "🧭 Wählen Sie Ihre Übung:"; }
 body.flag-ΚΟΖΥελληνικά #choose-practice-label::before { content: "🧭 Επιλέξτε την άσκησή σας:"; }
 body.flag-ТАКОЙрусский #choose-practice-label::before { content: "🧭 Выберите упражнение:"; }

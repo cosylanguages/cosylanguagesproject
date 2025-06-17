@@ -18,7 +18,7 @@ async function showQuestionWriting() {
     }
     const day = days[0]; 
 
-    const questions = await loadSpeakingQuestions(language, day); 
+    const questions = await loadSpeakingQuestions(language, day); // Assuming writing questions might come from speaking questions for now
 
     if (!questions || questions.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
@@ -75,7 +75,7 @@ async function showQuestionWriting() {
                  feedbackMsg += ` ${currentTranslations.tryToElaborate || 'Try to elaborate more in your answer.'}`;
             }
         }
-        if (feedbackArea) feedbackArea.innerHTML = `<span class="feedback-message" aria-label="Feedback">📝 ${feedbackMsg}</span>`; // Standardized feedback class
+        if (feedbackArea) feedbackArea.innerHTML = `<span class="feedback-message" aria-label="Feedback">📝 ${feedbackMsg}</span>`;
 
         // Auto-progression
         if (window.writingPracticeTimer) {
@@ -117,7 +117,6 @@ async function showQuestionWriting() {
     const submitButton = document.getElementById('submit-writing-answer-btn');
     submitButton.addEventListener('click', checkWritingAnswer);
 
-    // Ctrl+Enter for submission in textarea
     const writingAnswerArea = document.getElementById('writing-answer-area');
     if (writingAnswerArea && submitButton) {
         writingAnswerArea.addEventListener('keydown', function(event) {
@@ -128,7 +127,6 @@ async function showQuestionWriting() {
         });
     }
     
-    // Clear any pending timer from previous exercise instance
     if (window.writingPracticeTimer) {
         clearTimeout(window.writingPracticeTimer);
     }
@@ -140,13 +138,14 @@ async function showStorytellingPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
             <h3>${currentTranslations.storytellingTitle || 'Storytelling Practice'}</h3>
             <p>${currentTranslations.exerciseNotImplementedStorytelling || 'This storytelling exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineStorytellingHere || 'Imagine you write a story here and then click continue.'}</p>
-            <button id="finish-storytelling-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-storytelling-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -169,13 +168,14 @@ async function showDiaryPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
             <h3>${currentTranslations.diaryTitle || 'Diary Practice'}</h3>
             <p>${currentTranslations.exerciseNotImplementedDiary || 'This diary entry exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineDiaryHere || 'Imagine you write a diary entry here and then click continue.'}</p>
-            <button id="finish-diary-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-diary-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -235,3 +235,5 @@ window.startRandomWritingPractice = startRandomWritingPractice;
 window.initWritingPractice = initWritingPractice;
 
 // document.addEventListener('DOMContentLoaded', initWritingPractice); // Assuming called from main script if needed.
+
+

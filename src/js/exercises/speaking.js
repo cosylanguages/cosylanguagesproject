@@ -214,13 +214,14 @@ async function showMonologuePractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
             <h3>${currentTranslations.monologuePracticeTitle || 'Monologue Practice'}</h3>
             <p>${currentTranslations.exerciseNotImplementedMonologue || 'This monologue exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineMonologueHere || 'Imagine you record a monologue here and then click continue.'}</p>
-            <button id="finish-monologue-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-monologue-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -242,13 +243,14 @@ async function showRolePlayPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
             <h3>${currentTranslations.rolePlayPracticeTitle || 'Role-Play Practice'}</h3>
             <p>${currentTranslations.exerciseNotImplementedRolePlay || 'This role-play exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineRolePlayHere || 'Imagine you participate in a role-play here and then click continue.'}</p>
-            <button id="finish-roleplay-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-roleplay-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -310,3 +312,5 @@ window.startRandomSpeakingPractice = startRandomSpeakingPractice;
 window.initSpeakingPractice = initSpeakingPractice;
 
 // document.addEventListener('DOMContentLoaded', initSpeakingPractice); // Assuming called from main script.
+
+

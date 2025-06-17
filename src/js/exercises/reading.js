@@ -6,13 +6,14 @@ async function showStoryPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="reading-exercise-container">
             <h3>${currentTranslations.storyTime || 'Story Time'}</h3>
             <p>${currentTranslations.exerciseNotImplementedStory || 'This story exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineStoryHere || 'Imagine you read a story here and then click continue.'}</p>
-            <button id="finish-reading-story-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-reading-story-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
 
@@ -38,13 +39,14 @@ async function showInterestingFactPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
+    const buttonText = currentTranslations.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="reading-exercise-container">
             <h3>${currentTranslations.interestingFact || 'Interesting Fact'}</h3>
             <p>${currentTranslations.exerciseNotImplementedFact || 'This interesting fact exercise is not yet implemented.'}</p>
             <p>${currentTranslations.imagineFactHere || 'Imagine you read an interesting fact here and then click continue.'}</p>
-            <button id="finish-reading-fact-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+            <button id="finish-reading-fact-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
     
@@ -111,3 +113,5 @@ window.showStoryPractice = showStoryPractice;
 window.showInterestingFactPractice = showInterestingFactPractice;
 window.startRandomReadingPractice = startRandomReadingPractice;
 window.initReadingPractice = initReadingPractice;
+
+[end of src/js/exercises/reading.js]
