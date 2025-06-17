@@ -814,7 +814,7 @@ async function showTranscribeWord() {
         if (userAnswer.toLowerCase() === word.toLowerCase()) {
             feedback.innerHTML = '<span class="correct">✅ Correct! Well done!</span>';
         } else {
-            feedback.innerHTML = '<span class="incorrect">❌ Not quite. Try again!</span>';
+            feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. Try again!</span> The correct answer is: <b class="correct-answer-display">${correctAnswer}</b>`;
         }
     });
 

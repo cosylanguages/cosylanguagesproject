@@ -348,10 +348,11 @@ async function showArticleWord() {
                     feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
                     CosyAppInteractive.awardCorrectAnswer();
                     if (variation.type === 'article') CosyAppInteractive.scheduleReview(language, 'gender', item.word, true);
-                    setTimeout(() => showArticleWord(), 1200);
+                    setTimeout(() => { startGenderPractice(); }, 2000); // MODIFIED
                 } else {
                     feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not quite. The correct answer is: <b>${variation.answer}</b></span>`;
                     CosyAppInteractive.awardIncorrectAnswer();
+                    setTimeout(() => { startGenderPractice(); }, 2000); // ADDED
                 }
             } else { 
                 const targetArticle = item.article; 
@@ -360,16 +361,21 @@ async function showArticleWord() {
                     feedback = '<span class="correct" aria-label="Correct">✅🎉 Correct! Well done!</span>';
                     CosyAppInteractive.awardCorrectAnswer();
                     CosyAppInteractive.scheduleReview(language, 'gender', item.word, true);
-                    setTimeout(() => showArticleWord(), 1200);
+                    setTimeout(() => { startGenderPractice(); }, 2000); // MODIFIED
                 } else {
                     feedback = `<span class="incorrect" aria-label="Incorrect">❌🤔 Not a valid word for "${targetArticle}". The expected example was: <b>${variation.answer}</b>. Other valid words might exist.</span>`;
                     CosyAppInteractive.awardIncorrectAnswer();
+                    setTimeout(() => { startGenderPractice(); }, 2000); // ADDED
                 }
             }
         }
         document.getElementById('gender-answer-feedback').innerHTML = feedback;
     };
-    document.getElementById('new-gender-exercise').onclick = () => showArticleWord();
+    // document.getElementById('new-gender-exercise').onclick = () => showArticleWord();
+    const newGenderExerciseButton = document.getElementById('new-gender-exercise');
+    if (newGenderExerciseButton) {
+        newGenderExerciseButton.style.display = 'none';
+    }
     addEnterKeySupport('gender-answer-input', 'check-gender-answer-btn');
 }
 
@@ -845,7 +851,7 @@ async function showMatchVerbsPronouns() {
                 const allMatched = itemsForGame.length === document.querySelectorAll('.match-item.matched').length / 2;
                 if (allMatched) {
                     feedback.innerHTML += `<br><span class="correct">${currentTranslations.feedbackAllMatchesCompleted || 'All pairs matched!'}</span>`;
-                    setTimeout(() => showMatchVerbsPronouns(), 2000);
+                    setTimeout(() => { startGenderPractice(); }, 2000); // MODIFIED
                 }
             } else {
                 feedback.innerHTML = `<span class="incorrect">${currentTranslations.feedbackNotCompatible || '❌ Not compatible. Try again!'}</span>`;

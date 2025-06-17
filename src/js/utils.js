@@ -290,3 +290,11 @@ function playSound(soundName) {
         // This can happen due to browser autoplay policies, or if the file is missing/corrupt.
     });
 }
+
+// Function to remove accents/diacritics from a string
+function normalizeString(str) {
+    if (str === null || str === undefined) {
+        return '';
+    }
+    return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}

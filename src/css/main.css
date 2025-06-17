@@ -1026,3 +1026,29 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
     opacity: 0.7; transform: scale(0.95); 
 }
 /* End of added styles for gender exercises - some consolidation with .btn might be needed */
+
+/* Layout for multiple choice options */
+.word-options, .article-options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust gap as needed */
+    justify-content: center; /* Center items if they don't fill the line */
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.word-options button, .article-options-container button.article-option-btn {
+    flex-grow: 1; /* Allow buttons to grow */
+    flex-basis: calc(45% - 10px); /* Aim for 2 per line, considering gap. Adjust as needed. */
+    /* Min-width can be useful if content varies a lot */
+    /* min-width: 120px; */
+    text-align: center;
+    padding: 10px; /* Ensure decent button size */
+}
+
+/* Responsive adjustment: if container is narrow, stack them */
+@media (max-width: 600px) {
+    .word-options button, .article-options-container button.article-option-btn {
+        flex-basis: 100%; /* Stack on smaller screens */
+    }
+}

@@ -1,6 +1,5 @@
 // Writing Exercises
-
-// Placeholder functions for specific writing exercises
+let writingPracticeTimer = null; // Timer for auto-progression
 
 async function showQuestionWriting() {
     const resultArea = document.getElementById('result');
@@ -12,24 +11,21 @@ async function showQuestionWriting() {
         return;
     }
 
-    const days = getSelectedDays(); // Assuming getSelectedDays() is global (from index.html script)
+    const days = getSelectedDays(); 
     if (!days || days.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.selectDay || 'Please select a day or a range of days first.'}</p>`;
         return;
     }
-    const day = days[0]; // Use the first day in the range
+    const day = days[0]; 
 
-    // Using loadSpeakingQuestions as it fetches questions suitable for this purpose too.
-    const questions = await loadSpeakingQuestions(language, day); // From utils.js
+    const questions = await loadSpeakingQuestions(language, day); 
 
     if (!questions || questions.length === 0) {
         resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
         return;
     }
 
-    // Shuffle the questions array in place
     questions.sort(() => 0.5 - Math.random());
-
     let currentQuestionIndex = 0;
 
     function displayCurrentWritingQuestion() {
@@ -79,7 +75,15 @@ async function showQuestionWriting() {
                  feedbackMsg += ` ${currentTranslations.tryToElaborate || 'Try to elaborate more in your answer.'}`;
             }
         }
-        if (feedbackArea) feedbackArea.innerHTML = `<span class="correct" aria-label="Correct">✅📝 ${feedbackMsg}</span>`;
+        if (feedbackArea) feedbackArea.innerHTML = `<span class="feedback-message" aria-label="Feedback">📝 ${feedbackMsg}</span>`; // Standardized feedback class
+
+        // Auto-progression
+        if (window.writingPracticeTimer) {
+            clearTimeout(window.writingPracticeTimer);
+        }
+        window.writingPracticeTimer = setTimeout(() => {
+            startRandomWritingPractice();
+        }, 2500); // ~2.5 seconds delay
     }
 
     resultArea.innerHTML = `
@@ -87,8 +91,8 @@ async function showQuestionWriting() {
             <h3>📝 ${currentTranslations.writingQuestionTitle || 'Question Practice'}</h3>
             <div id="writing-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #007bff; min-height: 40px;"></div>
             <div class="navigation-buttons" style="margin-bottom: 15px;">
-                <button id="prev-writing-question-btn" class="btn-secondary btn-small">&lt; ${currentTranslations.buttons.previous || 'Previous'}</button>
-                <button id="next-writing-question-btn" class="btn-secondary btn-small">${currentTranslations.buttons.next || 'Next'} &gt;</button>
+                <button id="prev-writing-question-btn" class="btn-secondary btn-small">&lt; ${currentTranslations.buttons?.previous || 'Previous'}</button>
+                <button id="next-writing-question-btn" class="btn-secondary btn-small">${currentTranslations.buttons?.next || 'Next'} &gt;</button>
             </div>
             <textarea id="writing-answer-area" rows="8" spellcheck="true" placeholder="${currentTranslations.typeYourAnswerPlaceholder || 'Type your answer here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
             <button id="submit-writing-answer-btn" class="btn-primary" style="padding: 10px 20px; margin-bottom:10px;">${currentTranslations.submitAnswer || 'Submit Answer'}</button>
@@ -110,9 +114,24 @@ async function showQuestionWriting() {
         }
     });
 
-    document.getElementById('submit-writing-answer-btn').addEventListener('click', checkWritingAnswer);
-    // Add Enter key support for textarea (optional, often Shift+Enter for new line, Enter to submit)
-    // For simplicity, not adding Enter key for submission on textarea to allow new lines easily.
+    const submitButton = document.getElementById('submit-writing-answer-btn');
+    submitButton.addEventListener('click', checkWritingAnswer);
+
+    // Ctrl+Enter for submission in textarea
+    const writingAnswerArea = document.getElementById('writing-answer-area');
+    if (writingAnswerArea && submitButton) {
+        writingAnswerArea.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                event.preventDefault(); 
+                submitButton.click();
+            }
+        });
+    }
+    
+    // Clear any pending timer from previous exercise instance
+    if (window.writingPracticeTimer) {
+        clearTimeout(window.writingPracticeTimer);
+    }
 
     displayCurrentWritingQuestion();
 }
@@ -121,39 +140,98 @@ async function showStorytellingPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
+    
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
-        </div>`;
+            <h3>${currentTranslations.storytellingTitle || 'Storytelling Practice'}</h3>
+            <p>${currentTranslations.exerciseNotImplementedStorytelling || 'This storytelling exercise is not yet implemented.'}</p>
+            <p>${currentTranslations.imagineStorytellingHere || 'Imagine you write a story here and then click continue.'}</p>
+            <button id="finish-storytelling-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+        </div>
+    `;
+
+    if (window.writingPracticeTimer) {
+        clearTimeout(window.writingPracticeTimer);
+    }
+
+    document.getElementById('finish-storytelling-btn').addEventListener('click', () => {
+        console.log("Storytelling practice conceptually finished.");
+        if (window.writingPracticeTimer) {
+            clearTimeout(window.writingPracticeTimer);
+        }
+        window.writingPracticeTimer = setTimeout(() => {
+            startRandomWritingPractice();
+        }, 1500); 
+    });
 }
 
 async function showDiaryPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
     const currentTranslations = translations[language] || translations.COSYenglish;
+    
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <p>${currentTranslations.exerciseNotImplemented || 'This exercise is not yet implemented.'}</p>
-        </div>`;
+            <h3>${currentTranslations.diaryTitle || 'Diary Practice'}</h3>
+            <p>${currentTranslations.exerciseNotImplementedDiary || 'This diary entry exercise is not yet implemented.'}</p>
+            <p>${currentTranslations.imagineDiaryHere || 'Imagine you write a diary entry here and then click continue.'}</p>
+            <button id="finish-diary-btn" class="btn-primary">${currentTranslations.buttons?.continue || 'Continue'}</button>
+        </div>
+    `;
+
+    if (window.writingPracticeTimer) {
+        clearTimeout(window.writingPracticeTimer);
+    }
+
+    document.getElementById('finish-diary-btn').addEventListener('click', () => {
+        console.log("Diary practice conceptually finished.");
+        if (window.writingPracticeTimer) {
+            clearTimeout(window.writingPracticeTimer);
+        }
+        window.writingPracticeTimer = setTimeout(() => {
+            startRandomWritingPractice();
+        }, 1500);
+    });
 }
 
-// Main function to start a random writing exercise
 async function startRandomWritingPractice() {
-    // For now, let's assume Question Writing is the primary one to randomize into
-    // const exercises = [
-    //     showQuestionWriting,
-    //     showStorytellingPractice,
-    //     showDiaryPractice
-    // ];
-    // const randomExerciseFunction = exercises[Math.floor(Math.random() * exercises.length)];
-    // await randomExerciseFunction();
-    await showQuestionWriting(); // Default to the main implemented one for now
+    if (window.writingPracticeTimer) {
+        clearTimeout(window.writingPracticeTimer);
+    }
+     if (typeof cancelAutoAdvanceTimer === 'function') { 
+        cancelAutoAdvanceTimer();
+    }
+
+    const exercises = [
+        showQuestionWriting,
+        showStorytellingPractice,
+        showDiaryPractice
+    ];
+    const randomExerciseFunction = exercises[Math.floor(Math.random() * exercises.length)];
+    
+    const resultArea = document.getElementById('result');
+    if(resultArea) resultArea.innerHTML = '';
+
+    await randomExerciseFunction();
 }
 
-// Patch the exercise functions to add the randomize button
+function initWritingPractice() {
+    const writingButton = document.getElementById('writing-practice-btn'); 
+    if (writingButton) {
+        writingButton.addEventListener('click', () => {
+            startRandomWritingPractice();
+        });
+    }
+}
+
 showQuestionWriting = patchExerciseForRandomizeButton(showQuestionWriting, '.writing-exercise-container', startRandomWritingPractice);
 showStorytellingPractice = patchExerciseForRandomizeButton(showStorytellingPractice, '.writing-exercise-container', startRandomWritingPractice);
 showDiaryPractice = patchExerciseForRandomizeButton(showDiaryPractice, '.writing-exercise-container', startRandomWritingPractice);
 
-// As with speaking.js, button event listeners for main menu items (e.g. 'question-btn' under Writing)
-// are expected to be in buttons.js or index.html.
+window.showQuestionWriting = showQuestionWriting;
+window.showStorytellingPractice = showStorytellingPractice;
+window.showDiaryPractice = showDiaryPractice;
+window.startRandomWritingPractice = startRandomWritingPractice;
+window.initWritingPractice = initWritingPractice;
+
+// document.addEventListener('DOMContentLoaded', initWritingPractice); // Assuming called from main script if needed.
