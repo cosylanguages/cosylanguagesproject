@@ -160,7 +160,7 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
             let revealBtn = document.createElement('button');
             revealBtn.id = 'btn-reveal-answer';
             revealBtn.className = 'exercise-button'; 
-            revealBtn.innerHTML = `👁️ ${t.buttons.reveal || 'Reveal Answer'}`;
+            revealBtn.innerHTML = `👁️`;
             revealBtn.title = t.aria?.reveal || 'Reveal answer';
             revealBtn.setAttribute('aria-label', t.aria?.reveal || 'Reveal answer');
             revealBtn.onclick = () => {
