@@ -1,0 +1,26 @@
+{
+  "day1": {
+    "what_happens_next": [
+      "The old clock in the town square suddenly chimed 13 times...",
+      "A mysterious package arrived with no return address...",
+      "She opened the ancient book and a single feather floated out..."
+    ],
+    "what_happened_before": [
+      "...and that's why the cat always wears a tiny hat on Tuesdays.",
+      "...the detective finally understood the meaning of the cryptic note.",
+      "...so the little robot decided to explore the world."
+    ]
+  },
+  "day2": {
+    "what_happens_next": [
+      "The map showed a hidden island that wasn't on any other chart...",
+      "He found a dusty old key with a strange symbol...",
+      "The message in the bottle simply read: 'Find me.'"
+    ],
+    "what_happened_before": [
+      "...which is how the dragon learned to bake cookies.",
+      "...and the stars whispered their secrets to anyone who would listen.",
+      "...making it the most unforgettable picnic ever."
+    ]
+  }
+}

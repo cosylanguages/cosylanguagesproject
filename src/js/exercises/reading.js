@@ -10,6 +10,7 @@ async function showStoryPractice() {
     
     resultArea.innerHTML = `
         <div class="reading-exercise-container">
+            <h2 class="practice-type-title">${t.practiceTitleShowStoryPractice || 'Story Reading'}</h2>
             <h3>${t.storyTime || 'Story Time'}</h3>
             <p>${t.exerciseNotImplementedStory || 'This story exercise is not yet implemented.'}</p>
             <p>${t.imagineStoryHere || 'Imagine you read a story here and then click continue.'}</p>
@@ -52,6 +53,7 @@ async function showInterestingFactPractice() {
     
     resultArea.innerHTML = `
         <div class="reading-exercise-container">
+            <h2 class="practice-type-title">${t.practiceTitleShowInterestingFactPractice || 'Fact Reading'}</h2>
             <h3>${t.interestingFact || 'Interesting Fact'}</h3>
             <p>${t.exerciseNotImplementedFact || 'This interesting fact exercise is not yet implemented.'}</p>
             <p>${t.imagineFactHere || 'Imagine you read an interesting fact here and then click continue.'}</p>
