@@ -21,8 +21,7 @@ function initButtons() {
             } else {
                 // Hide all main buttons except this one
                 hideOtherMainPracticeTypes(`${type}-btn`);
-                // The line hideAllOptions(); was removed from here.
-                // index.html's handler should already have hidden other options panels.
+                hideAllOptions(); // <-- ADDED THIS LINE
                 document.getElementById(`${type}-options`).style.display = 'block';
                 if(type === 'vocabulary') {
                     // Always re-initialize vocabulary option handlers

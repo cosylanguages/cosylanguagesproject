@@ -41,7 +41,7 @@ function updateUIForLanguage(language) {
   document.getElementById('practice-all-speaking-btn').textContent = t.practiceAll;
 
   // Update writing options
-  document.getElementById('question-btn').textContent = t.question;
+  document.getElementById('writing-question-btn').textContent = t.question; // Corrected ID
   document.getElementById('storytelling-btn').textContent = t.storytelling;
   document.getElementById('diary-btn').textContent = t.diary;
 

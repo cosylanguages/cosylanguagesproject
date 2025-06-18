@@ -20,7 +20,11 @@ function clearResultArea() {
 }
 
 // Helper: Add randomize button to exercise containers
-function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to accept element directly
+// This function is now part of patchExerciseWithExtraButtons, 
+// but keeping a simplified version if it's used elsewhere directly,
+// or it can be removed if patchExerciseWithExtraButtons is the sole user.
+// For now, let's assume it might be used directly elsewhere.
+function addRandomizeButton(containerIdOrElement, randomizeFn) { 
     console.log(`addRandomizeButton called for: ${containerIdOrElement}`);
     let container = containerIdOrElement;
     if (typeof containerIdOrElement === 'string') {
@@ -31,21 +35,18 @@ function addRandomizeButton(containerIdOrElement, randomizeFn) { // Modified to 
         console.error(`[addRandomizeButton] Critical: Container NOT FOUND for selector/element: ${containerIdOrElement}. Button will not be added.`);
         return;
     }
-    // console.log(`[addRandomizeButton] Container found for ${containerIdOrElement}. Proceeding to add button.`); // Optional: can be noisy
-    // Remove any existing randomize button to avoid duplicates
     const existingBtn = container.querySelector('.btn-randomize');
     if (existingBtn) existingBtn.remove();
     
     let btn = document.createElement('button');
-    btn.className = 'btn-randomize randomizer-button'; // Apply new and old class
-    const language = document.getElementById('language')?.value || 'COSYenglish'; // Assume translations is global
+    btn.className = 'btn-randomize randomizer-button'; 
+    const language = document.getElementById('language')?.value || 'COSYenglish'; 
     const currentTranslations = translations[language] || translations.COSYenglish;
 
     btn.setAttribute('aria-label', currentTranslations.aria?.randomize || 'Randomize exercise');
     btn.title = currentTranslations.aria?.randomize || 'Randomize exercise';
     btn.innerHTML = currentTranslations.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
-    // Inline styles and mouse event handlers removed
-    btn.onclick = randomizeFn; // Assign the passed randomizeFn directly
+    btn.onclick = randomizeFn;
 
     container.prepend(btn);
 }
@@ -90,17 +91,76 @@ async function loadData(filePath) {
     }
 }
 
-function patchExerciseForRandomizeButton(originalExerciseFn, containerSelectorOrElement, randomizeFn) {
+function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrElement, randomizeFn) {
     return async function() {
         // Call the original exercise function, ensuring 'this' and 'arguments' are passed correctly
         await originalExerciseFn.apply(this, arguments);
         
-        // Now, add the randomize button.
-        // addRandomizeButton can take an ID string, a class selector string (e.g. ".my-class"), or an element.
-        // The existing addRandomizeButton logic handles ID or class selector (if class is passed as ".class-name" or just "class-name").
-        addRandomizeButton(containerSelectorOrElement, randomizeFn);
+        let container;
+        if (typeof containerSelectorOrElement === 'string') {
+            container = document.querySelector(containerSelectorOrElement);
+        } else {
+            container = containerSelectorOrElement; // It's already an element
+        }
+
+        if (!container) {
+            console.error(`[patchExerciseWithExtraButtons] Container NOT FOUND for selector/element: ${containerSelectorOrElement}. Buttons will not be added.`);
+            return;
+        }
+
+        // Language and translations for buttons
+        const language = document.getElementById('language')?.value || 'COSYenglish';
+        const t = window.translations[language] || window.translations.COSYenglish;
+
+        // Add/Update Randomize Button
+        const existingRandomizeBtn = container.querySelector('.btn-randomize');
+        if (existingRandomizeBtn) existingRandomizeBtn.remove();
+        
+        let randomizeBtn = document.createElement('button');
+        randomizeBtn.className = 'btn-randomize randomizer-button'; // Keep both classes for compatibility
+        randomizeBtn.setAttribute('aria-label', t.aria?.randomize || 'Randomize exercise');
+        randomizeBtn.title = t.aria?.randomize || 'Randomize exercise';
+        randomizeBtn.innerHTML = t.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
+        randomizeBtn.onclick = randomizeFn;
+        container.prepend(randomizeBtn); // Prepend to make it appear first (usually on the right due to float)
+
+        // Add/Update Hint Button
+        const existingHintBtn = container.querySelector('.btn-hint');
+        if (existingHintBtn) existingHintBtn.remove();
+
+        let hintBtn = document.createElement('button');
+        hintBtn.className = 'btn-hint';
+        hintBtn.innerHTML = '💡'; // Lightbulb emoji
+        hintBtn.title = t.aria?.hint || 'Show a hint';
+        hintBtn.setAttribute('aria-label', t.aria?.hint || 'Show a hint');
+        
+        hintBtn.onclick = () => {
+            if (typeof container.showHint === 'function') {
+                container.showHint();
+            } else {
+                alert(t.noHintAvailable || 'No hint available for this exercise.');
+            }
+        };
+        // Prepend hint button. If randomize also prepended, hint will be before randomize.
+        // If randomize floats right, and hint floats right and is added after, hint will be to the left of randomize.
+        // To ensure hint is to the left of a right-floated randomize button:
+        // randomizeBtn is already prepended. If hintBtn is also prepended, it will appear before randomizeBtn in DOM.
+        // If both float right, the one appearing earlier in DOM will be further to the right.
+        // So, prepend randomize, then prepend hint to put hint to the left of randomize.
+        // Or, more simply, ensure CSS handles order if both float right (e.g. hint has margin-left, randomize has no margin-left or smaller).
+        // Current CSS for .randomizer-button has margin-left: 10px and float: right.
+        // .btn-hint has margin-left: 5px and float: right.
+        // If hintBtn is prepended *after* randomizeBtn, it will be to the right of randomizeBtn.
+        // If hintBtn is prepended *before* randomizeBtn, it will be to the left of randomizeBtn.
+        // Let's prepend hint button *before* the randomize button to place it to the left, assuming float:right for both.
+        if (randomizeBtn.parentNode === container) { // ensure randomizeBtn was added
+             container.insertBefore(hintBtn, randomizeBtn);
+        } else {
+             container.prepend(hintBtn); // fallback if randomizeBtn somehow wasn't prepended
+        }
     }
 }
+
 
 async function loadSpeakingQuestions(language, day) {
     let langFileKey;

@@ -7,16 +7,16 @@ async function showQuestionPractice() {
     }
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
+    const t = translations[language] || translations.COSYenglish;
 
     if (!language) {
-        resultArea.innerHTML = `<p>${currentTranslations.selectLanguage || 'Please select a language first.'}</p>`;
+        resultArea.innerHTML = `<p>${t.selectLanguage || 'Please select a language first.'}</p>`;
         return;
     }
 
     const days = getSelectedDays(); 
     if (!days || days.length === 0) {
-        resultArea.innerHTML = `<p>${currentTranslations.selectDay || 'Please select a day or a range of days first.'}</p>`;
+        resultArea.innerHTML = `<p>${t.selectDay || 'Please select a day or a range of days first.'}</p>`;
         return;
     }
     const day = days[0]; 
@@ -24,12 +24,39 @@ async function showQuestionPractice() {
     const questions = await loadSpeakingQuestions(language, day); 
 
     if (!questions || questions.length === 0) {
-        resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
+        resultArea.innerHTML = `<p>${t.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
         return;
     }
 
     questions.sort(() => 0.5 - Math.random());
     let currentQuestionIndex = 0;
+    
+    resultArea.innerHTML = `
+        <div class="speaking-exercise-container">
+            <h3>🗣️ ${t.speakingQuestionTitle || 'Question Practice'}</h3>
+            <div id="speaking-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 20px; min-height: 40px;"></div>
+            <div class="navigation-buttons" style="margin-bottom: 20px;">
+                <button id="prev-speaking-question-btn" class="btn-secondary btn-small">&lt; ${t.buttons?.previous || 'Previous'}</button>
+                <button id="next-speaking-question-btn" class="btn-secondary btn-small">${t.buttons?.next || 'Next'} &gt;</button>
+            </div>
+            <button id="speaking-record-btn" class="btn-primary btn-emoji" style="font-size: 2.5em; padding: 10px 20px; margin-bottom:15px; line-height: 1;">🎤</button>
+            <div id="speaking-transcript" class="transcript-area" style="margin-top: 10px; min-height: 25px; padding: 5px; border: 1px solid #eee; border-radius: 4px;"></div>
+            <div id="speaking-feedback" class="feedback-area" style="margin-top: 10px; min-height: 25px; padding: 5px;"></div>
+        </div>
+    `;
+    
+    const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
+    if (exerciseContainer) {
+        exerciseContainer.showHint = () => {
+            const existingHint = exerciseContainer.querySelector('.hint-display');
+            if (existingHint) existingHint.remove();
+            const hintDisplay = document.createElement('div');
+            hintDisplay.className = 'hint-display';
+            const questionForHint = questions[currentQuestionIndex] || (t.currentQuestion || "the current question");
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintUnderstandQuestion || "Try to understand the question fully. Use relevant vocabulary and aim for a complete sentence. The current question is about"} '${questionForHint}'.`;
+            exerciseContainer.appendChild(hintDisplay);
+        };
+    }
 
     function displayCurrentQuestion() {
         const questionText = questions[currentQuestionIndex];
@@ -45,7 +72,6 @@ async function showQuestionPractice() {
         
         if (transcriptEl) transcriptEl.textContent = '';
         if (feedbackEl) feedbackEl.textContent = '';
-         // Reset record button text if it was changed
         const recordButton = document.getElementById('speaking-record-btn');
         if (recordButton && recordButton.classList.contains('recording')) {
             recordButton.classList.remove('recording');
@@ -73,7 +99,7 @@ async function showQuestionPractice() {
 
         const onStartCallback = () => {
             recordButton.classList.add('recording');
-            recordButton.textContent = currentTranslations.recordingInProgress || 'Recording...';
+            recordButton.textContent = t.recordingInProgress || 'Recording...';
             feedbackDiv.textContent = ''; 
         };
 
@@ -85,22 +111,21 @@ async function showQuestionPractice() {
             recordButton.classList.remove('recording');
             recordButton.textContent = '🎤';
 
-            let errorMsg = currentTranslations.error || 'Error';
+            let errorMsg = t.error || 'Error';
             if (event.error === 'no-speech') {
-                errorMsg = currentTranslations.noSpeechDetected || 'No speech detected. Please try again.';
+                errorMsg = t.noSpeechDetected || 'No speech detected. Please try again.';
             } else if (event.error === 'audio-capture') {
-                errorMsg = currentTranslations.micProblem || 'Audio capture problem. Is your microphone working?';
+                errorMsg = t.micProblem || 'Audio capture problem. Is your microphone working?';
             } else if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                errorMsg = currentTranslations.micPermissionDenied || 'Microphone permission denied. Please allow microphone access.';
+                errorMsg = t.micPermissionDenied || 'Microphone permission denied. Please allow microphone access.';
             } else if (event.error === 'network') {
-                errorMsg = currentTranslations.networkError || 'Network error during speech recognition.';
+                errorMsg = t.networkError || 'Network error during speech recognition.';
             } else if (event.error === 'aborted') {
-                errorMsg = currentTranslations.recognitionAborted || 'Speech recognition aborted.';
+                errorMsg = t.recognitionAborted || 'Speech recognition aborted.';
             } else {
-                errorMsg = `${currentTranslations.errorInRecognition || 'Error in recognition'}: ${event.error}`;
+                errorMsg = `${t.errorInRecognition || 'Error in recognition'}: ${event.error}`;
             }
             feedbackDiv.textContent = errorMsg;
-             // Auto-progress even on error to prevent getting stuck
             if (window.speakingPracticeTimer) { clearTimeout(window.speakingPracticeTimer); }
             window.speakingPracticeTimer = setTimeout(() => { startRandomSpeakingPractice(); }, 3000);
         };
@@ -108,7 +133,7 @@ async function showQuestionPractice() {
         const onEndCallback = () => {
             recordButton.classList.remove('recording');
             recordButton.textContent = '🎤';
-            if (feedbackDiv.textContent === (currentTranslations.feedbackListening || 'Listening...')) {
+            if (feedbackDiv.textContent === (t.feedbackListening || 'Listening...')) {
                  feedbackDiv.textContent = ''; 
             }
         };
@@ -131,7 +156,7 @@ async function showQuestionPractice() {
 
         let feedbackMsg = '';
         if (!transcript || !transcript.trim()) {
-            feedbackMsg = currentTranslations.noSpeechDetected || 'No speech detected. Please try again.';
+            feedbackMsg = t.noSpeechDetected || 'No speech detected. Please try again.';
             if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) {
                 CosyAppInteractive.awardIncorrectAnswer();
             }
@@ -145,18 +170,18 @@ async function showQuestionPractice() {
             }
 
             if (commonWordCount > 0 || transcriptWords.length > 2) { 
-                feedbackMsg = currentTranslations.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
+                feedbackMsg = t.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
                  if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) {
                     CosyAppInteractive.awardCorrectAnswer();
                     CosyAppInteractive.scheduleReview(language, 'speaking-phrase', question, true);
                 }
             } else if (transcriptWords.length > 0) {
-                 feedbackMsg = currentTranslations.tryAgainSpeakingShort || "Try to give a more detailed answer.";
+                 feedbackMsg = t.tryAgainSpeakingShort || "Try to give a more detailed answer.";
                  if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) {
                     CosyAppInteractive.awardIncorrectAnswer();
                 }
             } else {
-                feedbackMsg = currentTranslations.tryAgainSpeaking || "Try to address the question more directly.";
+                feedbackMsg = t.tryAgainSpeaking || "Try to address the question more directly.";
                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) {
                     CosyAppInteractive.awardIncorrectAnswer();
                 }
@@ -164,28 +189,13 @@ async function showQuestionPractice() {
         }
         feedbackDiv.innerHTML = feedbackMsg; 
 
-        // Auto-progression
         if (window.speakingPracticeTimer) {
             clearTimeout(window.speakingPracticeTimer);
         }
         window.speakingPracticeTimer = setTimeout(() => {
             startRandomSpeakingPractice();
-        }, 3000); // 3-second delay
+        }, 3000); 
     }
-
-    resultArea.innerHTML = `
-        <div class="speaking-exercise-container">
-            <h3>🗣️ ${currentTranslations.speakingQuestionTitle || 'Question Practice'}</h3>
-            <div id="speaking-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 20px; min-height: 40px;"></div>
-            <div class="navigation-buttons" style="margin-bottom: 20px;">
-                <button id="prev-speaking-question-btn" class="btn-secondary btn-small">&lt; ${currentTranslations.buttons?.previous || 'Previous'}</button>
-                <button id="next-speaking-question-btn" class="btn-secondary btn-small">${currentTranslations.buttons?.next || 'Next'} &gt;</button>
-            </div>
-            <button id="speaking-record-btn" class="btn-primary btn-emoji" style="font-size: 2.5em; padding: 10px 20px; margin-bottom:15px; line-height: 1;">🎤</button>
-            <div id="speaking-transcript" class="transcript-area" style="margin-top: 10px; min-height: 25px; padding: 5px; border: 1px solid #eee; border-radius: 4px;"></div>
-            <div id="speaking-feedback" class="feedback-area" style="margin-top: 10px; min-height: 25px; padding: 5px;"></div>
-        </div>
-    `;
 
     document.getElementById('prev-speaking-question-btn').addEventListener('click', () => {
         if (currentQuestionIndex > 0) {
@@ -213,17 +223,28 @@ async function showMonologuePractice() {
     }
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
-    const buttonText = currentTranslations.buttons?.continue || 'Continue';
+    const t = translations[language] || translations.COSYenglish;
+    const buttonText = t.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
-            <h3>${currentTranslations.monologuePracticeTitle || 'Monologue Practice'}</h3>
-            <p>${currentTranslations.exerciseNotImplementedMonologue || 'This monologue exercise is not yet implemented.'}</p>
-            <p>${currentTranslations.imagineMonologueHere || 'Imagine you record a monologue here and then click continue.'}</p>
+            <h3>${t.monologuePracticeTitle || 'Monologue Practice'}</h3>
+            <p>${t.exerciseNotImplementedMonologue || 'This monologue exercise is not yet implemented.'}</p>
+            <p>${t.imagineMonologueHere || 'Imagine you record a monologue here and then click continue.'}</p>
             <button id="finish-monologue-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
+    const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
+    if (exerciseContainer) {
+        exerciseContainer.showHint = () => {
+            const existingHint = exerciseContainer.querySelector('.hint-display');
+            if (existingHint) existingHint.remove();
+            const hintDisplay = document.createElement('div');
+            hintDisplay.className = 'hint-display';
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintMonologueGeneric || 'Organize your thoughts before speaking. Use varied vocabulary and try to speak fluently.'}`;
+            exerciseContainer.appendChild(hintDisplay);
+        };
+    }
 
     document.getElementById('finish-monologue-btn').addEventListener('click', () => {
         console.log("Monologue practice conceptually finished.");
@@ -242,17 +263,28 @@ async function showRolePlayPractice() {
     }
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
-    const buttonText = currentTranslations.buttons?.continue || 'Continue';
+    const t = translations[language] || translations.COSYenglish;
+    const buttonText = t.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
-            <h3>${currentTranslations.rolePlayPracticeTitle || 'Role-Play Practice'}</h3>
-            <p>${currentTranslations.exerciseNotImplementedRolePlay || 'This role-play exercise is not yet implemented.'}</p>
-            <p>${currentTranslations.imagineRolePlayHere || 'Imagine you participate in a role-play here and then click continue.'}</p>
+            <h3>${t.rolePlayPracticeTitle || 'Role-Play Practice'}</h3>
+            <p>${t.exerciseNotImplementedRolePlay || 'This role-play exercise is not yet implemented.'}</p>
+            <p>${t.imagineRolePlayHere || 'Imagine you participate in a role-play here and then click continue.'}</p>
             <button id="finish-roleplay-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
+    const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
+    if (exerciseContainer) {
+        exerciseContainer.showHint = () => {
+            const existingHint = exerciseContainer.querySelector('.hint-display');
+            if (existingHint) existingHint.remove();
+            const hintDisplay = document.createElement('div');
+            hintDisplay.className = 'hint-display';
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintRolePlayGeneric || 'Organize your thoughts before speaking. Use varied vocabulary and try to speak fluently.'}`;
+            exerciseContainer.appendChild(hintDisplay);
+        };
+    }
 
     document.getElementById('finish-roleplay-btn').addEventListener('click', () => {
         console.log("Role-play practice conceptually finished.");
@@ -266,8 +298,6 @@ async function showRolePlayPractice() {
 }
 
 async function practiceAllSpeaking() {
-    // This function can simply start the random practice.
-    // The progression will be handled by individual exercises.
     await startRandomSpeakingPractice();
 }
 
@@ -300,17 +330,12 @@ function initSpeakingPractice() {
     }
 }
 
-
-showQuestionPractice = patchExerciseForRandomizeButton(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
-showMonologuePractice = patchExerciseForRandomizeButton(showMonologuePractice, '.speaking-exercise-container', startRandomSpeakingPractice);
-showRolePlayPractice = patchExerciseForRandomizeButton(showRolePlayPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
+showQuestionPractice = patchExerciseWithExtraButtons(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
+showMonologuePractice = patchExerciseWithExtraButtons(showMonologuePractice, '.speaking-exercise-container', startRandomSpeakingPractice);
+showRolePlayPractice = patchExerciseWithExtraButtons(showRolePlayPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
 
 window.showQuestionPractice = showQuestionPractice;
 window.showMonologuePractice = showMonologuePractice;
 window.showRolePlayPractice = showRolePlayPractice;
 window.startRandomSpeakingPractice = startRandomSpeakingPractice;
 window.initSpeakingPractice = initSpeakingPractice;
-
-// document.addEventListener('DOMContentLoaded', initSpeakingPractice); // Assuming called from main script.
-
-

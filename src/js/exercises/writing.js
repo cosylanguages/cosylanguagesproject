@@ -4,29 +4,56 @@ let writingPracticeTimer = null; // Timer for auto-progression
 async function showQuestionWriting() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
+    const t = translations[language] || translations.COSYenglish;
 
     if (!language) {
-        resultArea.innerHTML = `<p>${currentTranslations.selectLanguage || 'Please select a language first.'}</p>`;
+        resultArea.innerHTML = `<p>${t.selectLanguage || 'Please select a language first.'}</p>`;
         return;
     }
 
     const days = getSelectedDays(); 
     if (!days || days.length === 0) {
-        resultArea.innerHTML = `<p>${currentTranslations.selectDay || 'Please select a day or a range of days first.'}</p>`;
+        resultArea.innerHTML = `<p>${t.selectDay || 'Please select a day or a range of days first.'}</p>`;
         return;
     }
     const day = days[0]; 
 
-    const questions = await loadSpeakingQuestions(language, day); // Assuming writing questions might come from speaking questions for now
+    const questions = await loadSpeakingQuestions(language, day); 
 
     if (!questions || questions.length === 0) {
-        resultArea.innerHTML = `<p>${currentTranslations.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
+        resultArea.innerHTML = `<p>${t.noQuestionsAvailable || 'No questions available for this selection.'}</p>`;
         return;
     }
 
     questions.sort(() => 0.5 - Math.random());
     let currentQuestionIndex = 0;
+    
+    resultArea.innerHTML = `
+        <div class="writing-exercise-container">
+            <h3>📝 ${t.writingQuestionTitle || 'Question Practice'}</h3>
+            <div id="writing-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #007bff; min-height: 40px;"></div>
+            <div class="navigation-buttons" style="margin-bottom: 15px;">
+                <button id="prev-writing-question-btn" class="btn-secondary btn-small">&lt; ${t.buttons?.previous || 'Previous'}</button>
+                <button id="next-writing-question-btn" class="btn-secondary btn-small">${t.buttons?.next || 'Next'} &gt;</button>
+            </div>
+            <textarea id="writing-answer-area" rows="8" spellcheck="true" placeholder="${t.typeYourAnswerPlaceholder || 'Type your answer here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
+            <button id="submit-writing-answer-btn" class="btn-primary" style="padding: 10px 20px; margin-bottom:10px;">${t.submitAnswer || 'Submit Answer'}</button>
+            <div id="writing-feedback" class="exercise-feedback" style="margin-top: 10px; min-height: 20px; padding: 8px; border-radius: 4px;"></div>
+        </div>
+    `;
+    
+    const exerciseContainer = resultArea.querySelector('.writing-exercise-container');
+    if (exerciseContainer) {
+        exerciseContainer.showHint = () => {
+            const existingHint = exerciseContainer.querySelector('.hint-display');
+            if (existingHint) existingHint.remove();
+            const hintDisplay = document.createElement('div');
+            hintDisplay.className = 'hint-display';
+            const questionForHint = questions[currentQuestionIndex] || "";
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintWritingQuestion || "Address all parts of the question. Structure your answer with an introduction, body, and conclusion if applicable. The question is:"} '${questionForHint}'.`;
+            exerciseContainer.appendChild(hintDisplay);
+        };
+    }
 
     function displayCurrentWritingQuestion() {
         const questionText = questions[currentQuestionIndex];
@@ -51,7 +78,7 @@ async function showQuestionWriting() {
         let feedbackMsg = '';
 
         if (!writtenAnswer.trim()) {
-            feedbackMsg = currentTranslations.pleaseWriteAnswer || 'Please write an answer before submitting.';
+            feedbackMsg = t.pleaseWriteAnswer || 'Please write an answer before submitting.';
             if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) {
                 CosyAppInteractive.awardIncorrectAnswer();
             }
@@ -62,43 +89,28 @@ async function showQuestionWriting() {
             const commonKeywords = answerWords.filter(word => questionWords.includes(word));
 
             if (commonKeywords.length > 0) {
-                feedbackMsg = `${currentTranslations.goodAnswerWriting || "Good! You've used some keywords from the question"}: ${commonKeywords.slice(0,3).join(', ')}.`;
+                feedbackMsg = `${t.goodAnswerWriting || "Good! You've used some keywords from the question"}: ${commonKeywords.slice(0,3).join(', ')}.`;
                  if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) {
                     CosyAppInteractive.awardCorrectAnswer();
                     CosyAppInteractive.scheduleReview(language, 'writing-prompt', questionText, true);
                 }
             } else {
-                feedbackMsg = currentTranslations.answerSubmittedWriting || 'Answer submitted. Try to incorporate more elements from the question.';
+                feedbackMsg = t.answerSubmittedWriting || 'Answer submitted. Try to incorporate more elements from the question.';
             }
             
             if (writtenAnswer.length < 20 && commonKeywords.length === 0) {
-                 feedbackMsg += ` ${currentTranslations.tryToElaborate || 'Try to elaborate more in your answer.'}`;
+                 feedbackMsg += ` ${t.tryToElaborate || 'Try to elaborate more in your answer.'}`;
             }
         }
         if (feedbackArea) feedbackArea.innerHTML = `<span class="feedback-message" aria-label="Feedback">📝 ${feedbackMsg}</span>`;
 
-        // Auto-progression
         if (window.writingPracticeTimer) {
             clearTimeout(window.writingPracticeTimer);
         }
         window.writingPracticeTimer = setTimeout(() => {
             startRandomWritingPractice();
-        }, 2500); // ~2.5 seconds delay
+        }, 2500); 
     }
-
-    resultArea.innerHTML = `
-        <div class="writing-exercise-container">
-            <h3>📝 ${currentTranslations.writingQuestionTitle || 'Question Practice'}</h3>
-            <div id="writing-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #007bff; min-height: 40px;"></div>
-            <div class="navigation-buttons" style="margin-bottom: 15px;">
-                <button id="prev-writing-question-btn" class="btn-secondary btn-small">&lt; ${currentTranslations.buttons?.previous || 'Previous'}</button>
-                <button id="next-writing-question-btn" class="btn-secondary btn-small">${currentTranslations.buttons?.next || 'Next'} &gt;</button>
-            </div>
-            <textarea id="writing-answer-area" rows="8" spellcheck="true" placeholder="${currentTranslations.typeYourAnswerPlaceholder || 'Type your answer here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
-            <button id="submit-writing-answer-btn" class="btn-primary" style="padding: 10px 20px; margin-bottom:10px;">${currentTranslations.submitAnswer || 'Submit Answer'}</button>
-            <div id="writing-feedback" class="exercise-feedback" style="margin-top: 10px; min-height: 20px; padding: 8px; border-radius: 4px;"></div>
-        </div>
-    `;
 
     document.getElementById('prev-writing-question-btn').addEventListener('click', () => {
         if (currentQuestionIndex > 0) {
@@ -137,17 +149,28 @@ async function showQuestionWriting() {
 async function showStorytellingPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
-    const buttonText = currentTranslations.buttons?.continue || 'Continue';
+    const t = translations[language] || translations.COSYenglish;
+    const buttonText = t.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <h3>${currentTranslations.storytellingTitle || 'Storytelling Practice'}</h3>
-            <p>${currentTranslations.exerciseNotImplementedStorytelling || 'This storytelling exercise is not yet implemented.'}</p>
-            <p>${currentTranslations.imagineStorytellingHere || 'Imagine you write a story here and then click continue.'}</p>
+            <h3>${t.storytellingTitle || 'Storytelling Practice'}</h3>
+            <p>${t.exerciseNotImplementedStorytelling || 'This storytelling exercise is not yet implemented.'}</p>
+            <p>${t.imagineStorytellingHere || 'Imagine you write a story here and then click continue.'}</p>
             <button id="finish-storytelling-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
+    const exerciseContainer = resultArea.querySelector('.writing-exercise-container');
+    if (exerciseContainer) {
+        exerciseContainer.showHint = () => {
+            const existingHint = exerciseContainer.querySelector('.hint-display');
+            if (existingHint) existingHint.remove();
+            const hintDisplay = document.createElement('div');
+            hintDisplay.className = 'hint-display';
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintWritingGeneric || 'Plan your writing. Use descriptive language and check your grammar and spelling.'}`;
+            exerciseContainer.appendChild(hintDisplay);
+        };
+    }
 
     if (window.writingPracticeTimer) {
         clearTimeout(window.writingPracticeTimer);
@@ -167,17 +190,28 @@ async function showStorytellingPractice() {
 async function showDiaryPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
-    const currentTranslations = translations[language] || translations.COSYenglish;
-    const buttonText = currentTranslations.buttons?.continue || 'Continue';
+    const t = translations[language] || translations.COSYenglish;
+    const buttonText = t.buttons?.continue || 'Continue';
     
     resultArea.innerHTML = `
         <div class="writing-exercise-container">
-            <h3>${currentTranslations.diaryTitle || 'Diary Practice'}</h3>
-            <p>${currentTranslations.exerciseNotImplementedDiary || 'This diary entry exercise is not yet implemented.'}</p>
-            <p>${currentTranslations.imagineDiaryHere || 'Imagine you write a diary entry here and then click continue.'}</p>
+            <h3>${t.diaryTitle || 'Diary Practice'}</h3>
+            <p>${t.exerciseNotImplementedDiary || 'This diary entry exercise is not yet implemented.'}</p>
+            <p>${t.imagineDiaryHere || 'Imagine you write a diary entry here and then click continue.'}</p>
             <button id="finish-diary-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
+    const exerciseContainer = resultArea.querySelector('.writing-exercise-container');
+    if (exerciseContainer) {
+        exerciseContainer.showHint = () => {
+            const existingHint = exerciseContainer.querySelector('.hint-display');
+            if (existingHint) existingHint.remove();
+            const hintDisplay = document.createElement('div');
+            hintDisplay.className = 'hint-display';
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintWritingGeneric || 'Plan your writing. Use descriptive language and check your grammar and spelling.'}`;
+            exerciseContainer.appendChild(hintDisplay);
+        };
+    }
 
     if (window.writingPracticeTimer) {
         clearTimeout(window.writingPracticeTimer);
@@ -224,16 +258,12 @@ function initWritingPractice() {
     }
 }
 
-showQuestionWriting = patchExerciseForRandomizeButton(showQuestionWriting, '.writing-exercise-container', startRandomWritingPractice);
-showStorytellingPractice = patchExerciseForRandomizeButton(showStorytellingPractice, '.writing-exercise-container', startRandomWritingPractice);
-showDiaryPractice = patchExerciseForRandomizeButton(showDiaryPractice, '.writing-exercise-container', startRandomWritingPractice);
+showQuestionWriting = patchExerciseWithExtraButtons(showQuestionWriting, '.writing-exercise-container', startRandomWritingPractice);
+showStorytellingPractice = patchExerciseWithExtraButtons(showStorytellingPractice, '.writing-exercise-container', startRandomWritingPractice);
+showDiaryPractice = patchExerciseWithExtraButtons(showDiaryPractice, '.writing-exercise-container', startRandomWritingPractice);
 
 window.showQuestionWriting = showQuestionWriting;
 window.showStorytellingPractice = showStorytellingPractice;
 window.showDiaryPractice = showDiaryPractice;
 window.startRandomWritingPractice = startRandomWritingPractice;
 window.initWritingPractice = initWritingPractice;
-
-// document.addEventListener('DOMContentLoaded', initWritingPractice); // Assuming called from main script if needed.
-
-

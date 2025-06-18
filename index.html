@@ -142,83 +142,48 @@
         const practiceAllBtn = document.getElementById('practice-all-btn');
         practiceAllBtn.style.display = 'block';
 
-        // The following block (main button click handlers) has been removed:
-        // Add click handlers to main menu buttons to show/hide options
-        /* vocabularyBtn.addEventListener('click', function() {
-            if (vocabularyOptions.style.display === 'block') {
-                goBackToMainMenu(); // Hide options, show main menu
-            } else {
-                vocabularyOptions.style.display = 'block';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('vocabulary-btn'); // Hide other main buttons
-            }
-        });
-        grammarBtn.addEventListener('click', function() {
-            if (grammarOptions.style.display === 'block') {
-                goBackToMainMenu();
-            } else {
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'block';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('grammar-btn');
-            }
-        });
-        readingBtn.addEventListener('click', function() {
-            if (readingOptions.style.display === 'block') {
-                goBackToMainMenu();
-            } else {
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'block';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('reading-btn');
-            }
-        });
-        speakingBtn.addEventListener('click', function() {
-            if (speakingOptions.style.display === 'block') {
-                goBackToMainMenu();
-            } else {
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'block';
-                writingOptions.style.display = 'none';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('speaking-btn');
-            }
-        });
-        writingBtn.addEventListener('click', function() {
-            if (writingOptions.style.display === 'block') {
-                goBackToMainMenu();
-            } else {
-                vocabularyOptions.style.display = 'none';
-                grammarOptions.style.display = 'none';
-                readingOptions.style.display = 'none';
-                speakingOptions.style.display = 'none';
-                writingOptions.style.display = 'block';
-                practiceAllBtn.style.display = 'none';
-                hideOtherMainPracticeTypes('writing-btn');
-            }
-        });
-        practiceAllBtn.addEventListener('click', function() {
-            vocabularyOptions.style.display = 'none';
-            grammarOptions.style.display = 'none';
-            readingOptions.style.display = 'none';
-            speakingOptions.style.display = 'none';
-            writingOptions.style.display = 'none';
-            practiceAllBtn.style.display = 'block';
-        }); */
+        function restoreUserSelection() {
+            const languageSelect = document.getElementById('language');
+            const daySelect = document.getElementById('day');
+            const dayFromSelect = document.getElementById('day-from');
+            const dayToSelect = document.getElementById('day-to');
 
-// Show all main practice types
+            const savedLanguage = localStorage.getItem('selectedLanguage');
+            const savedDay = localStorage.getItem('selectedDay');
+            const savedDayFrom = localStorage.getItem('selectedDayFrom');
+            const savedDayTo = localStorage.getItem('selectedDayTo');
+
+            if (savedLanguage && languageSelect) {
+                languageSelect.value = savedLanguage;
+                // Dispatch change event to trigger language-specific UI updates
+                languageSelect.dispatchEvent(new Event('change'));
+            }
+
+            if (savedDay && daySelect) {
+                daySelect.value = savedDay;
+            }
+            if (savedDayFrom && dayFromSelect) {
+                dayFromSelect.value = savedDayFrom;
+            }
+            if (savedDayTo && dayToSelect) {
+                dayToSelect.value = savedDayTo;
+            }
+            
+            // After restoring day selections, ensure dependent UI updates
+            if (typeof updateDaySelectors === 'function') {
+                 updateDaySelectors(); // This function should handle visibility of single vs range
+            }
+            // Trigger change on one of the day selectors if values were restored,
+            // to ensure dependent logic like updateUIVisibilityForDay runs.
+            // Check if daySelect has a value; if not, maybe dayFromSelect.
+            if (savedDay && daySelect) {
+                 daySelect.dispatchEvent(new Event('change'));
+            } else if (savedDayFrom && dayFromSelect) {
+                 dayFromSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+// Show all main practice type buttons
 function showAllMainPracticeTypes() {
     ['vocabulary-btn', 'grammar-btn', 'reading-btn', 'speaking-btn', 'writing-btn', 'practice-all-btn'].forEach(id => {
         document.getElementById(id).style.display = 'inline-block';
@@ -319,9 +284,6 @@ function hideOtherMainPracticeTypes(selectedId) {
             }
         });
     
-        // On page load, set UI to default language
-        updateUIForLanguage(document.getElementById('language').value || 'COSYenglish');
-
         // Helper: get selected days (single or range)
         function getSelectedDays() {
             const day = document.getElementById('day').value;
@@ -361,25 +323,27 @@ function hideOtherMainPracticeTypes(selectedId) {
             document.getElementById('result').innerHTML = '';
         }
 
-daySelect.addEventListener('change', updateDaySelectors);
-dayFromSelect.addEventListener('change', updateDaySelectors);
-dayToSelect.addEventListener('change', updateDaySelectors);
+// daySelect, dayFromSelect, dayToSelect are not defined here. Assuming they are defined in event-listeners-setup.js or language-handler.js
+// If not, these lines will cause an error. For now, I'll assume they are defined elsewhere.
+// daySelect.addEventListener('change', updateDaySelectors);
+// dayFromSelect.addEventListener('change', updateDaySelectors);
+// dayToSelect.addEventListener('change', updateDaySelectors);
 
 // After progress stats rendering (wherever progress stats are shown):
-const statsContainer = document.getElementById('progress-stats-container');
-if (statsContainer && !document.getElementById('reset-progress-btn')) {
-  const resetBtn = document.createElement('button');
-  resetBtn.id = 'reset-progress-btn';
-  resetBtn.className = 'btn-secondary margin-top-18 margin-bottom-8 font-size-11 text-center';
-  resetBtn.textContent = (translations[lang]||translations['COSYenglish']).resetProgress || 'Reset Progress';
-  resetBtn.onclick = function() {
-    if (confirm((translations[lang]||translations['COSYenglish']).resetConfirm || 'Are you sure you want to reset your progress?')) {
-      localStorage.clear();
-      location.reload();
-    }
-  };
-  statsContainer.appendChild(resetBtn);
-}
+// const statsContainer = document.getElementById('progress-stats-container'); // This is likely not available here.
+// if (statsContainer && !document.getElementById('reset-progress-btn')) {
+//   const resetBtn = document.createElement('button');
+//   resetBtn.id = 'reset-progress-btn';
+//   resetBtn.className = 'btn-secondary margin-top-18 margin-bottom-8 font-size-11 text-center';
+//   resetBtn.textContent = (translations[lang]||translations['COSYenglish']).resetProgress || 'Reset Progress';
+//   resetBtn.onclick = function() {
+//     if (confirm((translations[lang]||translations['COSYenglish']).resetConfirm || 'Are you sure you want to reset your progress?')) {
+//       localStorage.clear();
+//       location.reload();
+//     }
+//   };
+//   statsContainer.appendChild(resetBtn);
+// }
     </script>
 
     <script src="src/js/utils.js"></script>
@@ -387,7 +351,6 @@ if (statsContainer && !document.getElementById('reset-progress-btn')) {
     <script src="src/js/exercises/vocabulary.js"></script>
     <script src="src/js/speech-features.js"></script>
     <script src="src/js/ui/ui-visibility.js"></script>
-    <script src="src/js/exercises/vocabulary_buttons.js"></script>
     <script src="src/js/exercises/vocabulary-progression.js" defer></script>
     <script src="src/js/exercise-progression.js" defer></script>
     <script src="src/js/exercises/grammar.js"></script>

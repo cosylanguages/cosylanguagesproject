@@ -1129,3 +1129,45 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
         flex-basis: 100%; /* Stack on smaller screens */
     }
 }
+
+/* ==========================================================================
+   Hint Button & Display Area
+   ========================================================================== */
+.btn-hint {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    color: var(--text-color-dark) !important; /* Or a more distinct hint color like #8D6E63 */
+    line-height: 1 !important;
+    text-decoration: none !important;
+    margin-left: 5px !important; /* If hint button is to the right of randomize */
+    /* margin-right: 5px !important; */ /* If hint button is to the left of randomize */
+    float: right !important; /* Or left, depending on desired order with randomize */
+    font-size: 1.5rem !important; /* Adjust for emoji size if using emoji */
+    background: linear-gradient(90deg, #FFD700, #FFA500) !important; /* Gold/Orange gradient */
+    border: none !important;
+    border-radius: 50% !important;
+    width: 44px !important; /* Consistent with randomize button */
+    height: 44px !important; /* Consistent with randomize button */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+    cursor: pointer !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.btn-hint:hover {
+    transform: scale(1.15) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+.hint-display {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff8e1; /* Light yellow, like a post-it note */
+    border: 1px solid #ffecb3; /* Softer yellow border */
+    border-radius: 4px;
+    color: #795548; /* Brownish text color for contrast */
+    font-size: 0.9rem;
+    text-align: left;
+    line-height: 1.4;
+}
