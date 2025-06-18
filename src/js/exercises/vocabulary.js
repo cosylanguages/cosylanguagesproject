@@ -219,18 +219,40 @@ async function showRandomWord() {
         exerciseContainer.showHint = function() {
             const existingHint = this.querySelector('.hint-display');
             if (existingHint) existingHint.remove();
+            
             const hintDisplay = document.createElement('div');
-            hintDisplay.className = 'hint-display exercise-hint'; 
+            hintDisplay.className = 'hint-display exercise-hint';
+            let hintText = "";
+
             if (word && word.length > 0) {
-                let hintText = `${t.hintLabel || 'Hint:'} ${t.wordStartsWith || 'The word starts with'} '${word[0]}'`;
-                if (word.length > 1) {
-                    hintText += ` ${t.wordEndsWith || 'and ends with'} '${word[word.length - 1]}'`;
+                if (word.length < 3) {
+                    hintText = `${t.hintLabel || 'Hint:'} ${t.theWordIs || 'The word is'} '${word}'.`;
+                } else {
+                    const numLettersToReveal = word.length <= 5 ? 2 : 3;
+                    let indices = Array.from(Array(word.length).keys());
+                    
+                    if (typeof window.shuffleArray === 'function') {
+                        indices = window.shuffleArray(indices);
+                    } else {
+                        // Fallback basic shuffle if window.shuffleArray is not available
+                        for (let i = indices.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [indices[i], indices[j]] = [indices[j], indices[i]];
+                        }
+                    }
+                    
+                    const selectedIndices = indices.slice(0, numLettersToReveal).sort((a, b) => a - b);
+                    
+                    let hintParts = [];
+                    selectedIndices.forEach(index => {
+                        hintParts.push(`${t.letterAtPosition || 'Letter at position'} ${index + 1} ${t.is || 'is'} '${word[index]}'`);
+                    });
+                    hintText = `${t.hintLabel || 'Hint:'} ${hintParts.join(', ')}.`;
                 }
-                hintText += '.';
-                hintDisplay.textContent = hintText;
             } else {
-                hintDisplay.textContent = t.noHintAvailable || 'No hint available for this exercise.';
+                hintText = t.noHintAvailable || 'No hint available for this exercise.';
             }
+            hintDisplay.textContent = hintText;
             this.appendChild(hintDisplay);
         };
     }
@@ -506,26 +528,113 @@ async function showBuildWord(baseWord = null) {
     const exerciseContainer = resultArea.querySelector('.build-word-exercise');
     if (exerciseContainer) {
         exerciseContainer.showHint = function() {
-            const existingHint = this.querySelector('.hint-display');
-            if (existingHint) existingHint.remove();
-            const hintDisplay = document.createElement('div');
-            hintDisplay.className = 'hint-display exercise-hint';
-            if (word && word.length > 0) {
-                 let hintText = `${t.hintLabel || 'Hint:'} ${t.wordStartsWith || 'The word starts with'} '${word[0]}'`;
-                 if (word.length > 1) {
-                    hintText += ` ${t.wordEndsWith || 'and ends with'} '${word[word.length - 1]}'`;
+            // New hint logic for showBuildWord
+            const wordSlotsContainer = document.getElementById('word-slots');
+            const letterPool = document.getElementById('letter-pool');
+            if (!wordSlotsContainer || !letterPool || !word) return;
+
+            // Remove any old text-based hint
+            const oldHintDisplay = this.querySelector('.hint-display.exercise-hint');
+            if (oldHintDisplay) oldHintDisplay.remove();
+
+            const currentSlots = Array.from(wordSlotsContainer.querySelectorAll('.letter-slot'));
+            const correctWordLower = word.toLowerCase();
+
+            // Identify empty slots and their indices
+            let emptySlotsIndices = [];
+            currentSlots.forEach((slot, index) => {
+                if (!slot.firstChild) {
+                    emptySlotsIndices.push(index);
                 }
-                hintText += '.';
-                hintDisplay.textContent = hintText;
-            } else {
-                 hintDisplay.textContent = t.noHintAvailable || 'No hint available.';
+            });
+
+            // Identify letters of the word not yet correctly placed in an empty slot
+            // and also consider letters that might be misplaced.
+            let unplacedCorrectLetters = []; // Stores {letter: 'a', originalIndex: 0}
+
+            // Create a frequency map of letters in the correct word
+            const wordLetterCounts = {};
+            for (let i = 0; i < correctWordLower.length; i++) {
+                const letter = correctWordLower[i];
+                wordLetterCounts[letter] = (wordLetterCounts[letter] || 0) + 1;
             }
-            const letterPool = this.querySelector('#letter-pool');
-            if (letterPool) {
-                this.insertBefore(hintDisplay, letterPool);
-            } else {
-                this.appendChild(hintDisplay);
+
+            // Account for correctly placed letters
+            currentSlots.forEach((slot, index) => {
+                const tile = slot.firstChild;
+                if (tile && tile.classList.contains('letter-tile')) {
+                    const placedLetter = tile.dataset.letter.toLowerCase();
+                    if (placedLetter === correctWordLower[index]) {
+                        wordLetterCounts[placedLetter]--;
+                    }
+                }
+            });
+            
+            // Collect all instances of letters that still need to be placed correctly
+            for (let i = 0; i < correctWordLower.length; i++) {
+                const letter = correctWordLower[i];
+                 // Is this position empty?
+                const slotIsEmpty = !currentSlots[i].firstChild;
+                // Or is this position occupied by a wrong letter?
+                const slotHasWrongLetter = currentSlots[i].firstChild && currentSlots[i].firstChild.dataset.letter.toLowerCase() !== letter;
+
+                if (wordLetterCounts[letter] > 0 && (slotIsEmpty || slotHasWrongLetter)) {
+                    unplacedCorrectLetters.push({ letter: letter, originalIndex: i });
+                }
             }
+
+            if (unplacedCorrectLetters.length === 0) {
+                // Word is complete or all remaining letters are already in slots (possibly wrong ones, but hint focuses on empty/misplaced for correct ones)
+                return;
+            }
+
+            // Determine number of hints: 1 or 2, or up to 25% of word length, min 1.
+            // Not more than available empty slots for these specific correct letters.
+            let numHints = Math.min(
+                Math.max(1, Math.floor(word.length * 0.25)),
+                unplacedCorrectLetters.length 
+            );
+            if (word.length <= 2) numHints = 1;
+
+
+            const lettersToHint = window.shuffleArray(unplacedCorrectLetters).slice(0, numHints);
+
+            lettersToHint.forEach(hintData => {
+                const letterToPlace = hintData.letter;
+                const targetSlotIndex = hintData.originalIndex; // The correct slot for this specific instance of the letter
+
+                // Ensure the target slot is actually available for hinting (empty or contains wrong letter)
+                const targetSlot = currentSlots[targetSlotIndex];
+                if (!targetSlot || (targetSlot.firstChild && targetSlot.firstChild.dataset.letter.toLowerCase() === letterToPlace)) {
+                    // Slot already has the correct letter or slot somehow invalid, skip this hint.
+                    // This might happen if multiple instances of the same letter are chosen for hint
+                    // and one was already placed by a previous iteration of this loop.
+                    return; 
+                }
+
+                // If target slot has a wrong tile, move it back to pool
+                if (targetSlot.firstChild) {
+                    letterPool.appendChild(targetSlot.firstChild);
+                }
+
+                // Find a draggable tile for this letter in the letter-pool
+                let tileToMove = Array.from(letterPool.querySelectorAll('.letter-tile'))
+                                      .find(tile => tile.dataset.letter.toLowerCase() === letterToPlace && !tile.classList.contains('hint-placed'));
+                
+                if (tileToMove) {
+                    targetSlot.appendChild(tileToMove);
+                    tileToMove.classList.add('hint-placed');
+                } else {
+                    // If not in pool (e.g., user dragged it to a wrong slot, or it's a duplicate letter and all tiles are used)
+                    // Create a new tile.
+                    const newTile = document.createElement('div');
+                    newTile.className = 'letter-tile hint-placed';
+                    newTile.dataset.letter = letterToPlace;
+                    newTile.textContent = letterToPlace;
+                    // newTile.draggable = false; // Ideally, make it not draggable or easily returnable. For now, class is enough.
+                    targetSlot.appendChild(newTile);
+                }
+            });
         };
         exerciseContainer.revealAnswer = function() {
             const slots = this.querySelectorAll('.letter-slot');
@@ -670,18 +779,40 @@ async function showIdentifyImage() {
         exerciseContainer.showHint = function() {
             const existingHint = this.querySelector('.hint-display');
             if (existingHint) existingHint.remove();
+            
             const hintDisplay = document.createElement('div');
             hintDisplay.className = 'hint-display exercise-hint';
-             if (correctAnswer && correctAnswer.length > 0) {
-                let hintText = `${t.hintLabel || 'Hint:'} ${t.wordStartsWith || 'The word starts with'} '${correctAnswer[0]}'`;
-                 if (correctAnswer.length > 1) {
-                    hintText += ` ${t.wordEndsWith || 'and ends with'} '${correctAnswer[correctAnswer.length - 1]}'`;
+            let hintText = "";
+
+            if (correctAnswer && correctAnswer.length > 0) {
+                if (correctAnswer.length < 3) { // Reveal whole word if very short
+                    hintText = `${t.hintLabel || 'Hint:'} ${t.theWordIs || 'The word is'} '${correctAnswer}'.`;
+                } else {
+                    // Reveal 1 or 2 letters for longer words
+                    const numLettersToReveal = correctAnswer.length <= 4 ? 1 : 2;
+                    let indices = Array.from(Array(correctAnswer.length).keys());
+                    
+                    if (typeof window.shuffleArray === 'function') {
+                        indices = window.shuffleArray(indices);
+                    } else { // Fallback shuffle
+                        for (let i = indices.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [indices[i], indices[j]] = [indices[j], indices[i]];
+                        }
+                    }
+                    
+                    const selectedIndices = indices.slice(0, numLettersToReveal).sort((a, b) => a - b);
+                    
+                    let hintParts = [];
+                    selectedIndices.forEach(index => {
+                        hintParts.push(`${t.letterAtPosition || 'Letter at position'} ${index + 1} ${t.is || 'is'} '${correctAnswer[index]}'`);
+                    });
+                    hintText = `${t.hintLabel || 'Hint:'} ${hintParts.join(', ')}.`;
                 }
-                hintText += '.';
-                hintDisplay.textContent = hintText;
             } else {
-                 hintDisplay.textContent = t.noHintAvailable || 'No hint available.';
+                hintText = t.noHintAvailable || 'No hint available for this exercise.';
             }
+            hintDisplay.textContent = hintText;
             this.appendChild(hintDisplay);
         };
         exerciseContainer.revealAnswer = function() {
@@ -997,18 +1128,41 @@ async function showTranscribeWord() {
         exerciseContainer.showHint = function() {
             const existingHint = this.querySelector('.hint-display');
             if (existingHint) existingHint.remove();
+
             const hintDisplay = document.createElement('div');
             hintDisplay.className = 'hint-display exercise-hint';
+            let hintText = "";
+
             if (word && word.length > 0) {
-                 let hintText = `${t.hintLabel || 'Hint:'} ${t.wordStartsWith || 'The word starts with'} '${word[0]}'`;
-                 if (word.length > 1) {
-                    hintText += ` ${t.wordEndsWith || 'and ends with'} '${word[word.length - 1]}'`;
+                if (word.length < 3) { // Reveal whole word if very short
+                    hintText = `${t.hintLabel || 'Hint:'} ${t.theWordIs || 'The word is'} '${word}'.`;
+                } else {
+                    // Reveal 1 or 2 letters for longer words
+                    const numLettersToReveal = word.length <= 4 ? 1 : 2;
+                    let indices = Array.from(Array(word.length).keys());
+
+                    if (typeof window.shuffleArray === 'function') {
+                        indices = window.shuffleArray(indices);
+                    } else { // Fallback shuffle
+                        for (let i = indices.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [indices[i], indices[j]] = [indices[j], indices[i]];
+                        }
+                    }
+
+                    const selectedIndices = indices.slice(0, numLettersToReveal).sort((a, b) => a - b);
+
+                    let hintParts = [];
+                    selectedIndices.forEach(index => {
+                        hintParts.push(`${t.letterAtPosition || 'Letter at position'} ${index + 1} ${t.is || 'is'} '${word[index]}'`);
+                    });
+                    hintText = `${t.hintLabel || 'Hint:'} ${hintParts.join(', ')}.`;
                 }
-                hintText += '.';
-                hintDisplay.textContent = hintText;
             } else {
-                 hintDisplay.textContent = t.noHintAvailable || 'No hint available.';
+                hintText = t.noHintAvailable || 'No hint available for this exercise.';
             }
+            hintDisplay.textContent = hintText;
+            
             const inputField = this.querySelector('#transcription-input');
             if(inputField) this.insertBefore(hintDisplay, inputField);
             else this.appendChild(hintDisplay);
