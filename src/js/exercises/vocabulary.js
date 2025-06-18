@@ -970,8 +970,6 @@ showMatchSoundWord = patchExerciseForRandomizeButton(showMatchSoundWord, '.match
 
 // --- PATCH: Always include required pairs for day 1 in match opposites and match image-word ---
 const REQUIRED_DAY1_OPPOSITES = [
-    { base: 'hello', opposite: 'goodbye' },
-    { base: 'yes', opposite: 'no' },
     { base: 'thank you', opposite: "you're welcome" }
 ];
 
