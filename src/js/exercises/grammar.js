@@ -29,7 +29,18 @@ async function loadGenderGrammar(language, day) {
     }
     
     const data = loadResult.data; 
-    return data && data[day] ? data[day] : [];
+   // Ensure data for the specific day is returned, or an empty array if not present
+    let dayData = [];
+    if (data) {
+        if (Array.isArray(day)) { // If day is an array, concatenate data for all specified days
+            day.forEach(d => {
+                if (data[d]) dayData = dayData.concat(data[d]);
+            });
+        } else if (data[day]) { // If day is a single value
+            dayData = data[day];
+        }
+    }
+    return dayData;
 }
 
 async function loadVerbGrammar(language, days) { 
