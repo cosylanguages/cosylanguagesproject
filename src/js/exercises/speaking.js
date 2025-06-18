@@ -229,7 +229,6 @@ async function showMonologuePractice() {
         <div class="speaking-exercise-container">
             <p>${t.exerciseNotImplementedMonologue || 'This monologue exercise is not yet implemented.'}</p>
             <p>${t.imagineMonologueHere || 'Imagine you record a monologue here and then click continue.'}</p>
-            <button id="finish-monologue-btn" class="exercise-button" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
@@ -268,7 +267,6 @@ async function showRolePlayPractice() {
         <div class="speaking-exercise-container">
             <p>${t.exerciseNotImplementedRolePlay || 'This role-play exercise is not yet implemented.'}</p>
             <p>${t.imagineRolePlayHere || 'Imagine you participate in a role-play here and then click continue.'}</p>
-            <button id="finish-roleplay-btn" class="exercise-button" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
@@ -327,9 +325,9 @@ function initSpeakingPractice() {
     }
 }
 
-showQuestionPractice = patchExerciseWithExtraButtons(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
-showMonologuePractice = patchExerciseWithExtraButtons(showMonologuePractice, '.speaking-exercise-container', startRandomSpeakingPractice);
-showRolePlayPractice = patchExerciseWithExtraButtons(showRolePlayPractice, '.speaking-exercise-container', startRandomSpeakingPractice);
+showQuestionPractice = patchExerciseWithExtraButtons(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
+showMonologuePractice = patchExerciseWithExtraButtons(showMonologuePractice, '.speaking-exercise-container', startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
+showRolePlayPractice = patchExerciseWithExtraButtons(showRolePlayPractice, '.speaking-exercise-container', startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
 
 window.showQuestionPractice = showQuestionPractice;
 window.showMonologuePractice = showMonologuePractice;

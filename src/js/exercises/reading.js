@@ -12,7 +12,6 @@ async function showStoryPractice() {
         <div class="reading-exercise-container exercise-container">
             <p>${t.exerciseNotImplementedStory || 'This story exercise is not yet implemented.'}</p>
             <p>${t.imagineStoryHere || 'Imagine you read a story here.'}</p>
-            <button id="btn-new-story-practice" class="exercise-button" onclick="window.showStoryPractice()" aria-label="${newExerciseButtonText}">🔄 ${newExerciseButtonText}</button>
         </div>
     `;
 
@@ -57,7 +56,6 @@ async function showInterestingFactPractice() {
         <div class="reading-exercise-container exercise-container">
             <p>${t.exerciseNotImplementedFact || 'This interesting fact exercise is not yet implemented.'}</p>
             <p>${t.imagineFactHere || 'Imagine you read an interesting fact here.'}</p>
-            <button id="btn-new-fact-practice" class="exercise-button" onclick="window.showInterestingFactPractice()" aria-label="${newExerciseButtonText}">🔄 ${newExerciseButtonText}</button>
         </div>
     `;
     
@@ -130,13 +128,13 @@ window.showStoryPractice = patchExerciseWithExtraButtons(
     window.showStoryPractice, 
     '.reading-exercise-container', 
     window.startRandomReadingPractice, 
-    { noCheck: true, noReveal: true } 
+    { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomReadingPractice, textKey: 'newExercise' } } 
 );
 window.showInterestingFactPractice = patchExerciseWithExtraButtons(
     window.showInterestingFactPractice, 
     '.reading-exercise-container', 
     window.startRandomReadingPractice, 
-    { noCheck: true, noReveal: true } 
+    { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomReadingPractice, textKey: 'newExercise' } } 
 );
 
 document.addEventListener('DOMContentLoaded', initReadingPractice);

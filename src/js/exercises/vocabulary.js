@@ -292,6 +292,7 @@ async function showOppositesExercise(baseWord = null) {
             <input type="text" id="opposite-input" class="exercise-input" aria-label="${t.typeTheOpposite || 'Type the opposite'}" placeholder="${t.typeTheOppositePlaceholder || 'Type the opposite...'}">
             <div id="opposite-feedback" class="exercise-feedback" aria-live="polite"></div>
             <div class="exercise-actions">
+                <button id="reveal-opposite-impl" class="exercise-button" aria-label="${t.revealAnswer || 'Reveal Answer'}">👁️ ${t.buttons?.reveal || 'Reveal Answer'}</button>
                 <button id="btn-new-opposite-exercise" class="exercise-button" onclick="window.showOppositesExercise()" aria-label="${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
             </div>
         </div>

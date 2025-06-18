@@ -878,12 +878,12 @@ async function practiceAllGrammar() {
     }
 }
 
-showArticleWord = patchExerciseWithExtraButtons(showArticleWord, '.gender-exercise', startGenderPractice);
-showMatchArticlesWords = patchExerciseWithExtraButtons(showMatchArticlesWords, '.match-exercise', startGenderPractice);
-showSelectArticleExercise = patchExerciseWithExtraButtons(showSelectArticleExercise, '.select-article-exercise', startGenderPractice);
-showTypeVerb = patchExerciseWithExtraButtons(showTypeVerb, '.verb-exercise', startVerbsPractice);
-showMatchVerbsPronouns = patchExerciseWithExtraButtons(showMatchVerbsPronouns, '.match-exercise', startVerbsPractice);
-showFillGaps = patchExerciseWithExtraButtons(showFillGaps, '.fill-gap-exercise', startVerbsPractice);
-showWordOrder = patchExerciseWithExtraButtons(showWordOrder, '.word-order-exercise', startVerbsPractice);
+showArticleWord = patchExerciseWithExtraButtons(showArticleWord, '.gender-exercise', startGenderPractice, { newExercise: { fn: startGenderPractice, textKey: 'newExercise' } })
+showMatchArticlesWords = patchExerciseWithExtraButtons(showMatchArticlesWords, '.match-exercise', startGenderPractice, { noCheck: true, newExercise: { fn: startGenderPractice, textKey: 'newExercise' } })
+showSelectArticleExercise = patchExerciseWithExtraButtons(showSelectArticleExercise, '.select-article-exercise', startGenderPractice, { noCheck: true, newExercise: { fn: startGenderPractice, textKey: 'newExercise' } })
+showTypeVerb = patchExerciseWithExtraButtons(showTypeVerb, '.verb-exercise', startVerbsPractice, { newExercise: { fn: startVerbsPractice, textKey: 'newExercise' } })
+showMatchVerbsPronouns = patchExerciseWithExtraButtons(showMatchVerbsPronouns, '.match-exercise', startVerbsPractice, { noCheck: true, newExercise: { fn: startVerbsPractice, textKey: 'newExercise' } })
+showFillGaps = patchExerciseWithExtraButtons(showFillGaps, '.fill-gap-exercise', startVerbsPractice, { newExercise: { fn: startVerbsPractice, textKey: 'newExercise' } })
+showWordOrder = patchExerciseWithExtraButtons(showWordOrder, '.word-order-exercise', startVerbsPractice, { newExercise: { fn: startVerbsPractice, textKey: 'newExercise' } })
 
 document.addEventListener('DOMContentLoaded', initGrammarPractice);
