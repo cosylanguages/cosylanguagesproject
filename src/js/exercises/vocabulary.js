@@ -1017,6 +1017,8 @@ const _origShowMatchOpposites = showMatchOpposites;
 showMatchOpposites = async function() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
+    const MIN_VOCAB_PAIRS = 2; // Define the minimum number of pairs
+
     // If day 1 is selected (alone or in range), always include required pairs
     if (days && days.includes('1')) {
         const t = translations[language] || translations.COSYenglish;
@@ -1038,6 +1040,26 @@ showMatchOpposites = async function() {
                 availableWords.splice(randomIndex, 1);
             }
         }
+
+        // Check for minimum pairs
+        if (selectedPairs.length < MIN_VOCAB_PAIRS) {
+            const resultArea = document.getElementById('result');
+            const lang = document.getElementById('language').value; // Ensure 'language' element ID is correct
+            const t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : (typeof translations !== 'undefined' ? translations.COSYenglish : { notEnoughPairsError: `Not enough unique word pairs (found ${selectedPairs.length}, need at least ${MIN_VOCAB_PAIRS}) available for this exercise. Please select different options or expand the vocabulary for this day/language.` });
+            
+            let message = t.notEnoughPairsError || `Not enough unique word pairs (found ${selectedPairs.length}, need at least ${MIN_VOCAB_PAIRS}) available for this exercise. Please select different options or expand the vocabulary for this day/language.`;
+            // Replace placeholders if present in the message
+            message = message.replace('${selectedPairs.length}', selectedPairs.length).replace('${MIN_VOCAB_PAIRS}', MIN_VOCAB_PAIRS);
+
+            resultArea.innerHTML = `<p class="no-data">${message}</p>`;
+            
+            // Attempt to hide a randomize button if one was globally added by a patcher
+            const randomizeButton = document.getElementById('randomize-exercise-btn');
+            if (randomizeButton) randomizeButton.style.display = 'none';
+            
+            return; // Exit before rendering the game
+        }
+
         // Shuffle columns
         const wordsColumn = [...selectedPairs].sort(() => Math.random() - 0.5);
         const oppositesColumn = [...selectedPairs].map(pair => pair.opposite).sort(() => Math.random() - 0.5);
@@ -1070,59 +1092,32 @@ showMatchOpposites = async function() {
         document.querySelectorAll('#words-col .match-item').forEach(item => {
             item.addEventListener('click', function() {
                 if (this.classList.contains('matched')) return;
-
-                // Toggle mechanism
-                if (selectedWordEl === this) {
-                    this.classList.remove('selected');
-                    selectedWordEl = null;
-                    selectedWord = null;
-                    // playSound('deselect'); // Optional: consider a different sound
-                    return;
-                }
                 playSound('select');
-                // Deselect previously selected item in this column
-                if (selectedWordEl) {
-                    selectedWordEl.classList.remove('selected');
-                }
-                
+                if (selectedWordEl) selectedWordEl.classList.remove('selected');
                 this.classList.add('selected');
                 selectedWordEl = this;
                 selectedWord = this.getAttribute('data-word');
-                
                 // If an opposite is already selected, attempt to match
-                if (selectedOppositeEl) {
-                    checkOppositesMatchAttemptPatched();
+                if (selectedOppositeEl && selectedOppositeEl.classList.contains('matched')) {
+                    selectedOppositeEl = null;
+                    selectedOpposite = null;
                 }
+                if (selectedOppositeEl) checkOppositesMatchAttemptPatched();
             });
         });
 
         document.querySelectorAll('#opposites-col .match-item').forEach(item => {
             item.addEventListener('click', function() {
                 if (this.classList.contains('matched')) return;
-
-                // Toggle mechanism
-                if (selectedOppositeEl === this) {
-                    this.classList.remove('selected');
-                    selectedOppositeEl = null;
-                    selectedOpposite = null;
-                    // playSound('deselect'); // Optional: consider a different sound
-                    return;
-                }
                 playSound('select');
                 if (!selectedWordEl) { // Nothing selected in the first column yet
                     CosyAppInteractive.showToast(t.selectWordFirstToast || "Please select a word from the first column first.");
                     return;
                 }
-
-                // Deselect previously selected item in this column
-                if (selectedOppositeEl) {
-                    selectedOppositeEl.classList.remove('selected');
-                }
-
+                if (selectedOppositeEl) selectedOppositeEl.classList.remove('selected');
                 this.classList.add('selected');
                 selectedOppositeEl = this;
                 selectedOpposite = this.getAttribute('data-opposite');
-                
                 checkOppositesMatchAttemptPatched();
             });
         });
