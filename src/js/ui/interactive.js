@@ -69,8 +69,8 @@ window.CosyAppInteractive = {};
         };
     }
 
-    const SOUNDS = { /* ... existing sound definitions ... */ };
-    function playSound(type) { /* ... existing playSound ... */ }
+    // const SOUNDS = { /* ... existing sound definitions ... */ }; // Removed, using playSound from utils.js
+    // function playSound(type) { /* ... existing playSound ... */ } // Removed, using playSound from utils.js
     
     class GameState { /* ... existing GameState class ... */
         constructor() {
@@ -109,9 +109,15 @@ window.CosyAppInteractive = {};
     CosyAppInteractive.showToast = showToast;
     // function showConfetti() { /* ... implementation ... */ } // Assuming this exists or is not critical for tips
     CosyAppInteractive.addXP = function(amount) { gameState.addXP(amount); };
-    function awardCorrectAnswer() { /* ... existing ... */ }
+    function awardCorrectAnswer() { 
+        playSound('success'); // Added success sound
+        /* ... existing ... */ 
+    }
     CosyAppInteractive.awardCorrectAnswer = awardCorrectAnswer;
-    CosyAppInteractive.awardIncorrectAnswer = function() { /* ... existing ... */ };
+    CosyAppInteractive.awardIncorrectAnswer = function() { 
+        playSound('error'); // Added error sound
+        /* ... existing ... */ 
+    };
     function markAndAward(el) { /* ... existing ... */ }
     CosyAppInteractive.markAndAward = markAndAward;
     // const observer = new MutationObserver(...) // Assuming this is correctly set up elsewhere or re-added if needed
@@ -181,7 +187,7 @@ window.CosyAppInteractive = {};
         document.body.addEventListener('click', function(event) {
             if (event.target.matches('button:not(.btn-emoji, #speaking-record-btn), .article-option-btn, .word-option, .match-item')) {
                 if (!event.target.closest('.no-generic-click-sound')) {
-                     // playSound('click'); // playSound might not be defined if SOUNDS is stubbed
+                     playSound('click'); // Enabled click sound
                 }
             }
         }, true);
