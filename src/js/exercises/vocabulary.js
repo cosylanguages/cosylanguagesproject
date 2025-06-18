@@ -1070,28 +1070,59 @@ showMatchOpposites = async function() {
         document.querySelectorAll('#words-col .match-item').forEach(item => {
             item.addEventListener('click', function() {
                 if (this.classList.contains('matched')) return;
+
+                // Toggle mechanism
+                if (selectedWordEl === this) {
+                    this.classList.remove('selected');
+                    selectedWordEl = null;
+                    selectedWord = null;
+                    // playSound('deselect'); // Optional: consider a different sound
+                    return;
+                }
                 playSound('select');
-                if (selectedWordEl) selectedWordEl.classList.remove('selected');
+                // Deselect previously selected item in this column
+                if (selectedWordEl) {
+                    selectedWordEl.classList.remove('selected');
+                }
+                
                 this.classList.add('selected');
                 selectedWordEl = this;
                 selectedWord = this.getAttribute('data-word');
+                
                 // If an opposite is already selected, attempt to match
-                if (selectedOppositeEl) checkOppositesMatchAttemptPatched();
+                if (selectedOppositeEl) {
+                    checkOppositesMatchAttemptPatched();
+                }
             });
         });
 
         document.querySelectorAll('#opposites-col .match-item').forEach(item => {
             item.addEventListener('click', function() {
                 if (this.classList.contains('matched')) return;
+
+                // Toggle mechanism
+                if (selectedOppositeEl === this) {
+                    this.classList.remove('selected');
+                    selectedOppositeEl = null;
+                    selectedOpposite = null;
+                    // playSound('deselect'); // Optional: consider a different sound
+                    return;
+                }
                 playSound('select');
                 if (!selectedWordEl) { // Nothing selected in the first column yet
                     CosyAppInteractive.showToast(t.selectWordFirstToast || "Please select a word from the first column first.");
                     return;
                 }
-                if (selectedOppositeEl) selectedOppositeEl.classList.remove('selected');
+
+                // Deselect previously selected item in this column
+                if (selectedOppositeEl) {
+                    selectedOppositeEl.classList.remove('selected');
+                }
+
                 this.classList.add('selected');
                 selectedOppositeEl = this;
                 selectedOpposite = this.getAttribute('data-opposite');
+                
                 checkOppositesMatchAttemptPatched();
             });
         });
