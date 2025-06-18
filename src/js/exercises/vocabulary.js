@@ -1006,14 +1006,12 @@ async function getRequiredDay1Pairs(language) {
 }
 
 // PATCH showMatchOpposites
-const _origShowMatchOpposites = showMatchOpposites;
 showMatchOpposites = async function() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     // If day 1 is selected (alone or in range), always include required pairs
-    if (days && days.includes('1')) {
-        const t = translations[language] || translations.COSYenglish;
-        const words = await loadVocabulary(language, days);
+    const t = translations[language] || translations.COSYenglish;
+    const words = await loadVocabulary(language, days);
         const opposites = await loadOpposites(language, days);
         let selectedPairs = await getRequiredDay1Pairs(language);
         // Add additional random pairs if needed
@@ -1168,10 +1166,6 @@ showMatchOpposites = async function() {
         document.getElementById('new-match').addEventListener('click', () => {
             showMatchOpposites();
         });
-        return;
-    }
-    // ...existing code...
-    await _origShowMatchOpposites.apply(this, arguments);
 };
 
 // PATCH showMatchImageWord
