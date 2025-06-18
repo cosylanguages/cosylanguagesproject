@@ -35,20 +35,25 @@ function addRandomizeButton(containerIdOrElement, randomizeFn) {
         console.error(`[addRandomizeButton] Critical: Container NOT FOUND for selector/element: ${containerIdOrElement}. Button will not be added.`);
         return;
     }
-    const existingBtn = container.querySelector('.btn-randomize'); // This is the old class, ensure new buttons use new IDs
+    // It's good to keep this cleanup for any rogue old buttons.
+    const existingBtn = container.querySelector('.btn-randomize'); 
     if (existingBtn) existingBtn.remove();
     
+    // Also check for and remove button with the new ID to prevent duplicates if called mistakenly.
+    const existingNewBtn = container.querySelector('#btn-randomize-category');
+    if (existingNewBtn) existingNewBtn.remove();
+
     let btn = document.createElement('button');
-    btn.className = 'btn-randomize randomizer-button'; 
+    btn.className = 'exercise-button randomizer-button'; // MODIFIED
+    btn.id = 'btn-randomize-category';                   // ADDED
     const language = document.getElementById('language')?.value || 'COSYenglish'; 
-    // Assuming 'translations' is globally available.
-    // Fallback to COSYenglish if the specific language isn't found or if translations isn't defined.
     const currentTranslations = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || { buttons: {}, aria: {} };
 
+    btn.setAttribute('aria-label', currentTranslations.aria?.randomizeCategory || 'Randomize exercise');
+    btn.title = currentTranslations.aria?.randomizeCategory || 'Randomize exercise';
+    btn.innerHTML = '🎲'; // MODIFIED
 
-    btn.setAttribute('aria-label', currentTranslations.aria?.randomizeCategory || 'Randomize exercise'); // Updated key
-    btn.title = currentTranslations.aria?.randomizeCategory || 'Randomize exercise'; // Updated key
-    btn.innerHTML = currentTranslations.buttons?.randomizeCategory || '<span aria-label="Randomize">🎲</span>'; // Updated key
+
     btn.onclick = randomizeFn;
 
     container.prepend(btn);
