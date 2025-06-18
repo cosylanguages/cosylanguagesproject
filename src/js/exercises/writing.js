@@ -200,7 +200,6 @@ async function showStoryEmojisPractice() {
 
     resultArea.innerHTML = `
         <div class="writing-exercise-container story-emojis-exercise exercise-container">
-            <h3>${t.emojiStoryTitle || "Emoji Story"}</h3>
             <div class="story-emojis-display" style="font-size: 2.5em; margin-bottom: 20px; text-align: center;">${selectedEmojis.join(' ')}</div>
             <textarea id="story-emojis-answer-area" rows="10" spellcheck="true" placeholder="${t.typeYourStoryPlaceholder || 'Type your story here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
             <button id="finish-story-emojis-btn-impl" class="btn-primary" style="padding: 10px 20px; margin-bottom:10px;">${t.buttons?.done || 'Done'}</button>
@@ -358,7 +357,6 @@ async function showDiaryPractice() {
     
     resultArea.innerHTML = `
         <div class="writing-exercise-container diary-writing-exercise exercise-container">
-             <h3>${t.diaryPracticeTitle || "Diary Entry"}</h3>
             <p>${t.exerciseNotImplementedDiary || 'This diary entry exercise is not yet implemented.'}</p>
             <p>${t.imagineDiaryHere || 'Imagine you write a diary entry here about your day or a specific event.'}</p>
             <textarea id="diary-answer-area" rows="10" spellcheck="true" placeholder="${t.typeYourDiaryPlaceholder || 'Type your diary entry here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>

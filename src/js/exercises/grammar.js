@@ -470,7 +470,7 @@ async function showSelectArticleExercise() {
     
     resultArea.innerHTML = `
         <div class="select-article-exercise" role="form" aria-label="${t.aria?.selectArticleExercise || 'Select the Article Exercise'}">
-            <div class="exercise-prompt" aria-label="${wordToShow}">${t.selectCorrectArticleFor || "Select the correct article for:"} <strong>${wordToShow}</strong></div>
+            <div class="exercise-prompt" aria-label="${wordToShow}"><strong>${wordToShow}</strong></div>
             <button id="pronounce-select-article-word" class="btn-emoji" title="${t.aria?.pronounce || 'Pronounce'}">🔊</button>
             <div class="article-options-container">
                 ${articleOptions.map(article => `
