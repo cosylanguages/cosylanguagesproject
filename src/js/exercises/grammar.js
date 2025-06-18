@@ -264,7 +264,6 @@ async function showArticleWord() {
             <div class="gender-prompt" aria-label="${variation.question}">${variation.question}</div>
             <button id="pronounce-gender-item" class="btn-emoji" title="${t.aria?.pronounce || 'Pronounce'}">🔊</button>
             <input type="text" id="gender-answer-input" class="exercise-input" aria-label="${t.aria?.typeYourAnswer || 'Type your answer'}" placeholder="${t.typeYourAnswerPlaceholder || 'Type your answer...'}">
-            <button id="check-gender-answer-btn" class="btn-primary" aria-label="${t.aria?.checkAnswer || 'Check answer'}">✅ ${t.buttons?.check || 'Check'}</button>
             <div id="gender-answer-feedback" class="exercise-feedback" aria-live="polite"></div>
         </div>
     `;
@@ -279,6 +278,45 @@ async function showArticleWord() {
             hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.checkNounEnding || "Check the noun's ending or typical gender patterns for this language. The word is"} '${item.word}'.`;
             exerciseContainer.appendChild(hintDisplay);
         };
+        exerciseContainer.checkAnswer = async function() {
+            const userInput = document.getElementById('gender-answer-input').value.trim();
+            let feedbackText = '';
+            let isCorrect = false;
+            const t = translations[document.getElementById('language').value] || translations.COSYenglish;
+            if (!userInput) {
+                feedbackText = `<span style="color:#e67e22;">${t.feedbackPleaseType || 'Please type your answer above.'}</span>`;
+            } else {
+                if (variation.type === 'article') { 
+                    if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
+                        feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                        CosyAppInteractive.awardCorrectAnswer();
+                        CosyAppInteractive.scheduleReview(document.getElementById('language').value, 'gender', item.word, true);
+                        isCorrect = true;
+                    } else {
+                        feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${variation.answer}</b></span>`;
+                        CosyAppInteractive.awardIncorrectAnswer();
+                    }
+                } else { 
+                    const targetArticle = item.article; 
+                    // Ensure 'items' from the outer scope is used, not re-declared by mistake if it was intended to be from the outer scope
+                    const currentItems = await loadGenderGrammar(document.getElementById('language').value, getSelectedDays()); 
+                    const isValidWordForArticle = currentItems.some(i => i.article.toLowerCase() === targetArticle.toLowerCase() && i.word.toLowerCase() === userInput.toLowerCase());
+                    if (isValidWordForArticle) {
+                        feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                        CosyAppInteractive.awardCorrectAnswer();
+                        CosyAppInteractive.scheduleReview(document.getElementById('language').value, 'gender', item.word, true);
+                        isCorrect = true;
+                    } else {
+                        feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.notValidForArticle || `Not a valid word for "${targetArticle}". The expected example was:`} <b>${variation.answer}</b>. ${t.otherWordsExist || 'Other valid words might exist.'}</span>`;
+                        CosyAppInteractive.awardIncorrectAnswer();
+                    }
+                }
+            }
+            document.getElementById('gender-answer-feedback').innerHTML = feedbackText;
+            if(isCorrect){ 
+                 setTimeout(() => { startGenderPractice(); }, 1200);
+            }
+        };
     }
     
     const pronounceButton = document.getElementById('pronounce-gender-item');
@@ -289,44 +327,6 @@ async function showArticleWord() {
             if (wordToPronounce) pronounceWord(wordToPronounce, language);
         });
     }
-
-    document.getElementById('check-gender-answer-btn').onclick = async function() { 
-        const userInput = document.getElementById('gender-answer-input').value.trim();
-        let feedbackText = '';
-        let isCorrect = false;
-        if (!userInput) {
-            feedbackText = `<span style="color:#e67e22;">${t.feedbackPleaseType || 'Please type your answer above.'}</span>`;
-        } else {
-            if (variation.type === 'article') { 
-                if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
-                    feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-                    CosyAppInteractive.awardCorrectAnswer();
-                    CosyAppInteractive.scheduleReview(language, 'gender', item.word, true);
-                    isCorrect = true;
-                } else {
-                    feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${variation.answer}</b></span>`;
-                    CosyAppInteractive.awardIncorrectAnswer();
-                }
-            } else { 
-                const targetArticle = item.article; 
-                const isValidWordForArticle = items.some(i => i.article.toLowerCase() === targetArticle.toLowerCase() && i.word.toLowerCase() === userInput.toLowerCase());
-                if (isValidWordForArticle) {
-                    feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-                    CosyAppInteractive.awardCorrectAnswer();
-                    CosyAppInteractive.scheduleReview(language, 'gender', item.word, true);
-                    isCorrect = true;
-                } else {
-                    feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.notValidForArticle || `Not a valid word for "${targetArticle}". The expected example was:`} <b>${variation.answer}</b>. ${t.otherWordsExist || 'Other valid words might exist.'}</span>`;
-                    CosyAppInteractive.awardIncorrectAnswer();
-                }
-            }
-        }
-        document.getElementById('gender-answer-feedback').innerHTML = feedbackText;
-        if(isCorrect){ 
-             setTimeout(() => { startGenderPractice(); }, 1200);
-        }
-    };
-    addEnterKeySupport('gender-answer-input', 'check-gender-answer-btn');
 }
 
 async function showMatchArticlesWords() { 
@@ -559,7 +559,6 @@ async function showTypeVerb() {
             <div class="verb-prompt">${variation.promptText}</div>
             <button id="pronounce-verb-item" class="btn-emoji" title="${t.aria?.pronounce || 'Pronounce'}">🔊</button>
             <input type="text" id="verb-answer-input" placeholder="${t.typeYourAnswerPlaceholder || 'Type your answer...'}" class="exercise-input">
-            <button id="check-verb-answer-btn" class="btn-primary">${t.buttons?.check || 'Check'}</button>
             <div id="verb-answer-feedback" class="exercise-feedback"></div>
         </div>
     `;
@@ -573,6 +572,22 @@ async function showTypeVerb() {
             hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintVerbConjugation || "Focus on the tense and the subject/pronoun. The infinitive is"} '${item.infinitive}' ${t.andPromptIs || "and prompt is related to"} '${item.prompt}'.`;
             exerciseContainer.appendChild(hintDisplay);
         };
+        exerciseContainer.checkAnswer = function() {
+            const userAnswer = document.getElementById('verb-answer-input').value.trim();
+            const feedbackEl = document.getElementById('verb-answer-feedback');
+            const currentLanguage = document.getElementById('language').value; // Ensure language is fresh
+            const t = translations[currentLanguage] || translations.COSYenglish; 
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'verb-conjugation', {infinitive: item.infinitive, prompt: item.prompt, answer: correctAnswer}, true);
+            } else {
+                feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctAnswer}</b></span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'verb-conjugation', {infinitive: item.infinitive, prompt: item.prompt, answer: correctAnswer}, false);
+            }
+            setTimeout(() => { showTypeVerb(); }, 1200);
+        };
     }
 
     const pronounceVerbButton = document.getElementById('pronounce-verb-item');
@@ -582,22 +597,6 @@ async function showTypeVerb() {
             if(variation.pronounceText) pronounceWord(variation.pronounceText, language);
         });
     }
-
-    document.getElementById('check-verb-answer-btn').onclick = function() {
-        const userAnswer = document.getElementById('verb-answer-input').value.trim();
-        const feedbackEl = document.getElementById('verb-answer-feedback');
-        if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-            feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-            CosyAppInteractive.awardCorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'verb-conjugation', {infinitive: item.infinitive, prompt: item.prompt, answer: correctAnswer}, true);
-        } else {
-            feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctAnswer}</b></span>`;
-            CosyAppInteractive.awardIncorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'verb-conjugation', {infinitive: item.infinitive, prompt: item.prompt, answer: correctAnswer}, false);
-        }
-        setTimeout(() => showTypeVerb(), 1200);
-    };
-    addEnterKeySupport('verb-answer-input', 'check-verb-answer-btn');
 }
 
 async function showMatchVerbsPronouns() { 
@@ -703,29 +702,27 @@ async function showFillGaps() {
     const verbData = await loadVerbGrammar(language, days);
     if (!verbData.length) { showNoDataMessage(); return; }
     
-    const verbItem = verbData[Math.floor(Math.random() * verbData.length)];
-    let sentence = verbItem.example?.sentence || ""; // Use optional chaining
-    let correctAnswer = verbItem.example?.correct_form || "";
-
-    if (!sentence || !correctAnswer || !sentence.includes("___")) {
-        // Fallback or find another item if current one is unsuitable
-        console.warn("Verb item unsuitable for fill-gaps, trying to find another.");
-        // This could be a loop or a recursive call with a counter to prevent infinite loops
-        // For now, just show error if first pick is bad.
-        const suitableItem = verbData.find(vi => vi.example && vi.example.sentence && vi.example.sentence.includes("___") && vi.example.correct_form);
-        if(suitableItem){
-            sentence = suitableItem.example.sentence;
-            correctAnswer = suitableItem.example.correct_form;
+    let suitableItem = verbData.find(vi => vi.example && vi.example.sentence && vi.example.sentence.includes("___") && vi.example.correct_form);
+    if (!suitableItem) {
+        // Try to find at least one item that *could* be suitable if we manufacture the blank
+        suitableItem = verbData.find(vi => vi.example && vi.example.sentence && vi.example.correct_form);
+        if (suitableItem && suitableItem.example.sentence.includes(suitableItem.example.correct_form)) {
+            suitableItem.example.sentence = suitableItem.example.sentence.replace(suitableItem.example.correct_form, "___");
         } else {
-            showNoDataMessage(); // Or a specific message like "Could not generate fill-the-gap exercise."
+            // If still no suitable item, show message and return
+            console.warn("No suitable verb item found for fill-gaps after attempting to create a blank.");
+            showNoDataMessage();
             return;
         }
     }
     
+    const sentence = suitableItem.example.sentence;
+    const correctAnswer = suitableItem.example.correct_form;
+    const verbItem = suitableItem; // For hint access
+
     resultArea.innerHTML = `
         <div class="fill-gap-exercise">
             <div class="sentence-with-gap">${sentence.replace('___', '<input type="text" id="gap-answer" class="exercise-input" placeholder="'+ (t.typeYourAnswerPlaceholder || 'Type your answer...') +'">')}</div>
-            <button id="check-gap" class="btn-primary">${t.buttons?.check || 'Check'}</button>
             <div id="gap-feedback" class="exercise-feedback"></div>
         </div>
     `;
@@ -736,29 +733,27 @@ async function showFillGaps() {
             if (existingHint) existingHint.remove();
             const hintDisplay = document.createElement('div');
             hintDisplay.className = 'hint-display';
-            // Attempt to find infinitive if available from verbItem structure, otherwise generic.
             const infinitive = verbItem.infinitive || (t.relatedVerb || "related verb");
             hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintFillGap || "Identify the subject and tense required for the verb. The base verb is related to items like"} '${infinitive}'.`;
             exerciseContainer.appendChild(hintDisplay);
         };
+        exerciseContainer.checkAnswer = () => {
+            const userAnswer = document.getElementById('gap-answer').value.trim();
+            const feedbackEl = document.getElementById('gap-feedback');
+            const currentLanguage = document.getElementById('language').value;
+            const t = translations[currentLanguage] || translations.COSYenglish;
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'fill-gap', {sentence, correctAnswer}, true);
+            } else {
+                feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctAnswer}</b></span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'fill-gap', {sentence, correctAnswer}, false);
+            }
+            setTimeout(() => { showFillGaps(); }, 1500); 
+        };
     }
-    
-    const gapAnswerInput = document.getElementById('gap-answer'); 
-    document.getElementById('check-gap').addEventListener('click', () => {
-        const userAnswer = gapAnswerInput.value.trim();
-        const feedbackEl = document.getElementById('gap-feedback');
-        if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-            feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-            CosyAppInteractive.awardCorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'fill-gap', {sentence, correctAnswer}, true);
-        } else {
-            feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctAnswer}</b></span>`;
-            CosyAppInteractive.awardIncorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'fill-gap', {sentence, correctAnswer}, false);
-        }
-        setTimeout(() => showFillGaps(), 1500); 
-    });
-    if(gapAnswerInput) addEnterKeySupport('gap-answer', 'check-gap');
 }
 
 async function showWordOrder() {
@@ -775,18 +770,17 @@ async function showWordOrder() {
     let originalSentence = "";
     let foundSuitableSentence = false;
 
-    // Try a few times to find a suitable sentence
     for(let i=0; i < verbData.length && !foundSuitableSentence; i++){
         const verbItem = verbData[Math.floor(Math.random() * verbData.length)];
         if (verbItem && verbItem.example && verbItem.example.sentence_parts && verbItem.example.sentence_parts.length > 1) {
             sentenceParts = verbItem.example.sentence_parts.filter(p => p && String(p).trim() !== '');
-            originalSentence = verbItem.example.sentence || sentenceParts.join(" "); // Reconstruct if full sentence not available
+            originalSentence = verbItem.example.sentence || sentenceParts.join(" "); 
             if(sentenceParts.length > 1) foundSuitableSentence = true;
         }
     }
 
     if (!foundSuitableSentence) {
-        showNoDataMessage(); // Or specific message "Could not generate word order exercise"
+        showNoDataMessage(); 
         return;
     }
     
@@ -798,12 +792,13 @@ async function showWordOrder() {
             <div class="sentence-slots clickable" id="sentence-slots">${Array(sentenceParts.length).fill('<div class="word-slot"></div>').join('')}</div>
             <div id="order-feedback" class="exercise-feedback"></div>
             <div class="order-actions">
-                <button id="check-order" class="btn-primary">${t.buttons?.check || 'Check'}</button>
                 <button id="reset-order" class="btn-secondary">${t.buttons?.reset || 'Reset'}</button>
             </div>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.word-order-exercise');
+    const sentenceSlots = document.getElementById('sentence-slots'); // Define here to ensure it's in scope for checkAnswer
+
     if (exerciseContainer) {
         exerciseContainer.showHint = () => {
             const existingHint = exerciseContainer.querySelector('.hint-display');
@@ -813,10 +808,25 @@ async function showWordOrder() {
             hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintWordOrder || "Typical sentence structure is Subject-Verb-Object. Questions or negative sentences might alter this."}`;
             exerciseContainer.appendChild(hintDisplay);
         };
+        exerciseContainer.checkAnswer = () => {
+            const orderedWords = Array.from(sentenceSlots.querySelectorAll('.word-tile')).map(tile => tile.dataset.word);
+            const feedbackEl = document.getElementById('order-feedback');
+            const currentLanguage = document.getElementById('language').value;
+            const t = translations[currentLanguage] || translations.COSYenglish;
+            if (orderedWords.join(' ') === sentenceParts.join(' ')) {
+                feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'word-order', {parts: sentenceParts, sentence: originalSentence}, true);
+                 setTimeout(() => { showWordOrder(); }, 1500); 
+            } else {
+                feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteTryAgain || 'Not quite. Try again!'}</span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'word-order', {parts: sentenceParts, sentence: originalSentence}, false);
+            }
+        };
     }
 
     const wordPool = document.getElementById('word-pool');
-    const sentenceSlots = document.getElementById('sentence-slots');
 
     document.querySelectorAll('#word-pool .word-tile').forEach(tile => {
         tile.addEventListener('click', () => {
@@ -829,31 +839,14 @@ async function showWordOrder() {
 
     sentenceSlots.addEventListener('click', (e) => {
         if (e.target.classList.contains('word-tile')) {
-            wordPool.appendChild(e.target); // Move tile back to pool
+            wordPool.appendChild(e.target); 
         }
     });
     
-    document.getElementById('check-order').addEventListener('click', () => {
-        const orderedWords = Array.from(sentenceSlots.querySelectorAll('.word-tile')).map(tile => tile.dataset.word);
-        const feedbackEl = document.getElementById('order-feedback');
-        if (orderedWords.join(' ') === sentenceParts.join(' ')) {
-            feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-            CosyAppInteractive.awardCorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'word-order', {parts: sentenceParts, sentence: originalSentence}, true);
-             setTimeout(() => showWordOrder(), 1500);
-        } else {
-            feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteTryAgain || 'Not quite. Try again!'}</span>`;
-            CosyAppInteractive.awardIncorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'word-order', {parts: sentenceParts, sentence: originalSentence}, false);
-        }
-    });
-
     document.getElementById('reset-order').addEventListener('click', () => {
-        // Move all tiles from slots back to pool
         sentenceSlots.querySelectorAll('.word-tile').forEach(tile => {
             wordPool.appendChild(tile);
         });
-        // Re-shuffle tiles in the pool
         const tilesInPool = Array.from(wordPool.querySelectorAll('.word-tile'));
         tilesInPool.sort(() => Math.random() - 0.5).forEach(tile => wordPool.appendChild(tile));
         document.getElementById('order-feedback').innerHTML = '';

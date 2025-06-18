@@ -116,14 +116,13 @@ async function loadData(filePath) {
 
 function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrElement, randomizeFn, options = {}) {
     return async function() {
-        // Call the original exercise function, ensuring 'this' and 'arguments' are passed correctly
         await originalExerciseFn.apply(this, arguments);
         
         let container;
         if (typeof containerSelectorOrElement === 'string') {
             container = document.querySelector(containerSelectorOrElement);
         } else {
-            container = containerSelectorOrElement; // It's already an element
+            container = containerSelectorOrElement;
         }
 
         if (!container) {
@@ -131,79 +130,51 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
             return;
         }
 
-        // Language and translations for buttons
         const language = document.getElementById('language')?.value || 'COSYenglish';
-        
-        // Ensure window.translations and the specific language translation exist, with defaults for buttons and aria
         window.translations = window.translations || {};
         window.translations.COSYenglish = window.translations.COSYenglish || { buttons: {}, aria: {}, errors: {} }; 
         const t = window.translations[language] || window.translations.COSYenglish;
-
-        // Ensure t.buttons, t.aria, and t.errors exist to prevent errors if translations are not fully loaded
         t.buttons = t.buttons || {};
         t.aria = t.aria || {};
-        t.errors = t.errors || {}; // Ensure errors object exists
+        t.errors = t.errors || {};
 
-        // Remove existing buttons to prevent duplication
+        // --- START MODIFICATION ---
+
+        // 1. Cleanup existing buttons from the main container (as before)
         const btnIdsToRemove = ['btn-randomize-category', 'btn-hint', 'btn-check-exercise', 'btn-reveal-answer'];
         btnIdsToRemove.forEach(id => {
             const existingBtn = container.querySelector(`#${id}`);
             if (existingBtn) existingBtn.remove();
         });
-        // Clean up old buttons by class if they exist (less specific, so done after ID removal)
-        const oldClassBtns = container.querySelectorAll('.btn-randomize, .btn-hint'); 
+        const oldClassBtns = container.querySelectorAll('.btn-randomize, .btn-hint, .exercise-button-bar-top, .exercise-button-bar-bottom'); 
         oldClassBtns.forEach(btn => {
-            if (!btn.id || !btnIdsToRemove.includes(btn.id)) {
-                 btn.remove();
+            if (!btn.id || !btnIdsToRemove.includes(btn.id) || btn.classList.contains('exercise-button-bar-top') || btn.classList.contains('exercise-button-bar-bottom')) {
+                 btn.remove(); // Remove old button bars too
             }
         });
 
-        // Button creation logic - buttons are prepended, so add them in reverse order of appearance
+        // 2. Create specific containers for top and bottom buttons
+        const topButtonContainer = document.createElement('div');
+        topButtonContainer.className = 'exercise-button-bar-top';
 
-        // "👁️ Reveal Answer" button
-        if (!options.noReveal) {
-            let revealBtn = document.createElement('button');
-            revealBtn.id = 'btn-reveal-answer';
-            revealBtn.className = 'exercise-button'; 
-            revealBtn.innerHTML = `👁️`;
-            revealBtn.title = t.aria?.reveal || 'Reveal answer';
-            revealBtn.setAttribute('aria-label', t.aria?.reveal || 'Reveal answer');
-            revealBtn.onclick = () => {
-                console.log('Reveal answer button clicked.');
-                if (typeof container.revealAnswer === 'function') {
-                    container.revealAnswer();
-                } else {
-                    alert(t.errors.revealNotImplemented || 'RevealAnswer function not found on container.');
-                }
-            };
-            container.prepend(revealBtn);
-        }
+        const bottomButtonContainer = document.createElement('div');
+        bottomButtonContainer.className = 'exercise-button-bar-bottom';
 
-        // "✅ Check" button
-        if (!options.noCheck) {
-            let checkBtn = document.createElement('button');
-            checkBtn.id = 'btn-check-exercise';
-            checkBtn.className = 'exercise-button';
-            checkBtn.innerHTML = `✅ ${t.buttons.check || 'Check'}`;
-            checkBtn.title = t.aria?.check || 'Check answer';
-            checkBtn.setAttribute('aria-label', t.aria?.check || 'Check answer');
-            checkBtn.onclick = () => {
-                console.log('Check button clicked.');
-                if (typeof container.checkAnswer === 'function') {
-                    container.checkAnswer();
-                } else {
-                    const specificCheckButton = container.querySelector('#check-button') || container.querySelector('.check-button');
-                    if (specificCheckButton && typeof specificCheckButton.click === 'function') {
-                        specificCheckButton.click();
-                    } else {
-                        alert(t.errors.checkNotImplemented || 'CheckAnswer function not found on container and no fallback button found.');
-                    }
-                }
-            };
-            container.prepend(checkBtn);
-        }
-        
-        // "💡 Hint" button - Always added unless an option like `noHint` is introduced in the future.
+        // 3. Create and add buttons to their respective containers
+
+        // --- TOP BUTTONS ---
+
+        // "🎲 Randomize (Category)" button - Always added to top.
+        let randomizeBtn = document.createElement('button');
+        randomizeBtn.id = 'btn-randomize-category';
+        randomizeBtn.className = 'exercise-button randomizer-button'; 
+        randomizeBtn.innerHTML = `🎲`;
+        randomizeBtn.title = t.aria?.randomizeCategory || 'Start a new random exercise in this category';
+        randomizeBtn.setAttribute('aria-label', t.aria?.randomizeCategory || 'Start a new random exercise in this category');
+        randomizeBtn.onclick = randomizeFn; 
+        topButtonContainer.appendChild(randomizeBtn);
+
+        // "💡 Hint" button - Always added to top.
         let hintBtn = document.createElement('button');
         hintBtn.id = 'btn-hint';
         hintBtn.className = 'exercise-button';
@@ -217,17 +188,60 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
                 alert(t.noHintAvailable || 'No hint available for this exercise.');
             }
         };
-        container.prepend(hintBtn);
+        topButtonContainer.appendChild(hintBtn);
+        
+        // "👁️ Reveal Answer" button - Added to top if not disabled
+        if (!options.noReveal) {
+            let revealBtn = document.createElement('button');
+            revealBtn.id = 'btn-reveal-answer';
+            revealBtn.className = 'exercise-button'; 
+            revealBtn.innerHTML = `👁️`;
+            revealBtn.title = t.aria?.reveal || 'Reveal answer';
+            revealBtn.setAttribute('aria-label', t.aria?.reveal || 'Reveal answer');
+            revealBtn.onclick = () => {
+                if (typeof container.revealAnswer === 'function') {
+                    container.revealAnswer();
+                } else {
+                    alert(t.errors.revealNotImplemented || 'RevealAnswer function not found on container.');
+                }
+            };
+            topButtonContainer.appendChild(revealBtn);
+        }
 
-        // "🎲 Randomize (Category)" button - Always added.
-        let randomizeBtn = document.createElement('button');
-        randomizeBtn.id = 'btn-randomize-category';
-        randomizeBtn.className = 'exercise-button randomizer-button'; 
-        randomizeBtn.innerHTML = `🎲`;
-        randomizeBtn.title = t.aria?.randomizeCategory || 'Start a new random exercise in this category';
-        randomizeBtn.setAttribute('aria-label', t.aria?.randomizeCategory || 'Start a new random exercise in this category');
-        randomizeBtn.onclick = randomizeFn; 
-        container.prepend(randomizeBtn);
+        // --- BOTTOM BUTTON ---
+
+        // "✅ Check" button - Added to bottom if not disabled
+        if (!options.noCheck) {
+            let checkBtn = document.createElement('button');
+            checkBtn.id = 'btn-check-exercise';
+            checkBtn.className = 'exercise-button'; // Or potentially btn-primary if desired
+            checkBtn.innerHTML = `✅ ${t.buttons.check || 'Check'}`;
+            checkBtn.title = t.aria?.check || 'Check answer';
+            checkBtn.setAttribute('aria-label', t.aria?.check || 'Check answer');
+            checkBtn.onclick = () => {
+                if (typeof container.checkAnswer === 'function') {
+                    container.checkAnswer();
+                } else {
+                    // Fallback to click a more specific button if it exists (legacy)
+                    const specificCheckButton = container.querySelector('#check-button') || container.querySelector('.check-button') || container.querySelector('button[id*="check-"]');
+                    if (specificCheckButton && typeof specificCheckButton.click === 'function') {
+                        specificCheckButton.click();
+                    } else {
+                        alert(t.errors.checkNotImplemented || 'CheckAnswer function not found on container and no fallback button found.');
+                    }
+                }
+            };
+            bottomButtonContainer.appendChild(checkBtn);
+        }
+
+        // 4. Add button containers to the main exercise container
+        if (topButtonContainer.hasChildNodes()) {
+            container.prepend(topButtonContainer);
+        }
+        if (bottomButtonContainer.hasChildNodes()) {
+            container.appendChild(bottomButtonContainer); // Append for bottom placement
+        }
+        // --- END MODIFICATION ---
     }
 }
 

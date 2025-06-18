@@ -13,7 +13,7 @@ async function showStoryPractice() {
             <h3>${t.storyTimeTitle || "Story Time!"}</h3>
             <p>${t.exerciseNotImplementedStory || 'This story exercise is not yet implemented.'}</p>
             <p>${t.imagineStoryHere || 'Imagine you read a story here.'}</p>
-            <button id="btn-new-story-practice" class="btn-secondary btn-next-item" onclick="window.showStoryPractice()" aria-label="${newExerciseButtonText}">🔄 ${newExerciseButtonText}</button>
+            <button id="btn-new-story-practice" class="exercise-button" onclick="window.showStoryPractice()" aria-label="${newExerciseButtonText}">🔄 ${newExerciseButtonText}</button>
         </div>
     `;
 
@@ -59,7 +59,7 @@ async function showInterestingFactPractice() {
             <h3>${t.interestingFactTitle || "Interesting Fact!"}</h3>
             <p>${t.exerciseNotImplementedFact || 'This interesting fact exercise is not yet implemented.'}</p>
             <p>${t.imagineFactHere || 'Imagine you read an interesting fact here.'}</p>
-            <button id="btn-new-fact-practice" class="btn-secondary btn-next-item" onclick="window.showInterestingFactPractice()" aria-label="${newExerciseButtonText}">🔄 ${newExerciseButtonText}</button>
+            <button id="btn-new-fact-practice" class="exercise-button" onclick="window.showInterestingFactPractice()" aria-label="${newExerciseButtonText}">🔄 ${newExerciseButtonText}</button>
         </div>
     `;
     
@@ -99,9 +99,6 @@ async function startRandomReadingPractice() {
         clearTimeout(window.readingPracticeTimer);
         window.readingPracticeTimer = null;
     }
-    // if (typeof cancelAutoAdvanceTimer === 'function') { // Assuming cancelAutoAdvanceTimer is global
-    //     cancelAutoAdvanceTimer();
-    // }
 
     const exercises = [
         showStoryPractice,
@@ -133,15 +130,15 @@ window.initReadingPractice = initReadingPractice;
 // Patching exercise functions
 window.showStoryPractice = patchExerciseWithExtraButtons(
     window.showStoryPractice, 
-    '.reading-exercise-container', // Main container selector
-    window.startRandomReadingPractice, // Category randomizer
-    { noCheck: true, noReveal: true } // Options: no check/reveal for passive reading
+    '.reading-exercise-container', 
+    window.startRandomReadingPractice, 
+    { noCheck: true, noReveal: true } 
 );
 window.showInterestingFactPractice = patchExerciseWithExtraButtons(
     window.showInterestingFactPractice, 
-    '.reading-exercise-container', // Main container selector
-    window.startRandomReadingPractice, // Category randomizer
-    { noCheck: true, noReveal: true } // Options: no check/reveal for passive reading
+    '.reading-exercise-container', 
+    window.startRandomReadingPractice, 
+    { noCheck: true, noReveal: true } 
 );
 
 document.addEventListener('DOMContentLoaded', initReadingPractice);

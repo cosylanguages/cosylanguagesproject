@@ -139,7 +139,7 @@ const VOCABULARY_PRACTICE_TYPES = {
         name: 'Random Word'
     },
     'random-image': {
-        exercises: ['identify-image', 'match-image-word', 'identify-image-yes-no'], // Removed 'match-pictures-words'
+        exercises: ['identify-image', 'match-image-word', 'identify-image-yes-no'], 
         name: 'Random Image'
     },
     'listening': {
@@ -150,29 +150,20 @@ const VOCABULARY_PRACTICE_TYPES = {
 
 // Initialize vocabulary practice
 function initVocabularyPractice() {
-
-    // Random Word Button
     document.getElementById('random-word-btn')?.addEventListener('click', () => {
         startRandomWordPractice();
     });
-
-    // Random Image Button
     document.getElementById('random-image-btn')?.addEventListener('click', () => {
         startRandomImagePractice();
     });
-
-    // Listening Button
     document.getElementById('listening-btn')?.addEventListener('click', () => {
         startListeningPractice();
     });
-
-    // Practice All Vocabulary Button
     document.getElementById('practice-all-vocab-btn')?.addEventListener('click', () => {
         practiceAllVocabulary();
     });
 }
 
-// Start random word practice with random exercise type
 async function startRandomWordPractice() {
     const exercises = VOCABULARY_PRACTICE_TYPES['random-word'].exercises;
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
@@ -193,7 +184,6 @@ async function startRandomWordPractice() {
     }
 }
 
-// Enhanced show random word
 async function showRandomWord() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
@@ -230,7 +220,7 @@ async function showRandomWord() {
             const existingHint = this.querySelector('.hint-display');
             if (existingHint) existingHint.remove();
             const hintDisplay = document.createElement('div');
-            hintDisplay.className = 'hint-display exercise-hint'; // Added common class
+            hintDisplay.className = 'hint-display exercise-hint'; 
             if (word && word.length > 0) {
                 let hintText = `${t.hintLabel || 'Hint:'} ${t.wordStartsWith || 'The word starts with'} '${word[0]}'`;
                 if (word.length > 1) {
@@ -248,10 +238,8 @@ async function showRandomWord() {
     document.getElementById('pronounce-word')?.addEventListener('click', () => {
         pronounceWord(word, language);
     });
-    // Mic button functionality would be added here if it were part of this subtask
 }
 
-// Enhanced opposites exercise
 async function showOppositesExercise(baseWord = null) {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
@@ -280,11 +268,10 @@ async function showOppositesExercise(baseWord = null) {
                 <div class="word-box opposite-answer" id="opposite-answer-display" aria-label="${t.oppositeLabel || 'Opposite'}">?</div>
             </div>
             <input type="text" id="opposite-input" class="exercise-input" aria-label="${t.typeTheOpposite || 'Type the opposite'}" placeholder="${t.typeTheOppositePlaceholder || 'Type the opposite...'}">
-            <button id="check-opposite-impl" class="btn-primary" aria-label="${t.checkAnswer || 'Check answer'}">✅ ${t.buttons?.check || 'Check'}</button>
             <div id="opposite-feedback" class="exercise-feedback" aria-live="polite"></div>
             <div class="exercise-actions">
-                <button id="reveal-opposite-impl" class="btn-secondary" aria-label="${t.revealAnswer || 'Reveal Answer'}">👁️ ${t.buttons?.reveal || 'Reveal Answer'}</button>
-                <button id="btn-new-opposite-exercise" class="btn-secondary" onclick="window.showOppositesExercise()" aria-label="${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+                <button id="reveal-opposite-impl" class="exercise-button" aria-label="${t.revealAnswer || 'Reveal Answer'}">👁️ ${t.buttons?.reveal || 'Reveal Answer'}</button>
+                <button id="btn-new-opposite-exercise" class="exercise-button" onclick="window.showOppositesExercise()" aria-label="${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
             </div>
         </div>
     `;
@@ -308,34 +295,33 @@ async function showOppositesExercise(baseWord = null) {
             }
             this.appendChild(hintDisplay);
         };
-        exerciseContainer.checkAnswer = () => document.getElementById('check-opposite-impl')?.click();
         exerciseContainer.revealAnswer = () => document.getElementById('reveal-opposite-impl')?.click();
+        exerciseContainer.checkAnswer = () => {
+            const userAnswer = document.getElementById('opposite-input').value.trim();
+            const feedback = document.getElementById('opposite-feedback');
+            const currentLanguage = document.getElementById('language').value; 
+            const currentT = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
+            if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
+                feedback.innerHTML = `<span class="correct" aria-label="Correct">✅👏 ${currentT.correct || 'Correct!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, true);
+                if (opposite !== (currentT.noOppositeFound || 'No opposite found')) { 
+                    CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', opposite, true);
+                }
+                document.getElementById('opposite-answer-display').textContent = opposite;
+            } else {
+                feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${currentT.feedbackNotQuiteTryAgain || 'Try again!'}</span>`;
+                 CosyAppInteractive.awardIncorrectAnswer();
+            }
+        };
     }
     
-    addEnterKeySupport('opposite-input', 'check-opposite-impl');
-    document.getElementById('check-opposite-impl')?.addEventListener('click', () => {
-        const userAnswer = document.getElementById('opposite-input').value.trim();
-        const feedback = document.getElementById('opposite-feedback');
-        if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
-            feedback.innerHTML = `<span class="correct" aria-label="Correct">✅👏 ${t.correct || 'Correct!'}</span>`;
-            CosyAppInteractive.awardCorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, true);
-            if (opposite !== (t.noOppositeFound || 'No opposite found')) { 
-                CosyAppInteractive.scheduleReview(language, 'vocabulary-word', opposite, true);
-            }
-            document.getElementById('opposite-answer-display').textContent = opposite;
-        } else {
-            feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.feedbackNotQuiteTryAgain || 'Try again!'}</span>`;
-             CosyAppInteractive.awardIncorrectAnswer();
-        }
-    });
     document.getElementById('reveal-opposite-impl')?.addEventListener('click', () => {
         document.getElementById('opposite-answer-display').textContent = opposite;
         document.getElementById('opposite-feedback').innerHTML = '';
     });
 }
 
-// Match opposites exercise
 async function showMatchOpposites() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
@@ -368,12 +354,10 @@ async function showMatchOpposites() {
         showNoDataMessage(); 
         return;
     }
-    // Ensure we only use up to 4 pairs if more were found
     selectedPairs = selectedPairs.slice(0,4);
 
-
-    const wordsColumn = shuffleArray([...selectedPairs]); // Contains {word, opposite} objects
-    const oppositesColumn = shuffleArray(selectedPairs.map(pair => pair.opposite)); // Contains only opposite strings
+    const wordsColumn = shuffleArray([...selectedPairs]); 
+    const oppositesColumn = shuffleArray(selectedPairs.map(pair => pair.opposite)); 
 
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
@@ -391,11 +375,11 @@ async function showMatchOpposites() {
                 </div>
             </div>
             <div id="match-feedback" class="exercise-feedback" aria-live="polite"></div>
-            <button id="btn-new-match-opposites" class="btn-secondary" onclick="window.showMatchOpposites()" aria-label="${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-match-opposites" class="exercise-button" onclick="window.showMatchOpposites()" aria-label="${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.match-exercise');
-    let revealedPair = null; // To store the revealed pair for the hint
+    let revealedPair = null; 
 
     if (exerciseContainer) {
         exerciseContainer.showHint = function() {
@@ -406,7 +390,6 @@ async function showMatchOpposites() {
             if (selectedPairs.length > 0) {
                 revealedPair = selectedPairs[Math.floor(Math.random() * selectedPairs.length)];
                 hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.onePairIs || 'One pair is:'} "${revealedPair.word}" ≠ "${revealedPair.opposite}".`;
-                 // Highlight the revealed pair
                 document.querySelector(`[data-word="${revealedPair.word}"]`)?.classList.add('hint-highlight');
                 document.querySelector(`[data-opposite="${revealedPair.opposite}"]`)?.classList.add('hint-highlight');
             } else {
@@ -416,7 +399,6 @@ async function showMatchOpposites() {
         };
 
         exerciseContainer.checkAnswer = function() {
-            // This exercise auto-checks, but a manual check could reveal all.
             const feedback = document.getElementById('match-feedback');
             feedback.innerHTML = t.showingCorrectMatches || 'Showing all correct matches...';
             selectedPairs.forEach(pair => {
@@ -426,7 +408,6 @@ async function showMatchOpposites() {
                 if (oppEl && !oppEl.classList.contains('matched')) oppEl.classList.add('correct-match-on-check');
             });
         };
-        // Reveal answer is similar to check answer for this exercise type
         exerciseContainer.revealAnswer = exerciseContainer.checkAnswer;
     }
     
@@ -480,13 +461,10 @@ async function showMatchOpposites() {
         selectedOppositeElement = null;
         if (document.querySelectorAll('.match-item.matched').length === selectedPairs.length * 2) {
             feedback.innerHTML += `<br><span class="correct">${t.allPairsMatched || 'All pairs matched! Great job!'}</span>`;
-            // setTimeout(() => window.showMatchOpposites(), 2500); // Auto-advance removed for now
         }
     }
 }
 
-
-// Enhanced build word exercise
 async function showBuildWord(baseWord = null) {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
@@ -498,7 +476,7 @@ async function showBuildWord(baseWord = null) {
     }
 
     const words = await loadVocabulary(language, days);
-    if (!words.length && !baseWord) { // Ensure baseWord can also trigger the exercise
+    if (!words.length && !baseWord) { 
         showNoDataMessage();
         return;
     }
@@ -521,9 +499,8 @@ async function showBuildWord(baseWord = null) {
             </div>
             <div id="build-feedback" class="exercise-feedback"></div>
             <div class="build-actions">
-                <button id="check-build-impl" class="btn-primary">✅ ${t.buttons?.check || 'Check'}</button>
-                <button id="reset-build" class="btn-secondary">🔄 ${t.buttons?.reset || 'Reset'}</button>
-                <button id="btn-new-build-word" class="btn-secondary" onclick="window.showBuildWord()">🔄 ${t.buttons?.newBuildWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+                <button id="reset-build" class="exercise-button">🔄 ${t.buttons?.reset || 'Reset'}</button>
+                <button id="btn-new-build-word" class="exercise-button" onclick="window.showBuildWord()">🔄 ${t.buttons?.newBuildWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
             </div>
         </div>
     `;
@@ -551,8 +528,6 @@ async function showBuildWord(baseWord = null) {
                 this.appendChild(hintDisplay);
             }
         };
-        exerciseContainer.checkAnswer = () => document.getElementById('check-build-impl')?.click();
-        // Reveal answer for build word could show the full word in the slots or as text
         exerciseContainer.revealAnswer = function() {
             const slots = this.querySelectorAll('.letter-slot');
             const feedback = this.querySelector('#build-feedback');
@@ -560,6 +535,21 @@ async function showBuildWord(baseWord = null) {
                 slot.innerHTML = `<div class="letter-tile revealed">${word[index]}</div>`;
             });
             if(feedback) feedback.innerHTML = `${t.correctAnswerIs || "The correct answer is:"} <b>${word}</b>`;
+        };
+        exerciseContainer.checkAnswer = () => {
+            const builtWordArr = Array.from(document.querySelectorAll('.word-slots .letter-tile')).map(tile => tile.dataset.letter);
+            const builtWord = builtWordArr.join('');
+            const feedback = document.getElementById('build-feedback');
+            const currentLanguage = document.getElementById('language').value; 
+            const currentT = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
+            if (builtWord.toLowerCase() === word.toLowerCase()) {
+                feedback.innerHTML = `<span class="correct">✅ ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, true);
+            } else {
+                feedback.innerHTML = `<span class="incorrect">❌ ${currentT.notQuiteTryAgain || 'Not quite. Keep trying!'}</span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
+            }
         };
     }
 
@@ -575,36 +565,18 @@ async function showBuildWord(baseWord = null) {
         slot.addEventListener('drop', drop);
         slot.addEventListener('dragenter', dragEnter);
         slot.addEventListener('dragleave', dragLeave);
-        // Allow clicking a slot to return its tile to the pool
         slot.addEventListener('click', function() {
             if (this.firstChild) {
                 document.getElementById('letter-pool').appendChild(this.firstChild);
             }
         });
     });
-     // Allow clicking a tile in the pool to move it to the first available slot
     document.getElementById('letter-pool').addEventListener('click', function(e) {
         if (e.target.classList.contains('letter-tile')) {
             const firstEmptySlot = Array.from(letterSlots).find(slot => !slot.firstChild);
             if (firstEmptySlot) {
                 firstEmptySlot.appendChild(e.target);
             }
-        }
-    });
-
-
-    document.getElementById('check-build-impl')?.addEventListener('click', () => {
-        const builtWordArr = Array.from(document.querySelectorAll('.word-slots .letter-tile')).map(tile => tile.dataset.letter);
-        const builtWord = builtWordArr.join('');
-        const feedback = document.getElementById('build-feedback');
-        
-        if (builtWord.toLowerCase() === word.toLowerCase()) {
-            feedback.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-            CosyAppInteractive.awardCorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, true);
-        } else {
-            feedback.innerHTML = `<span class="incorrect">❌ ${t.notQuiteTryAgain || 'Not quite. Keep trying!'}</span>`;
-            CosyAppInteractive.awardIncorrectAnswer();
         }
     });
 
@@ -617,18 +589,16 @@ async function showBuildWord(baseWord = null) {
                 pool.appendChild(slot.firstChild); 
             }
         });
-        // Re-shuffle only the tiles currently in the pool
         const tilesInPool = Array.from(pool.querySelectorAll('.letter-tile'));
         tilesInPool.sort(() => Math.random() - 0.5).forEach(tile => pool.appendChild(tile));
-
         document.getElementById('build-feedback').innerHTML = '';
     });
 }
 
 function dragStart(e) {
-    e.dataTransfer.setData('text/plain', e.target.dataset.letter); // Store the letter itself
-    e.dataTransfer.setData('text/id', e.target.id || Math.random().toString(36).substr(2, 9)); // Store an ID if it has one, or generate
-    if(!e.target.id) e.target.id = e.dataTransfer.getData('text/id'); // Ensure element has ID for re-finding
+    e.dataTransfer.setData('text/plain', e.target.dataset.letter); 
+    e.dataTransfer.setData('text/id', e.target.id || Math.random().toString(36).substr(2, 9)); 
+    if(!e.target.id) e.target.id = e.dataTransfer.getData('text/id'); 
     e.target.classList.add('dragging');
 }
 function dragOver(e) { e.preventDefault(); }
@@ -644,15 +614,11 @@ function drop(e) {
     } else if (e.target.classList.contains('letter-pool')) { 
         e.target.appendChild(draggingElement);
     } else if (e.target.classList.contains('letter-tile') && e.target.parentElement.classList.contains('letter-pool')) {
-        // If dropping on a tile in the pool, just append to pool (effectively no change or reorder)
         e.target.parentElement.appendChild(draggingElement);
     }
-     // If dropping on a tile in a slot, try to place it back in the pool or swap
     else if (e.target.classList.contains('letter-tile') && e.target.parentElement.classList.contains('letter-slot')) {
-        document.getElementById('letter-pool').appendChild(draggingElement); // Move dragged to pool
+        document.getElementById('letter-pool').appendChild(draggingElement); 
     }
-
-
     draggingElement.classList.remove('dragging');
     e.target.classList.remove('hovered');
 }
@@ -668,7 +634,6 @@ function dragLeave(e) {
     }
 }
 
-// Random image practice
 async function startRandomImagePractice() {
     const exercises = VOCABULARY_PRACTICE_TYPES['random-image'].exercises;
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
@@ -676,7 +641,7 @@ async function startRandomImagePractice() {
         case 'identify-image': await window.showIdentifyImage(); break;
         case 'match-image-word': await window.showMatchImageWord(); break;
         case 'identify-image-yes-no': await window.showIdentifyImageYesNo(); break;
-        default: await window.showIdentifyImage(); // Fallback
+        default: await window.showIdentifyImage(); 
     }
 }
 
@@ -697,9 +662,8 @@ async function showIdentifyImage() {
         <div class="image-exercise">
             <img src="${imageItem.src}" alt="${imageItem.alt || correctAnswer}" class="vocabulary-image">
             <input type="text" id="image-answer-input" class="exercise-input" placeholder="${t.typeTheWord || 'Type the word...'}">
-            <button id="check-image-impl" class="btn-primary">✅ ${t.buttons?.check || 'Check'}</button>
             <div id="image-feedback" class="exercise-feedback"></div>
-            <button id="btn-new-identify-image" class="btn-secondary" onclick="window.showIdentifyImage()">🔄 ${t.buttons?.newIdentifyImage || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-identify-image" class="exercise-button" onclick="window.showIdentifyImage()">🔄 ${t.buttons?.newIdentifyImage || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.image-exercise');
@@ -721,25 +685,25 @@ async function showIdentifyImage() {
             }
             this.appendChild(hintDisplay);
         };
-        exerciseContainer.checkAnswer = () => document.getElementById('check-image-impl')?.click();
         exerciseContainer.revealAnswer = function() {
             document.getElementById('image-answer-input').value = correctAnswer;
             document.getElementById('image-feedback').innerHTML = `${t.correctAnswerIs || "The correct answer is:"} <b>${correctAnswer}</b>`;
         };
+        exerciseContainer.checkAnswer = () => {
+            const userAnswer = document.getElementById('image-answer-input').value.trim();
+            const feedback = document.getElementById('image-feedback');
+            const currentLanguage = document.getElementById('language').value; 
+            const currentT = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                feedback.innerHTML = `<span class="correct">✅ ${currentT.correct || 'Correct!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-image', imageItem.src, true, correctAnswer);
+            } else {
+                feedback.innerHTML = `<span class="incorrect">❌ ${currentT.tryAgain || 'Try again!'}</span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
+            }
+        };
     }
-    addEnterKeySupport('image-answer-input', 'check-image-impl');
-    document.getElementById('check-image-impl')?.addEventListener('click', () => {
-        const userAnswer = document.getElementById('image-answer-input').value.trim();
-        const feedback = document.getElementById('image-feedback');
-        if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-            feedback.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
-            CosyAppInteractive.awardCorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'vocabulary-image', imageItem.src, true, correctAnswer);
-        } else {
-            feedback.innerHTML = `<span class="incorrect">❌ ${t.tryAgain || 'Try again!'}</span>`;
-            CosyAppInteractive.awardIncorrectAnswer();
-        }
-    });
 }
 
 async function showMatchImageWord() {
@@ -749,21 +713,18 @@ async function showMatchImageWord() {
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
     
     const images = await loadImageVocabulary(language, days);
-    if (images.length < 1) { showNoDataMessage(); return; } // Need at least 1 image for its word
+    if (images.length < 1) { showNoDataMessage(); return; } 
 
-    const allWordsForLang = await loadVocabulary(language, days); // All words for potential distractors
+    const allWordsForLang = await loadVocabulary(language, days); 
     
-    const numPairsToMatch = Math.min(images.length, 4); // Max 4 pairs
+    const numPairsToMatch = Math.min(images.length, 4); 
     const selectedImageItems = shuffleArray(images).slice(0, numPairsToMatch);
     
     if (selectedImageItems.length < 1) { showNoDataMessage(); return; }
 
-
     const correctWordsForSelectedImages = selectedImageItems.map(img => img.translations[language]);
-    
     let wordPool = [...correctWordsForSelectedImages];
     
-    // Add distractors if needed and available
     if (wordPool.length < 4 && allWordsForLang.length > wordPool.length) {
         let distractorPool = allWordsForLang.filter(w => !wordPool.includes(w));
         distractorPool = shuffleArray(distractorPool);
@@ -783,7 +744,7 @@ async function showMatchImageWord() {
                  ${wordPool.map(word => `<div class="match-item word-item" data-word="${word}">${word}</div>`).join('')}
             </div>
             <div id="match-image-feedback" class="exercise-feedback"></div>
-            <button id="btn-new-match-image-word" class="btn-secondary" onclick="window.showMatchImageWord()" aria-label="${t.buttons?.newMatchImageWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newMatchImageWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-match-image-word" class="exercise-button" onclick="window.showMatchImageWord()" aria-label="${t.buttons?.newMatchImageWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newMatchImageWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.match-image-word-exercise');
@@ -796,10 +757,8 @@ async function showMatchImageWord() {
             if (selectedImageItems.length > 0) {
                 const randomImage = selectedImageItems[Math.floor(Math.random() * selectedImageItems.length)];
                 hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.tryToMatchImageFor || "Try to match the image for"} "${randomImage.translations[language]}".`;
-                // Highlight the image and its word if it's visible in the word pool
                 document.querySelector(`.image-item[data-answer="${randomImage.translations[language]}"]`)?.classList.add('hint-highlight');
                 document.querySelector(`.word-item[data-word="${randomImage.translations[language]}"]`)?.classList.add('hint-highlight');
-
             } else {
                  hintDisplay.textContent = t.noHintAvailable || 'No hint available.';
             }
@@ -807,7 +766,6 @@ async function showMatchImageWord() {
             if(feedbackDiv) this.insertBefore(hintDisplay, feedbackDiv);
             else this.appendChild(hintDisplay);
         };
-        // This exercise is auto-check. Reveal could show all matches.
         exerciseContainer.revealAnswer = function() {
             selectedImageItems.forEach(item => {
                 const imgEl = this.querySelector(`.image-item[data-answer="${item.translations[language]}"]`);
@@ -852,7 +810,6 @@ async function showMatchImageWord() {
             selectedWordElement.classList.add('matched', 'disabled');
             CosyAppInteractive.awardCorrectAnswer();
             CosyAppInteractive.scheduleReview(language, 'vocabulary-image', selectedImageElement.querySelector('img')?.src, true, imageAnswer);
-
         } else {
             feedback.innerHTML = `<span class="incorrect">❌ ${t.tryAgain || 'Try again!'}</span>`;
             CosyAppInteractive.awardIncorrectAnswer();
@@ -878,19 +835,18 @@ async function showIdentifyImageYesNo() {
     if (!Array.isArray(images) || !images.length) { showNoDataMessage(); return; }
     
     const allWordsForLang = await loadVocabulary(language, days);
-    if (!Array.isArray(allWordsForLang)) { showNoDataMessage(); return; } // Ensure words are loaded
+    if (!Array.isArray(allWordsForLang)) { showNoDataMessage(); return; } 
 
     const imageItem = images[Math.floor(Math.random() * images.length)];
     const correctAnswer = imageItem.translations[language];
     let displayedWord, isMatch;
 
-    // Determine if the displayed word should match the image or be a distractor
     if (allWordsForLang.length === 0 || (allWordsForLang.length === 1 && allWordsForLang[0].toLowerCase() === correctAnswer.toLowerCase()) || Math.random() < 0.5) {
         displayedWord = correctAnswer; 
         isMatch = true;
     } else {
         let distractorPool = allWordsForLang.filter(word => word.toLowerCase() !== correctAnswer.toLowerCase());
-        if (distractorPool.length === 0) { // Only one word in the language, or all words are the same as correctAnswer
+        if (distractorPool.length === 0) { 
             displayedWord = correctAnswer; 
             isMatch = true; 
         } else { 
@@ -908,7 +864,7 @@ async function showIdentifyImageYesNo() {
                 <button id="no-btn" class="btn-primary" aria-label="${t.noButtonLabel || 'No'}">${t.noButton || 'No'}</button>
             </div>
             <div id="yes-no-feedback" class="exercise-feedback" aria-live="assertive"></div>
-            <button id="btn-new-identify-image-yes-no" class="btn-secondary" onclick="window.showIdentifyImageYesNo()">🔄 ${t.buttons?.newIdentifyImageYesNo || t.buttons?.next || 'Next'}</button>
+            <button id="btn-new-identify-image-yes-no" class="exercise-button" onclick="window.showIdentifyImageYesNo()">🔄 ${t.buttons?.newIdentifyImageYesNo || t.buttons?.next || 'Next'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.identify-yes-no-exercise');
@@ -921,7 +877,6 @@ async function showIdentifyImageYesNo() {
             hintDisplay.textContent = t.hintYesNoGeneric || 'Hint: Does the image match the word?';
             this.appendChild(hintDisplay);
         };
-        // No explicit check/reveal for this type as it's immediate feedback.
     }
     const yesBtn = document.getElementById('yes-btn');
     const noBtn = document.getElementById('no-btn');
@@ -949,7 +904,7 @@ async function startListeningPractice() {
         case 'transcribe-word': await window.showTranscribeWord(); break;
         case 'match-sound-word': await window.showMatchSoundWord(); break;
         case 'transcribe-word-yes-no': await window.showTranscribeWordYesNo(); break;
-        default: await window.showTranscribeWord(); // Fallback
+        default: await window.showTranscribeWord(); 
     }
 }
 
@@ -987,7 +942,7 @@ async function showTranscribeWordYesNo() {
                 <button id="no-btn-listening" class="btn-primary" aria-label="${t.noButtonLabel || 'No'}">${t.noButton || 'No'}</button>
             </div>
             <div id="yes-no-feedback-listening" class="exercise-feedback" aria-live="assertive"></div>
-            <button id="btn-new-transcribe-word-yes-no" class="btn-secondary" onclick="window.showTranscribeWordYesNo()">🔄 ${t.buttons?.newTranscribeWordYesNo || t.buttons?.next || 'Next'}</button>
+            <button id="btn-new-transcribe-word-yes-no" class="exercise-button" onclick="window.showTranscribeWordYesNo()">🔄 ${t.buttons?.newTranscribeWordYesNo || t.buttons?.next || 'Next'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.transcribe-word-yes-no-exercise');
@@ -1034,9 +989,8 @@ async function showTranscribeWord() {
         <div class="listening-exercise transcribe-word-exercise">
             <button id="play-word-sound" class="btn-emoji large-emoji" aria-label="${t.playSoundButtonLabel || 'Play Sound'}">🔊</button>
             <input type="text" id="transcription-input" class="exercise-input" placeholder="${t.typeHerePlaceholder || 'Type here...'}">
-            <button id="check-transcription-impl" class="btn-primary">✅ ${t.buttons?.check || 'Check'}</button>
             <div id="transcription-feedback" class="exercise-feedback"></div>
-            <button id="btn-new-transcribe-word" class="btn-secondary" onclick="window.showTranscribeWord()">🔄 ${t.buttons?.newTranscribeWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-transcribe-word" class="exercise-button" onclick="window.showTranscribeWord()">🔄 ${t.buttons?.newTranscribeWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.transcribe-word-exercise');
@@ -1060,26 +1014,26 @@ async function showTranscribeWord() {
             if(inputField) this.insertBefore(hintDisplay, inputField);
             else this.appendChild(hintDisplay);
         };
-        exerciseContainer.checkAnswer = () => document.getElementById('check-transcription-impl')?.click();
         exerciseContainer.revealAnswer = function() {
             document.getElementById('transcription-input').value = word;
             document.getElementById('transcription-feedback').innerHTML = `${t.correctAnswerIs || "The correct answer is:"} <b>${word}</b>`;
-        }
+        };
+        exerciseContainer.checkAnswer = () => {
+            const userAnswer = document.getElementById('transcription-input').value.trim();
+            const feedback = document.getElementById('transcription-feedback');
+            const currentLanguage = document.getElementById('language').value; 
+            const currentT = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
+            if (userAnswer.toLowerCase() === word.toLowerCase()) {
+                feedback.innerHTML = `<span class="correct">✅ ${currentT.correct || 'Correct!'}</span>`;
+                CosyAppInteractive.awardCorrectAnswer();
+                CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-sound', word, true);
+            } else {
+                feedback.innerHTML = `<span class="incorrect">❌ ${currentT.tryAgain || 'Try again!'}</span>`;
+                CosyAppInteractive.awardIncorrectAnswer();
+            }
+        };
     }
-    addEnterKeySupport('transcription-input', 'check-transcription-impl');
     document.getElementById('play-word-sound')?.addEventListener('click', () => pronounceWord(word, language));
-    document.getElementById('check-transcription-impl')?.addEventListener('click', () => {
-        const userAnswer = document.getElementById('transcription-input').value.trim();
-        const feedback = document.getElementById('transcription-feedback');
-        if (userAnswer.toLowerCase() === word.toLowerCase()) {
-            feedback.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
-            CosyAppInteractive.awardCorrectAnswer();
-            CosyAppInteractive.scheduleReview(language, 'vocabulary-sound', word, true);
-        } else {
-            feedback.innerHTML = `<span class="incorrect">❌ ${t.tryAgain || 'Try again!'}</span>`;
-            CosyAppInteractive.awardIncorrectAnswer();
-        }
-    });
 }
 
 async function showMatchSoundWord() {
@@ -1088,12 +1042,12 @@ async function showMatchSoundWord() {
     const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
     const words = await loadVocabulary(language, days);
-    if (words.length < 2) { showNoDataMessage(); return; } // Need at least 2 words for options
+    if (words.length < 2) { showNoDataMessage(); return; } 
     
-    const numOptions = Math.min(words.length, 4); // Max 4 options
+    const numOptions = Math.min(words.length, 4); 
     const selectedWordsWithOptions = shuffleArray([...words]).slice(0, numOptions);
     
-    if (selectedWordsWithOptions.length < 1) { showNoDataMessage(); return; } // Should not happen if words.length >=2
+    if (selectedWordsWithOptions.length < 1) { showNoDataMessage(); return; } 
     const wordToPlay = selectedWordsWithOptions[Math.floor(Math.random() * selectedWordsWithOptions.length)];
     
     const resultArea = document.getElementById('result');
@@ -1104,7 +1058,7 @@ async function showMatchSoundWord() {
                 ${selectedWordsWithOptions.map(optionWord => `<button class="word-option btn" data-word="${optionWord}">${optionWord}</button>`).join('')}
             </div>
             <div id="sound-match-feedback" class="exercise-feedback"></div>
-            <button id="btn-new-match-sound-word" class="btn-secondary" onclick="window.showMatchSoundWord()">🔄 ${t.buttons?.newMatchSoundWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-match-sound-word" class="exercise-button" onclick="window.showMatchSoundWord()">🔄 ${t.buttons?.newMatchSoundWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.match-sound-exercise');
@@ -1119,7 +1073,6 @@ async function showMatchSoundWord() {
             if(wordOptions) this.insertBefore(hintDisplay, wordOptions);
             else this.appendChild(hintDisplay);
         };
-        // This is an auto-check exercise. Reveal could highlight the correct button.
         exerciseContainer.revealAnswer = function() {
             this.querySelectorAll('.word-option').forEach(option => {
                 if (option.dataset.word === wordToPlay) {
@@ -1134,7 +1087,7 @@ async function showMatchSoundWord() {
         option.addEventListener('click', function() {
             const chosenWord = this.dataset.word;
             const feedback = document.getElementById('sound-match-feedback');
-            document.querySelectorAll('.word-option').forEach(btn => btn.disabled = true); // Disable all after a choice
+            document.querySelectorAll('.word-option').forEach(btn => btn.disabled = true); 
             if (chosenWord === wordToPlay) {
                 feedback.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
                 this.classList.add('correct');
@@ -1143,7 +1096,6 @@ async function showMatchSoundWord() {
             } else {
                 feedback.innerHTML = `<span class="incorrect">❌ ${t.incorrect || 'Incorrect.'} ${t.correctAnswerWas || 'The correct answer was'} "${wordToPlay}".</span>`;
                 this.classList.add('incorrect');
-                // Highlight correct one
                  const correctButton = document.querySelector(`.word-option[data-word="${wordToPlay}"]`);
                  if(correctButton) correctButton.classList.add('correct');
                 CosyAppInteractive.awardIncorrectAnswer();
@@ -1177,20 +1129,17 @@ async function practiceAllVocabulary() {
             await exerciseFn(); 
         } catch (error) {
             console.error(`Error running exercise ${exerciseFn.name}:`, error);
-            // Optionally, show an error to the user in the UI
             const resultArea = document.getElementById('result');
             if(resultArea) resultArea.innerHTML = `<p class="error-message">${t.errorRunningExercise || "An error occurred while running the exercise. Please try another."}</p>`;
         }
         
-        // Wait for user to click "Continue"
         await new Promise(resolve => {
             const resultArea = document.getElementById('result');
-            if (!resultArea) { // If resultArea is missing, can't append continue button
+            if (!resultArea) { 
                 console.error("Result area not found for continue button.");
-                resolve(); // Resolve immediately to avoid getting stuck
+                resolve(); 
                 return;
             }
-            // Clear previous continue prompt if any
             const oldPrompt = resultArea.querySelector('.continue-prompt');
             if(oldPrompt) oldPrompt.remove();
 
@@ -1201,7 +1150,7 @@ async function practiceAllVocabulary() {
             const continueBtn = document.createElement('button');
             continueBtn.className = 'btn-primary';
             continueBtn.textContent = t.continueButton || 'Continue';
-            continueBtn.onclick = () => { // Use onclick to ensure it's cleaned up with promptContainer
+            continueBtn.onclick = () => { 
                 promptContainer.remove();
                 resolve();
             };
@@ -1214,7 +1163,6 @@ async function practiceAllVocabulary() {
      if(resultArea) resultArea.innerHTML += `<p>${t.allExercisesComplete || 'All vocabulary exercises for selected days complete!'}</p>`;
 }
 
-// Ensure key functions are globally available
 window.initVocabularyPractice = initVocabularyPractice;
 window.startRandomWordPractice = startRandomWordPractice;
 window.startRandomImagePractice = startRandomImagePractice;
@@ -1232,25 +1180,21 @@ window.showTranscribeWord = showTranscribeWord;
 window.showMatchSoundWord = showMatchSoundWord;
 window.showTranscribeWordYesNo = showTranscribeWordYesNo;
 
-// Patch all main vocabulary exercise renderers
 window.showRandomWord = patchExerciseWithExtraButtons(window.showRandomWord, '.word-display-container', window.startRandomWordPractice, { noCheck: true, noReveal: true });
 window.showOppositesExercise = patchExerciseWithExtraButtons(window.showOppositesExercise, '.opposites-exercise', window.startRandomWordPractice, {});
 window.showMatchOpposites = patchExerciseWithExtraButtons(window.showMatchOpposites, '.match-exercise', window.startRandomWordPractice, {});
 window.showBuildWord = patchExerciseWithExtraButtons(window.showBuildWord, '.build-word-exercise', window.startRandomWordPractice, {});
 window.showIdentifyImage = patchExerciseWithExtraButtons(window.showIdentifyImage, '.image-exercise', window.startRandomImagePractice, {});
-window.showMatchImageWord = patchExerciseWithExtraButtons(window.showMatchImageWord, '.match-image-word-exercise', window.startRandomImagePractice, { noCheck: true }); // Auto-checks
-window.showIdentifyImageYesNo = patchExerciseWithExtraButtons(window.showIdentifyImageYesNo, '.identify-yes-no-exercise', window.startRandomImagePractice, { noCheck: true, noReveal: true }); // Auto-checks, Yes/No
+window.showMatchImageWord = patchExerciseWithExtraButtons(window.showMatchImageWord, '.match-image-word-exercise', window.startRandomImagePractice, { noCheck: true }); 
+window.showIdentifyImageYesNo = patchExerciseWithExtraButtons(window.showIdentifyImageYesNo, '.identify-yes-no-exercise', window.startRandomImagePractice, { noCheck: true, noReveal: true }); 
 window.showTranscribeWord = patchExerciseWithExtraButtons(window.showTranscribeWord, '.transcribe-word-exercise', window.startListeningPractice, {});
-window.showMatchSoundWord = patchExerciseWithExtraButtons(window.showMatchSoundWord, '.match-sound-exercise', window.startListeningPractice, { noCheck: true }); // Auto-checks
-window.showTranscribeWordYesNo = patchExerciseWithExtraButtons(window.showTranscribeWordYesNo, '.transcribe-word-yes-no-exercise', window.startListeningPractice, { noCheck: true, noReveal: true }); // Auto-checks, Yes/No
-
+window.showMatchSoundWord = patchExerciseWithExtraButtons(window.showMatchSoundWord, '.match-sound-exercise', window.startListeningPractice, { noCheck: true }); 
+window.showTranscribeWordYesNo = patchExerciseWithExtraButtons(window.showTranscribeWordYesNo, '.transcribe-word-yes-no-exercise', window.startListeningPractice, { noCheck: true, noReveal: true }); 
 
 async function getRequiredDay1Pairs(language) {
     const words = await loadVocabulary(language, '1');
     const opposites = await loadOpposites(language, '1'); 
     let pairs = [];
-    // This assumes REQUIRED_DAY1_OPPOSITES is defined elsewhere or would be passed in.
-    // For now, let's ensure it doesn't break if undefined.
     const requiredPairsData = typeof REQUIRED_DAY1_OPPOSITES !== 'undefined' ? REQUIRED_DAY1_OPPOSITES : [];
 
     for (const req of requiredPairsData) {
@@ -1260,7 +1204,6 @@ async function getRequiredDay1Pairs(language) {
             if (opposites[baseWord]) {
                 oppWord = opposites[baseWord];
             } else {
-                // Fallback: try to find the opposite from the general word list if not in specific opposites list
                 oppWord = words.find(w => w.toLowerCase() === req.opposite.toLowerCase());
             }
         }

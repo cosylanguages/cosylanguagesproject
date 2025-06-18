@@ -35,8 +35,8 @@ async function showQuestionPractice() {
         <div class="speaking-exercise-container">
             <div id="speaking-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 20px; min-height: 40px;"></div>
             <div class="navigation-buttons" style="margin-bottom: 20px;">
-                <button id="prev-speaking-question-btn" class="btn-secondary btn-small">&lt; ${t.buttons?.previous || 'Previous'}</button>
-                <button id="next-speaking-question-btn" class="btn-secondary btn-small">${t.buttons?.next || 'Next'} &gt;</button>
+                <button id="prev-speaking-question-btn" class="exercise-button">&lt; ${t.buttons?.previous || 'Previous'}</button>
+                <button id="next-speaking-question-btn" class="exercise-button">${t.buttons?.next || 'Next'} &gt;</button>
             </div>
             <button id="speaking-record-btn" class="btn-primary btn-emoji" style="font-size: 2.5em; padding: 10px 20px; margin-bottom:15px; line-height: 1;">🎤</button>
             <div id="speaking-transcript" class="transcript-area" style="margin-top: 10px; min-height: 25px; padding: 5px; border: 1px solid #eee; border-radius: 4px;"></div>
@@ -229,7 +229,7 @@ async function showMonologuePractice() {
         <div class="speaking-exercise-container">
             <p>${t.exerciseNotImplementedMonologue || 'This monologue exercise is not yet implemented.'}</p>
             <p>${t.imagineMonologueHere || 'Imagine you record a monologue here and then click continue.'}</p>
-            <button id="finish-monologue-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
+            <button id="finish-monologue-btn" class="exercise-button" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
@@ -268,7 +268,7 @@ async function showRolePlayPractice() {
         <div class="speaking-exercise-container">
             <p>${t.exerciseNotImplementedRolePlay || 'This role-play exercise is not yet implemented.'}</p>
             <p>${t.imagineRolePlayHere || 'Imagine you participate in a role-play here and then click continue.'}</p>
-            <button id="finish-roleplay-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
+            <button id="finish-roleplay-btn" class="exercise-button" aria-label="${buttonText}">🔄 ${buttonText}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
@@ -336,3 +336,5 @@ window.showMonologuePractice = showMonologuePractice;
 window.showRolePlayPractice = showRolePlayPractice;
 window.startRandomSpeakingPractice = startRandomSpeakingPractice;
 window.initSpeakingPractice = initSpeakingPractice;
+
+

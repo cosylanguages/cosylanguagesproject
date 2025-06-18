@@ -206,7 +206,7 @@ label {
     color: var(--text-color-light); background-color: var(--primary-color);
     border: 1px solid transparent; border-radius: 0.3rem; cursor: pointer;
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
-    user-select: none; margin: 5px; /* vertical-align: middle; is now in global button style */
+    user-select: none; margin: 5px; 
 }
 .btn:hover { 
     background-color: var(--primary-hover-color); 
@@ -239,16 +239,16 @@ label {
     box-shadow: 0 3px 7px rgba(0,0,0,0.1);
 }
 
-.btn-emoji { /* For buttons that are primarily an emoji and circular */
+.btn-emoji { 
     padding: 0.5em; font-size: 1.2rem; line-height: 1; min-width: auto; width: auto; height: auto;
     background: var(--light-grey); border: 1px solid var(--medium-grey);
     color: var(--dark-grey); border-radius: 50%;
-    gap: 0; /* Override global gap for emoji-only buttons */
+    gap: 0; 
 }
 .btn-emoji:hover { background: var(--medium-grey); border-color: var(--dark-grey); }
 
 select, 
-button { /* General styling for all buttons and selects */
+button { 
     padding: 0.6em 1.2em; font-size: var(--font-size-small, 0.9rem); font-weight: bold; line-height: 1.4;
     text-align: center; text-decoration: none; border-radius: 0.3rem; cursor: pointer;
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
@@ -272,8 +272,7 @@ button:active, select:active {
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* Unified style for "Next Item" or "New Exercise" type buttons */
-.btn-next-item, button[id^="btn-new-"] { /* Target new exercise buttons by ID pattern */
+.btn-next-item, button[id^="btn-new-"] { 
     background-color: var(--medium-grey);
     color: var(--text-color-dark);
     border: 1px solid var(--dark-grey);
@@ -283,7 +282,7 @@ button:active, select:active {
     border-radius: 6px;
     transition: all 0.2s ease-in-out;
     text-decoration: none;
-    margin: 5px; /* Ensure consistent margin */
+    margin: 5px; 
 }
 
 .btn-next-item:hover, button[id^="btn-new-"]:hover {
@@ -400,7 +399,7 @@ textarea.exercise-input {
 /* ==========================================================================
    Exercise Common Styles - Standardized
    ========================================================================== */
-.exercise-container, /* This is the new common class added in JS subtasks */
+.exercise-container, 
 .word-display-container, .opposites-exercise, .match-exercise,        
 .build-word-exercise, .image-exercise, .match-image-word-exercise, 
 .listening-exercise, .match-sound-exercise, .gender-exercise,       
@@ -420,17 +419,16 @@ textarea.exercise-input {
 }
 
 /* Container for buttons added by patchExerciseWithExtraButtons */
-.exercise-button-bar {
+.exercise-button-bar { /* DEPRECATED - use top/bottom specific ones */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 15px; /* Space below the button bar */
+    margin-bottom: 15px; 
 }
 
 /* Styling for buttons added by patchExerciseWithExtraButtons */
 .exercise-button {
-    /* Inherits from global button styles for flex, align, justify, gap */
     padding: 0.5em 1em;
     font-size: 0.9rem;
     font-weight: 600;
@@ -443,9 +441,25 @@ textarea.exercise-input {
     background-color: var(--secondary-hover-color);
     border-color: var(--secondary-hover-color);
 }
-/* Specific styling for check and reveal if needed, otherwise they use .exercise-button */
-#btn-check-exercise { /* Example if more specific styling is needed */ }
-#btn-reveal-answer { /* Example */ }
+
+/* Button bars for patched exercise buttons */
+.exercise-button-bar-top,
+.exercise-button-bar-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+    align-items: center;
+    gap: var(--spacing-unit, 10px); 
+    width: 100%; 
+}
+
+.exercise-button-bar-top {
+    margin-bottom: calc(var(--spacing-unit, 10px) * 1.5); 
+}
+
+.exercise-button-bar-bottom {
+    margin-top: calc(var(--spacing-unit, 10px) * 1.5); 
+}
 
 
 .exercise-prompt,
@@ -502,7 +516,7 @@ textarea.exercise-input {
 .word-actions, .word-exercise-options, .build-actions,
 .navigation-buttons, .listening-exercise .exercise-actions, 
 .image-exercise .exercise-actions, .match-sound-exercise .exercise-actions,
-.order-actions /* Added from grammar.js */ {
+.order-actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -544,7 +558,7 @@ textarea.exercise-input {
 .match-item.matched { border-color: var(--success-border); background-color: var(--success-bg); color: var(--success-text); cursor: default; }
 .match-item.disabled { pointer-events: none; opacity: 0.7; } 
 .match-item.incorrect-flash { animation: incorrectFlash 0.5s; }
-.match-item.revealed-match { /* For when hint reveals a match */
+.match-item.revealed-match { 
     border-color: var(--primary-color);
     background-color: var(--light-grey);
     box-shadow: 0 0 5px var(--primary-color);
@@ -587,7 +601,7 @@ textarea.exercise-input {
     justify-content: center; 
 }
 .letter-slot.hovered { background: var(--light-grey); border-style: solid; } 
-.letter-tile.revealed { /* For build-word revealAnswer */
+.letter-tile.revealed { 
     background-color: var(--success-bg);
     color: var(--success-text);
     border: 1px solid var(--success-border);
@@ -597,32 +611,36 @@ textarea.exercise-input {
 /* ==========================================================================
    Randomizer & Hint Buttons (Patched)
    ========================================================================== */
-#btn-randomize-category, /* ID for randomize category button from patcher */
-#btn-hint {             /* ID for hint button from patcher */
-  display: inline-flex !important; /* Ensure flex for alignment */
+#btn-randomize-category, 
+#btn-hint,
+#btn-reveal-answer {             
+  display: inline-flex !important; 
   align-items: center !important;
   justify-content: center !important;
   padding: 0 !important; 
   color: var(--text-color-dark) !important; 
   line-height: 1 !important; 
   text-decoration: none !important;
-  margin: 5px !important; /* Consistent margin with other buttons */
-  font-size: 1.5rem !important; /* Emoji size */
+  margin: 5px !important; 
+  font-size: 1.5rem !important; 
   border: none !important;
   border-radius: 50% !important;
-  width: 44px !important;  /* Circular button size */
-  height: 44px !important; /* Circular button size */
+  width: 44px !important;  
+  height: 44px !important; 
   box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
   cursor: pointer !important;
   transition: transform 0.2s, box-shadow 0.2s !important;
-  gap: 0; /* No gap if only emoji */
+  gap: 0; 
 }
 
 #btn-randomize-category {
-  background: linear-gradient(90deg,#ffe082,#1de9b6) !important; /* Existing gradient */
+  background: linear-gradient(90deg,#ffe082,#1de9b6) !important; 
 }
 #btn-hint {
-  background: linear-gradient(90deg, #FFD700, #FFA500) !important; /* Gold/Orange gradient */
+  background: linear-gradient(90deg, #FFD700, #FFA500) !important; 
+}
+#btn-reveal-answer {
+  background: linear-gradient(90deg, #1de9b6, #31a741) !important; 
 }
 
 #btn-randomize-category:hover,
@@ -655,7 +673,7 @@ textarea.exercise-input {
 .speaking-exercise-container h3,
 .writing-exercise-container h3 {
     color: var(--primary-color); 
-    margin-bottom: 15px; /* Added margin below h3 */
+    margin-bottom: 15px; 
 }
 #speaking-record-btn {
     font-size: 2.5em !important; 
@@ -682,7 +700,7 @@ textarea.exercise-input {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
-#submit-writing-answer-btn-impl, /* From writing.js */
+#submit-writing-answer-btn-impl, 
 #finish-original-storytelling-btn-impl,
 #finish-story-emojis-btn-impl,
 #finish-what-happens-next-btn-impl,
@@ -733,7 +751,7 @@ textarea.exercise-input {
     display: flex; align-items: center; justify-content: center; 
     box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; 
     transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-    gap: 0; /* Emoji only */
+    gap: 0; 
 }
 #floating-help-btn:hover { background-color: var(--primary-hover-color); transform: scale(1.1); }
 .floating-popup {  
@@ -756,7 +774,7 @@ textarea.exercise-input {
     background: none; border: none; font-size: 1.2rem;  
     color: var(--dark-grey); cursor: pointer; padding: 5px;  
     transition: color 0.2s ease-in-out; 
-    gap: 0; /* Emoji only */
+    gap: 0; 
 }
 .floating-popup .close-btn:hover { color: var(--primary-color); }
 #floating-tip-popup[style*="display: flex"] { display: flex !important; } 
@@ -997,7 +1015,7 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
     font-size: 1.2em; 
 }
 .select-article-exercise .exercise-prompt strong { font-weight: 600; color: #1976d2; }
-.match-articles-words-exercise .match-col, .match-verbs-pronouns-exercise .match-col { /* More specific for grammar matching */
+.match-articles-words-exercise .match-col, .match-verbs-pronouns-exercise .match-col { 
     flex: 1; padding: 10px; margin: 0 5px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 8px; 
 }
 .match-articles-words-exercise .match-col h4, .match-verbs-pronouns-exercise .match-col h4 { text-align: center; color: #555; margin-bottom: 10px; }
@@ -1041,12 +1059,12 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
 /* ==========================================================================
    Hint Display Area
    ========================================================================== */
-.hint-display, .exercise-hint { /* Target both for robustness */
+.hint-display, .exercise-hint { 
     margin: 15px 0;
     padding: 12px 15px;
     background-color: var(--hint-bg); 
     border: 1px solid var(--hint-border);
-    border-left: 5px solid #ffc107; /* Accent border */
+    border-left: 5px solid #ffc107; 
     border-radius: 5px;
     color: var(--hint-text); 
     font-size: 0.9rem;
@@ -1058,7 +1076,6 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
 /* Ensure specific patched circular buttons maintain their look if they also get .exercise-button */
 #btn-randomize-category.exercise-button,
 #btn-hint.exercise-button {
-    /* Re-assert circular specific styles if .exercise-button tries to override them */
     padding: 0 !important; 
     font-size: 1.5rem !important;
     border-radius: 50% !important;
@@ -1072,3 +1089,8 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
 #btn-hint.exercise-button {
      background: linear-gradient(90deg, #FFD700, #FFA500) !important;
 }
+
+/* ==========================================================================
+   End of File
+   ========================================================================== */
+
