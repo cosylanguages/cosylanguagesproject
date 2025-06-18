@@ -617,23 +617,42 @@
             }
         },
         {
-            "src": "https://knowt-user-attachments.s3.amazonaws.com/0a635fd6-1abf-4397-a953-22424d838fa9.jpg",
-            "alt": "Husband and wife",
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/eda4d27c-7bbc-4c18-b2d3-2970dea2005c.jpg",
+            "alt": "Husband",
             "translations": {
-                "COSYenglish": "Husband and wife",
-                "COSYfrançais": "Le mari et la femme",
-                "COSYitaliano": "Il marito e la moglie",
-                "COSYespañol": "El marido y la mujer",
-                "COSYportuguês": "O marido e a mulher",
-                "COSYdeutsch": "Der Ehemann und die Ehefrau",
-                "ΚΟΖΥελληνικά": "ο σύζυγος και η σύζυγος",
-                "ТАКОЙрусский": "Муж и жена",
-                "ԾՈՍՅհայկական": "Ամուսին և կին",
-                "COSYbrezhoneg": "Gouarnamant ha gwreg",
-                "COSYtatarça": "İr häm xatın",
-                "COSYbashkort": "Ир һәм ҡатын"
+                "COSYenglish": "Husband",
+                "COSYfrançais": "Le mari",
+                "COSYitaliano": "Il marito",
+                "COSYespañol": "El esposo",
+                "COSYportuguês": "O marido",
+                "COSYdeutsch": "Der Ehemann",
+                "ΚΟΖΥελληνικά": "ο σύζυγος",
+                "ТАКОЙрусский": "Муж",
+                "ԾՈՍՅհայկական": "Ամուսին",
+                "COSYbrezhoneg": "Gour",
+                "COSYtatarça": "İr",
+                "COSYbashkort": "Ир"
             }
         },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/e535eddc-6229-43f8-bc90-12be39871a5c.jpg",
+            "alt": "Wife",
+            "translations": {
+                "COSYenglish": "Wife",
+                "COSYfrançais": "La femme",
+                "COSYitaliano": "La moglie",
+                "COSYespañol": "La esposa",
+                "COSYportuguês": "A esposa",
+                "COSYdeutsch": "Die Ehefrau",
+                "ΚΟΖΥελληνικά": "η σύζυγος",
+                "ТАКОЙрусский": "Жена",
+                "ԾՈՍՅհայկական": "Կինը",
+                "COSYbrezhoneg": "Gwreg",
+                "COSYtatarça": "Xatın",
+                "COSYbashkort": "Ҡатын"
+            }
+        },
+
         {
             "src": "https://knowt-user-attachments.s3.amazonaws.com/0250ba7c-0298-40c5-b335-d2be1ddc98ee.png",
             "alt": "Friend",
@@ -650,6 +669,78 @@
                 "COSYbashkort": "Dost",
                 "ԾՈՍՅհայկական": "Ընկեր.ընկերուհի",
                 "COSYbrezhoneg": "Mignon.mignone"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/86821e42-77ec-4b3a-a196-70cfb7f54def.jpg",
+            "alt": "I",
+            "translations": {
+                "COSYenglish": "I",
+                "COSYfrançais": "Je",
+                "COSYitaliano": "Io",
+                "COSYespañol": "Yo",
+                "COSYportuguês": "Eu",
+                "COSYdeutsch": "Ich",
+                "ΚΟΖΥελληνικά": "Εγώ",
+                "ТАКОЙрусский": "Я",
+                "ԾՈՍՅհայկական": "Ես",
+                "COSYbrezhoneg": "Me",
+                "COSYtatarça": "Min",
+                "COSYbashkort": "Мин"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/352f23ba-1b1d-4d8c-995c-b3307740048a.jpg",
+            "alt": "You",
+            "translations": {
+                "COSYenglish": "You",
+                "COSYfrançais": "Tu",
+                "COSYitaliano": "Tu",
+                "COSYespañol": "Tú",
+                "COSYportuguês": "Você",
+                "COSYdeutsch": "Du",
+                "ΚΟΖΥελληνικά": "Εσύ",
+                "ТАКОЙрусский": "Ты",
+                "ԾՈՍՅհայկական": "Դու",
+                "COSYbrezhoneg": "Te",
+                "COSYtatarça": "Sin",
+                "COSYbashkort": "Һин"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/d534de61-4954-4d81-b737-a1be7a03794f.jpg",
+            "alt": "He",
+            "translations": {
+                "COSYenglish": "He",
+                "COSYfrançais": "Il",
+                "COSYitaliano": "Lui",
+                "COSYespañol": "Él",
+                "COSYportuguês": "Ele",
+                "COSYdeutsch": "Er",
+                "ΚΟΖΥελληνικά": "Αυτός",
+                "ТАКОЙрусский": "Он",
+                "ԾՈՍՅհայկական": "Նա",
+                "COSYbrezhoneg": "Eñ",
+                "COSYtatarça": "Ul",
+                "COSYbashkort": "Ул"
+            }
+        },
+        {
+            "src": "https://knowt-user-attachments.s3.amazonaws.com/32e89ff6-3c34-438d-b7bb-3c3608f3e496.jpg",
+            "alt": "She",
+            "translations": {
+                "COSYenglish": "She",
+                "COSYfrançais": "Elle",
+                "COSYitaliano": "Lei",
+                "COSYespañol": "Ella",
+                "COSYportuguês": "Ela",
+                "COSYdeutsch": "Sie",
+                "ΚΟΖΥελληνικά": "Αυτή",
+                "ТАКОЙрусский": "Она",
+                "ԾՈՍՅհայկական": "Նա",
+                "COSYbrezhoneg": "Hi",
+                "COSYtatarça": "Ul",
+                "COSYbashkort": ""
             }
         }
     ]
