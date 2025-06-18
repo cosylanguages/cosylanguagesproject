@@ -1094,3 +1094,25 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
    End of File
    ========================================================================== */
 
+/* Styles for the bottom button bar in exercises */
+.exercise-button-bar-bottom {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 15px; /* Or 1em, adjust as needed */
+    width: 100%; /* Ensure it takes up available width for spacing */
+}
+
+/* Optional: if buttons within the bar need specific flex properties */
+.exercise-button-bar-bottom .exercise-button {
+    /* Example: flex-grow: 1; to make them share space equally */
+    /* For now, let's not add this unless default spacing is insufficient */
+    margin-left: 5px; /* Add some space between buttons if they are close */
+    margin-right: 5px;
+}
+
+/* Hide the manually added 'New Story Prompt' button in showOriginalStorytellingPlaceholder */
+/* This is a workaround as it could not be removed from the JS code via subtask. */
+#btn-new-original-story {
+    display: none;
+}
