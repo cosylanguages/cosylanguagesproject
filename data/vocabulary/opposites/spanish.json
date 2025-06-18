@@ -7,6 +7,32 @@
     "Gracias": "De nada",
     "De nada": "Gracias"
   },
+  "2": {
+    "El niño": ["La niña", "niña", "El hombre", "Hombre"],
+    "La niña": ["El niño", "niño", "La mujer", "Mujer"],
+    "La mujer": ["El hombre", "Hombre", "El niño", "Niño"],
+    "El hombre": ["La mujer", "Mujer", "La niña", "Niña"],
+    "La persona": ["Cosa", "La cosa"],
+    "La cosa": ["La persona", "Persona"],
+    "El estudiante": ["La estudiante", "estudiante", "El profesor", "profesor", "La profesora", "profesora"],
+    "La estudiante": ["El estudiante", "estudiante", "El profesor", "profesor", "La profesora", "profesora"],
+    "El profesor": ["El estudiante", "estudiante", "La estudiante", "estudiante", "La profesora", "profesora"],
+    "La profesora": ["El estudiante", "estudiante", "La estudiante", "estudiante", "El profesor", "profesor"],
+    "Él": "Ella",
+    "Ella": "Él"
+  },
+  "3": {
+    "La madre": ["El padre", "Padre"],
+    "El padre": ["La madre", "Madre"],
+    "La hermana": ["El hermano", "Hermano"],
+    "El hermano": ["La hermana", "Hermana"],
+    "La hija": ["El hijo", "Hijo"],
+    "El hijo": ["La hija", "Hija"],
+    "El marido": ["La esposa", "Esposa"],
+    "La esposa": ["El marido", "Marido"],
+    "El amigo": ["La amiga", "Amiga"],
+    "La amiga": ["El amigo", "Amigo"]
+  },
   "4": {
     "0": "Cero",
     "Cero": "0",

@@ -1,23 +1,37 @@
 {
   "1": {
-    "Bonjour": "Au revoir",
-    "Au revoir": "Bonjour",
+    "Bonjour": ["Au revoir", "Salut"],
+    "Au revoir": ["Bonjour", "Salut"],
     "Oui": "Non",
     "Non": "Oui",
     "Merci": "De rien",
     "De rien": "Merci"
   },
   "2": {
-    "Boy": "Girl",
-    "Girl": "Boy",
-    "Woman": "Man",
-    "Man": "Woman",
-    "Person": "Thing",
-    "Thing": "Person",
-    "Student": "Teacher",
-    "Teacher": "Student",
-    "He": "She",
-    "She": "He"
+    "Le garçon": ["La fille", "fille", "L'homme", "Homme"],
+    "La fille": ["Le garçon", "garçon", "La femme", "Femme"],
+    "La femme": ["L'homme", "Homme", "Le garçon", "Garçon"],
+    "L'homme": ["La femme", "Femme", "La fille", "Fille"],
+    "La personne": ["Chose", "La chose"],
+    "La chose": ["La personne", "Personne"],
+    "L'étudiant": ["L'étudiante", "étudiante", "le professeur", "la professeure", "professeur", "professeure"],
+    "L'étudiante": ["L'étudiant", "étudiant", "le professeur", "la professeure", "professeur", "professeure"],
+    "Le professeur": ["L'étudiant", "étudiant", "L'étudiante", "étudiante"],
+    "La professeure": ["L'étudiant", "étudiant", "L'étudiante", "étudiante"],
+    "Il": "Elle",
+    "Elle": "Il"
+  },
+  "3": {
+    "La mère": ["Le père", "Père"],
+    "Le père": ["La mère", "Mère"],
+    "La sœur": ["Le frère", "Frère"],
+    "Le frère": ["La sœur", "Sœur"],
+    "La fille": ["Le fils", "Fils"],
+    "Le fils": ["La fille", "Fille"],
+    "Le mari": ["La femme", "Femme"],
+    "La femme": ["Le mari", "Mari"],
+    "L'ami": ["L'amie", "Amie"],
+    "L'amie": ["L'ami", "Ami"]
   },
   "4": {
     "0": "Zéro",

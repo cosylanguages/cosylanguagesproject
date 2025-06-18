@@ -7,6 +7,32 @@
     "Danke": "Bitte",
     "Bitte": "Danke"
   },
+  "2": {
+    "Der Junge": ["Das Mädchen", "Mann"],
+    "Das Mädchen": ["Der Junge", "Junge", "Die Frau", "Frau"],
+    "Die Frau": ["Der Mann", "Mann", "Der Junge", "Junge"],
+    "Der Mann": ["Die Frau", "Frau", "Das Mädchen", "Mädchen"],
+    "Die Person": ["Das Ding", "Ding"],
+    "Das Ding": ["Die Person", "Person"],
+    "Der Schüler": ["Die Schülerin", "Schülerin", "Der Lehrer", "Lehrer"],
+    "Die Schülerin": ["Der Schüler", "Schüler", "Der Lehrer", "Lehrer"],
+    "Der Lehrer": ["Der Schüler", "Schüler", "Die Schülerin", "Schülerin"],
+    "Die Lehrerin": ["Der Schüler", "Schüler", "Die Schülerin", "Schülerin"],
+    "Er": "Sie",
+    "Sie": "Er"
+  },
+  "3": {
+    "Die Mutter": ["Der Vater", "Vater"],
+    "Der Vater": ["Die Mutter", "Mutter"],
+    "Die Tochter": ["Der Sohn", "Sohn"],
+    "Der Sohn": ["Die Tochter", "Tochter"],
+    "Die Schwester": ["Der Bruder", "Bruder"],
+    "Der Bruder": ["Die Schwester", "Schwester"],
+    "Der Ehemann": ["Die Ehefrau", "Ehefrau"],
+    "Die Ehefrau": ["Der Ehemann", "Ehemann"],
+    "Der Freund": ["Die Freundin", "Freundin"],
+    "Die Freundin": ["Der Freund", "Freund"]
+  },
   "4": {
     "0": "Null",
     "Null": "0",
