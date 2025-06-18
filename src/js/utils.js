@@ -112,19 +112,7 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
         const language = document.getElementById('language')?.value || 'COSYenglish';
         const t = window.translations[language] || window.translations.COSYenglish;
 
-        // Add/Update Randomize Button
-        const existingRandomizeBtn = container.querySelector('.btn-randomize');
-        if (existingRandomizeBtn) existingRandomizeBtn.remove();
-        
-        let randomizeBtn = document.createElement('button');
-        randomizeBtn.className = 'btn-randomize randomizer-button'; // Keep both classes for compatibility
-        randomizeBtn.setAttribute('aria-label', t.aria?.randomize || 'Randomize exercise');
-        randomizeBtn.title = t.aria?.randomize || 'Randomize exercise';
-        randomizeBtn.innerHTML = t.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
-        randomizeBtn.onclick = randomizeFn;
-        container.prepend(randomizeBtn); // Prepend to make it appear first (usually on the right due to float)
-
-        // Add/Update Hint Button
+        // Add/Update Hint Button (Prepended FIRST)
         const existingHintBtn = container.querySelector('.btn-hint');
         if (existingHintBtn) existingHintBtn.remove();
 
@@ -141,23 +129,19 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
                 alert(t.noHintAvailable || 'No hint available for this exercise.');
             }
         };
-        // Prepend hint button. If randomize also prepended, hint will be before randomize.
-        // If randomize floats right, and hint floats right and is added after, hint will be to the left of randomize.
-        // To ensure hint is to the left of a right-floated randomize button:
-        // randomizeBtn is already prepended. If hintBtn is also prepended, it will appear before randomizeBtn in DOM.
-        // If both float right, the one appearing earlier in DOM will be further to the right.
-        // So, prepend randomize, then prepend hint to put hint to the left of randomize.
-        // Or, more simply, ensure CSS handles order if both float right (e.g. hint has margin-left, randomize has no margin-left or smaller).
-        // Current CSS for .randomizer-button has margin-left: 10px and float: right.
-        // .btn-hint has margin-left: 5px and float: right.
-        // If hintBtn is prepended *after* randomizeBtn, it will be to the right of randomizeBtn.
-        // If hintBtn is prepended *before* randomizeBtn, it will be to the left of randomizeBtn.
-        // Let's prepend hint button *before* the randomize button to place it to the left, assuming float:right for both.
-        if (randomizeBtn.parentNode === container) { // ensure randomizeBtn was added
-             container.insertBefore(hintBtn, randomizeBtn);
-        } else {
-             container.prepend(hintBtn); // fallback if randomizeBtn somehow wasn't prepended
-        }
+        container.prepend(hintBtn); // HINT BUTTON IS PREPENDED
+
+        // Add/Update Randomize Button (Prepended SECOND, so it appears before Hint in DOM)
+        const existingRandomizeBtn = container.querySelector('.btn-randomize');
+        if (existingRandomizeBtn) existingRandomizeBtn.remove();
+        
+        let randomizeBtn = document.createElement('button');
+        randomizeBtn.className = 'btn-randomize randomizer-button'; // Keep both classes for compatibility
+        randomizeBtn.setAttribute('aria-label', t.aria?.randomize || 'Randomize exercise');
+        randomizeBtn.title = t.aria?.randomize || 'Randomize exercise';
+        randomizeBtn.innerHTML = t.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
+        randomizeBtn.onclick = randomizeFn;
+        container.prepend(randomizeBtn); // RANDOMIZE BUTTON IS PREPENDED
     }
 }
 

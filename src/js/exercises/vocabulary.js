@@ -214,6 +214,7 @@ async function showRandomWord() {
     
     resultArea.innerHTML = `
         <div class="word-display-container" role="region" aria-label="${t.randomWordExercise || 'Random Word Exercise'}">
+            <h2 class="practice-type-title">${t.practiceTitleShowRandomWord || 'Show Random Word'}</h2>
             <div class="word-display" id="displayed-word" aria-label="${t.wordToPracticeLabel || 'Word to practice'}"><b>${word}</b></div>
             <div class="word-actions">
                 <button id="pronounce-word" class="btn-emoji" aria-label="${t.pronounceWord || 'Pronounce word'}">🔊</button>
@@ -281,6 +282,7 @@ async function showOppositesExercise(baseWord = null) {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="opposites-exercise" role="form" aria-label="${t.oppositesExercise || 'Opposites Exercise'}">
+            <h2 class="practice-type-title">${t.practiceTitleOppositesExercise || 'Opposites Exercise'}</h2>
             <div class="word-pair">
                 <div class="word-box" aria-label="${t.wordAriaLabel || 'Word'}">${word}</div>
                 <div class="opposite-arrow" aria-label="${t.oppositeArrowLabel || 'Opposite arrow'}">≠</div>
@@ -384,6 +386,7 @@ async function showMatchOpposites() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="match-exercise" role="region" aria-label="${t.matchOppositesExercise || 'Match Opposites Exercise'}">
+            <h2 class="practice-type-title">${t.practiceTitleMatchOpposites || 'Match Opposites'}</h2>
             <div class="match-container">
                 <div class="match-col" id="words-col" aria-label="${t.wordsColumn || 'Words column'}">
                     ${wordsColumn.map((pair, index) => `
@@ -496,6 +499,7 @@ async function showBuildWord(baseWord = null) {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="build-word-exercise">
+            <h2 class="practice-type-title">${t.practiceTitleBuildWord || 'Build Word'}</h2>
             <h3>${t.buildTheWord || 'Build the Word'}</h3>
             <div class="letter-pool" id="letter-pool">
                 ${shuffledLetters.map((letter, index) => `
@@ -638,6 +642,7 @@ async function showIdentifyImage() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="image-exercise">
+            <h2 class="practice-type-title">${t.practiceTitleIdentifyImage || 'Identify Image'}</h2>
             <h3>🖼️ ${t.whatIsThis || 'What is this?'}</h3>
             <img src="${imageItem.src}" alt="${imageItem.alt || correctAnswer}" class="vocabulary-image">
             <input type="text" id="image-answer" class="exercise-input" placeholder="${t.typeTheWord || 'Type the word...'}">
@@ -683,6 +688,7 @@ async function showMatchImageWord() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="match-image-word-exercise">
+            <h2 class="practice-type-title">${t.practiceTitleMatchImageWord || 'Match Image and Word'}</h2>
             <h3>🖼️ ${t.matchEachImageWithWord || 'Match each image with its word'}</h3>
             <div class="match-grid image-column">
                 ${selectedImageItems.map(item => `<div class="match-item image-item" data-answer="${item.translations[language]}"><img src="${item.src}" alt="${item.alt || item.translations[language]}"></div>`).join('')}
@@ -738,6 +744,7 @@ async function showIdentifyImageYesNo() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="image-exercise" role="region" aria-label="${t.identifyImageYesNoExerciseLabel || 'Image Yes/No Exercise'}">
+            <h2 class="practice-type-title">${t.practiceTitleIdentifyImageYesNo || 'Identify Image (Yes/No)'}</h2>
             <h3 aria-live="polite">${t.imageMatchWordPrompt || 'Does the image match the word?'}</h3>
             <img src="${imageItem.src}" alt="${imageItem.alt || t.vocabularyImageAlt || 'Vocabulary image'}" class="vocabulary-image" aria-label="${t.imageAltLabel || 'Image of'} ${correctAnswer}">
             <div class="displayed-word-yes-no" aria-label="${t.displayedWordLabel || 'Displayed word'}">${displayedWord}</div>
@@ -800,6 +807,7 @@ async function showTranscribeWordYesNo() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="listening-exercise" role="region" aria-label="${t.transcribeWordYesNoExerciseLabel || 'Sound Yes/No Exercise'}">
+            <h2 class="practice-type-title">${t.practiceTitleTranscribeWordYesNo || 'Transcribe Word (Yes/No)'}</h2>
             <h3 aria-live="polite">${t.soundMatchWordPrompt || 'Does the sound match the word?'}</h3>
             <button id="play-yes-no-sound" class="btn-emoji large-emoji" aria-label="${t.playSoundButtonLabel || 'Play Sound'}">🔊</button>
             <div class="displayed-word-yes-no" aria-label="${t.displayedWordLabel || 'Displayed word'}">${displayedWord}</div>
@@ -844,6 +852,7 @@ async function showTranscribeWord() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="listening-exercise">
+            <h2 class="practice-type-title">${t.practiceTitleTranscribeWord || 'Transcribe Word'}</h2>
             <h3>${t.typeWhatYouHear || 'Type what you hear:'}</h3>
             <button id="play-word" class="btn-emoji large-emoji">🔊</button>
             <input type="text" id="transcription" class="exercise-input" placeholder="${t.typeHerePlaceholder || 'Type here...'}">
@@ -884,6 +893,7 @@ async function showMatchSoundWord() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="match-sound-exercise">
+            <h2 class="practice-type-title">${t.practiceTitleMatchSoundWord || 'Match Sound and Word'}</h2>
              <h3>${t.matchSoundToWord || 'Match the sound to the correct word:'}</h3>
             <button id="play-target-word" class="btn-emoji large-emoji">🔊</button>
             <div class="word-options">
