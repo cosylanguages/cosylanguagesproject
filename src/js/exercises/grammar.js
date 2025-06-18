@@ -250,7 +250,6 @@ async function showArticleWord() {
 
     resultArea.innerHTML = `
         <div class="gender-exercise" role="form" aria-label="${t.aria?.genderExercise || 'Gender Exercise'}">
-            <h2 class="practice-type-title">${t.practiceTitleShowArticleWord || 'Article/Word Practice'}</h2>
             <div class="gender-prompt" aria-label="${variation.question}">${variation.question}</div>
             <button id="pronounce-gender-item" class="btn-emoji" title="${t.aria?.pronounce || 'Pronounce'}">🔊</button>
             <input type="text" id="gender-answer-input" class="exercise-input" aria-label="${t.aria?.typeYourAnswer || 'Type your answer'}" placeholder="${t.typeYourAnswerPlaceholder || 'Type your answer...'}">
@@ -348,8 +347,6 @@ async function showMatchArticlesWords() {
 
     resultArea.innerHTML = `
         <div class="match-exercise" role="region" aria-label="${t.aria?.matchArticlesWords || 'Match Articles and Words'}">
-            <h2 class="practice-type-title">${t.practiceTitleMatchArticlesWords || 'Match Articles and Words'}</h2>
-            <h3>${t.matchArticlesWordsTitle || "Match Articles with Nouns"}</h3>
             <div class="match-container">
                 <div class="match-col" id="articles-col" aria-label="${t.aria?.articlesColumn || 'Articles column'}">
                     ${shuffledDisplayArticles.map(article => `<div class="match-item" data-article="${article}" role="button" tabindex="0" aria-label="${t.aria?.articleAriaLabel || 'Article:'} ${article}">${article} </div>`).join('')}
@@ -462,7 +459,6 @@ async function showSelectArticleExercise() {
     
     resultArea.innerHTML = `
         <div class="select-article-exercise" role="form" aria-label="${t.aria?.selectArticleExercise || 'Select the Article Exercise'}">
-            <h2 class="practice-type-title">${t.practiceTitleSelectArticleExercise || 'Select Article'}</h2>
             <div class="exercise-prompt" aria-label="${wordToShow}">${t.selectCorrectArticleFor || "Select the correct article for:"} <strong>${wordToShow}</strong></div>
             <button id="pronounce-select-article-word" class="btn-emoji" title="${t.aria?.pronounce || 'Pronounce'}">🔊</button>
             <div class="article-options-container">
@@ -540,15 +536,14 @@ async function showTypeVerb() {
     const item = items[Math.floor(Math.random() * items.length)];
     
     const variations = [
-        { type: 'infinitive', promptText: `${t.infinitiveOf || "Infinitive of"} "${item.prompt}"`, pronounceText: item.prompt, answer: item.infinitive },
-        { type: 'conjugated', promptText: `${t.conjugateFor || "Conjugate"} "${item.infinitive}" ${t.forPronoun || "for"} "${item.prompt}"`, pronounceText: item.infinitive, answer: item.answer }
+        { type: 'infinitive', promptText: item.prompt, pronounceText: item.prompt, answer: item.infinitive }, // User sees conjugated, types infinitive
+        { type: 'conjugated', promptText: `${item.infinitive} (${item.prompt})`, pronounceText: item.infinitive, answer: item.answer } // User sees infinitive (pronoun), types conjugated
     ];
     const variation = variations[Math.floor(Math.random() * variations.length)];
     const correctAnswer = variation.answer;
 
     resultArea.innerHTML = `
         <div class="verb-exercise" aria-label="${t.verbExerciseAriaLabel || 'Verb Exercise'}">
-            <h2 class="practice-type-title">${t.practiceTitleShowTypeVerb || 'Verb Conjugation'}</h2>
             <div class="verb-prompt">${variation.promptText}</div>
             <button id="pronounce-verb-item" class="btn-emoji" title="${t.aria?.pronounce || 'Pronounce'}">🔊</button>
             <input type="text" id="verb-answer-input" placeholder="${t.typeYourAnswerPlaceholder || 'Type your answer...'}" class="exercise-input">
@@ -615,8 +610,6 @@ async function showMatchVerbsPronouns() {
 
     resultArea.innerHTML = `
         <div class="match-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleMatchVerbsPronouns || 'Match Verbs and Pronouns'}</h2>
-             <h3>${t.matchVerbPronounTitle || "Match each verb form with its subject/pronoun"}</h3>
             <div class="match-container">
                 <div class="match-col" id="prompts-col">${shuffledPrompts.map(p => `<div class="match-item" data-prompt="${p}" role="button" tabindex="0">${p}</div>`).join('')}</div>
                 <div class="match-col" id="answers-col">${shuffledAnswers.map(a => `<div class="match-item" data-answer="${a}" role="button" tabindex="0">${a}</div>`).join('')}</div>
@@ -719,8 +712,6 @@ async function showFillGaps() {
     
     resultArea.innerHTML = `
         <div class="fill-gap-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleShowFillGaps || 'Fill in the Gaps'}</h2>
-            <h3>${t.fillGapTitle || 'Fill in the gap:'}</h3>
             <div class="sentence-with-gap">${sentence.replace('___', '<input type="text" id="gap-answer" class="exercise-input" placeholder="'+ (t.typeYourAnswerPlaceholder || 'Type your answer...') +'">')}</div>
             <button id="check-gap" class="btn-primary">${t.buttons?.check || 'Check'}</button>
             <div id="gap-feedback" class="exercise-feedback"></div>
@@ -791,8 +782,6 @@ async function showWordOrder() {
 
     resultArea.innerHTML = `
         <div class="word-order-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleShowWordOrder || 'Word Order Practice'}</h2>
-            <h3>${t.wordOrderTitle || 'Put the words in the correct order:'}</h3>
             <div class="word-pool clickable" id="word-pool">${shuffledParts.map(part => `<div class="word-tile" data-word="${part}">${part}</div>`).join('')}</div>
             <div class="sentence-slots clickable" id="sentence-slots">${Array(sentenceParts.length).fill('<div class="word-slot"></div>').join('')}</div>
             <div id="order-feedback" class="exercise-feedback"></div>

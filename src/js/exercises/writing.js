@@ -58,8 +58,6 @@ async function showQuestionWriting() {
     
     resultArea.innerHTML = `
         <div class="writing-exercise-container question-writing-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleShowQuestionWriting || 'Writing Question Practice'}</h2>
-            <h3>${t.writingQuestionTitle || 'Question Practice'}</h3>
             <div id="writing-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #007bff; min-height: 40px;"></div>
             <div class="navigation-buttons" style="margin-bottom: 15px;">
                 <button id="prev-writing-question-btn" class="btn-secondary btn-small">&lt; ${t.buttons?.previous || 'Previous'}</button>
@@ -149,8 +147,6 @@ async function showOriginalStorytellingPlaceholder() {
     
     resultArea.innerHTML = `
         <div class="writing-exercise-container original-storytelling-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleShowStorytellingPractice || 'Storytelling Practice'}</h2>
-            <h3>${t.storytellingTitle || 'Storytelling Practice'}</h3>
             <p>${t.exerciseNotImplementedStorytelling || 'This is a freeform storytelling exercise.'}</p>
             <p>${t.imagineStorytellingHere || 'Write any story you like. Be creative!'}</p>
             <textarea id="original-storytelling-answer-area" rows="10" spellcheck="true" placeholder="${t.typeYourStoryPlaceholder || 'Type your story here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
@@ -204,8 +200,6 @@ async function showDiaryPractice() {
     
     resultArea.innerHTML = `
         <div class="writing-exercise-container diary-writing-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleShowDiaryPractice || 'Diary Practice'}</h2>
-            <h3>${t.diaryTitle || 'Diary Practice'}</h3>
             <p>${t.exerciseNotImplementedDiary || 'This diary entry exercise is not yet implemented.'}</p>
             <p>${t.imagineDiaryHere || 'Imagine you write a diary entry here and then click continue.'}</p>
             <button id="finish-diary-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
@@ -249,8 +243,6 @@ async function showStoryEmojisPractice() {
     }
     resultArea.innerHTML = `
         <div class="writing-exercise-container story-emojis-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleStoryEmojis || 'Story Emojis'}</h2>
-            <h3>${t.storyEmojisTitle || 'Write a Story Based on These Emojis:'}</h3>
             <div class="story-emojis-display" style="font-size: 2.5em; margin-bottom: 20px; text-align: center;">${selectedEmojis.join(' ')}</div>
             <textarea id="story-emojis-answer-area" rows="10" spellcheck="true" placeholder="${t.typeYourStoryPlaceholder || 'Type your story here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
             <button id="finish-story-emojis-btn" class="btn-primary" style="padding: 10px 20px; margin-bottom:10px;">${t.buttons?.done || 'Done'}</button>
@@ -295,8 +287,6 @@ async function showWhatHappensNextPractice() {
     const prompt = promptsData.what_happens_next[Math.floor(Math.random() * promptsData.what_happens_next.length)];
     resultArea.innerHTML = `
         <div class="writing-exercise-container what-happens-next-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleWhatHappensNext || 'What Happens Next?'}</h2>
-            <h3>${t.whatHappensNextTitle || 'What Happens Next?'}</h3>
             <p class="writing-prompt">${prompt}</p>
             <textarea id="what-happens-next-answer-area" rows="10" spellcheck="true" placeholder="${t.typeYourContinuationPlaceholder || 'Type your continuation here...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
             <button id="finish-what-happens-next-btn" class="btn-primary" style="padding: 10px 20px; margin-bottom:10px;">${t.buttons?.done || 'Done'}</button>
@@ -341,8 +331,6 @@ async function showWhatHappenedBeforePractice() {
     const prompt = promptsData.what_happened_before[Math.floor(Math.random() * promptsData.what_happened_before.length)];
     resultArea.innerHTML = `
         <div class="writing-exercise-container what-happened-before-exercise">
-            <h2 class="practice-type-title">${t.practiceTitleWhatHappenedBefore || 'What Happened Before?'}</h2>
-            <h3>${t.whatHappenedBeforeTitle || 'What Happened Before?'}</h3>
             <p class="writing-prompt">${prompt}</p>
             <textarea id="what-happened-before-answer-area" rows="10" spellcheck="true" placeholder="${t.typeYourPrequelPlaceholder || 'Type what led to this...'}" style="width: 95%; max-width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;"></textarea>
             <button id="finish-what-happened-before-btn" class="btn-primary" style="padding: 10px 20px; margin-bottom:10px;">${t.buttons?.done || 'Done'}</button>
@@ -382,10 +370,7 @@ async function startRandomWritingPractice() {
     const exercises = [
         showQuestionWriting,
         showStorytellingPractice, 
-        showDiaryPractice,
-        // showStoryEmojisPractice, // StorytellingPractice will now randomly pick this
-        // showWhatHappensNextPractice, // StorytellingPractice will now randomly pick this
-        // showWhatHappenedBeforePractice // StorytellingPractice will now randomly pick this
+        showDiaryPractice
     ];
     const randomExerciseFunction = exercises[Math.floor(Math.random() * exercises.length)];
     

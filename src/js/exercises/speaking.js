@@ -33,8 +33,6 @@ async function showQuestionPractice() {
     
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
-            <h2 class="practice-type-title">${t.practiceTitleShowQuestionPractice || 'Speaking Question Practice'}</h2>
-            <h3>🗣️ ${t.speakingQuestionTitle || 'Question Practice'}</h3>
             <div id="speaking-question-text" class="exercise-question" style="font-size: 1.2em; margin-bottom: 20px; min-height: 40px;"></div>
             <div class="navigation-buttons" style="margin-bottom: 20px;">
                 <button id="prev-speaking-question-btn" class="btn-secondary btn-small">&lt; ${t.buttons?.previous || 'Previous'}</button>
@@ -229,8 +227,6 @@ async function showMonologuePractice() {
     
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
-            <h2 class="practice-type-title">${t.practiceTitleShowMonologuePractice || 'Monologue Practice'}</h2>
-            <h3>${t.monologuePracticeTitle || 'Monologue Practice'}</h3>
             <p>${t.exerciseNotImplementedMonologue || 'This monologue exercise is not yet implemented.'}</p>
             <p>${t.imagineMonologueHere || 'Imagine you record a monologue here and then click continue.'}</p>
             <button id="finish-monologue-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
@@ -270,8 +266,6 @@ async function showRolePlayPractice() {
     
     resultArea.innerHTML = `
         <div class="speaking-exercise-container">
-            <h2 class="practice-type-title">${t.practiceTitleShowRolePlayPractice || 'Role-Play Practice'}</h2>
-            <h3>${t.rolePlayPracticeTitle || 'Role-Play Practice'}</h3>
             <p>${t.exerciseNotImplementedRolePlay || 'This role-play exercise is not yet implemented.'}</p>
             <p>${t.imagineRolePlayHere || 'Imagine you participate in a role-play here and then click continue.'}</p>
             <button id="finish-roleplay-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
