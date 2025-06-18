@@ -346,6 +346,29 @@ button:active, select:active {
     border-radius: 8px; min-width: 120px; margin: 5px; box-sizing: border-box;
 }
 
+/* General styles for .day-range (outside media queries) */
+.day-range {
+    display: flex;
+    flex-direction: row; /* Default to row */
+    justify-content: center; /* Or space-around/space-between */
+    align-items: center; /* Align items vertically */
+    gap: 15px; /* Adjust gap as needed */
+    width: 100%; /* Or a specific max-width */
+    max-width: 600px; /* Added to constrain width a bit */
+    margin-top: 10px; /* Add some space above */
+    margin-bottom: 10px; /* Add some space below */
+}
+
+.day-range > div {
+    display: flex;
+    flex-direction: column; /* Keep label above select */
+    align-items: center; /* Center label and select within their div */
+}
+
+.day-range select {
+    min-width: 150px; /* Ensure selects have a reasonable minimum width */
+}
+
 /* ==========================================================================
    Forms & Inputs
    ========================================================================== */
