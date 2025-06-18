@@ -202,7 +202,7 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
         let hintBtn = document.createElement('button');
         hintBtn.id = 'btn-hint';
         hintBtn.className = 'exercise-button';
-        hintBtn.innerHTML = `💡 ${t.buttons.hint || 'Hint'}`;
+        hintBtn.innerHTML = `💡`;
         hintBtn.title = t.aria?.hint || 'Show a hint';
         hintBtn.setAttribute('aria-label', t.aria?.hint || 'Show a hint');
         hintBtn.onclick = () => {
@@ -218,7 +218,7 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
         let randomizeBtn = document.createElement('button');
         randomizeBtn.id = 'btn-randomize-category';
         randomizeBtn.className = 'exercise-button randomizer-button'; 
-        randomizeBtn.innerHTML = `🎲 ${t.buttons.randomizeCategory || 'New Random Exercise'}`;
+        randomizeBtn.innerHTML = `🎲`;
         randomizeBtn.title = t.aria?.randomizeCategory || 'Start a new random exercise in this category';
         randomizeBtn.setAttribute('aria-label', t.aria?.randomizeCategory || 'Start a new random exercise in this category');
         randomizeBtn.onclick = randomizeFn; 
