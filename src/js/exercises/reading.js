@@ -5,93 +5,103 @@ let readingPracticeTimer = null; // Timer for auto-progression
 async function showStoryPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
-    const t = translations[language] || translations.COSYenglish;
-    const buttonText = t.buttons?.continue || 'Continue';
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+    const newExerciseButtonText = t.buttons?.newStoryExercise || t.buttons?.newExerciseSameType || 'New Story';
     
     resultArea.innerHTML = `
-        <div class="reading-exercise-container">
+        <div class="reading-exercise-container exercise-container">
+            <h3>${t.storyTimeTitle || "Story Time!"}</h3>
             <p>${t.exerciseNotImplementedStory || 'This story exercise is not yet implemented.'}</p>
-            <p>${t.imagineStoryHere || 'Imagine you read a story here and then click continue.'}</p>
-            <button id="finish-reading-story-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
+            <p>${t.imagineStoryHere || 'Imagine you read a story here.'}</p>
+            <button id="btn-new-story-practice" class="btn-secondary btn-next-item" onclick="window.showStoryPractice()" aria-label="${newExerciseButtonText}">🔄 ${newExerciseButtonText}</button>
         </div>
     `;
 
     const exerciseContainer = resultArea.querySelector('.reading-exercise-container');
     if (exerciseContainer) {
-        exerciseContainer.showHint = () => {
-            const existingHint = exerciseContainer.querySelector('.hint-display');
+        exerciseContainer.showHint = function() { // Assign to function property
+            const existingHint = this.querySelector('.hint-display');
             if (existingHint) existingHint.remove();
             const hintDisplay = document.createElement('div');
-            hintDisplay.className = 'hint-display';
+            hintDisplay.className = 'hint-display exercise-hint';
             hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintReadingGeneric || 'Focus on understanding the main idea and any new vocabulary. Take your time!'}`;
-            exerciseContainer.appendChild(hintDisplay);
+            this.appendChild(hintDisplay);
+        };
+        // For passive reading, checkAnswer and revealAnswer might not be applicable
+        exerciseContainer.checkAnswer = function() {
+            console.log("CheckAnswer called for story practice - no specific check defined.");
+        };
+        exerciseContainer.revealAnswer = function() {
+            console.log("RevealAnswer called for story practice - no specific reveal defined.");
+             const feedbackArea = this.querySelector('#reading-feedback') || document.createElement('div');
+             if(!feedbackArea.id) feedbackArea.id = 'reading-feedback';
+             feedbackArea.className = 'exercise-feedback';
+             feedbackArea.innerHTML = t.noSpecificRevealReading || "This is a reading exercise. Try to read and understand the text.";
+             if(!feedbackArea.parentElement) this.appendChild(feedbackArea);
         };
     }
 
+    // Clear any existing timer for auto-progression if it was used previously
     if (window.readingPracticeTimer) {
         clearTimeout(window.readingPracticeTimer);
+        window.readingPracticeTimer = null;
     }
-
-    document.getElementById('finish-reading-story-btn').addEventListener('click', () => {
-        console.log("Story practice conceptually finished.");
-        if (window.readingPracticeTimer) {
-            clearTimeout(window.readingPracticeTimer);
-        }
-        window.readingPracticeTimer = setTimeout(() => {
-            startRandomReadingPractice();
-        }, 1000); 
-    });
 }
 
 async function showInterestingFactPractice() {
     const resultArea = document.getElementById('result');
     const language = document.getElementById('language')?.value || 'COSYenglish';
-    const t = translations[language] || translations.COSYenglish;
-    const buttonText = t.buttons?.continue || 'Continue';
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+    const newExerciseButtonText = t.buttons?.newFactExercise || t.buttons?.newExerciseSameType || 'New Fact';
     
     resultArea.innerHTML = `
-        <div class="reading-exercise-container">
+        <div class="reading-exercise-container exercise-container">
+            <h3>${t.interestingFactTitle || "Interesting Fact!"}</h3>
             <p>${t.exerciseNotImplementedFact || 'This interesting fact exercise is not yet implemented.'}</p>
-            <p>${t.imagineFactHere || 'Imagine you read an interesting fact here and then click continue.'}</p>
-            <button id="finish-reading-fact-btn" class="btn-secondary btn-next-item" aria-label="${buttonText}">🔄 ${buttonText}</button>
+            <p>${t.imagineFactHere || 'Imagine you read an interesting fact here.'}</p>
+            <button id="btn-new-fact-practice" class="btn-secondary btn-next-item" onclick="window.showInterestingFactPractice()" aria-label="${newExerciseButtonText}">🔄 ${newExerciseButtonText}</button>
         </div>
     `;
     
     const exerciseContainer = resultArea.querySelector('.reading-exercise-container');
     if (exerciseContainer) {
-        exerciseContainer.showHint = () => {
-            const existingHint = exerciseContainer.querySelector('.hint-display');
+        exerciseContainer.showHint = function() { // Assign to function property
+            const existingHint = this.querySelector('.hint-display');
             if (existingHint) existingHint.remove();
             const hintDisplay = document.createElement('div');
-            hintDisplay.className = 'hint-display';
-            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintReadingGeneric || 'Focus on understanding the main idea and any new vocabulary. Take your time!'}`;
-            exerciseContainer.appendChild(hintDisplay);
+            hintDisplay.className = 'hint-display exercise-hint';
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintReadingFact || 'Try to learn something new from this fact!'}`;
+            this.appendChild(hintDisplay);
+        };
+        // For passive reading, checkAnswer and revealAnswer might not be applicable
+        exerciseContainer.checkAnswer = function() {
+            console.log("CheckAnswer called for fact practice - no specific check defined.");
+        };
+        exerciseContainer.revealAnswer = function() {
+            console.log("RevealAnswer called for fact practice - no specific reveal defined.");
+            const feedbackArea = this.querySelector('#reading-feedback') || document.createElement('div');
+            if(!feedbackArea.id) feedbackArea.id = 'reading-feedback';
+            feedbackArea.className = 'exercise-feedback';
+            feedbackArea.innerHTML = t.noSpecificRevealReadingFact || "This is an interesting fact. Read it carefully to learn!";
+            if(!feedbackArea.parentElement) this.appendChild(feedbackArea);
         };
     }
     
     if (window.readingPracticeTimer) {
         clearTimeout(window.readingPracticeTimer);
+        window.readingPracticeTimer = null;
     }
-
-    document.getElementById('finish-reading-fact-btn').addEventListener('click', () => {
-        console.log("Interesting fact practice conceptually finished.");
-        if (window.readingPracticeTimer) {
-            clearTimeout(window.readingPracticeTimer);
-        }
-        window.readingPracticeTimer = setTimeout(() => {
-            startRandomReadingPractice();
-        }, 1000);
-    });
 }
 
 // Main function to start a random reading exercise
 async function startRandomReadingPractice() {
     if (window.readingPracticeTimer) {
         clearTimeout(window.readingPracticeTimer);
+        window.readingPracticeTimer = null;
     }
-    if (typeof cancelAutoAdvanceTimer === 'function') { 
-        cancelAutoAdvanceTimer();
-    }
+    // if (typeof cancelAutoAdvanceTimer === 'function') { // Assuming cancelAutoAdvanceTimer is global
+    //     cancelAutoAdvanceTimer();
+    // }
 
     const exercises = [
         showStoryPractice,
@@ -100,9 +110,9 @@ async function startRandomReadingPractice() {
     const randomExerciseFunction = exercises[Math.floor(Math.random() * exercises.length)];
     
     const resultArea = document.getElementById('result');
-    if(resultArea) resultArea.innerHTML = ''; 
+    if(resultArea) resultArea.innerHTML = ''; // Clear previous content
 
-    await randomExerciseFunction();
+    await randomExerciseFunction(); // Call the selected exercise function
 }
 
 function initReadingPractice() {
@@ -114,10 +124,24 @@ function initReadingPractice() {
     }
 }
 
-showStoryPractice = patchExerciseWithExtraButtons(showStoryPractice, '.reading-exercise-container', startRandomReadingPractice);
-showInterestingFactPractice = patchExerciseWithExtraButtons(showInterestingFactPractice, '.reading-exercise-container', startRandomReadingPractice);
-
+// Ensure functions are on window scope for patching and HTML onclicks
 window.showStoryPractice = showStoryPractice;
 window.showInterestingFactPractice = showInterestingFactPractice;
 window.startRandomReadingPractice = startRandomReadingPractice;
 window.initReadingPractice = initReadingPractice;
+
+// Patching exercise functions
+window.showStoryPractice = patchExerciseWithExtraButtons(
+    window.showStoryPractice, 
+    '.reading-exercise-container', // Main container selector
+    window.startRandomReadingPractice, // Category randomizer
+    { noCheck: true, noReveal: true } // Options: no check/reveal for passive reading
+);
+window.showInterestingFactPractice = patchExerciseWithExtraButtons(
+    window.showInterestingFactPractice, 
+    '.reading-exercise-container', // Main container selector
+    window.startRandomReadingPractice, // Category randomizer
+    { noCheck: true, noReveal: true } // Options: no check/reveal for passive reading
+);
+
+document.addEventListener('DOMContentLoaded', initReadingPractice);

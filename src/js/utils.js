@@ -35,17 +35,20 @@ function addRandomizeButton(containerIdOrElement, randomizeFn) {
         console.error(`[addRandomizeButton] Critical: Container NOT FOUND for selector/element: ${containerIdOrElement}. Button will not be added.`);
         return;
     }
-    const existingBtn = container.querySelector('.btn-randomize');
+    const existingBtn = container.querySelector('.btn-randomize'); // This is the old class, ensure new buttons use new IDs
     if (existingBtn) existingBtn.remove();
     
     let btn = document.createElement('button');
     btn.className = 'btn-randomize randomizer-button'; 
     const language = document.getElementById('language')?.value || 'COSYenglish'; 
-    const currentTranslations = translations[language] || translations.COSYenglish;
+    // Assuming 'translations' is globally available.
+    // Fallback to COSYenglish if the specific language isn't found or if translations isn't defined.
+    const currentTranslations = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || { buttons: {}, aria: {} };
 
-    btn.setAttribute('aria-label', currentTranslations.aria?.randomize || 'Randomize exercise');
-    btn.title = currentTranslations.aria?.randomize || 'Randomize exercise';
-    btn.innerHTML = currentTranslations.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
+
+    btn.setAttribute('aria-label', currentTranslations.aria?.randomizeCategory || 'Randomize exercise'); // Updated key
+    btn.title = currentTranslations.aria?.randomizeCategory || 'Randomize exercise'; // Updated key
+    btn.innerHTML = currentTranslations.buttons?.randomizeCategory || '<span aria-label="Randomize">🎲</span>'; // Updated key
     btn.onclick = randomizeFn;
 
     container.prepend(btn);
@@ -91,7 +94,22 @@ async function loadData(filePath) {
     }
 }
 
-function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrElement, randomizeFn) {
+// Placeholder translations (to be added to translations.js)
+// window.translations.COSYenglish.buttons.check = 'Check';
+// window.translations.COSYenglish.aria.check = 'Check answer';
+// window.translations.COSYenglish.buttons.reveal = 'Reveal Answer';
+// window.translations.COSYenglish.aria.reveal = 'Reveal answer';
+// window.translations.COSYenglish.buttons.randomizeCategory = 'New Random Exercise';
+// window.translations.COSYenglish.aria.randomizeCategory = 'Start a new random exercise in this category';
+// window.translations.COSYenglish.buttons.hint = 'Hint';
+// window.translations.COSYenglish.aria.hint = 'Show a hint';
+// window.translations.COSYenglish.noHintAvailable = 'No hint available for this exercise.';
+// window.translations.COSYenglish.errors = {
+//    revealNotImplemented: 'RevealAnswer function not found on container.',
+//    checkNotImplemented: 'CheckAnswer function not found on container and no fallback button found.'
+// };
+
+function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrElement, randomizeFn, options = {}) {
     return async function() {
         // Call the original exercise function, ensuring 'this' and 'arguments' are passed correctly
         await originalExerciseFn.apply(this, arguments);
@@ -110,18 +128,83 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
 
         // Language and translations for buttons
         const language = document.getElementById('language')?.value || 'COSYenglish';
+        
+        // Ensure window.translations and the specific language translation exist, with defaults for buttons and aria
+        window.translations = window.translations || {};
+        window.translations.COSYenglish = window.translations.COSYenglish || { buttons: {}, aria: {}, errors: {} }; 
         const t = window.translations[language] || window.translations.COSYenglish;
 
-        // Add/Update Hint Button (Prepended FIRST)
-        const existingHintBtn = container.querySelector('.btn-hint');
-        if (existingHintBtn) existingHintBtn.remove();
+        // Ensure t.buttons, t.aria, and t.errors exist to prevent errors if translations are not fully loaded
+        t.buttons = t.buttons || {};
+        t.aria = t.aria || {};
+        t.errors = t.errors || {}; // Ensure errors object exists
 
+        // Remove existing buttons to prevent duplication
+        const btnIdsToRemove = ['btn-randomize-category', 'btn-hint', 'btn-check-exercise', 'btn-reveal-answer'];
+        btnIdsToRemove.forEach(id => {
+            const existingBtn = container.querySelector(`#${id}`);
+            if (existingBtn) existingBtn.remove();
+        });
+        // Clean up old buttons by class if they exist (less specific, so done after ID removal)
+        const oldClassBtns = container.querySelectorAll('.btn-randomize, .btn-hint'); 
+        oldClassBtns.forEach(btn => {
+            if (!btn.id || !btnIdsToRemove.includes(btn.id)) {
+                 btn.remove();
+            }
+        });
+
+        // Button creation logic - buttons are prepended, so add them in reverse order of appearance
+
+        // "👁️ Reveal Answer" button
+        if (!options.noReveal) {
+            let revealBtn = document.createElement('button');
+            revealBtn.id = 'btn-reveal-answer';
+            revealBtn.className = 'exercise-button'; 
+            revealBtn.innerHTML = `👁️ ${t.buttons.reveal || 'Reveal Answer'}`;
+            revealBtn.title = t.aria?.reveal || 'Reveal answer';
+            revealBtn.setAttribute('aria-label', t.aria?.reveal || 'Reveal answer');
+            revealBtn.onclick = () => {
+                console.log('Reveal answer button clicked.');
+                if (typeof container.revealAnswer === 'function') {
+                    container.revealAnswer();
+                } else {
+                    alert(t.errors.revealNotImplemented || 'RevealAnswer function not found on container.');
+                }
+            };
+            container.prepend(revealBtn);
+        }
+
+        // "✅ Check" button
+        if (!options.noCheck) {
+            let checkBtn = document.createElement('button');
+            checkBtn.id = 'btn-check-exercise';
+            checkBtn.className = 'exercise-button';
+            checkBtn.innerHTML = `✅ ${t.buttons.check || 'Check'}`;
+            checkBtn.title = t.aria?.check || 'Check answer';
+            checkBtn.setAttribute('aria-label', t.aria?.check || 'Check answer');
+            checkBtn.onclick = () => {
+                console.log('Check button clicked.');
+                if (typeof container.checkAnswer === 'function') {
+                    container.checkAnswer();
+                } else {
+                    const specificCheckButton = container.querySelector('#check-button') || container.querySelector('.check-button');
+                    if (specificCheckButton && typeof specificCheckButton.click === 'function') {
+                        specificCheckButton.click();
+                    } else {
+                        alert(t.errors.checkNotImplemented || 'CheckAnswer function not found on container and no fallback button found.');
+                    }
+                }
+            };
+            container.prepend(checkBtn);
+        }
+        
+        // "💡 Hint" button - Always added unless an option like `noHint` is introduced in the future.
         let hintBtn = document.createElement('button');
-        hintBtn.className = 'btn-hint';
-        hintBtn.innerHTML = '💡'; // Lightbulb emoji
+        hintBtn.id = 'btn-hint';
+        hintBtn.className = 'exercise-button';
+        hintBtn.innerHTML = `💡 ${t.buttons.hint || 'Hint'}`;
         hintBtn.title = t.aria?.hint || 'Show a hint';
         hintBtn.setAttribute('aria-label', t.aria?.hint || 'Show a hint');
-        
         hintBtn.onclick = () => {
             if (typeof container.showHint === 'function') {
                 container.showHint();
@@ -129,19 +212,17 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
                 alert(t.noHintAvailable || 'No hint available for this exercise.');
             }
         };
-        container.prepend(hintBtn); // HINT BUTTON IS PREPENDED
+        container.prepend(hintBtn);
 
-        // Add/Update Randomize Button (Prepended SECOND, so it appears before Hint in DOM)
-        const existingRandomizeBtn = container.querySelector('.btn-randomize');
-        if (existingRandomizeBtn) existingRandomizeBtn.remove();
-        
+        // "🎲 Randomize (Category)" button - Always added.
         let randomizeBtn = document.createElement('button');
-        randomizeBtn.className = 'btn-randomize randomizer-button'; // Keep both classes for compatibility
-        randomizeBtn.setAttribute('aria-label', t.aria?.randomize || 'Randomize exercise');
-        randomizeBtn.title = t.aria?.randomize || 'Randomize exercise';
-        randomizeBtn.innerHTML = t.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
-        randomizeBtn.onclick = randomizeFn;
-        container.prepend(randomizeBtn); // RANDOMIZE BUTTON IS PREPENDED
+        randomizeBtn.id = 'btn-randomize-category';
+        randomizeBtn.className = 'exercise-button randomizer-button'; 
+        randomizeBtn.innerHTML = `🎲 ${t.buttons.randomizeCategory || 'New Random Exercise'}`;
+        randomizeBtn.title = t.aria?.randomizeCategory || 'Start a new random exercise in this category';
+        randomizeBtn.setAttribute('aria-label', t.aria?.randomizeCategory || 'Start a new random exercise in this category');
+        randomizeBtn.onclick = randomizeFn; 
+        container.prepend(randomizeBtn);
     }
 }
 
@@ -297,22 +378,22 @@ function createStandardRandomizeButton(categoryName, currentExerciseFunctionName
     
     // Attempt to get translations, similar to addRandomizeButton in utils.js
     // This assumes `translations` is a global variable and `document.getElementById('language').value` is accessible
-    let label = '🎲';
-    let title = 'Randomize exercise';
+    let label = '🎲'; // Default
+    let title = 'Randomize exercise'; // Default
     try {
         const language = document.getElementById('language')?.value || 'COSYenglish';
-        const currentTranslations = window.translations[language] || window.translations.COSYenglish;
-        label = currentTranslations.buttons?.randomize || '<span aria-label="Randomize">🎲</span>';
-        title = currentTranslations.aria?.randomize || 'Randomize exercise';
+        const currentTranslations = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || { buttons: {}, aria: {} };
+        label = currentTranslations.buttons?.randomizeCategory || '<span aria-label="Randomize">🎲</span>'; // Updated key
+        title = currentTranslations.aria?.randomizeCategory || 'Randomize exercise'; // Updated key
     } catch (e) {
         // console.warn("Could not get translations for randomize button, using defaults.", e);
     }
 
     btn.innerHTML = label;
     btn.title = title;
-    btn.setAttribute('aria-label', title); // Ensure aria-label is set, especially if innerHTML is an icon
+    btn.setAttribute('aria-label', title); 
 
-    btn.onclick = async () => { // Make sure the async nature of startRandomExerciseInCategory is handled
+    btn.onclick = async () => { 
         cancelAutoAdvanceTimer();
         await startRandomExerciseInCategory(categoryName, currentExerciseFunctionNameAsString, allPracticeTypesObject);
     };
@@ -324,14 +405,13 @@ function playSound(soundName) {
     if (!validSounds.includes(soundName)) {
         console.warn(`Attempted to play an unknown sound: "${soundName}". Expected one of: ${validSounds.join(', ')}.`);
         // Optionally, play a default sound or do nothing. For now, just warn.
-        // return; // Or proceed to try to play it anyway if assets might have other sounds.
+        // return; 
     }
 
     const audioPath = `assets/sounds/${soundName}.mp3`;
     const audio = new Audio(audioPath);
     audio.play().catch(error => {
         console.error(`Error playing sound "${soundName}" from path "${audioPath}":`, error);
-        // This can happen due to browser autoplay policies, or if the file is missing/corrupt.
     });
 }
 

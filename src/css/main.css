@@ -35,6 +35,9 @@ html {
     --error-bg: #f8d7da;
     --error-text: #721c24;
     --error-border: #f5c6cb;
+    --hint-bg: #fff9c4;      /* Light yellow for hints */
+    --hint-border: #fff176;  /* Darker yellow for hint border */
+    --hint-text: #5d4037;    /* Brownish text for hints */
     --font-size-small: 0.85rem;
     --font-size-normal: 1rem;
     --font-size-large: 1.15rem;
@@ -47,7 +50,16 @@ select {
     white-space: normal !important;
     overflow-wrap: break-word !important;
     hyphens: auto !important;
+    display: inline-flex; /* For emoji alignment */
+    align-items: center;
+    justify-content: center;
+    gap: 0.4em; /* Default gap for emoji and text */
+    vertical-align: middle; /* Fallback alignment */
 }
+button:only-child, .btn:only-child { /* If only emoji, no extra gap needed */
+    gap: 0;
+}
+
 
 body {
     font-family: Arial, Helvetica, sans-serif; 
@@ -189,12 +201,12 @@ label {
    ========================================================================== */
 
 .btn { 
-    display: inline-block; padding: 0.6em 1.2em; font-size: var(--font-size-small, 0.9rem); font-weight: bold;
+    padding: 0.6em 1.2em; font-size: var(--font-size-small, 0.9rem); font-weight: bold;
     line-height: 1.4; text-align: center; text-decoration: none;
     color: var(--text-color-light); background-color: var(--primary-color);
     border: 1px solid transparent; border-radius: 0.3rem; cursor: pointer;
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
-    user-select: none; vertical-align: middle; margin: 5px;
+    user-select: none; margin: 5px; /* vertical-align: middle; is now in global button style */
 }
 .btn:hover { 
     background-color: var(--primary-hover-color); 
@@ -215,7 +227,7 @@ label {
 }
 .btn-primary:hover {
     color: var(--text-color-light); background-color: var(--primary-hover-color); border-color: var(--primary-hover-color);
-    box-shadow: 0 3px 7px rgba(0,0,0,0.15); /* Added */
+    box-shadow: 0 3px 7px rgba(0,0,0,0.15);
 }
 
 .btn-secondary {
@@ -224,29 +236,28 @@ label {
 }
 .btn-secondary:hover {
     color: var(--text-color-dark); background-color: #d3d9df; border-color: #9fa6ac;
-    box-shadow: 0 3px 7px rgba(0,0,0,0.1); /* Added */
+    box-shadow: 0 3px 7px rgba(0,0,0,0.1);
 }
 
-.btn-emoji {
+.btn-emoji { /* For buttons that are primarily an emoji and circular */
     padding: 0.5em; font-size: 1.2rem; line-height: 1; min-width: auto; width: auto; height: auto;
     background: var(--light-grey); border: 1px solid var(--medium-grey);
     color: var(--dark-grey); border-radius: 50%;
+    gap: 0; /* Override global gap for emoji-only buttons */
 }
 .btn-emoji:hover { background: var(--medium-grey); border-color: var(--dark-grey); }
 
 select, 
-button { 
-    display: inline-block; 
+button { /* General styling for all buttons and selects */
     padding: 0.6em 1.2em; font-size: var(--font-size-small, 0.9rem); font-weight: bold; line-height: 1.4;
     text-align: center; text-decoration: none; border-radius: 0.3rem; cursor: pointer;
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
-    user-select: none; vertical-align: middle; margin: 5px;
+    user-select: none; margin: 5px;
     color: var(--text-color-dark); background-color: var(--medium-grey);
     border: 1px solid var(--dark-grey);
 }
 select { text-align-last: center; } 
 
-/* Enhanced general button hover, separate from .btn for now to ensure specificity */
 button:hover, select:hover { 
     background-color: #d3d9df; 
     border-color: #9fa6ac; 
@@ -262,7 +273,7 @@ button:active, select:active {
 }
 
 /* Unified style for "Next Item" or "New Exercise" type buttons */
-.btn-next-item {
+.btn-next-item, button[id^="btn-new-"] { /* Target new exercise buttons by ID pattern */
     background-color: var(--medium-grey);
     color: var(--text-color-dark);
     border: 1px solid var(--dark-grey);
@@ -271,13 +282,11 @@ button:active, select:active {
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease-in-out;
-    text-decoration: none; /* Ensure no underline if it's an <a> tag styled as button */
-    display: inline-flex; /* For aligning emoji and text */
-    align-items: center;
-    gap: 0.4em; /* Space between emoji (if present in HTML) and text */
+    text-decoration: none;
+    margin: 5px; /* Ensure consistent margin */
 }
 
-.btn-next-item:hover {
+.btn-next-item:hover, button[id^="btn-new-"]:hover {
     background-color: var(--dark-grey);
     color: var(--text-color-light);
     border-color: var(--dark-grey);
@@ -285,7 +294,7 @@ button:active, select:active {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.btn-next-item:active {
+.btn-next-item:active, button[id^="btn-new-"]:active {
     transform: translateY(0);
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
     filter: brightness(0.95);
@@ -293,34 +302,33 @@ button:active, select:active {
 
 .practice-types button {
     color: var(--text-color-light);
-    background-image: linear-gradient(145deg, #1abc9c, #16a085); /* Teal gradient */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle light border */
-    border-radius: 25px; /* Pill shape */
-    padding: 0.8em 1.8em; /* Generous padding */
-    font-size: 0.9rem;   /* Slightly smaller font if padding is increased */
+    background-image: linear-gradient(145deg, #1abc9c, #16a085); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    border-radius: 25px; 
+    padding: 0.8em 1.8em; 
+    font-size: 0.9rem;   
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: all 0.25s ease-in-out;
-    margin: 8px; /* Increased margin for better spacing */
-    flex-grow: 1; /* Allow buttons to grow if needed */
-    min-width: 180px; /* Ensure a minimum width */
-    text-align: center; /* Ensure text is centered, useful if emojis make it uneven */
+    margin: 8px; 
+    flex-grow: 1; 
+    min-width: 180px; 
 }
 
 .practice-types button:hover {
-    background-image: linear-gradient(145deg, #1dd2af, #18b89a); /* Slightly lighter/brighter teals */
+    background-image: linear-gradient(145deg, #1dd2af, #18b89a); 
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-    transform: translateY(-3px) scale(1.03); /* More noticeable hover effect */
+    transform: translateY(-3px) scale(1.03); 
     border-color: rgba(255, 255, 255, 0.4);
-    color: var(--text-color-light); /* Ensure text color remains light on hover */
+    color: var(--text-color-light); 
 }
 
 .practice-types button:active {
-    transform: translateY(-1px) scale(1); /* Slight press down */
+    transform: translateY(-1px) scale(1); 
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    filter: brightness(0.95); /* Darken slightly */
+    filter: brightness(0.95); 
 }
 
 .btn-small { padding: 0.4em 0.8em; font-size: 0.8rem; }
@@ -346,28 +354,13 @@ button:active, select:active {
     border-radius: 8px; min-width: 120px; margin: 5px; box-sizing: border-box;
 }
 
-/* General styles for .day-range (outside media queries) */
 .day-range {
-    display: flex;
-    flex-direction: row; /* Default to row */
-    justify-content: center; /* Or space-around/space-between */
-    align-items: center; /* Align items vertically */
-    gap: 15px; /* Adjust gap as needed */
-    width: 100%; /* Or a specific max-width */
-    max-width: 600px; /* Added to constrain width a bit */
-    margin-top: 10px; /* Add some space above */
-    margin-bottom: 10px; /* Add some space below */
+    display: flex; flex-direction: row; justify-content: center; 
+    align-items: center; gap: 15px; width: 100%; 
+    max-width: 600px; margin-top: 10px; margin-bottom: 10px; 
 }
-
-.day-range > div {
-    display: flex;
-    flex-direction: column; /* Keep label above select */
-    align-items: center; /* Center label and select within their div */
-}
-
-.day-range select {
-    min-width: 150px; /* Ensure selects have a reasonable minimum width */
-}
+.day-range > div { display: flex; flex-direction: column; align-items: center; }
+.day-range select { min-width: 150px; }
 
 /* ==========================================================================
    Forms & Inputs
@@ -407,13 +400,16 @@ textarea.exercise-input {
 /* ==========================================================================
    Exercise Common Styles - Standardized
    ========================================================================== */
-.exercise-container,
+.exercise-container, /* This is the new common class added in JS subtasks */
 .word-display-container, .opposites-exercise, .match-exercise,        
 .build-word-exercise, .image-exercise, .match-image-word-exercise, 
 .listening-exercise, .match-sound-exercise, .gender-exercise,       
 .verb-exercise, .fill-gap-exercise, .word-order-exercise,   
 .reading-exercise-container, .speaking-exercise-container, 
-.writing-exercise-container { 
+.writing-exercise-container, .match-articles-words-exercise, .match-verbs-pronouns-exercise,
+.original-storytelling-exercise, .story-emojis-exercise, .what-happens-next-exercise,
+.what-happened-before-exercise, .diary-writing-exercise, .question-writing-exercise,
+.transcribe-word-exercise, .transcribe-word-yes-no-exercise { 
     background-color: #fff; 
     border-radius: 10px; 
     padding: calc(var(--spacing-unit, 10px) * 2); 
@@ -422,6 +418,35 @@ textarea.exercise-input {
     margin: calc(var(--spacing-unit, 10px) * 2) auto; 
     text-align: center; 
 }
+
+/* Container for buttons added by patchExerciseWithExtraButtons */
+.exercise-button-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px; /* Space below the button bar */
+}
+
+/* Styling for buttons added by patchExerciseWithExtraButtons */
+.exercise-button {
+    /* Inherits from global button styles for flex, align, justify, gap */
+    padding: 0.5em 1em;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 6px;
+    background-color: var(--secondary-color);
+    color: var(--text-color-light);
+    border: 1px solid var(--secondary-color);
+}
+.exercise-button:hover {
+    background-color: var(--secondary-hover-color);
+    border-color: var(--secondary-hover-color);
+}
+/* Specific styling for check and reveal if needed, otherwise they use .exercise-button */
+#btn-check-exercise { /* Example if more specific styling is needed */ }
+#btn-reveal-answer { /* Example */ }
+
 
 .exercise-prompt,
 .exercise-container h3, .gender-prompt, .verb-prompt,
@@ -476,7 +501,8 @@ textarea.exercise-input {
 .exercise-actions,
 .word-actions, .word-exercise-options, .build-actions,
 .navigation-buttons, .listening-exercise .exercise-actions, 
-.image-exercise .exercise-actions, .match-sound-exercise .exercise-actions {
+.image-exercise .exercise-actions, .match-sound-exercise .exercise-actions,
+.order-actions /* Added from grammar.js */ {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -518,6 +544,16 @@ textarea.exercise-input {
 .match-item.matched { border-color: var(--success-border); background-color: var(--success-bg); color: var(--success-text); cursor: default; }
 .match-item.disabled { pointer-events: none; opacity: 0.7; } 
 .match-item.incorrect-flash { animation: incorrectFlash 0.5s; }
+.match-item.revealed-match { /* For when hint reveals a match */
+    border-color: var(--primary-color);
+    background-color: var(--light-grey);
+    box-shadow: 0 0 5px var(--primary-color);
+}
+.match-item.hint-highlight {
+    border: 2px solid orange;
+    box-shadow: 0 0 8px orange;
+}
+
 
 .gender-exercise .gender-prompt { font-weight: 500; margin-bottom: 10px; } 
 
@@ -551,34 +587,50 @@ textarea.exercise-input {
     justify-content: center; 
 }
 .letter-slot.hovered { background: var(--light-grey); border-style: solid; } 
+.letter-tile.revealed { /* For build-word revealAnswer */
+    background-color: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid var(--success-border);
+}
 
 
 /* ==========================================================================
-   Randomizer Button 
+   Randomizer & Hint Buttons (Patched)
    ========================================================================== */
-.randomizer-button {
-  display: flex !important; 
+#btn-randomize-category, /* ID for randomize category button from patcher */
+#btn-hint {             /* ID for hint button from patcher */
+  display: inline-flex !important; /* Ensure flex for alignment */
   align-items: center !important;
   justify-content: center !important;
   padding: 0 !important; 
   color: var(--text-color-dark) !important; 
   line-height: 1 !important; 
   text-decoration: none !important;
-  margin-left: 10px !important;
-  float: right !important; 
-  font-size: 1.5rem !important;
-  background: linear-gradient(90deg,#ffe082,#1de9b6) !important;
+  margin: 5px !important; /* Consistent margin with other buttons */
+  font-size: 1.5rem !important; /* Emoji size */
   border: none !important;
   border-radius: 50% !important;
-  width: 44px !important;
-  height: 44px !important;
-  box-shadow: 0 2px 8px #ccc !important;
+  width: 44px !important;  /* Circular button size */
+  height: 44px !important; /* Circular button size */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
   cursor: pointer !important;
-  transition: transform 0.2s !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+  gap: 0; /* No gap if only emoji */
 }
-.randomizer-button:hover {
+
+#btn-randomize-category {
+  background: linear-gradient(90deg,#ffe082,#1de9b6) !important; /* Existing gradient */
+}
+#btn-hint {
+  background: linear-gradient(90deg, #FFD700, #FFA500) !important; /* Gold/Orange gradient */
+}
+
+#btn-randomize-category:hover,
+#btn-hint:hover {
   transform: scale(1.15) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
 }
+
 
 /* TF and Choose4 specific styles from styles.css */
 .tf-container { gap: 10px; margin: 15px 0 10px 0; }
@@ -603,6 +655,7 @@ textarea.exercise-input {
 .speaking-exercise-container h3,
 .writing-exercise-container h3 {
     color: var(--primary-color); 
+    margin-bottom: 15px; /* Added margin below h3 */
 }
 #speaking-record-btn {
     font-size: 2.5em !important; 
@@ -629,8 +682,13 @@ textarea.exercise-input {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
-#submit-writing-answer-btn {
-    padding: 10px 20px; margin-bottom: 10px; min-width: 150px; 
+#submit-writing-answer-btn-impl, /* From writing.js */
+#finish-original-storytelling-btn-impl,
+#finish-story-emojis-btn-impl,
+#finish-what-happens-next-btn-impl,
+#finish-what-happened-before-btn-impl,
+#finish-diary-btn-impl {
+    padding: 10px 20px; margin-bottom:10px; min-width: 150px; 
 }
 /* END - Added styles for Speaking and Writing Exercises */
 
@@ -675,6 +733,7 @@ textarea.exercise-input {
     display: flex; align-items: center; justify-content: center; 
     box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; 
     transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    gap: 0; /* Emoji only */
 }
 #floating-help-btn:hover { background-color: var(--primary-hover-color); transform: scale(1.1); }
 .floating-popup {  
@@ -693,11 +752,11 @@ textarea.exercise-input {
     display: block; line-height: 1.6;
     overflow-wrap: break-word; margin-bottom: 10px; 
 }
-.floating-popup .popup-actions { text-align: right; }
 .floating-popup .close-btn {  
     background: none; border: none; font-size: 1.2rem;  
     color: var(--dark-grey); cursor: pointer; padding: 5px;  
     transition: color 0.2s ease-in-out; 
+    gap: 0; /* Emoji only */
 }
 .floating-popup .close-btn:hover { color: var(--primary-color); }
 #floating-tip-popup[style*="display: flex"] { display: flex !important; } 
@@ -724,7 +783,7 @@ textarea.exercise-input {
 @keyframes sparkle { 0% { opacity: 0; transform: scale(0.7) rotate(-10deg); } 60% { opacity: 1; transform: scale(1.2) rotate(10deg); } 100% { opacity: 0; transform: scale(0.7) rotate(-10deg); } }
 @keyframes incorrectFlash { 0%, 100% { background-color: var(--error-bg); } 50% { background-color: #fff; } }
 @keyframes bounceIn {  0% { transform: scale(0.8); opacity: 0.2; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes pulseAnimation { /* Already present, ensure it's not duplicated */
+@keyframes pulseAnimation { 
     0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); } 
     70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
     100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
@@ -733,7 +792,7 @@ textarea.exercise-input {
 
 /* Media Queries */
 @media (max-width: 900px) {
-    .container { width: 95%; padding: 15px; } /* Existing, verified */
+    .container { width: 95%; padding: 15px; } 
     h1 { font-size: 1.6rem; }
     .practice-types button,
     .practice-options button {
@@ -743,209 +802,88 @@ textarea.exercise-input {
     .result-area { font-size: 0.95rem; }
 }
 @media (max-width: 600px) {
-    body { padding: 0; } /* Existing */
+    body { padding: 0; } 
     .container { 
-        width: 100%; /* Existing */
-        max-width: 100vw; /* Existing */
-        margin: 0; /* Existing */
-        border-radius: 0; /* Existing */
-        padding: 10px; /* Modified */
+        width: 100%; max-width: 100vw; margin: 0; 
+        border-radius: 0; padding: 10px; 
     }
-    h1 { 
-        font-size: 1.4rem; /* Modified */
-        margin-bottom: 10px; /* Modified */
-    }
-    label { 
-        font-size: 0.85rem; /* Modified */
-        margin-bottom: 4px; /* Modified */
-    }
-    .result-area { 
-        font-size: 0.85rem; /* Modified */
-        padding: 10px; /* Modified */
-        min-height: 80px; /* Modified */
-    }
-    .menu-section {
-        margin-bottom: 15px; /* Added */
-        width: 100%; /* Added */
-    }
-    .practice-types { 
-        flex-direction: column; /* Existing */
-        gap: 6px; /* Modified */
-        width: 100%; /* Added */
-    }
+    h1 { font-size: 1.4rem; margin-bottom: 10px; }
+    label { font-size: 0.85rem; margin-bottom: 4px; }
+    .result-area { font-size: 0.85rem; padding: 10px; min-height: 80px; }
+    .menu-section { margin-bottom: 15px; width: 100%; }
+    .practice-types { flex-direction: column; gap: 6px; width: 100%; }
     .practice-types button {
-        width: 90%; /* Added */
-        margin-left: auto; /* Added */
-        margin-right: auto; /* Added */
-        font-size: 0.9rem; /* Modified */
-        padding: 0.8em 0.5em; /* Modified */
+        width: 90%; margin-left: auto; margin-right: auto;
+        font-size: 0.9rem; padding: 0.8em 0.5em; 
     }
-    .practice-options { 
-        gap: 6px; /* Modified */
-        margin: 10px 0; /* Modified */
-        width: 100%; /* Added */
-    }
-    .practice-options > div { /* covers .vocabulary-options, .grammar-options etc. */
-        flex-wrap: wrap; /* Added */
-        justify-content: center; /* Added */
-        gap: 6px; /* Added */
+    .practice-options { gap: 6px; margin: 10px 0; width: 100%; }
+    .practice-options > div { 
+        flex-wrap: wrap; justify-content: center; gap: 6px; 
     }
     .practice-options button { 
-        font-size: 0.8rem; /* Modified */
-        padding: 0.6em 0.8em; /* Modified */
-        min-width: 100px; /* Added */
-        flex-grow: 1; /* Added */
-        max-width: 45%; /* Added */
+        font-size: 0.8rem; padding: 0.6em 0.8em; 
+        min-width: 100px; flex-grow: 1; max-width: 45%; 
     }
     .day-range {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-        gap: 8px;
+        display: flex; flex-direction: column; align-items: stretch;
+        width: 90%; margin-left: auto; margin-right: auto; gap: 8px;
     }
-    .day-range > div {
-        display: flex;
-        flex-direction: column;
-    }
-    .day-range label {
-        text-align: left;
-        margin-bottom: 3px;
-        font-size: 0.8rem;
-    }
+    .day-range > div { display: flex; flex-direction: column; }
+    .day-range label { text-align: left; margin-bottom: 3px; font-size: 0.8rem; }
     .day-range select {
-        width: 100%;
-        box-sizing: border-box;
-        font-size: 0.9rem;
-        padding: 0.5em;
+        width: 100%; box-sizing: border-box;
+        font-size: 0.9rem; padding: 0.5em;
     }
-    #day { /* main day select */
-        width: 90%; 
-        margin-left: auto; 
-        margin-right: auto; 
-        box-sizing: border-box; 
-        font-size: 0.9rem; 
-        padding: 0.5em;
+    #day { 
+        width: 90%; margin-left: auto; margin-right: auto; 
+        box-sizing: border-box; font-size: 0.9rem; padding: 0.5em;
     }
     input[type="text"].exercise-input, 
     textarea.exercise-input, 
     select.exercise-input {
-        font-size: 0.9rem; /* Modified */
-        padding: 0.6em; /* Modified */
-        width: 95%; /* Modified */
+        font-size: 0.9rem; padding: 0.6em; width: 95%; 
     }
-    textarea.exercise-input {
-        min-height: 60px; /* Modified */
-    }
-    .match-container {
-        flex-direction: column; /* Added */
-        gap: 8px; /* Added */
-    }
-    .match-col {
-        padding: 8px; /* Added */
-        width: 100%; /* Added */
-        box-sizing: border-box; /* Added */
-    }
-    .match-item { 
-        padding: 8px; /* Existing */
-        font-size: 0.85rem; /* Modified */
-    }
-    .word-pool, .letter-pool {
-        gap: 5px; /* Modified */
-        padding: 8px; /* Modified */
-    }
+    textarea.exercise-input { min-height: 60px; }
+    .match-container { flex-direction: column; gap: 8px; }
+    .match-col { padding: 8px; width: 100%; box-sizing: border-box; }
+    .match-item { padding: 8px; font-size: 0.85rem; }
+    .word-pool, .letter-pool { gap: 5px; padding: 8px; }
     .word-tile, .letter-tile {
-        font-size: 0.8rem; /* Modified */
-        padding: 5px 7px; /* Modified */
-        min-width: 28px; /* Modified */
-        min-height: 28px; /* Modified */
+        font-size: 0.8rem; padding: 5px 7px; 
+        min-width: 28px; min-height: 28px; 
     }
-    .word-slots, .letter-slots {
-        gap: 4px; /* Modified */
-    }
-    .word-slot, .letter-slot {
-        min-width: 28px; /* Modified */
-        min-height: 28px; /* Modified */
-    }
-    .match-image-word-exercise .match-grid {
-        gap: 8px; /* Modified */
-    }
+    .word-slots, .letter-slots { gap: 4px; }
+    .word-slot, .letter-slot { min-width: 28px; min-height: 28px; }
+    .match-image-word-exercise .match-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .match-image-word-exercise .match-item,
     .match-image-word-exercise .image-item,
-    .match-image-word-exercise .word-item {
-        width: 80px; /* Modified */
-        height: 80px; /* Modified */
-        font-size: 0.9rem; /* Modified */
-    }
+    .match-image-word-exercise .word-item { width: 90px; height: 90px; font-size: 1rem; }
     .match-image-word-exercise .match-item img,
-    .match-image-word-exercise .image-item img {
-        max-width: 50px; /* Modified */
-        max-height: 50px; /* Modified */
-    }
+    .match-image-word-exercise .image-item img { max-width: 60px; max-height: 60px; }
     #floating-help-btn { 
-        width: 40px; /* Modified */
-        height: 40px; /* Modified */
-        font-size: 1.2rem; /* Modified */
-        bottom: 10px; /* Modified */
-        right: 10px; /* Modified */
+        width: 40px; height: 40px; font-size: 1.2rem; 
+        bottom: 10px; right: 10px; 
     }
-    .floating-popup { /* This rule targets all elements with class .floating-popup */
-        width: 95%; /* Existing */
-        padding: 15px; /* Existing */
-        /* Centering is handled by the base rule for .floating-popup, not in media query specifically */
-    } 
-    /* Specific adjustments for #floating-tip-popup within this media query */
+    .floating-popup { width: 95%; padding: 15px; } 
     #floating-tip-popup {
-        width: 90vw; /* Ensured / Added */
-        max-height: 80vh; /* Ensured / Added */
-        overflow-y: auto; /* Ensured / Added */
-        /* Centering properties (left, top, transform) are inherited from the base .floating-popup rule */
+        width: 90vw; max-height: 80vh; overflow-y: auto; 
     }
-    .choose4-options { 
-        flex-direction: column; /* Existing */
-        gap: 10px; /* Existing */
-    } 
-    .choose4-container .choose4-btn { 
-        min-width: 90vw; /* Existing */
-        font-size: 1em; /* Existing */
-    }
-    #cosy-gamestats { /* Assuming it's fixed positioned */
-        font-size: 0.7rem; /* Added */
-        padding: 5px 8px; /* Added */
-    }
-    #xp-progress-container {
-        width: 80px; /* Added */
-    }
-    #xp-progress-text {
-        font-size: 0.6rem; /* Added */
-    }
-    /* Styles from existing 600px that are maintained or overridden: */
-    /* .word-display { font-size: 1.5rem; } - Retained from existing, no change */
-    /* .word-box { font-size: 1rem; padding: 8px 12px; } - Retained from existing, no change */
-    /* .opposite-arrow { font-size: 1.2rem; } - Retained from existing, no change */
-
+    .choose4-options { flex-direction: column; gap: 10px; } 
+    .choose4-container .choose4-btn { min-width: 90vw; font-size: 1em; }
+    #cosy-gamestats { font-size: 0.7rem; padding: 5px 8px; }
+    #xp-progress-container { width: 80px; }
+    #xp-progress-text { font-size: 0.6rem; }
     #cosy-revision-btn {
-        font-size: 0.8rem;
-        padding: 8px 12px;
-        bottom: 10px;
-        right: 70px; /* Adjusted for spacing from #floating-help-btn */
-        /* Assuming position: fixed; and other necessary base styles are applied outside media query */
+        font-size: 0.8rem; padding: 8px 12px;
+        bottom: 10px; right: 70px; 
     }
-
     .cosy-toast {
-        width: 90%; /* Ensured / Added */
-        max-width: 300px; /* Ensured / Added */
-        font-size: 0.8rem; /* Ensured / Added */
-        padding: 10px 15px; /* Ensured / Added */
-        bottom: 60px; /* Adjusted to avoid overlap with other buttons */
-        /* Assuming position: fixed; left: 50%; transform: translateX(-50%); are base styles */
+        width: 90%; max-width: 300px; font-size: 0.8rem; 
+        padding: 10px 15px; bottom: 60px; 
     }
 }
 
 /* Language Flag Backgrounds & CSS-only translation */
-/* ... (omitted for brevity) ... */
 body.flag-COSYenglish { background-image: url('https://flagcdn.com/gb.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
 body.flag-COSYfrançais { background-image: url('https://flagcdn.com/fr.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
 body.flag-COSYitaliano { background-image: url('https://flagcdn.com/it.svg'), linear-gradient(135deg, #00bdbd 0%, #1de9b6 60%, #ffe082 100%); background-size: cover, cover; background-position: center center; background-repeat: no-repeat; }
@@ -1029,24 +967,7 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
   .match-image-word-exercise .image-item img { max-width: 60px; max-height: 60px; }
 }
 
-/* Added styles for gender exercises (some might be redundant or overridden by general .btn styles) */
-.btn-primary, .btn-secondary, .btn-emoji, .article-option-btn {
-    /* padding, border-radius, border, font-size, font-weight, cursor, transition, margin, box-shadow already in .btn or general button */
-}
-.btn-primary { /* Already defined, specific overrides below */ }
-.btn-primary:hover { /* General .btn:hover applies, plus specific .btn-primary:hover */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15), 0 3px 7px rgba(0,0,0,0.15); /* Combined shadows */
-    transform: translateY(-2px); /* This might conflict if .btn:hover also has transform */
-}
-.btn-primary:active { /* General .btn:active applies */ }
-.btn-secondary { /* Already defined */ }
-.btn-secondary:hover { /* General button:hover applies, plus specific .btn-secondary:hover */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 3px 7px rgba(0,0,0,0.1); /* Combined shadows */
-    transform: translateY(-2px); /* This might conflict */
-}
-.btn-secondary:active { /* General button:active applies */ }
-.btn-emoji { /* Already defined */ }
-.btn-emoji:hover { /* General button:hover might apply some, plus specific .btn-emoji:hover */ }
+/* Styles for gender exercises (some might be redundant or overridden by general .btn styles) */
 .article-options-container { display: flex; flex-wrap: wrap; justify-content: center; margin: 15px 0; }
 .article-option-btn {
     background-color: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; 
@@ -1067,107 +988,87 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
 .article-option-btn:disabled:not(.correct-selection):not(.incorrect-selection) {
     background-color: #f5f5f5; opacity: 0.6; cursor: not-allowed;
 }
-.exercise-feedback .correct { /* Already modified for animation */ }
-.exercise-feedback .incorrect { /* Already modified for animation */ }
-.exercise-feedback { margin-top: 15px; min-height: 30px; }
-.gender-exercise, .match-exercise, .select-article-exercise, .verb-exercise, .fill-gap-exercise, .word-order-exercise {
-    /* padding, margin, border-radius, background-color, box-shadow, max-width mostly from .exercise-container */
+.gender-exercise, .match-articles-words-exercise, .select-article-exercise, .verb-exercise, .fill-gap-exercise, .word-order-exercise {
     border: 1px solid #e0e0e0; 
     box-shadow: 0 3px 10px rgba(0,0,0,0.05); 
     max-width: 600px; 
 }
-.gender-prompt, .verb-prompt, .exercise-prompt, .sentence-with-gap, .word-order-exercise h3, .fill-gap-exercise h3, .match-exercise h3 {
-    /* font-size, color, margin-bottom, text-align from .exercise-prompt */
+.gender-prompt, .verb-prompt, .exercise-prompt, .sentence-with-gap, .word-order-exercise h3, .fill-gap-exercise h3, .match-articles-words-exercise h3, .match-verbs-pronouns-exercise h3 {
     font-size: 1.2em; 
 }
 .select-article-exercise .exercise-prompt strong { font-weight: 600; color: #1976d2; }
-.exercise-input { /* General input styling applies */ }
-.match-container { /* Already defined */ }
-.match-col { flex: 1; padding: 10px; margin: 0 5px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 8px; }
-.match-col h4 { text-align: center; color: #555; margin-bottom: 10px; }
-.match-item { /* General .match-item rules apply */
-    margin: 8px 0; /* Specific margin */
-    /* Other properties like padding, background, border, transition, box-shadow from general .match-item */
+.match-articles-words-exercise .match-col, .match-verbs-pronouns-exercise .match-col { /* More specific for grammar matching */
+    flex: 1; padding: 10px; margin: 0 5px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 8px; 
 }
-.match-item:hover { /* General .match-item:hover applies, plus specifics here */
+.match-articles-words-exercise .match-col h4, .match-verbs-pronouns-exercise .match-col h4 { text-align: center; color: #555; margin-bottom: 10px; }
+.match-articles-words-exercise .match-item:hover, .match-verbs-pronouns-exercise .match-item:hover { 
     background-color: #eef8ff; border-color: #aaccf0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Combined with general .btn:hover if applicable */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
     transform: scale(1.03); 
 }
-.match-item.selected { /* General .match-item.selected applies */
+.match-articles-words-exercise .match-item.selected, .match-verbs-pronouns-exercise .match-item.selected { 
     background-color: #cfe8fc; border-color: #79b7f7;
     font-weight: bold; box-shadow: 0 0 5px rgba(0,123,255,0.5);
 }
-.match-item.matched { /* General .match-item.matched applies */
+.match-articles-words-exercise .match-item.matched, .match-verbs-pronouns-exercise .match-item.matched { 
     background-color: #d4edda; color: #155724; border-color: #c3e6cb;
     opacity: 0.7; transform: scale(0.95); 
 }
-/* End of added styles for gender exercises - some consolidation with .btn might be needed */
 
 /* Layout for multiple choice options */
 .word-options, .article-options-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Adjust gap as needed */
-    justify-content: center; /* Center items if they don't fill the line */
+    gap: 10px; 
+    justify-content: center; 
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
 .word-options button, .article-options-container button.article-option-btn {
-    flex-grow: 1; /* Allow buttons to grow */
-    flex-basis: calc(45% - 10px); /* Aim for 2 per line, considering gap. Adjust as needed. */
-    /* Min-width can be useful if content varies a lot */
-    /* min-width: 120px; */
+    flex-grow: 1; 
+    flex-basis: calc(45% - 10px); 
     text-align: center;
-    padding: 10px; /* Ensure decent button size */
+    padding: 10px; 
 }
 
-/* Responsive adjustment: if container is narrow, stack them */
 @media (max-width: 600px) {
     .word-options button, .article-options-container button.article-option-btn {
-        flex-basis: 100%; /* Stack on smaller screens */
+        flex-basis: 100%; 
     }
 }
 
 /* ==========================================================================
-   Hint Button & Display Area
+   Hint Display Area
    ========================================================================== */
-.btn-hint {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 !important;
-    color: var(--text-color-dark) !important; /* Or a more distinct hint color like #8D6E63 */
-    line-height: 1 !important;
-    text-decoration: none !important;
-    margin-left: 5px !important; /* If hint button is to the right of randomize */
-    /* margin-right: 5px !important; */ /* If hint button is to the left of randomize */
-    float: right !important; /* Or left, depending on desired order with randomize */
-    font-size: 1.5rem !important; /* Adjust for emoji size if using emoji */
-    background: linear-gradient(90deg, #FFD700, #FFA500) !important; /* Gold/Orange gradient */
-    border: none !important;
-    border-radius: 50% !important;
-    width: 44px !important; /* Consistent with randomize button */
-    height: 44px !important; /* Consistent with randomize button */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-    cursor: pointer !important;
-    transition: transform 0.2s, box-shadow 0.2s !important;
-}
-
-.btn-hint:hover {
-    transform: scale(1.15) !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-}
-
-.hint-display {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #fff8e1; /* Light yellow, like a post-it note */
-    border: 1px solid #ffecb3; /* Softer yellow border */
-    border-radius: 4px;
-    color: #795548; /* Brownish text color for contrast */
+.hint-display, .exercise-hint { /* Target both for robustness */
+    margin: 15px 0;
+    padding: 12px 15px;
+    background-color: var(--hint-bg); 
+    border: 1px solid var(--hint-border);
+    border-left: 5px solid #ffc107; /* Accent border */
+    border-radius: 5px;
+    color: var(--hint-text); 
     font-size: 0.9rem;
+    font-style: italic;
     text-align: left;
     line-height: 1.4;
+}
+
+/* Ensure specific patched circular buttons maintain their look if they also get .exercise-button */
+#btn-randomize-category.exercise-button,
+#btn-hint.exercise-button {
+    /* Re-assert circular specific styles if .exercise-button tries to override them */
+    padding: 0 !important; 
+    font-size: 1.5rem !important;
+    border-radius: 50% !important;
+    width: 44px !important;
+    height: 44px !important;
+    gap: 0 !important;
+}
+#btn-randomize-category.exercise-button {
+    background: linear-gradient(90deg,#ffe082,#1de9b6) !important;
+}
+#btn-hint.exercise-button {
+     background: linear-gradient(90deg, #FFD700, #FFA500) !important;
 }
