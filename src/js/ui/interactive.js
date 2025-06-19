@@ -4,54 +4,6 @@ window.CosyAppInteractive = {};
     // Latinization toggle state
     let isLatinizationEnabled = localStorage.getItem('latinizationEnabled') === 'false' ? false : true;
 
-    // Fallback tip translations - defined directly in this file
-    const tipTranslations = {
-        "Try to think in the language you are learning.": {
-            "COSYfrançais": "Essayez de penser dans la langue que vous apprenez.",
-            "COSYespañol": "Intenta pensar en el idioma que estás aprendiendo."
-        },
-        "Label items in your house with their names in the new language.": {
-            "COSYfrançais": "Étiquetez les objets de votre maison avec leurs noms dans la nouvelle langue.",
-            "COSYespañol": "Etiqueta los objetos de tu casa con sus nombres en el nuevo idioma."
-        },
-        "Practice a little bit every day, consistency is key!": {
-            "COSYfrançais": "Pratiquez un peu chaque jour, la régularité est la clé !",
-            "COSYespañol": "Practica un poco cada día, ¡la constancia es la clave!"
-        },
-        "Don't be afraid to make mistakes, they are part of learning.": {
-            "COSYfrançais": "N'ayez pas peur de faire des erreurs, elles font partie de l'apprentissage.",
-            "COSYespañol": "No tengas miedo de cometer errores, son parte del aprendizaje."
-        },
-        "Immerse yourself: listen to music or watch shows in the language.": {
-            "COSYfrançais": "Immergez-vous : écoutez de la musique ou regardez des émissions dans la langue.",
-            "COSYespañol": "Sumérgete: escucha música o mira programas en el idioma."
-        },
-        "Start with small, manageable learning goals each day!": {
-            "COSYfrançais": "Commencez avec des objectifs d'apprentissage petits et gérables chaque jour !",
-            "COSYespañol": "¡Comienza con metas de aprendizaje pequeñas y manejables cada día!"
-        },
-        "Consistent daily practice is more effective than long, infrequent sessions.": {
-            "COSYfrançais": "Une pratique quotidienne constante est plus efficace que de longues sessions peu fréquentes.",
-            "COSYespañol": "La práctica diaria constante es más efectiva que las sesiones largas y poco frecuentes."
-        },
-        "Stuck? Try a different exercise type or review a previous lesson.": {
-            "COSYfrançais": "Bloqué ? Essayez un autre type d'exercice ou révisez une leçon précédente.",
-            "COSYespañol": "¿Atascado? Prueba un tipo de ejercicio diferente o repasa una lección anterior."
-        },
-        "Use the translate button on this popup for a hint if the content is in the learning language.": {
-            "COSYfrançais": "Utilisez le bouton de traduction sur cette popup pour un indice si le contenu est dans la langue d'apprentissage.",
-            "COSYespañol": "Usa el botón de traducir en esta ventana emergente para obtener una pista si el contenido está en el idioma de aprendizaje."
-        },
-        "Check your progress regularly to stay motivated.": {
-            "COSYfrançais": "Vérifiez régulièrement vos progrès pour rester motivé.",
-            "COSYespañol": "Revisa tu progreso regularmente para mantenerte motivado."
-        },
-        "Use the main buttons to choose a practice category.": {
-            "COSYfrançais": "Utilisez les boutons principaux pour choisir une catégorie de pratique.",
-            "COSYespañol": "Usa los botones principales para elegir una categoría de práctica."
-        }
-    };
-
     function getCurrentTranslations() {
         const language = document.getElementById('language')?.value || 'COSYenglish';
         if (window.translations && window.translations[language]) {
@@ -117,56 +69,6 @@ window.CosyAppInteractive = {};
     };
     function markAndAward(el) { /* ... existing ... */ }
     CosyAppInteractive.markAndAward = markAndAward;
-
-    CosyAppInteractive.getRandomPopupContent = function getRandomPopupContent() {
-        const currentLang = document.getElementById('language')?.value || 'COSYenglish';
-        const t = (window.translations && window.translations[currentLang]) ? window.translations[currentLang] : (window.translations ? window.translations.COSYenglish : {});
-        const tEnglish = window.translations ? window.translations.COSYenglish : {};
-        let allTips = [];
-        if (tEnglish.learningTips && Array.isArray(tEnglish.learningTips)) {
-            allTips = allTips.concat(tEnglish.learningTips.map(tip => (typeof tip === 'string' ? { id: tip, text: tip } : tip)));
-        }
-        if (tEnglish.helpTopics && Array.isArray(tEnglish.helpTopics)) {
-            allTips = allTips.concat(tEnglish.helpTopics.map(tip => (typeof tip === 'string' ? { id: tip, text: tip } : tip)));
-        }
-        if (allTips.length === 0) return { text: "No tips available right now.", id: "no_tips_fallback" };
-        const randomIndex = Math.floor(Math.random() * allTips.length);
-        const randomTip = allTips[randomIndex];
-        return { text: randomTip.text, id: randomTip.id };
-    };
-
-    CosyAppInteractive.showTipPopup = function showTipPopup(tipContent) {
-        const popup = document.getElementById('floating-tip-popup');
-        const tipTextElement = document.getElementById('floating-tip-text');
-        const translateBtn = popup?.querySelector('.translate-tip');
-        const t = getCurrentTranslations(); 
-        if (popup && tipTextElement) {
-            if (tipContent && typeof tipContent.text === 'string' && typeof tipContent.id === 'string') {
-                tipTextElement.textContent = tipContent.text;
-                popup.dataset.tipId = tipContent.id; 
-                popup.dataset.originalLang = 'COSYenglish'; 
-                popup.dataset.isTranslated = 'false';
-            } else {
-                tipTextElement.textContent = "Sorry, couldn't load a tip!";
-                popup.dataset.tipId = "error_tip_load";
-                popup.dataset.originalLang = 'COSYenglish';
-                popup.dataset.isTranslated = 'false';
-            }
-            if (translateBtn) {
-                translateBtn.textContent = t.buttons?.translate || 'Translate 🌍';
-            }
-            popup.style.display = 'flex'; 
-        } else {
-            console.error("Tip popup elements not found!");
-        }
-    };
-
-    CosyAppInteractive.hideTipPopup = function hideTipPopup() {
-        const popup = document.getElementById('floating-tip-popup');
-        if (popup) {
-            popup.style.display = 'none';
-        }
-    };
 
     // --- Transliteration Popup Logic ---
     let transliterationPopup = null; 
@@ -250,57 +152,6 @@ window.CosyAppInteractive = {};
                 }
             }
         }, true);
-
-        const helpBtn = document.getElementById('floating-help-btn');
-        const tipPopup = document.getElementById('floating-tip-popup');
-        const closeTipBtn = tipPopup?.querySelector('.close-tip');
-        const translateTipBtn = tipPopup?.querySelector('.translate-tip');
-
-        if (helpBtn) { 
-            helpBtn.onclick = function(e) { 
-                e.stopPropagation(); 
-                const tipContent = CosyAppInteractive.getRandomPopupContent();
-                CosyAppInteractive.showTipPopup(tipContent); 
-            }; 
-        }
-        if (closeTipBtn) { 
-            closeTipBtn.onclick = function(e) {
-                e.stopPropagation(); 
-                CosyAppInteractive.hideTipPopup();
-            };
-        }
-
-        if (translateTipBtn && tipPopup) {
-            translateTipBtn.onclick = function(e) {
-                e.stopPropagation();
-                const tipTextElement = document.getElementById('floating-tip-text');
-                const originalTipId = tipPopup.dataset.tipId; 
-                const currentAppLang = document.getElementById('language')?.value || 'COSYenglish';
-                const isTranslated = tipPopup.dataset.isTranslated === 'true';
-                const tGlobal = getCurrentTranslations(); 
-                if (!tipTextElement || !originalTipId) return;
-                if (isTranslated) {
-                    tipTextElement.textContent = originalTipId; 
-                    translateTipBtn.textContent = tGlobal.buttons?.translate || 'Translate 🌍';
-                    tipPopup.dataset.isTranslated = 'false';
-                } else {
-                    if (currentAppLang === 'COSYenglish') {
-                        tipTextElement.textContent = originalTipId + " (Already in English)";
-                        translateTipBtn.textContent = tGlobal.buttons?.showOriginal || 'Show Original 🇬🇧'; 
-                        tipPopup.dataset.isTranslated = 'true'; 
-                        return;
-                    }
-                    const translatedText = tipTranslations[originalTipId]?.[currentAppLang];
-                    if (translatedText) {
-                        tipTextElement.textContent = translatedText;
-                        translateTipBtn.textContent = tGlobal.buttons?.showOriginal || 'Show Original 🇬🇧';
-                        tipPopup.dataset.isTranslated = 'true';
-                    } else {
-                        tipTextElement.textContent = (window.translations?.[currentAppLang]?.buttons?.translationNotAvailable) || (tGlobal.buttons?.translationNotAvailable) || "Translation not available for this tip.";
-                    }
-                }
-            };
-        }
 
         // Latinization Toggle Button Setup
         const toggleLatinizationBtn = document.getElementById('toggle-latinization-btn');

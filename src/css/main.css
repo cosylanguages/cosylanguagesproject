@@ -35,9 +35,6 @@ html {
     --error-bg: #f8d7da;
     --error-text: #721c24;
     --error-border: #f5c6cb;
-    --hint-bg: #fff9c4;      /* Light yellow for hints */
-    --hint-border: #fff176;  /* Darker yellow for hint border */
-    --hint-text: #5d4037;    /* Brownish text for hints */
     --font-size-small: 0.85rem;
     --font-size-normal: 1rem;
     --font-size-large: 1.15rem;
@@ -744,40 +741,6 @@ textarea.exercise-input {
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);  
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; 
 }
-#floating-help-btn { 
-    position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; 
-    background-color: var(--primary-color); color: var(--text-color-light); 
-    border: none; border-radius: 50%; font-size: 1.5rem;  
-    display: flex; align-items: center; justify-content: center; 
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; 
-    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-    gap: 0; 
-}
-#floating-help-btn:hover { background-color: var(--primary-hover-color); transform: scale(1.1); }
-.floating-popup {  
-    position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); 
-    background-color: #fff; padding: 20px; border-radius: 8px;  
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);  z-index: 1002; 
-    width: 90%; max-width: 400px;  
-    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; 
-}
-.floating-popup .popup-header { 
-    font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;  
-    color: var(--primary-color); 
-}
-.floating-popup .popup-content { margin-bottom: 15px; font-size: 0.9rem; line-height: 1.5; } 
-#floating-tip-text {
-    display: block; line-height: 1.6;
-    overflow-wrap: break-word; margin-bottom: 10px; 
-}
-.floating-popup .close-btn {  
-    background: none; border: none; font-size: 1.2rem;  
-    color: var(--dark-grey); cursor: pointer; padding: 5px;  
-    transition: color 0.2s ease-in-out; 
-    gap: 0; 
-}
-.floating-popup .close-btn:hover { color: var(--primary-color); }
-#floating-tip-popup[style*="display: flex"] { display: flex !important; } 
 #translation-popup[style*="display: flex"] { display: flex !important; } 
 
 /* Animations & Keyframes */
