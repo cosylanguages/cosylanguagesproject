@@ -85,7 +85,7 @@ const AdminEditor = {
         }
 
         // Construct path: data/category/type/language.json
-        // e.g. data/vocabulary/words/COSYenglish.json
+        // e.g. data/vocabulary/words/english.json
         // For armenian, it's just armenian.json, not COSYarmenian.json
         const langFileName = language.startsWith("COSY") ? language : language.toLowerCase();
         const path = `data/${exerciseTypeValue}/${langFileName}.json`;

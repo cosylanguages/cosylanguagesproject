@@ -1,6 +1,9 @@
 window.CosyAppInteractive = {};
 
 (function() {
+    // Latinization toggle state
+    let isLatinizationEnabled = localStorage.getItem('latinizationEnabled') === 'false' ? false : true;
+
     // Fallback tip translations - defined directly in this file
     const tipTranslations = {
         "Try to think in the language you are learning.": {
@@ -68,11 +71,8 @@ window.CosyAppInteractive = {};
             buttons: { translate: 'Translate 🌍', showOriginal: 'Show Original 🇬🇧', translationNotAvailable: 'Translation not available' }
         };
     }
-
-    // const SOUNDS = { /* ... existing sound definitions ... */ }; // Removed, using playSound from utils.js
-    // function playSound(type) { /* ... existing playSound ... */ } // Removed, using playSound from utils.js
     
-    class GameState { /* ... existing GameState class ... */
+    class GameState { 
         constructor() {
             this.xp = 0; this.level = 1; this.streak = 0; this.lastActiveDate = null;
             this.completedLessons = []; this.achievements = [];
@@ -107,56 +107,44 @@ window.CosyAppInteractive = {};
     const gameState = new GameState();
     function showToast(msg) { /* ... existing ... */ }
     CosyAppInteractive.showToast = showToast;
-    // function showConfetti() { /* ... implementation ... */ } // Assuming this exists or is not critical for tips
     CosyAppInteractive.addXP = function(amount) { gameState.addXP(amount); };
     function awardCorrectAnswer() { 
-        playSound('success'); // Added success sound
-        /* ... existing ... */ 
+        if (typeof playSound === 'function') playSound('success'); 
     }
     CosyAppInteractive.awardCorrectAnswer = awardCorrectAnswer;
     CosyAppInteractive.awardIncorrectAnswer = function() { 
-        playSound('error'); // Added error sound
-        /* ... existing ... */ 
+        if (typeof playSound === 'function') playSound('error'); 
     };
     function markAndAward(el) { /* ... existing ... */ }
     CosyAppInteractive.markAndAward = markAndAward;
-    // const observer = new MutationObserver(...) // Assuming this is correctly set up elsewhere or re-added if needed
 
     CosyAppInteractive.getRandomPopupContent = function getRandomPopupContent() {
         const currentLang = document.getElementById('language')?.value || 'COSYenglish';
         const t = (window.translations && window.translations[currentLang]) ? window.translations[currentLang] : (window.translations ? window.translations.COSYenglish : {});
         const tEnglish = window.translations ? window.translations.COSYenglish : {};
-
         let allTips = [];
-        // Use English tips as the base for IDs/keys
         if (tEnglish.learningTips && Array.isArray(tEnglish.learningTips)) {
             allTips = allTips.concat(tEnglish.learningTips.map(tip => (typeof tip === 'string' ? { id: tip, text: tip } : tip)));
         }
         if (tEnglish.helpTopics && Array.isArray(tEnglish.helpTopics)) {
             allTips = allTips.concat(tEnglish.helpTopics.map(tip => (typeof tip === 'string' ? { id: tip, text: tip } : tip)));
         }
-        
-        if (allTips.length === 0) {
-            return { text: "No tips available right now.", id: "no_tips_fallback" };
-        }
+        if (allTips.length === 0) return { text: "No tips available right now.", id: "no_tips_fallback" };
         const randomIndex = Math.floor(Math.random() * allTips.length);
         const randomTip = allTips[randomIndex];
-
-        // The 'text' shown initially should be the English text, as its 'id' is the English text.
-        return { text: randomTip.text, id: randomTip.id }; // id is the English text
+        return { text: randomTip.text, id: randomTip.id };
     };
 
     CosyAppInteractive.showTipPopup = function showTipPopup(tipContent) {
         const popup = document.getElementById('floating-tip-popup');
         const tipTextElement = document.getElementById('floating-tip-text');
         const translateBtn = popup?.querySelector('.translate-tip');
-        const t = getCurrentTranslations(); // For button text
-
+        const t = getCurrentTranslations(); 
         if (popup && tipTextElement) {
             if (tipContent && typeof tipContent.text === 'string' && typeof tipContent.id === 'string') {
                 tipTextElement.textContent = tipContent.text;
-                popup.dataset.tipId = tipContent.id; // Store English text as ID
-                popup.dataset.originalLang = 'COSYenglish'; // Original is English
+                popup.dataset.tipId = tipContent.id; 
+                popup.dataset.originalLang = 'COSYenglish'; 
                 popup.dataset.isTranslated = 'false';
             } else {
                 tipTextElement.textContent = "Sorry, couldn't load a tip!";
@@ -164,11 +152,10 @@ window.CosyAppInteractive = {};
                 popup.dataset.originalLang = 'COSYenglish';
                 popup.dataset.isTranslated = 'false';
             }
-            
             if (translateBtn) {
                 translateBtn.textContent = t.buttons?.translate || 'Translate 🌍';
             }
-            popup.style.display = 'flex'; // Or 'block', depending on CSS
+            popup.style.display = 'flex'; 
         } else {
             console.error("Tip popup elements not found!");
         }
@@ -181,13 +168,85 @@ window.CosyAppInteractive = {};
         }
     };
 
+    // --- Transliteration Popup Logic ---
+    let transliterationPopup = null; 
+
+    function ensureTransliterationPopupExists() {
+        if (transliterationPopup && document.body.contains(transliterationPopup)) return; 
+        transliterationPopup = document.createElement('div');
+        transliterationPopup.id = 'dynamic-transliteration-popup-container'; 
+        transliterationPopup.style.display = 'none';
+        transliterationPopup.style.position = 'fixed';
+        transliterationPopup.style.backgroundColor = '#f9f9f9';
+        transliterationPopup.style.border = '1px solid #ccc';
+        transliterationPopup.style.padding = '10px';
+        transliterationPopup.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        transliterationPopup.style.zIndex = '1002'; 
+        transliterationPopup.style.borderRadius = '5px';
+        transliterationPopup.style.maxWidth = '300px';
+        transliterationPopup.style.fontFamily = 'Arial, sans-serif';
+        transliterationPopup.style.fontSize = '14px'; 
+        const textElement = document.createElement('div');
+        textElement.id = 'dynamic-transliteration-popup-text'; 
+        textElement.style.marginBottom = '8px';
+        textElement.style.fontSize = '0.9em'; 
+        textElement.style.wordWrap = 'break-word'; 
+        transliterationPopup.appendChild(textElement);
+        const closeButton = document.createElement('button');
+        closeButton.id = 'dynamic-close-transliteration-popup-btn'; 
+        closeButton.title = 'Close';
+        closeButton.textContent = '✖';
+        closeButton.style.background = '#eee';
+        closeButton.style.border = '1px solid #ccc';
+        closeButton.style.padding = '3px 8px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.float = 'right'; 
+        closeButton.style.fontSize = '12px'; 
+        closeButton.style.lineHeight = '1'; 
+        const clearer = document.createElement('div'); 
+        clearer.style.clear = 'both';
+        transliterationPopup.appendChild(closeButton);
+        transliterationPopup.appendChild(clearer); 
+        closeButton.onclick = function(event) {
+            event.stopPropagation(); 
+            hideTransliterationPopup();
+        };
+        document.body.appendChild(transliterationPopup);
+    }
+
+    function showTransliterationPopup(transliteratedText, event) {
+        if (!isLatinizationEnabled) return; // Check toggle state
+        ensureTransliterationPopupExists();
+        const textElement = transliterationPopup.querySelector('#dynamic-transliteration-popup-text');
+        if (textElement) textElement.textContent = transliteratedText;
+        let x = event.pageX + 15; 
+        let y = event.pageY + 15;
+        transliterationPopup.style.left = x + 'px';
+        transliterationPopup.style.top = y + 'px';
+        transliterationPopup.style.display = 'block';
+        const popupRect = transliterationPopup.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        if (popupRect.right > viewportWidth) transliterationPopup.style.left = (viewportWidth - popupRect.width - 10) + 'px'; 
+        if (popupRect.bottom > viewportHeight) transliterationPopup.style.top = (viewportHeight - popupRect.height - 10) + 'px';
+        if (popupRect.left < 0) transliterationPopup.style.left = '10px';
+        if (popupRect.top < 0) transliterationPopup.style.top = '10px';
+    }
+    CosyAppInteractive.showTransliterationPopup = showTransliterationPopup;
+
+    function hideTransliterationPopup() {
+        if (transliterationPopup) transliterationPopup.style.display = 'none';
+    }
+    CosyAppInteractive.hideTransliterationPopup = hideTransliterationPopup;
+    // --- End Transliteration Popup Logic ---
+
     document.addEventListener('DOMContentLoaded', async function() { 
         if (gameState && typeof gameState.updateUI === 'function') await gameState.updateUI(); 
         
         document.body.addEventListener('click', function(event) {
             if (event.target.matches('button:not(.btn-emoji, #speaking-record-btn), .article-option-btn, .word-option, .match-item')) {
                 if (!event.target.closest('.no-generic-click-sound')) {
-                     playSound('click'); // Enabled click sound
+                    if (typeof playSound === 'function') playSound('click'); 
                 }
             }
         }, true);
@@ -215,42 +274,111 @@ window.CosyAppInteractive = {};
             translateTipBtn.onclick = function(e) {
                 e.stopPropagation();
                 const tipTextElement = document.getElementById('floating-tip-text');
-                const originalTipId = tipPopup.dataset.tipId; // This is the English text
+                const originalTipId = tipPopup.dataset.tipId; 
                 const currentAppLang = document.getElementById('language')?.value || 'COSYenglish';
                 const isTranslated = tipPopup.dataset.isTranslated === 'true';
-                const tGlobal = getCurrentTranslations(); // For button text fallbacks
-
+                const tGlobal = getCurrentTranslations(); 
                 if (!tipTextElement || !originalTipId) return;
-
                 if (isTranslated) {
-                    // Revert to original English text
-                    tipTextElement.textContent = originalTipId; // originalTipId is the English text
+                    tipTextElement.textContent = originalTipId; 
                     translateTipBtn.textContent = tGlobal.buttons?.translate || 'Translate 🌍';
                     tipPopup.dataset.isTranslated = 'false';
                 } else {
-                    // Translate to current app language (if not English)
                     if (currentAppLang === 'COSYenglish') {
                         tipTextElement.textContent = originalTipId + " (Already in English)";
-                        translateTipBtn.textContent = tGlobal.buttons?.showOriginal || 'Show Original 🇬🇧'; // Or disable
-                        tipPopup.dataset.isTranslated = 'true'; // Mark as "translated" to allow reverting
+                        translateTipBtn.textContent = tGlobal.buttons?.showOriginal || 'Show Original 🇬🇧'; 
+                        tipPopup.dataset.isTranslated = 'true'; 
                         return;
                     }
-
                     const translatedText = tipTranslations[originalTipId]?.[currentAppLang];
-
                     if (translatedText) {
                         tipTextElement.textContent = translatedText;
                         translateTipBtn.textContent = tGlobal.buttons?.showOriginal || 'Show Original 🇬🇧';
                         tipPopup.dataset.isTranslated = 'true';
                     } else {
                         tipTextElement.textContent = (window.translations?.[currentAppLang]?.buttons?.translationNotAvailable) || (tGlobal.buttons?.translationNotAvailable) || "Translation not available for this tip.";
-                        // Keep button as "Translate" or disable, as there's nothing to revert from if translation failed
-                        // To allow reverting to English even if translation failed:
-                        // translateTipBtn.textContent = tGlobal.buttons?.showOriginal || 'Show Original 🇬🇧';
-                        // tipPopup.dataset.isTranslated = 'true'; // Consider it "translated" to allow revert
                     }
                 }
             };
+        }
+
+        // Latinization Toggle Button Setup
+        const toggleLatinizationBtn = document.getElementById('toggle-latinization-btn');
+        if (toggleLatinizationBtn) {
+            toggleLatinizationBtn.textContent = isLatinizationEnabled ? 'Latinize: On' : 'Latinize: Off';
+            // Set visual style based on state
+            toggleLatinizationBtn.style.backgroundColor = isLatinizationEnabled ? '#e0ffe0' : '#ffe0e0'; // Greenish for On, reddish for Off
+
+            toggleLatinizationBtn.addEventListener('click', function() {
+                isLatinizationEnabled = !isLatinizationEnabled;
+                localStorage.setItem('latinizationEnabled', isLatinizationEnabled);
+                this.textContent = isLatinizationEnabled ? 'Latinize: On' : 'Latinize: Off';
+                this.style.backgroundColor = isLatinizationEnabled ? '#e0ffe0' : '#ffe0e0';
+                if (!isLatinizationEnabled && transliterationPopup && transliterationPopup.style.display !== 'none') {
+                    hideTransliterationPopup(); // Hide if it's currently shown and we disable latinization
+                }
+            });
+        }
+
+        // Global click listener to hide transliteration popup if click is outside
+        document.addEventListener('click', function(event) {
+            if (transliterationPopup && transliterationPopup.style.display !== 'none') {
+                if (!transliterationPopup.contains(event.target) && event.target.id !== 'toggle-latinization-btn' && !event.target.closest('#toggle-latinization-btn')) {
+                    // If the click is outside the popup, and also not on the toggle button itself
+                    // (to prevent immediate hiding when toggle button is clicked if popup was open)
+                    hideTransliterationPopup();
+                }
+            }
+        }, false); 
+
+        // Event listeners for transliteration on the result area
+        const resultContent = document.getElementById('result');
+        if (resultContent) {
+            const targetLanguages = ["ΚΟΖΥελληνικά", "ТАКОЙрусский", "ԾՈՍՅհայկական"];
+
+            resultContent.addEventListener('click', function(event) {
+                if (!isLatinizationEnabled) return; // Check toggle state
+
+                const currentLang = document.getElementById('language')?.value;
+                if (!targetLanguages.includes(currentLang)) return;
+                let textToTransliterate = null;
+                if (event.target && event.target.textContent) {
+                    const targetText = event.target.textContent.trim();
+                    if (targetText.length > 0 && targetText.length < 30) {
+                        if (event.target.childNodes.length === 1 && event.target.childNodes[0].nodeType === Node.TEXT_NODE || event.target.tagName === 'SPAN') {
+                            textToTransliterate = targetText;
+                        } else if (event.target.classList.contains('word') || event.target.classList.contains('sentence-part')) { 
+                            textToTransliterate = targetText;
+                        } else if (!event.target.querySelector('div, p, button')) { 
+                             textToTransliterate = targetText;
+                        }
+                    }
+                }
+                if (textToTransliterate && textToTransliterate.length > 1) { 
+                    if (typeof window.getLatinization === 'function' && typeof CosyAppInteractive.showTransliterationPopup === 'function') {
+                        const latinizedText = window.getLatinization(textToTransliterate, currentLang);
+                        if (latinizedText && latinizedText !== textToTransliterate) {
+                            CosyAppInteractive.showTransliterationPopup(latinizedText, event);
+                        }
+                    }
+                }
+            });
+
+            resultContent.addEventListener('mouseup', function(event) {
+                if (!isLatinizationEnabled) return; // Check toggle state
+
+                const currentLang = document.getElementById('language')?.value;
+                if (!targetLanguages.includes(currentLang)) return;
+                const selectedText = window.getSelection().toString().trim();
+                if (selectedText && selectedText.length > 0) { 
+                     if (typeof window.getLatinization === 'function' && typeof CosyAppInteractive.showTransliterationPopup === 'function') {
+                        const latinizedText = window.getLatinization(selectedText, currentLang);
+                        if (latinizedText && latinizedText !== selectedText) {
+                            CosyAppInteractive.showTransliterationPopup(latinizedText, event);
+                        }
+                    }
+                }
+            });
         }
     });
 
