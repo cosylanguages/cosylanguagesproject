@@ -1032,6 +1032,55 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
    End of File
    ========================================================================== */
 
+/* Styles for Latinize Button and Transliteration Tooltip */
+
+#toggle-latinization-btn {
+    margin-left: 10px;
+    padding: 5px 10px; /* Consider matching general button/select padding: 0.6em 1.2em */
+    background-color: var(--medium-grey); /* Was #f0f0f0, using theme variable */
+    border: 1px solid var(--dark-grey);    /* Was #ccc, using theme variable */
+    border-radius: 4px; /* Or 0.3rem to match theme */
+    cursor: pointer;
+    font-size: var(--font-size-small, 0.9rem); /* Match theme */
+    font-weight: bold; /* Match theme */
+    line-height: 1.4; /* Match theme */
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out; /* Match theme */
+    user-select: none; /* Match theme */
+}
+
+#toggle-latinization-btn:hover {
+    background-color: #d3d9df; /* Match theme hover */
+    border-color: #9fa6ac;     /* Match theme hover */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+
+#toggle-latinization-btn:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+#toggle-latinization-btn:active {
+    transform: translateY(0.5px);
+    filter: brightness(90%);
+}
+
+#transliteration-tooltip {
+    position: fixed;
+    display: none; /* Initially hidden, JS handles display: block/none */
+    background-color: #333; /* Dark background */
+    color: white;
+    padding: 8px 12px; /* Adjusted padding from JS */
+    border-radius: 4px;
+    font-size: 0.9em;   /* Relative font size */
+    z-index: 10000;     /* High z-index */
+    pointer-events: none; /* Doesn't interfere with mouse */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-family: Arial, sans-serif; /* Match JS */
+    border: 1px solid #555; /* Match JS style for border */
+}
+
 /* Styles for the bottom button bar in exercises */
 .exercise-button-bar-bottom {
     display: flex;

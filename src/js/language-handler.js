@@ -1,5 +1,7 @@
 // src/js/language-handler.js
 
+const latinizeButton = document.getElementById('toggle-latinization-btn');
+
 // Function to update all UI elements when language changes
 function updateUIForLanguage(language) {
   const t = translations[language] || translations['COSYenglish'];
@@ -51,6 +53,15 @@ function updateUIForLanguage(language) {
     document.getElementById('practice-all-btn').title = t.aria.practiceAll;
   }
   // ...repeat for all main and option buttons as needed...
+
+  // Handle Latinize button visibility
+  if (latinizeButton) { // Check if the button element exists
+    if (['ΚΟΖΥελληνικά', 'ТАКОЙрусский', 'ԾՈՍՅհայկական'].includes(language)) {
+      latinizeButton.style.display = ''; // Use '' to reset to default (usually block or inline-block based on CSS)
+    } else {
+      latinizeButton.style.display = 'none';
+    }
+  }
 }
 
 // Initialize language change handler
@@ -61,6 +72,11 @@ document.getElementById('language').addEventListener('change', function() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+  // Ensure the button is hidden by default before specific language logic is applied
+  if (latinizeButton) { // Check if the button element exists
+    latinizeButton.style.display = 'none';
+  }
+
   const lang = document.getElementById('language').value || 'COSYenglish';
   updateUIForLanguage(lang);
 });
