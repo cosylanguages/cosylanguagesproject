@@ -208,7 +208,7 @@ async function showRandomWord() {
             <div class="word-actions">
                 <button id="pronounce-word" class="btn-emoji" aria-label="${t.pronounceWord || 'Pronounce word'}">🔊</button>
                 <button id="say-word-mc" class="btn-emoji" title="Say it (Microphone Check)">🎤</button> 
-                <button id="btn-new-show-word" class="btn-emoji" onclick="window.showRandomWord()" aria-label="${t.buttons?.newShowWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newShowWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+                <button id="btn-new-show-word" class="btn-emoji" onclick="window.showRandomWord()" aria-label="${t.buttons?.newShowWord || t.buttons?.newExerciseSameType || 'New Exercise'}">🔄 ${t.buttons?.newShowWord || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
             </div>
             <div id="pronunciation-feedback" style="margin-top:10px; text-align:center;"></div>
         </div>
@@ -292,7 +292,7 @@ async function showOppositesExercise(baseWord = null) {
             <input type="text" id="opposite-input" class="exercise-input" aria-label="${t.typeTheOpposite || 'Type the opposite'}" placeholder="${t.typeTheOppositePlaceholder || 'Type the opposite...'}">
             <div id="opposite-feedback" class="exercise-feedback" aria-live="polite"></div>
             <div class="exercise-actions">
-                <button id="btn-new-opposite-exercise" class="exercise-button" onclick="window.showOppositesExercise()" aria-label="${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+                <button id="btn-new-opposite-exercise" class="exercise-button" onclick="window.showOppositesExercise()" aria-label="${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Exercise'}">🔄 ${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
             </div>
         </div>
     `;
@@ -396,7 +396,7 @@ async function showMatchOpposites() {
                 </div>
             </div>
             <div id="match-feedback" class="exercise-feedback" aria-live="polite"></div>
-            <button id="btn-new-match-opposites" class="exercise-button" onclick="window.showMatchOpposites()" aria-label="${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-match-opposites" class="exercise-button" onclick="window.showMatchOpposites()" aria-label="${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Exercise'}">🔄 ${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.match-exercise');
@@ -521,7 +521,7 @@ async function showBuildWord(baseWord = null) {
             <div id="build-feedback" class="exercise-feedback"></div>
             <div class="build-actions">
                 <button id="reset-build" class="exercise-button">🔄 ${t.buttons?.reset || 'Reset'}</button>
-                <button id="btn-new-build-word" class="exercise-button" onclick="window.showBuildWord()">🔄 ${t.buttons?.newBuildWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+                <button id="btn-new-build-word" class="exercise-button" onclick="window.showBuildWord()">🔄 ${t.buttons?.newBuildWord || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
             </div>
         </div>
     `;
@@ -771,7 +771,7 @@ async function showIdentifyImage() {
             <img src="${imageItem.src}" alt="${imageItem.alt || correctAnswer}" class="vocabulary-image">
             <input type="text" id="image-answer-input" class="exercise-input" placeholder="${t.typeTheWord || 'Type the word...'}">
             <div id="image-feedback" class="exercise-feedback"></div>
-            <button id="btn-new-identify-image" class="exercise-button" onclick="window.showIdentifyImage()">🔄 ${t.buttons?.newIdentifyImage || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-identify-image" class="exercise-button" onclick="window.showIdentifyImage()">🔄 ${t.buttons?.newIdentifyImage || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.image-exercise');
@@ -874,7 +874,7 @@ async function showMatchImageWord() {
                  ${wordPool.map(word => `<div class="match-item word-item" data-word="${word}">${word}</div>`).join('')}
             </div>
             <div id="match-image-feedback" class="exercise-feedback"></div>
-            <button id="btn-new-match-image-word" class="exercise-button" onclick="window.showMatchImageWord()" aria-label="${t.buttons?.newMatchImageWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}">🔄 ${t.buttons?.newMatchImageWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-match-image-word" class="exercise-button" onclick="window.showMatchImageWord()" aria-label="${t.buttons?.newMatchImageWord || t.buttons?.newExerciseSameType || 'New Exercise'}">🔄 ${t.buttons?.newMatchImageWord || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.match-image-word-exercise');
@@ -1120,7 +1120,7 @@ async function showTranscribeWord() {
             <button id="play-word-sound" class="btn-emoji large-emoji" aria-label="${t.playSoundButtonLabel || 'Play Sound'}">🔊</button>
             <input type="text" id="transcription-input" class="exercise-input" placeholder="${t.typeHerePlaceholder || 'Type here...'}">
             <div id="transcription-feedback" class="exercise-feedback"></div>
-            <button id="btn-new-transcribe-word" class="exercise-button" onclick="window.showTranscribeWord()">🔄 ${t.buttons?.newTranscribeWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-transcribe-word" class="exercise-button" onclick="window.showTranscribeWord()">🔄 ${t.buttons?.newTranscribeWord || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.transcribe-word-exercise');
@@ -1211,7 +1211,7 @@ async function showMatchSoundWord() {
                 ${selectedWordsWithOptions.map(optionWord => `<button class="word-option btn" data-word="${optionWord}">${optionWord}</button>`).join('')}
             </div>
             <div id="sound-match-feedback" class="exercise-feedback"></div>
-            <button id="btn-new-match-sound-word" class="exercise-button" onclick="window.showMatchSoundWord()">🔄 ${t.buttons?.newMatchSoundWord || t.buttons?.newExerciseSameType || 'New Similar Exercise'}</button>
+            <button id="btn-new-match-sound-word" class="exercise-button" onclick="window.showMatchSoundWord()">🔄 ${t.buttons?.newMatchSoundWord || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
         </div>
     `;
     const exerciseContainer = resultArea.querySelector('.match-sound-exercise');
