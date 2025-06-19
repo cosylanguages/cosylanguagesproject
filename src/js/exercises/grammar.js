@@ -555,7 +555,6 @@ async function showTypeVerb() {
 
     resultArea.innerHTML = `
         <div class="verb-exercise" aria-label="${t.verbExerciseAriaLabel || 'Verb Exercise'}">
-            <h2 class="practice-type-title">${t.practiceTitleShowTypeVerb || 'Verb Conjugation'}</h2>
             <div class="verb-prompt">${variation.promptText}</div>
             <button id="pronounce-verb-item" class="btn-emoji" title="${t.aria?.pronounce || 'Pronounce'}">🔊</button>
             <input type="text" id="verb-answer-input" placeholder="${t.typeYourAnswerPlaceholder || 'Type your answer...'}" class="exercise-input">
