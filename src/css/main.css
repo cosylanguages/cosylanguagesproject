@@ -1010,22 +1010,6 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
     }
 }
 
-/* ==========================================================================
-   Hint Display Area
-   ========================================================================== */
-.hint-display, .exercise-hint { 
-    margin: 15px 0;
-    padding: 12px 15px;
-    background-color: var(--hint-bg); 
-    border: 1px solid var(--hint-border);
-    border-left: 5px solid #ffc107; 
-    border-radius: 5px;
-    color: var(--hint-text); 
-    font-size: 0.9rem;
-    font-style: italic;
-    text-align: left;
-    line-height: 1.4;
-}
 
 /* Ensure specific patched circular buttons maintain their look if they also get .exercise-button */
 #btn-randomize-category.exercise-button,

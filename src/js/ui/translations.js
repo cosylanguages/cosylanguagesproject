@@ -49,16 +49,6 @@ const translations = {
     noVerbs: 'No verbs available!',
     noVerbForms: 'No verb forms!',
     noGender: 'No gender data!',
-    funFacts: [
-      'Did you know? Spaced repetition boosts memory! 🧠',
-      'Mnemonic: Make a silly story with your word!',
-      'Practice a little every day for best results!',
-      'Visualize the word in a funny scene!',
-      'Say it out loud with a different accent!',
-      'Teach the word to someone else!',
-      'Use gestures or draw the word!',
-      'Recall is stronger if you test yourself after a break!'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -72,21 +62,6 @@ const translations = {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Reset Progress',
     resetConfirm: 'Are you sure you want to reset your progress?',
     alertLangDay: "Please select language and day(s) first",
@@ -287,16 +262,6 @@ const translations = {
     noVerbs: 'Aucun verbe disponible !',
     noVerbForms: 'Pas de formes verbales !',
     noGender: 'Pas de données de genre !',
-    funFacts: [
-      'Le saviez-vous ? La répétition espacée améliore la mémoire ! 🧠',
-      'Mnémonique : inventez une histoire drôle avec votre mot !',
-      'Pratiquez un peu chaque jour pour de meilleurs résultats !',
-      'Visualisez le mot dans une scène amusante !',
-      'Dites-le à voix haute avec un accent différent !',
-      'Apprenez le mot à quelqu’un d’autre !',
-      'Utilisez des gestes ou dessinez le mot !',
-      'On retient mieux en se testant après une pause !'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -310,21 +275,6 @@ const translations = {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Réinitialiser le progrès',
     resetConfirm: 'Voulez-vous vraiment réinitialiser votre progression ?',
     alertLangDay: 'Veuillez d’abord sélectionner une langue et un ou plusieurs jours',
@@ -524,16 +474,6 @@ COSYitaliano: {
   noVerbs: 'Nessun verbo disponibile!',
   noVerbForms: 'Nessuna forma verbale!',
   noGender: 'Nessun dato di genere!',
-  funFacts: [
-    'Lo sapevi? La ripetizione dilazionata migliora la memoria! 🧠',
-    'Mnemonic: Crea una storia buffa con la tua parola!',
-    'Pratica un po\' ogni giorno per ottenere il meglio!',
-    'Visualizza la parola in una scena divertente!',
-    'Dilla ad alta voce con un accento diverso!',
-    'Insegna la parola a qualcun altro!',
-    'Usa gesti o disegna la parola!',
-    'Ricorda meglio se ti testi dopo una pausa!'
-  ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -547,21 +487,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
   resetProgress: 'Reimposta progressi',
   resetConfirm: 'Sei sicuro di voler reimpostare i tuoi progressi?',
   alertLangDay: "Seleziona prima lingua e giorno/i",
@@ -767,16 +692,6 @@ COSYitaliano: {
     noVerbs: '¡No hay verbos disponibles!',
     noVerbForms: '¡No hay formas verbales!',
     noGender: '¡No hay datos de género!',
-    funFacts: [
-      '¿Sabías que la repetición espaciada mejora la memoria? 🧠',
-      'Mnemotecnia: ¡inventa una historia divertida con tu palabra!',
-      '¡Practica un poco cada día para mejores resultados!',
-      '¡Visualiza la palabra en una escena graciosa!',
-      '¡Dila en voz alta con un acento diferente!',
-      '¡Enseña la palabra a alguien más!',
-      '¡Usa gestos o dibuja la palabra!',
-      '¡Recordar es más fácil si te pruebas después de un descanso!'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -790,21 +705,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Restablecer progreso',
     resetConfirm: '¿Estás seguro de que quieres restablecer tu progreso?',
     alertLangDay: "Por favor, selecciona primero el idioma y el/los día(s)",
@@ -1016,16 +916,6 @@ COSYitaliano: {
     noVerbs: 'Nenhum verbo disponível!',
     noVerbForms: 'Nenhuma forma verbal!',
     noGender: 'Nenhum dado de gênero!',
-    funFacts: [
-      'Você sabia? A repetição espaçada melhora a memória! 🧠',
-      'Mnemônico: invente uma história engraçada com sua palavra!',
-      'Pratique um pouco todos os dias para melhores resultados!',
-      'Visualize a palavra em uma cena engraçada!',
-      'Diga em voz alta com um sotaque diferente!',
-      'Ensine a palavra para outra pessoa!',
-      'Use gestos ou desenhe a palavra!',
-      'A lembrança é mais forte se você se testar após uma pausa!'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -1039,21 +929,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Redefinir progresso',
     resetConfirm: 'Tem certeza de que deseja redefinir seu progresso?',
     alertLangDay: 'Por favor, selecione primeiro o idioma e o(s) dia(s)',
@@ -1265,16 +1140,6 @@ COSYitaliano: {
     noVerbs: 'Verbioù ebet !',
     noVerbForms: 'Stummoù verb ebet !',
     noGender: 'Titouroù reizh ebet !',
-    funFacts: [
-      'Gouzout a rit ? Ar pleustriñ a sikour da zerc’hel soñj ! 🧠',
-      'Mnemonik : ijinit ur gontadenn fentus gant ho ger !',
-      'Pleustriñ un tamm bemdez evit ar gwellañ disoc’hoù !',
-      'Ijinait ar ger en un endro fentus !',
-      'Lavarit anezhañ gant un ton disheñvel !',
-      'Deskit ar ger da unan all !',
-      'Implijit jestroù pe tresit ar ger !',
-      'Gwelloc’h e vo ho soñj ma testit goude un ehan !'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -1288,21 +1153,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Adkregiñ gant ar progrez',
     resetConfirm: 'Ha sur oc’h e fell deoc’h adkregiñ gant ho progrez ?',
     alertLangDay: 'Dibabit ur yezh hag un devezh (pe meur a hini) da gentañ',
@@ -1514,16 +1364,6 @@ COSYitaliano: {
     noVerbs: 'Keine Verben verfügbar!',
     noVerbForms: 'Keine Verbformen!',
     noGender: 'Keine Geschlechtsdaten!',
-    funFacts: [
-      'Wussten Sie schon? Das Lernen mit Abständen verbessert das Gedächtnis! 🧠',
-      'Eselsbrücke: Machen Sie eine lustige Geschichte mit Ihrem Wort!',
-      'Üben Sie jeden Tag ein wenig für die besten Ergebnisse!',
-      'Stellen Sie sich das Wort in einer lustigen Szene vor!',
-      'Sagen Sie es laut mit einem anderen Akzent!',
-      'Lehren Sie das Wort jemand anderem!',
-      'Benutzen Sie Gesten oder zeichnen Sie das Wort!',
-      'Das Erinnern fällt leichter, wenn Sie sich nach einer Pause selbst testen!'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -1537,21 +1377,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Fortschritt zurücksetzen',
     resetConfirm: 'Sind Sie sicher, dass Sie Ihren Fortschritt zurücksetzen möchten?',
     alertLangDay: "Bitte wählen Sie zuerst Sprache und Tag(e) aus",
@@ -1791,16 +1616,6 @@ COSYitaliano: {
     noVerbs: 'Δεν υπάρχουν διαθέσιμα ρήματα!',
     noVerbForms: 'Δεν υπάρχουν μορφές ρημάτων!',
     noGender: 'Δεν υπάρχουν δεδομένα γένους!',
-    funFacts: [
-      'Το ήξερες; Η επανάληψη με διαστήματα ενισχύει τη μνήμη! 🧠',
-      'Μνημονικό: φτιάξε μια αστεία ιστορία με τη λέξη σου!',
-      'Εξασκήσου λίγο κάθε μέρα για καλύτερα αποτελέσματα!',
-      'Οπτικοποίησε τη λέξη σε μια αστεία σκηνή!',
-      'Πες τη δυνατά με διαφορετική προφορά!',
-      'Δίδαξε τη λέξη σε κάποιον άλλον!',
-      'Χρησιμοποίησε χειρονομίες ή ζωγράφισε τη λέξη!',
-      'Η ανάκληση είναι ισχυρότερη αν δοκιμαστείς μετά από διάλειμμα!'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -1814,21 +1629,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Επαναφορά προόδου',
     resetConfirm: 'Είστε σίγουροι ότι θέλετε να επαναφέρετε την πρόοδό σας;',
     alertLangDay: 'Επιλέξτε πρώτα γλώσσα και μία ή περισσότερες ημέρες',
@@ -2040,16 +1840,6 @@ COSYitaliano: {
     noVerbs: 'Нет доступных глаголов!',
     noVerbForms: 'Нет форм глаголов!',
     noGender: 'Нет данных о роде!',
-    funFacts: [
-      'Знаете ли вы? Интервальное повторение улучшает память! 🧠',
-      'Мнемоника: придумайте забавную историю с вашим словом!',
-      'Практикуйтесь понемногу каждый день для лучшего результата!',
-      'Визуализируйте слово в забавной сцене!',
-      'Произнесите его вслух с другим акцентом!',
-      'Научите кого-то этому слову!',
-      'Используйте жесты или нарисуйте слово!',
-      'Вспоминать легче, если проверить себя после перерыва!'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -2063,21 +1853,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Сбросить прогресс',
     resetConfirm: 'Вы уверены, что хотите сбросить прогресс?',
     alertLangDay: 'Пожалуйста, выберите язык и день(дни) сначала',
@@ -2289,16 +2064,6 @@ COSYitaliano: {
     noVerbs: 'Фигыльләр юк!',
     noVerbForms: 'Фигыль формалары юк!',
     noGender: 'Җенес турында мәгълүмат юк!',
-    funFacts: [
-      'Сез беләсезме? Интерваллы кабатлау хәтерне яхшырта! 🧠',
-      'Мнемоника: сүзегез белән кызыклы хикәя уйлап табыгыз!',
-      'Иң яхшы нәтиҗәләр өчен һәр көнне бераз күнегегез!',
-      'Сүзне кызыклы күренештә күз алдына китерегез!',
-      'Аны башка акцент белән кычкырып әйтегез!',
-      'Сүзне кемгәдер өйрәтегез!',
-      'Кул хәрәкәтләрен кулланыгыз яки сүзне рәсемләгез!',
-      'Тәнәфестән соң үзегезне тикшерсәгез, яхшырак истә кала!'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -2312,21 +2077,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Прогресты яңыртыу',
     resetConfirm: 'Прогресты яңартырга теләйһегеҙме?',
     alertLangDay: 'Башта телне һәм көнне сайлагыз',
@@ -2533,16 +2283,6 @@ COSYitaliano: {
   noVerbs: 'Фигыль юҡ!',
   noVerbForms: 'Фигыль формалары юҡ!',
   noGender: 'Йәнес мәғлүмәте юҡ!',
-  funFacts: [
-    'Зинән беләһегеҙме? Ваҡытлы ҡабатлау хәтерҙе нығыта! 🧠',
-    'Күлдәү: һүҙ менән көлөп торған хикәйә ҡороғоҙ!',
-    'Һәр көн аҙ-әҙ күнегеп тороғоҙ!',
-    'Һүҙҙе ҡыҙыҡ графика эсендә күҙ алдына килтерегеҙ!',
-    'Ташҡын менән башҡа ҡайсысы акцентла әйтегеҙ!',
-    'Бынан тыш кешегә өйрәтәгеҙ!',
-    'Һүҙҙе баһалап ҡарағыҙ йәки таяныс!',
-    'Ҡайтҡандан һуң үҙегеҙҙе тикшерегеҙ!'
-  ],
   "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
   "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
   "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -2556,21 +2296,6 @@ COSYitaliano: {
   "achievementFirstWordDesc": "You've learned your first vocabulary word!",
   "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
   "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-  learningTips: [
-      "Try to think in the language you are learning.",
-      "Label items in your house with their names in the new language.",
-      "Practice a little bit every day, consistency is key!",
-      "Don't be afraid to make mistakes, they are part of learning.",
-      "Immerse yourself: listen to music or watch shows in the language."
-  ],
-  helpTopics: [
-      "Stuck? Try a different exercise type or review a previous lesson.",
-      "Use the translate button on this popup for a hint if the content is in the learning language.",
-      "Check your progress regularly to stay motivated."
-  ],
-  popupLabelTip: "💡 Tip:",
-  popupLabelFunFact: "🤓 Fun Fact:",
-  popupLabelHelp: "❓ Help:",
   resetProgress: 'Үҫеште кире ҡаҡырға',
   resetConfirm: 'Үҫештәрегеҙҙе кире ҡаҡырырға теләйһегеҙме?',
   alertLangDay: "Иң тәүҙә тел һәм көн(дәр) һайлағыҙ",
@@ -2775,16 +2500,6 @@ COSYitaliano: {
     noVerbs: 'Բայեր չեն հասանելի!',
     noVerbForms: 'Բայաձևեր չկան!',
     noGender: 'Սեռի տվյալներ չկան!',
-    funFacts: [
-      'Գիտե՞ք, որ տարածված կրկնությունը բարելավում է հիշողությունը: 🧠',
-      'Մնեմոնիկ՝ ստեղծեք ձեր բառի շուրջ զվարճալի պատմություն:',
-      'Լավագույն արդյունքների համար ամեն օր մի փոքր վարժեք արեք:',
-      'Նկարագրեք բառը զվարճալի տեսարանում:',
-      'Ասեք այն բարձրաձայն այլ շեշտադրությամբ:',
-      'Սովորեցրեք այդ բառը ուրիշ մեկին:',
-      'Օգտագործեք ժեստեր կամ նկարեք բառը:',
-      'Հիշելը ավելի ուժեղ է, եթե ինքներդ ձեզ փորձեք ընդմիջումից հետո:'
-    ],
     "streakBonusToast3Days": "🎉 3-Day Streak! +15 Bonus XP!",
     "streakBonusToast7Days": "🔥 7-Day Streak! +35 Bonus XP!",
     "streakBonusToast14Days": "🚀 14-Day Streak! +75 Bonus XP!",
@@ -2798,21 +2513,6 @@ COSYitaliano: {
     "achievementFirstWordDesc": "You've learned your first vocabulary word!",
     "achievementGrammarGuruEasyName": "🧩 Grammar Apprentice!",
     "achievementGrammarGuruEasyDesc": "You're on your way to mastering 5 verb concepts!",
-    learningTips: [
-        "Try to think in the language you are learning.",
-        "Label items in your house with their names in the new language.",
-        "Practice a little bit every day, consistency is key!",
-        "Don't be afraid to make mistakes, they are part of learning.",
-        "Immerse yourself: listen to music or watch shows in the language."
-    ],
-    helpTopics: [
-        "Stuck? Try a different exercise type or review a previous lesson.",
-        "Use the translate button on this popup for a hint if the content is in the learning language.",
-        "Check your progress regularly to stay motivated."
-    ],
-    popupLabelTip: "💡 Tip:",
-    popupLabelFunFact: "🤓 Fun Fact:",
-    popupLabelHelp: "❓ Help:",
     resetProgress: 'Վերականգնել առաջընթացը',
     resetConfirm: 'Արդյո՞ք դուք վստահ եք, որ ցանկանում եք վերականգնել ձեր առաջընթացը:',
     alertLangDay: 'Խնդրում ենք նախ ընտրել լեզու և օր(եր)',
