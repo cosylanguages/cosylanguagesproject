@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>COSYlanguages</h1>
-        
+
         <div class="menu-section">
             <label for="language">🌎 Choose Your Language:</label>
             <select id="language">
@@ -29,7 +29,7 @@
             </select>
             <button id="toggle-latinization-btn" title="Toggle Latinization" style="margin-left: 10px; padding: 5px 10px; background-color: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Latinize: On</button>
         </div>
-        
+
         <div class="menu-section">
             <label for="day">📅 Choose Your Day:</label>
             <select id="day" aria-label="Choose your day">
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="menu-section">
             <label id="choose-practice-label">🧭 Choose Your Practice:</label>
             <div class="practice-types" role="navigation" aria-label="Practice type menu">
@@ -62,7 +62,7 @@
                 <button id="writing-btn" class="btn-primary" aria-label="Writing" title="Writing" role="button">✍️ Writing</button>
                 <button id="practice-all-btn" class="btn-primary option-btn" aria-label="Practice All" title="Practice All" role="button">🔄 Practice All</button>
             </div>
-            
+
             <div id="vocabulary-options" class="practice-options" aria-label="Vocabulary options" role="region">
                 <div class="vocabulary-options">
                     <button id="random-word-btn" class="btn-secondary option-btn" aria-label="Random Word" title="Random Word" role="button">🔤 Random Word</button>
@@ -71,7 +71,7 @@
                     <button id="practice-all-vocab-btn" class="btn-secondary option-btn" aria-label="Practice All Vocabulary" title="Practice All Vocabulary" role="button">🔄 Practice All</button>
                 </div>
             </div>
-            
+
             <div id="grammar-options" class="practice-options" aria-label="Grammar options" role="region">
                 <div class="grammar-options">
                     <button id="gender-btn" class="btn-secondary option-btn" aria-label="Gender" title="Gender" role="button">✨ Gender</button>
@@ -87,7 +87,7 @@
                     <button id="interesting-fact-btn" class="btn-secondary option-btn" aria-label="Interesting facts" title="Interesting facts" role="button">🔄 Interesting facts</button>
                 </div>
             </div>
-            
+
             <div id="speaking-options" class="practice-options" aria-label="Speaking options" role="region">
                 <div class="speaking-options">
                 <button id="question-practice-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button">❓ Question</button>
@@ -103,18 +103,10 @@
                 <button id="storytelling-btn" class="btn-secondary option-btn" aria-label="Storytelling" title="Storytelling" role="button">📜 Storytelling</button>
                 <button id="diary-btn" class="btn-secondary option-btn" aria-label="Diary" title="Diary" role="button">📔 Diary</button>
                 </div>
-            </div>  
+            </div>
         </div>
-        
-        <div id="result" class="result-area flex-center"></div>
-    </div>
 
-    <!-- Floating Help Button -->
-    <button id="floating-help-btn" title="Help / Fun Fact / Tip">❓</button>
-    <!-- Floating Fun Fact / Tip Popup -->    <div id="floating-tip-popup">
-      <span id="floating-tip-text"></span>
-      <button class="close-tip" title="Close">✖</button>
-      <button class="translate-tip" title="Translate">🌍</button>
+        <div id="result" class="result-area flex-center"></div>
     </div>
 
     <script>
@@ -169,7 +161,7 @@
             if (savedDayTo && dayToSelect) {
                 dayToSelect.value = savedDayTo;
             }
-            
+
             // After restoring day selections, ensure dependent UI updates
             if (typeof updateDaySelectors === 'function') {
                  updateDaySelectors(); // This function should handle visibility of single vs range
@@ -284,7 +276,7 @@ function hideOtherMainPracticeTypes(selectedId) {
                 document.body.classList.add('flag-' + lang);
             }
         });
-    
+
         // Helper: get selected days (single or range)
         function getSelectedDays() {
             const day = document.getElementById('day').value;
@@ -356,13 +348,13 @@ function hideOtherMainPracticeTypes(selectedId) {
     <script src="src/js/exercises/vocabulary-progression.js" defer></script>
     <script src="src/js/exercise-progression.js" defer></script>
     <script src="src/js/exercises/grammar.js"></script>
-    <script src="src/js/exercises/speaking.js"></script> 
+    <script src="src/js/exercises/speaking.js"></script>
     <script src="src/js/exercises/writing.js"></script>
-    <script src="src/js/exercises/reading.js"></script> 
+    <script src="src/js/exercises/reading.js"></script>
     <script src="src/js/buttons.js"></script>
     <script src="src/js/language-handler.js"></script>
     <script src="src/js/event-listeners-setup.js"></script>
-    <script src="src/js/achievements-data.js"></script> 
+    <script src="src/js/achievements-data.js"></script>
     <!-- interactive.js should be loaded after all feature scripts -->
     <script src="src/js/ui/interactive.js"></script>
 
