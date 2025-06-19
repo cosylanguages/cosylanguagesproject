@@ -18,17 +18,17 @@ async function loadGenderGrammar(language, day) {
     const file = fileMap[language];
     if (!file) {
         console.error(`Error loading gender grammar: No file mapped for language ${language}`);
-        return []; 
+        return [];
     }
-    
-    const loadResult = await loadData(file); 
-    
+
+    const loadResult = await loadData(file);
+
     if (loadResult.error) {
         console.error(`Error loading gender grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
-        return []; 
+        return [];
     }
-    
-    const data = loadResult.data; 
+
+    const data = loadResult.data;
    // Ensure data for the specific day is returned, or an empty array if not present
     let dayData = [];
     if (data) {
@@ -43,7 +43,7 @@ async function loadGenderGrammar(language, day) {
     return dayData;
 }
 
-async function loadVerbGrammar(language, days) { 
+async function loadVerbGrammar(language, days) {
     const fileMap = {
         'COSYenglish': 'data/grammar/verbs/grammar_verbs_english.json',
         'COSYitaliano': 'data/grammar/verbs/grammar_verbs_italian.json',
@@ -63,8 +63,8 @@ async function loadVerbGrammar(language, days) {
         console.error(`Error loading verb grammar: No file mapped for language ${language}`);
         return [];
     }
-    const loadResult = await loadData(file); 
-    
+    const loadResult = await loadData(file);
+
     if (loadResult.error) {
         console.error(`Error loading verb grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
         return [];
@@ -96,9 +96,9 @@ async function loadVerbGrammar(language, days) {
     for (let i = startDay; i <= endDay; i++) {
         const currentDayKey = String(i);
         const dayData = data[currentDayKey] ? data[currentDayKey] : [];
-        
+
         for (const item of dayData) {
-            const stringifiedItem = JSON.stringify(item); 
+            const stringifiedItem = JSON.stringify(item);
             if (!seenItems.has(stringifiedItem)) {
                 seenItems.add(stringifiedItem);
                 combinedVerbData.push(item);
@@ -133,16 +133,16 @@ async function loadVocabularyData(language, days) {
         console.error(`Error loading vocabulary for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
         return [];
     }
-    const vocabData = loadResult.data; 
+    const vocabData = loadResult.data;
     if (!vocabData) {
         console.error(`No data found in ${file} for language ${language}`);
         return [];
     }
 
     let combinedVocabularyWords = [];
-    let seenVocabItems = new Set(); 
+    let seenVocabItems = new Set();
 
-    if (!days || days.length === 0) { 
+    if (!days || days.length === 0) {
         return [];
     }
 
@@ -160,11 +160,11 @@ async function loadVocabularyData(language, days) {
     for (let i = startDay; i <= endDay; i++) {
         const currentDayKey = String(i);
         const dayVocab = vocabData[currentDayKey] ? vocabData[currentDayKey] : [];
-        for (const wordObj of dayVocab) { 
+        for (const wordObj of dayVocab) {
             const stringifiedWordObj = JSON.stringify(wordObj);
             if (wordObj.word && !seenVocabItems.has(stringifiedWordObj)) {
                 seenVocabItems.add(stringifiedWordObj);
-                combinedVocabularyWords.push(wordObj.word); 
+                combinedVocabularyWords.push(wordObj.word);
             }
         }
     }
@@ -192,8 +192,8 @@ async function loadPossessivesGrammar(language, day) {
         console.error(`Error loading possessives grammar: No file mapped for language ${language}`);
         return [];
     }
-    const loadResult = await loadData(file); 
-    
+    const loadResult = await loadData(file);
+
     if (loadResult.error) {
         console.error(`Error loading possessives grammar for ${language} from ${file}: ${loadResult.errorType} - ${loadResult.error}`);
         return [];
@@ -205,7 +205,7 @@ async function loadPossessivesGrammar(language, day) {
 const LANGUAGE_GENDER_SYSTEMS = { /* ... existing ... */ };
 const ARTICLE_CATEGORIES = { /* ... existing ... */ };
 
-const GRAMMAR_PRACTICE_TYPES = { 
+const GRAMMAR_PRACTICE_TYPES = {
     'gender': {
         exercises: ['showArticleWord', 'showMatchArticlesWords', 'showSelectArticleExercise'],
         name: 'Gender & Articles'
@@ -220,14 +220,14 @@ const GRAMMAR_PRACTICE_TYPES = {
     // }
 };
 
-function initGrammarPractice() { 
+function initGrammarPractice() {
     document.getElementById('gender-practice-btn')?.addEventListener('click', startGenderPractice);
     document.getElementById('verbs-practice-btn')?.addEventListener('click', startVerbsPractice);
     // document.getElementById('possessives-practice-btn')?.addEventListener('click', startPossessivesPractice);
     document.getElementById('practice-all-grammar-btn')?.addEventListener('click', practiceAllGrammar);
 }
 
-async function startGenderPractice() { 
+async function startGenderPractice() {
     const exercises = GRAMMAR_PRACTICE_TYPES['gender'].exercises;
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
     if (typeof window[randomExercise] === 'function') {
@@ -249,13 +249,13 @@ async function showArticleWord() {
     }
     const items = await loadGenderGrammar(language, days);
     if (!items.length) {
-        showNoDataMessage();
+        showNoDataMessage(); // Assumes showNoDataMessage is globally available (e.g. from utils.js)
         return;
     }
     const item = items[Math.floor(Math.random() * items.length)];
     const variations = [
-        { type: 'article', question: `"${item.word}"`, answer: item.article }, 
-        { type: 'word', question: `"${item.article}"`, answer: item.word }    
+        { type: 'article', question: `"${item.word}"`, answer: item.article },
+        { type: 'word', question: `"${item.article}"`, answer: item.word }
     ];
     const variation = variations[Math.floor(Math.random() * variations.length)];
 
@@ -286,7 +286,7 @@ async function showArticleWord() {
             if (!userInput) {
                 feedbackText = `<span style="color:#e67e22;">${t.feedbackPleaseType || 'Please type your answer above.'}</span>`;
             } else {
-                if (variation.type === 'article') { 
+                if (variation.type === 'article') {
                     if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
                         feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
                         CosyAppInteractive.awardCorrectAnswer();
@@ -296,10 +296,9 @@ async function showArticleWord() {
                         feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${variation.answer}</b></span>`;
                         CosyAppInteractive.awardIncorrectAnswer();
                     }
-                } else { 
-                    const targetArticle = item.article; 
-                    // Ensure 'items' from the outer scope is used, not re-declared by mistake if it was intended to be from the outer scope
-                    const currentItems = await loadGenderGrammar(document.getElementById('language').value, getSelectedDays()); 
+                } else {
+                    const targetArticle = item.article;
+                    const currentItems = await loadGenderGrammar(document.getElementById('language').value, getSelectedDays());
                     const isValidWordForArticle = currentItems.some(i => i.article.toLowerCase() === targetArticle.toLowerCase() && i.word.toLowerCase() === userInput.toLowerCase());
                     if (isValidWordForArticle) {
                         feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
@@ -313,23 +312,23 @@ async function showArticleWord() {
                 }
             }
             document.getElementById('gender-answer-feedback').innerHTML = feedbackText;
-            if(isCorrect){ 
+            if(isCorrect){
                  setTimeout(() => { startGenderPractice(); }, 1200);
             }
         };
     }
-    
+
     const pronounceButton = document.getElementById('pronounce-gender-item');
     if (pronounceButton && typeof pronounceWord === 'function') {
         const wordToPronounce = variation.type === 'article' ? item.word : item.article;
-        if (wordToPronounce) pronounceWord(wordToPronounce, language); 
+        if (wordToPronounce) pronounceWord(wordToPronounce, language);
         pronounceButton.addEventListener('click', () => {
             if (wordToPronounce) pronounceWord(wordToPronounce, language);
         });
     }
 }
 
-async function showMatchArticlesWords() { 
+async function showMatchArticlesWords() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
@@ -340,21 +339,21 @@ async function showMatchArticlesWords() {
         return;
     }
     const genderData = await loadGenderGrammar(language, days);
-    if (!genderData || genderData.length < 2) { // Need at least 2 items for a match
+    if (!genderData || genderData.length < 2) {
         showNoDataMessage();
         return;
     }
 
-    let selectedItems = shuffleArray([...genderData]).slice(0, Math.min(genderData.length, 5)); // Max 5 pairs
+    let selectedItems = shuffleArray([...genderData]).slice(0, Math.min(genderData.length, 5));
     if (selectedItems.length < 2) {
         showNoDataMessage();
         return;
     }
-     
+
     const displayArticles = selectedItems.map(item => item.article);
     const displayWords = selectedItems.map(item => item.word);
-    const shuffledDisplayArticles = shuffleArray([...displayArticles]); 
-    const shuffledDisplayWords = shuffleArray([...displayWords]);     
+    const shuffledDisplayArticles = shuffleArray([...displayArticles]);
+    const shuffledDisplayWords = shuffleArray([...displayWords]);
 
     resultArea.innerHTML = `
         <div class="match-exercise" role="region" aria-label="${t.aria?.matchArticlesWords || 'Match Articles and Words'}">
@@ -380,7 +379,7 @@ async function showMatchArticlesWords() {
             exerciseContainer.appendChild(hintDisplay);
         };
     }
-    
+
     let selectedArticleEl = null, selectedWordEl = null;
     let matchedPairs = 0;
 
@@ -440,7 +439,7 @@ async function showSelectArticleExercise() {
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
     const t = translations[language] || translations.COSYenglish;
-    const NUM_ARTICLE_OPTIONS = 4; 
+    const NUM_ARTICLE_OPTIONS = 4;
 
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
     const items = await loadGenderGrammar(language, days);
@@ -449,25 +448,25 @@ async function showSelectArticleExercise() {
     const selectedItem = items[Math.floor(Math.random() * items.length)];
     const correctArticle = selectedItem.article;
     const wordToShow = selectedItem.word;
-    
+
     let allArticlesForLang = [];
-    if (ARTICLE_CATEGORIES[language]) { allArticlesForLang = Object.keys(ARTICLE_CATEGORIES[language]); } 
-    else if (language === 'COSYenglish') { allArticlesForLang = ['he', 'she', 'it', 'he/she'];} 
+    if (ARTICLE_CATEGORIES[language]) { allArticlesForLang = Object.keys(ARTICLE_CATEGORIES[language]); }
+    else if (language === 'COSYenglish') { allArticlesForLang = ['he', 'she', 'it', 'he/she'];}
     else { const uniqueArticles = new Set(items.map(i => i.article)); allArticlesForLang = Array.from(uniqueArticles); }
 
     let articleOptions = [correctArticle];
     let distractorArticles = shuffleArray(allArticlesForLang.filter(a => a.toLowerCase() !== correctArticle.toLowerCase()));
-    
+
     for(let i=0; articleOptions.length < NUM_ARTICLE_OPTIONS && i < distractorArticles.length; i++){
         articleOptions.push(distractorArticles[i]);
     }
     articleOptions = shuffleArray(articleOptions);
-    
-    if (allArticlesForLang.length < 2 && articleOptions.length < 2) { 
+
+    if (allArticlesForLang.length < 2 && articleOptions.length < 2) {
         resultArea.innerHTML = `<p>${t.notEnoughOptionsError || 'Not enough article options to create this exercise.'}</p>`;
-        return; 
+        return;
     }
-    
+
     resultArea.innerHTML = `
         <div class="select-article-exercise" role="form" aria-label="${t.aria?.selectArticleExercise || 'Select the Article Exercise'}">
             <div class="exercise-prompt" aria-label="${wordToShow}"><strong>${wordToShow}</strong></div>
@@ -496,7 +495,7 @@ async function showSelectArticleExercise() {
 
     const pronounceButton = document.getElementById('pronounce-select-article-word');
      if (pronounceButton && typeof pronounceWord === 'function') {
-        pronounceWord(wordToShow, language); // Auto-pronounce
+        pronounceWord(wordToShow, language);
         pronounceButton.addEventListener('click', () => pronounceWord(wordToShow, language));
      }
 
@@ -504,7 +503,7 @@ async function showSelectArticleExercise() {
         btn.onclick = function() {
             const userAnswer = this.dataset.article;
             const feedbackEl = document.getElementById('select-article-feedback');
-            document.querySelectorAll('.article-option-btn').forEach(b => b.disabled = true); // Disable all buttons
+            document.querySelectorAll('.article-option-btn').forEach(b => b.disabled = true);
 
             if (userAnswer.toLowerCase() === correctArticle.toLowerCase()) {
                 this.classList.add('correct-selection');
@@ -513,7 +512,6 @@ async function showSelectArticleExercise() {
                 CosyAppInteractive.scheduleReview(language, 'gender-select', {word: wordToShow, article: correctArticle}, true);
             } else {
                 this.classList.add('incorrect-selection');
-                // Highlight the correct answer
                 const correctBtn = document.querySelector(`.article-option-btn[data-article="${correctArticle}"]`);
                 if(correctBtn) correctBtn.classList.add('correct-selection');
                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctArticle}</b></span>`;
@@ -525,7 +523,7 @@ async function showSelectArticleExercise() {
     });
 }
 
-async function startVerbsPractice() { 
+async function startVerbsPractice() {
     const exercises = GRAMMAR_PRACTICE_TYPES['verbs'].exercises;
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
     if (typeof window[randomExercise] === 'function') {
@@ -545,7 +543,7 @@ async function showTypeVerb() {
     const items = await loadVerbGrammar(language, days);
     if (!items.length) { showNoDataMessage(); return; }
     const item = items[Math.floor(Math.random() * items.length)];
-    
+
     const variations = [
         { type: 'infinitive', promptText: `${t.infinitiveOf || "Infinitive of"} "${item.prompt}"`, pronounceText: item.prompt, answer: item.infinitive },
         { type: 'conjugated', promptText: `${t.conjugateFor || "Conjugate"} "${item.infinitive}" ${t.forPronoun || "for"} "${item.prompt}"`, pronounceText: item.infinitive, answer: item.answer }
@@ -575,8 +573,8 @@ async function showTypeVerb() {
         exerciseContainer.checkAnswer = function() {
             const userAnswer = document.getElementById('verb-answer-input').value.trim();
             const feedbackEl = document.getElementById('verb-answer-feedback');
-            const currentLanguage = document.getElementById('language').value; // Ensure language is fresh
-            const t = translations[currentLanguage] || translations.COSYenglish; 
+            const currentLanguage = document.getElementById('language').value;
+            const t = translations[currentLanguage] || translations.COSYenglish;
             if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
                 feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
                 CosyAppInteractive.awardCorrectAnswer();
@@ -599,23 +597,23 @@ async function showTypeVerb() {
     }
 }
 
-async function showMatchVerbsPronouns() { 
+async function showMatchVerbsPronouns() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
     const t = translations[language] || translations.COSYenglish;
-    
+
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
-    const verbItems = await loadVerbGrammar(language, days); 
+    const verbItems = await loadVerbGrammar(language, days);
     if (!verbItems || verbItems.length < 2) { showNoDataMessage(); return; }
 
     const suitableItems = verbItems.filter(item => typeof item.prompt !== 'undefined' && typeof item.answer !== 'undefined' && item.prompt.trim() !== '' && item.answer.trim() !== '');
     if (suitableItems.length < 2) { showNoDataMessage(); return; }
 
     const itemsForGame = shuffleArray(suitableItems).slice(0, Math.min(suitableItems.length, 5));
-    const prompts = itemsForGame.map(item => item.prompt); // These are usually pronouns or subjects
-    const answersToMatch = itemsForGame.map(item => item.answer); // These are the conjugated verbs
-    
+    const prompts = itemsForGame.map(item => item.prompt);
+    const answersToMatch = itemsForGame.map(item => item.answer);
+
     const shuffledPrompts = shuffleArray([...prompts]);
     const shuffledAnswers = shuffleArray([...answersToMatch]);
 
@@ -639,7 +637,7 @@ async function showMatchVerbsPronouns() {
             exerciseContainer.appendChild(hintDisplay);
         };
     }
-    
+
     let selectedPromptEl = null, selectedAnswerEl = null;
     let matchedPairsCount = 0;
 
@@ -683,10 +681,10 @@ async function showMatchVerbsPronouns() {
             } else {
                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notAMatch || 'Not a match. Try again!'}</span>`;
                 CosyAppInteractive.awardIncorrectAnswer();
-                selectedPromptEl.classList.remove('selected'); // Allow re-selection
+                selectedPromptEl.classList.remove('selected');
                 selectedAnswerEl.classList.remove('selected');
             }
-            selectedPromptEl = null; // Reset for next attempt
+            selectedPromptEl = null;
             selectedAnswerEl = null;
         }
     }
@@ -694,38 +692,143 @@ async function showMatchVerbsPronouns() {
 
 async function showFillGaps() {
     const language = document.getElementById('language').value;
-    const days = getSelectedDays();
+    const days = getSelectedDays(); // Assuming getSelectedDays() is available
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (typeof translations !== 'undefined' && translations[language]) || (typeof translations !== 'undefined' && translations.COSYenglish) || {};
 
-    if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
-    const verbData = await loadVerbGrammar(language, days);
-    if (!verbData.length) { showNoDataMessage(); return; }
-    
-    let suitableItem = verbData.find(vi => vi.example && vi.example.sentence && vi.example.sentence.includes("___") && vi.example.correct_form);
-    if (!suitableItem) {
-        // Try to find at least one item that *could* be suitable if we manufacture the blank
-        suitableItem = verbData.find(vi => vi.example && vi.example.sentence && vi.example.correct_form);
-        if (suitableItem && suitableItem.example.sentence.includes(suitableItem.example.correct_form)) {
-            suitableItem.example.sentence = suitableItem.example.sentence.replace(suitableItem.example.correct_form, "___");
+    if (!language || !days || days.length === 0) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
+        return;
+    }
+
+    const structureTypes = ['SVO', 'SVO_negative_verb', 'SVO_negative_aux'];
+    const selectedStructureType = typeof getRandomElement === 'function' ? getRandomElement(structureTypes) : structureTypes[0];
+
+    if (typeof generateStatement !== 'function') {
+        console.error("generateStatement function is not defined. Make sure sentenceGenerator.js is loaded.");
+        if (typeof showNoDataMessage === 'function') {
+            showNoDataMessage(t.errorGeneratingExercise || "Error generating exercise. Function not found.");
         } else {
-            // If still no suitable item, show message and return
-            console.warn("No suitable verb item found for fill-gaps after attempting to create a blank.");
-            showNoDataMessage();
+            alert(t.errorGeneratingExercise || "Error generating exercise. Function not found.");
+        }
+        return;
+    }
+
+    const generated = await generateStatement(language, days, selectedStructureType);
+
+    if (!generated || !generated.sentence) {
+        console.warn("Failed to generate a statement for fill-gaps.");
+        if (typeof showNoDataMessage === 'function') {
+            showNoDataMessage(t.noDataForExercise || "No suitable data found for this exercise.");
+        } else {
+            alert(t.noDataForExercise || "No suitable data found for this exercise.");
+        }
+        return;
+    }
+
+    let sentenceToDisplay = generated.sentence;
+    let correctAnswer = '';
+    let partToGap;
+
+    const gapChoice = Math.random();
+
+    if (gapChoice < 0.33 && generated.subject && generated.parts.includes(generated.subject)) {
+        partToGap = generated.subject;
+        correctAnswer = generated.subject;
+    } else if (gapChoice < 0.66 && generated.conjugatedVerb && generated.parts.includes(generated.conjugatedVerb)) {
+        partToGap = generated.conjugatedVerb;
+        correctAnswer = generated.conjugatedVerb;
+    } else if (generated.object && generated.parts.includes(generated.object)) {
+        partToGap = generated.object;
+        correctAnswer = generated.object;
+    } else {
+        const possiblePartsToGap = generated.parts.filter(p => p && p.trim() !== "" && [generated.subject, generated.conjugatedVerb, generated.object].includes(p));
+        if (possiblePartsToGap.length > 0) {
+            partToGap = typeof getRandomElement === 'function' ? getRandomElement(possiblePartsToGap) : possiblePartsToGap[0];
+            correctAnswer = partToGap;
+        } else {
+            console.warn("Could not determine a clear part to gap in fill-gaps. Generated:", generated);
+             if (typeof showNoDataMessage === 'function') {
+                showNoDataMessage(t.noDataForExercise || "No suitable data found for this exercise.");
+            } else {
+                alert(t.noDataForExercise || "No suitable data found for this exercise.");
+            }
             return;
         }
     }
-    
-    const sentence = suitableItem.example.sentence;
-    const correctAnswer = suitableItem.example.correct_form;
-    const verbItem = suitableItem; // For hint access
+
+    let replaced = false;
+    const tempParts = generated.parts.map(p => {
+        if (!replaced && p && correctAnswer && p.toLowerCase() === correctAnswer.toLowerCase()) {
+            replaced = true;
+            return '___';
+        }
+        return p;
+    });
+
+    if (replaced) {
+        sentenceToDisplay = tempParts.join(' ') + (generated.sentence.endsWith('?') ? '?' : '.');
+    } else {
+        if (generated.sentence.includes(correctAnswer)) {
+            sentenceToDisplay = generated.sentence.replace(correctAnswer, '___');
+        } else {
+            console.error("Failed to create a gap in the sentence (initial attempt):", generated.sentence, "Trying to gap:", correctAnswer);
+            const correctAnswerParts = correctAnswer.split(' ');
+            let potentialGapFound = false;
+            if(correctAnswerParts.length > 1) {
+                let matchIndex = -1;
+                for(let i=0; i <= generated.parts.length - correctAnswerParts.length; i++) {
+                    let segmentMatch = true;
+                    for(let j=0; j < correctAnswerParts.length; j++) {
+                        if(generated.parts[i+j].toLowerCase() !== correctAnswerParts[j].toLowerCase()){
+                            segmentMatch = false;
+                            break;
+                        }
+                    }
+                    if(segmentMatch) {
+                        matchIndex = i;
+                        break;
+                    }
+                }
+                if(matchIndex !== -1) {
+                    const newDisplayParts = [...generated.parts];
+                    newDisplayParts.splice(matchIndex, correctAnswerParts.length, "___");
+                    sentenceToDisplay = newDisplayParts.join(' ') + (generated.sentence.endsWith('?') ? '?' : '.');
+                    potentialGapFound = true;
+                }
+            }
+
+            if (!potentialGapFound) {
+                 console.error("Failed to create a gap in the sentence for fill-gaps (final attempt):", generated.sentence, "Trying to gap:", correctAnswer);
+                if (typeof showNoDataMessage === 'function') {
+                    showNoDataMessage(t.errorGeneratingExercise || "Error generating exercise content.");
+                } else {
+                    alert(t.errorGeneratingExercise || "Error generating exercise content.");
+                }
+                return;
+            }
+        }
+    }
+     if (!sentenceToDisplay.includes('___')) {
+        console.error("Gap '___' is missing from sentenceToDisplay after all attempts:", sentenceToDisplay);
+        if (typeof showNoDataMessage === 'function') {
+            showNoDataMessage(t.errorGeneratingExercise || "Error: Could not prepare exercise sentence.");
+        } else {
+            alert(t.errorGeneratingExercise || "Error: Could not prepare exercise sentence.");
+        }
+        return;
+    }
 
     resultArea.innerHTML = `
         <div class="fill-gap-exercise">
-            <div class="sentence-with-gap">${sentence.replace('___', '<input type="text" id="gap-answer" class="exercise-input" placeholder="'+ (t.typeYourAnswerPlaceholder || 'Type your answer...') +'">')}</div>
+            <h2 class="practice-type-title">${t.practiceTitleFillGaps || 'Fill in the Gaps'}</h2>
+            <div class="sentence-with-gap" id="sentence-display">
+                ${sentenceToDisplay.replace('___', '<input type="text" id="gap-answer" class="exercise-input" placeholder="'+ (t.typeYourAnswerPlaceholder || 'Type your answer...') +'">')}
+            </div>
             <div id="gap-feedback" class="exercise-feedback"></div>
         </div>
     `;
+
     const exerciseContainer = resultArea.querySelector('.fill-gap-exercise');
     if (exerciseContainer) {
         exerciseContainer.showHint = () => {
@@ -733,26 +836,47 @@ async function showFillGaps() {
             if (existingHint) existingHint.remove();
             const hintDisplay = document.createElement('div');
             hintDisplay.className = 'hint-display';
-            const infinitive = verbItem.infinitive || (t.relatedVerb || "related verb");
-            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintFillGap || "Identify the subject and tense required for the verb. The base verb is related to items like"} '${infinitive}'.`;
-            exerciseContainer.appendChild(hintDisplay);
+            let hintText = t.hintFillGap || "Identify the missing word based on context. ";
+            if (partToGap === generated.subject) hintText += (t.hintGapIsSubject || "The gap is the subject.");
+            else if (partToGap === generated.conjugatedVerb) hintText += (t.hintGapIsVerb || "The gap is the verb.");
+            else if (partToGap === generated.object) hintText += (t.hintGapIsObject || "The gap is the object.");
+            else hintText += (t.hintGapIsGeneral || "Consider the sentence structure.");
+
+            if (correctAnswer && correctAnswer.length > 0) {
+                 hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${hintText} (Correct answer starts with: ${correctAnswer.charAt(0)})`;
+            } else {
+                 hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${hintText}`;
+            }
+
+            const feedbackDiv = exerciseContainer.querySelector('#gap-feedback');
+            if (feedbackDiv) exerciseContainer.insertBefore(hintDisplay, feedbackDiv);
+            else exerciseContainer.appendChild(hintDisplay);
         };
         exerciseContainer.checkAnswer = () => {
             const userAnswer = document.getElementById('gap-answer').value.trim();
             const feedbackEl = document.getElementById('gap-feedback');
             const currentLanguage = document.getElementById('language').value;
-            const t = translations[currentLanguage] || translations.COSYenglish;
-            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-                feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-                CosyAppInteractive.awardCorrectAnswer();
-                CosyAppInteractive.scheduleReview(currentLanguage, 'fill-gap', {sentence, correctAnswer}, true);
-            } else {
-                feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctAnswer}</b></span>`;
-                CosyAppInteractive.awardIncorrectAnswer();
-                CosyAppInteractive.scheduleReview(currentLanguage, 'fill-gap', {sentence, correctAnswer}, false);
+            const currentT = (typeof translations !== 'undefined' && translations[currentLanguage]) || (typeof translations !== 'undefined' && translations.COSYenglish) || {};
+
+            if (!userAnswer) {
+                 feedbackEl.innerHTML = `<span style="color:#e67e22;">${currentT.feedbackPleaseType || 'Please type your answer above.'}</span>`;
+                 return;
             }
-            setTimeout(() => { showFillGaps(); }, 1500); 
+
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                feedbackEl.innerHTML = `<span class="correct">✅ ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
+                if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
+            } else {
+                feedbackEl.innerHTML = `<span class="incorrect">❌ ${currentT.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctAnswer}</b></span>`;
+                if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
+            }
+            const inputField = document.getElementById('gap-answer');
+            if(inputField) inputField.disabled = true;
         };
+    }
+    const gapAnswerInput = document.getElementById('gap-answer');
+    if (gapAnswerInput) {
+        gapAnswerInput.focus();
     }
 }
 
@@ -760,44 +884,61 @@ async function showWordOrder() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (typeof translations !== 'undefined' && translations[language]) || (typeof translations !== 'undefined' && translations.COSYenglish) || {};
 
-    if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
-    const verbData = await loadVerbGrammar(language, days);
-    if (!verbData || verbData.length === 0) { showNoDataMessage(); return; } 
-    
-    let sentenceParts = [];
-    let originalSentence = "";
-    let foundSuitableSentence = false;
-
-    for(let i=0; i < verbData.length && !foundSuitableSentence; i++){
-        const verbItem = verbData[Math.floor(Math.random() * verbData.length)];
-        if (verbItem && verbItem.example && verbItem.example.sentence_parts && verbItem.example.sentence_parts.length > 1) {
-            sentenceParts = verbItem.example.sentence_parts.filter(p => p && String(p).trim() !== '');
-            originalSentence = verbItem.example.sentence || sentenceParts.join(" "); 
-            if(sentenceParts.length > 1) foundSuitableSentence = true;
-        }
-    }
-
-    if (!foundSuitableSentence) {
-        showNoDataMessage(); 
+    if (!language || !days || days.length === 0) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
-    
-    const shuffledParts = shuffleArray([...sentenceParts]);
+
+    const structureTypes = ['SVO', 'SVO_negative_verb', 'SVO_negative_aux', 'SVO_question_verb', 'SVO_question_aux'];
+    const selectedStructureType = typeof getRandomElement === 'function' ? getRandomElement(structureTypes) : structureTypes[0];
+
+    if (typeof generateStatement !== 'function') {
+        console.error("generateStatement function is not defined. Make sure sentenceGenerator.js is loaded.");
+        if(typeof showNoDataMessage === 'function') showNoDataMessage(t.errorGeneratingExercise || "Error generating exercise. Function not found.");
+        else alert(t.errorGeneratingExercise || "Error generating exercise. Function not found.");
+        return;
+    }
+
+    const generated = await generateStatement(language, days, selectedStructureType);
+
+    if (!generated || !generated.parts || generated.parts.length < 2) {
+        console.warn("Failed to generate a statement with enough parts for word-order. Generated:", generated);
+        if(typeof showNoDataMessage === 'function') showNoDataMessage(t.noDataForExercise || "No suitable data found for this exercise.");
+        else alert(t.noDataForExercise || "No suitable data found for this exercise.");
+        return;
+    }
+
+    const sentenceParts = generated.parts;
+    const originalSentence = generated.sentence;
+
+    if (typeof shuffleArray !== 'function') {
+        console.error("shuffleArray function is not defined. Make sure utils.js or equivalent is loaded.");
+    }
+    const shuffledParts = (typeof shuffleArray === 'function') ? shuffleArray([...sentenceParts]) : [...sentenceParts].sort(() => Math.random() - 0.5);
+
 
     resultArea.innerHTML = `
         <div class="word-order-exercise">
-            <div class="word-pool clickable" id="word-pool">${shuffledParts.map(part => `<div class="word-tile" data-word="${part}">${part}</div>`).join('')}</div>
-            <div class="sentence-slots clickable" id="sentence-slots">${Array(sentenceParts.length).fill('<div class="word-slot"></div>').join('')}</div>
+            <h2 class="practice-type-title">${t.practiceTitleShowWordOrder || 'Order the Words'}</h2>
+            <div class="word-pool clickable" id="word-pool">
+                ${shuffledParts.map(part => `<div class="word-tile" data-word="${part}">${part}</div>`).join('')}
+            </div>
+            <div class="sentence-slots clickable" id="sentence-slots">
+                ${Array(sentenceParts.length).fill('<div class="word-slot"></div>').join('')}
+            </div>
             <div id="order-feedback" class="exercise-feedback"></div>
             <div class="order-actions">
                 <button id="reset-order" class="btn-secondary">${t.buttons?.reset || 'Reset'}</button>
             </div>
         </div>
     `;
+
     const exerciseContainer = resultArea.querySelector('.word-order-exercise');
-    const sentenceSlots = document.getElementById('sentence-slots'); // Define here to ensure it's in scope for checkAnswer
+    const sentenceSlots = document.getElementById('sentence-slots');
+    const wordPool = document.getElementById('word-pool');
+    const feedbackEl = document.getElementById('order-feedback');
 
     if (exerciseContainer) {
         exerciseContainer.showHint = () => {
@@ -805,31 +946,41 @@ async function showWordOrder() {
             if (existingHint) existingHint.remove();
             const hintDisplay = document.createElement('div');
             hintDisplay.className = 'hint-display';
-            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintWordOrder || "Typical sentence structure is Subject-Verb-Object. Questions or negative sentences might alter this."}`;
-            exerciseContainer.appendChild(hintDisplay);
+            let hintText = t.hintWordOrder || "Arrange the words to form a correct sentence.";
+            if (sentenceParts.length > 0) {
+                 const firstWordHint = sentenceParts[0];
+                 // Ensure firstWordHint is a string and not an object or array before using .charAt(0)
+                 const firstWordDisplay = (typeof firstWordHint === 'string' || typeof firstWordHint === 'number') ? String(firstWordHint) : (t.firstWordAriaLabel || 'First word');
+                hintText += ` ${t.hintFirstWordIs || "The first word is likely"} '${firstWordDisplay}' ${t.orFocusOnStructure || "or focus on the typical sentence structure (Subject-Verb-Object)."}`;
+            }
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${hintText}`;
+            if (feedbackEl) exerciseContainer.insertBefore(hintDisplay, feedbackEl);
+            else exerciseContainer.appendChild(hintDisplay);
         };
         exerciseContainer.checkAnswer = () => {
             const orderedWords = Array.from(sentenceSlots.querySelectorAll('.word-tile')).map(tile => tile.dataset.word);
-            const feedbackEl = document.getElementById('order-feedback');
             const currentLanguage = document.getElementById('language').value;
-            const t = translations[currentLanguage] || translations.COSYenglish;
-            if (orderedWords.join(' ') === sentenceParts.join(' ')) {
-                feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-                CosyAppInteractive.awardCorrectAnswer();
-                CosyAppInteractive.scheduleReview(currentLanguage, 'word-order', {parts: sentenceParts, sentence: originalSentence}, true);
-                 setTimeout(() => { showWordOrder(); }, 1500); 
-            } else {
-                feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteTryAgain || 'Not quite. Try again!'}</span>`;
-                CosyAppInteractive.awardIncorrectAnswer();
-                CosyAppInteractive.scheduleReview(currentLanguage, 'word-order', {parts: sentenceParts, sentence: originalSentence}, false);
+            const currentT = (typeof translations !== 'undefined' && translations[currentLanguage]) || (typeof translations !== 'undefined' && translations.COSYenglish) || {};
+
+            if (orderedWords.length !== sentenceParts.length) {
+                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${currentT.notAllWordsUsed || 'Not all words have been used. Please complete the sentence.'}</span>`;
+                 return;
             }
+
+            if (orderedWords.join(' ') === sentenceParts.join(' ')) {
+                feedbackEl.innerHTML = `<span class="correct">✅ ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
+                if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
+            } else {
+                feedbackEl.innerHTML = `<span class="incorrect">❌ ${currentT.notQuiteTryAgain || 'Not quite. Try again!'}</span>`;
+                if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
+            }
+            document.querySelectorAll('.word-order-exercise .word-tile, .word-order-exercise .word-slot').forEach(el => el.classList.add('disabled'));
         };
     }
 
-    const wordPool = document.getElementById('word-pool');
-
     document.querySelectorAll('#word-pool .word-tile').forEach(tile => {
         tile.addEventListener('click', () => {
+            if(tile.classList.contains('disabled')) return;
             const firstEmptySlot = sentenceSlots.querySelector('.word-slot:empty');
             if (firstEmptySlot) {
                 firstEmptySlot.appendChild(tile);
@@ -838,18 +989,26 @@ async function showWordOrder() {
     });
 
     sentenceSlots.addEventListener('click', (e) => {
-        if (e.target.classList.contains('word-tile')) {
-            wordPool.appendChild(e.target); 
+        if (e.target.classList.contains('word-tile') && !e.target.classList.contains('disabled')) {
+            wordPool.appendChild(e.target);
         }
     });
-    
+
     document.getElementById('reset-order').addEventListener('click', () => {
+        if(document.querySelector('.word-order-exercise .word-tile.disabled')) {
+            const currentLanguage = document.getElementById('language').value;
+            const currentT = (typeof translations !== 'undefined' && translations[currentLanguage]) || (typeof translations !== 'undefined' && translations.COSYenglish) || {};
+            feedbackEl.innerHTML = `<span style="color:#e67e22;">${currentT.resetAfterCheckNotAllowed || 'Cannot reset after checking. Please start a new exercise.'}</span>`;
+            return;
+        }
         sentenceSlots.querySelectorAll('.word-tile').forEach(tile => {
             wordPool.appendChild(tile);
         });
         const tilesInPool = Array.from(wordPool.querySelectorAll('.word-tile'));
-        tilesInPool.sort(() => Math.random() - 0.5).forEach(tile => wordPool.appendChild(tile));
-        document.getElementById('order-feedback').innerHTML = '';
+        const reShuffledInPool = (typeof shuffleArray === 'function') ? shuffleArray(tilesInPool) : tilesInPool.sort(() => Math.random() - 0.5);
+        reShuffledInPool.forEach(tile => wordPool.appendChild(tile));
+
+        feedbackEl.innerHTML = '';
     });
 }
 
@@ -864,10 +1023,10 @@ async function startPossessivesPractice() { }
 async function showTypePossessive() { }
 async function showMatchPossessives() { }
 
-async function practiceAllGrammar() { 
+async function practiceAllGrammar() {
     const allGrammarExercises = Object.values(GRAMMAR_PRACTICE_TYPES).flatMap(type => type.exercises);
     if (allGrammarExercises.length === 0) {
-        showNoDataMessage();
+        showNoDataMessage(); // Assumes showNoDataMessage is globally available
         return;
     }
     const randomExerciseName = allGrammarExercises[Math.floor(Math.random() * allGrammarExercises.length)];
