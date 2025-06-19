@@ -1,8 +1,8 @@
 window.CosyAppInteractive = {};
 
 (function() {
-    // Latinization toggle state
-    let isLatinizationEnabled = localStorage.getItem('latinizationEnabled') === 'false' ? false : true;
+    // // Latinization toggle state - CONFLICTING LOGIC - REMOVED/COMMENTED
+    // let isLatinizationEnabled = localStorage.getItem('latinizationEnabled') === 'false' ? false : true;
 
     function getCurrentTranslations() {
         const language = document.getElementById('language')?.value || 'COSYenglish';
@@ -117,7 +117,7 @@ window.CosyAppInteractive = {};
     }
 
     function showTransliterationPopup(transliteratedText, event) {
-        if (!isLatinizationEnabled) return; // Check toggle state
+        // if (!isLatinizationEnabled) return; // Check toggle state - COMMENTED OUT TO DECOUPLE FROM CONFLICTING STATE
         ensureTransliterationPopupExists();
         const textElement = transliterationPopup.querySelector('#dynamic-transliteration-popup-text');
         if (textElement) textElement.textContent = transliteratedText;
@@ -153,23 +153,23 @@ window.CosyAppInteractive = {};
             }
         }, true);
 
-        // Latinization Toggle Button Setup
-        const toggleLatinizationBtn = document.getElementById('toggle-latinization-btn');
-        if (toggleLatinizationBtn) {
-            toggleLatinizationBtn.textContent = isLatinizationEnabled ? 'Latinize: On' : 'Latinize: Off';
-            // Set visual style based on state
-            toggleLatinizationBtn.style.backgroundColor = isLatinizationEnabled ? '#e0ffe0' : '#ffe0e0'; // Greenish for On, reddish for Off
+        // // Latinization Toggle Button Setup - CONFLICTING LOGIC - REMOVED/COMMENTED
+        // const toggleLatinizationBtn = document.getElementById('toggle-latinization-btn');
+        // if (toggleLatinizationBtn) {
+        //     toggleLatinizationBtn.textContent = isLatinizationEnabled ? 'Latinize: On' : 'Latinize: Off';
+        //     // Set visual style based on state
+        //     toggleLatinizationBtn.style.backgroundColor = isLatinizationEnabled ? '#e0ffe0' : '#ffe0e0'; // Greenish for On, reddish for Off
 
-            toggleLatinizationBtn.addEventListener('click', function() {
-                isLatinizationEnabled = !isLatinizationEnabled;
-                localStorage.setItem('latinizationEnabled', isLatinizationEnabled);
-                this.textContent = isLatinizationEnabled ? 'Latinize: On' : 'Latinize: Off';
-                this.style.backgroundColor = isLatinizationEnabled ? '#e0ffe0' : '#ffe0e0';
-                if (!isLatinizationEnabled && transliterationPopup && transliterationPopup.style.display !== 'none') {
-                    hideTransliterationPopup(); // Hide if it's currently shown and we disable latinization
-                }
-            });
-        }
+        //     toggleLatinizationBtn.addEventListener('click', function() {
+        //         isLatinizationEnabled = !isLatinizationEnabled;
+        //         localStorage.setItem('latinizationEnabled', isLatinizationEnabled);
+        //         this.textContent = isLatinizationEnabled ? 'Latinize: On' : 'Latinize: Off';
+        //         this.style.backgroundColor = isLatinizationEnabled ? '#e0ffe0' : '#ffe0e0';
+        //         if (!isLatinizationEnabled && transliterationPopup && transliterationPopup.style.display !== 'none') {
+        //             hideTransliterationPopup(); // Hide if it's currently shown and we disable latinization
+        //         }
+        //     });
+        // }
 
         // Global click listener to hide transliteration popup if click is outside
         document.addEventListener('click', function(event) {
@@ -188,7 +188,13 @@ window.CosyAppInteractive = {};
             const targetLanguages = ["ΚΟΖΥελληνικά", "ТАКОЙрусский", "ԾՈՍՅհայկական"];
 
             resultContent.addEventListener('click', function(event) {
-                if (!isLatinizationEnabled) return; // Check toggle state
+                // if (!isLatinizationEnabled) return; // Check toggle state - COMMENTED OUT TO DECOUPLE
+                const currentLanguageState = localStorage.getItem('latinizeState') === 'true'; // Check main transliteration state
+                if (!currentLanguageState) { // If main page transliteration is OFF, popup also shouldn't activate
+                    const btn = document.getElementById('toggle-latinization-btn');
+                    if(btn && btn.style.display === 'none') return; // if button is hidden, don't show popup
+                }
+
 
                 const currentLang = document.getElementById('language')?.value;
                 if (!targetLanguages.includes(currentLang)) return;
@@ -216,7 +222,12 @@ window.CosyAppInteractive = {};
             });
 
             resultContent.addEventListener('mouseup', function(event) {
-                if (!isLatinizationEnabled) return; // Check toggle state
+                // if (!isLatinizationEnabled) return; // Check toggle state - COMMENTED OUT TO DECOUPLE
+                const currentLanguageState = localStorage.getItem('latinizeState') === 'true'; // Check main transliteration state
+                 if (!currentLanguageState) { // If main page transliteration is OFF, popup also shouldn't activate
+                    const btn = document.getElementById('toggle-latinization-btn');
+                    if(btn && btn.style.display === 'none') return; // if button is hidden, don't show popup
+                }
 
                 const currentLang = document.getElementById('language')?.value;
                 if (!targetLanguages.includes(currentLang)) return;

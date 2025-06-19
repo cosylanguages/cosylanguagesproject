@@ -28,13 +28,19 @@ function initializeEventListeners() {
     populateDaysDropdowns();
 
     // restoreUserSelection is expected to be global (from index.html)
-    restoreUserSelection(); 
+    if (typeof restoreUserSelection === 'function') {
+        restoreUserSelection(); 
+    }
 
     // From ui-visibility.js
-    goBackToMainMenu(); 
+    if (typeof goBackToMainMenu === 'function') {
+        goBackToMainMenu(); 
+    }
 
     // From ui-visibility.js (or index.html if not moved)
-    updateDaySelectors(); 
+    if (typeof updateDaySelectors === 'function') {
+        updateDaySelectors(); 
+    }
     
     const languageSelectElement = document.getElementById('language');
     const daySelectElement = document.getElementById('day');
@@ -45,10 +51,7 @@ function initializeEventListeners() {
     if (languageSelectElement) {
         languageSelectElement.addEventListener('change', function() {
             const lang = this.value;
-
-            // Determine current day for context
-            // This logic is for updateUIVisibilityForDay, which needs a specific day.
-            let dayToUse = 1; // Default day
+            let dayToUse = 1; 
             const singleDayValue = daySelectElement ? daySelectElement.value : "";
             if (singleDayValue) {
                 dayToUse = parseInt(singleDayValue);
@@ -58,19 +61,12 @@ function initializeEventListeners() {
                     dayToUse = parseInt(dayFromValue);
                 }
             }
-
-            // Call for UI visibility update based on day and language
-            // from ui-visibility.js
-            updateUIVisibilityForDay(dayToUse, lang);
-
-            // Update grammar options if they are visible
-            // updateGrammarOptions (from ui-visibility.js or index.html) should internally get current language and day
-            if (grammarOptionsElement && grammarOptionsElement.style.display === 'block') {
+            if (typeof updateUIVisibilityForDay === 'function') {
+                updateUIVisibilityForDay(dayToUse, lang);
+            }
+            if (grammarOptionsElement && grammarOptionsElement.style.display === 'block' && typeof updateGrammarOptions === 'function') {
                 updateGrammarOptions();
             }
-            // Note: saveUserSelection, body class update, and the main updateUIForLanguage(lang) call
-            // are assumed to be handled by listeners in index.html and language-handler.js
-            // that could not be removed or fully consolidated.
         });
     }
 
@@ -78,13 +74,12 @@ function initializeEventListeners() {
     daySelectors.forEach(selector => {
         if (selector) {
             selector.addEventListener('change', function() {
-                // from ui-visibility.js or index.html
-                updateDaySelectors(); 
-                
+                if (typeof updateDaySelectors === 'function') {
+                    updateDaySelectors(); 
+                }
                 const currentLanguage = languageSelectElement ? languageSelectElement.value : 'COSYenglish';
                 let dayToUseForVisibility = 1;
                 const singleDayValue = daySelectElement ? daySelectElement.value : "";
-
                 if (singleDayValue) {
                     dayToUseForVisibility = parseInt(singleDayValue);
                 } else {
@@ -93,12 +88,10 @@ function initializeEventListeners() {
                         dayToUseForVisibility = parseInt(dayFromValue);
                     }
                 }
-
-                // from ui-visibility.js
-                updateUIVisibilityForDay(dayToUseForVisibility, currentLanguage);
-
-                if (grammarOptionsElement && grammarOptionsElement.style.display === 'block') {
-                    // from ui-visibility.js or index.html
+                if (typeof updateUIVisibilityForDay === 'function') {
+                    updateUIVisibilityForDay(dayToUseForVisibility, currentLanguage);
+                }
+                if (grammarOptionsElement && grammarOptionsElement.style.display === 'block' && typeof updateGrammarOptions === 'function') {
                     updateGrammarOptions();
                 }
             });
@@ -106,23 +99,98 @@ function initializeEventListeners() {
     });
     
     // Call other init functions
-    // from buttons.js
-    initButtons();
-
-    // from exercises/vocabulary.js
-    initVocabularyPractice();
-
-    // from exercises/grammar.js
-    initGrammarPractice();
+    if (typeof initButtons === 'function') {
+        initButtons();
+    }
+    if (typeof initVocabularyPractice === 'function') {
+        initVocabularyPractice();
+    }
+    if (typeof initGrammarPractice === 'function') {
+        initGrammarPractice();
+    }
     
-    // Initial UI visibility update based on the (potentially restored) language and default/restored day
+    // Initial UI visibility update
     const initialDayValue = daySelectElement ? daySelectElement.value : ""; 
     const initialDay = initialDayValue && initialDayValue !== "" ? parseInt(initialDayValue) : 1; 
     const initialLang = languageSelectElement ? (languageSelectElement.value || 'COSYenglish') : 'COSYenglish';
-    // from ui-visibility.js
-    updateUIVisibilityForDay(initialDay, initialLang);
+    if (typeof updateUIVisibilityForDay === 'function') {
+        updateUIVisibilityForDay(initialDay, initialLang);
+    }
 
-    console.log("DEBUG: initializeEventListeners completed.");
+    // --- Latinize Button Event Listener ---
+    const latinizeButton = document.getElementById('toggle-latinization-btn');
+    if (latinizeButton) {
+        // Set initial text based on global state (which should be true)
+        latinizeButton.textContent = window.isLatinizationActive ? 'Latinize: On' : 'Latinize: Off';
+
+        latinizeButton.addEventListener('click', function() {
+            window.isLatinizationActive = !window.isLatinizationActive;
+            this.textContent = window.isLatinizationActive ? 'Latinize: On' : 'Latinize: Off';
+            // If latinization is turned off, hide any existing tooltip
+            if (!window.isLatinizationActive) {
+                let tooltip = document.getElementById('transliteration-tooltip');
+                if (tooltip) {
+                    tooltip.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    // --- Text Selection Event Listener (for transliteration tooltip) ---
+    document.addEventListener('mouseup', function(event) {
+        if (typeof window.transliterateSelectedText === 'function') {
+            const transliterated = window.transliterateSelectedText();
+            let tooltip = document.getElementById('transliteration-tooltip');
+
+            if (transliterated && transliterated.trim() !== "") {
+                if (!tooltip) {
+                    tooltip = document.createElement('div');
+                    tooltip.id = 'transliteration-tooltip';
+                    // Styles like position, padding, background, color, border, borderRadius, zIndex, fontSize, fontFamily, pointerEvents
+                    // are now primarily handled by CSS in main.css.
+                    // JS will still manage dynamic properties: display, left, top.
+                    document.body.appendChild(tooltip);
+                }
+                tooltip.textContent = transliterated;
+                // Position near mouse, with offset, ensuring it stays within viewport
+                let x = event.clientX + 15;
+                let y = event.clientY + 15;
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = y + 'px';
+                tooltip.style.display = 'block';
+                
+                // Check if tooltip is out of bounds and adjust
+                const rect = tooltip.getBoundingClientRect();
+                if (rect.right > window.innerWidth) {
+                    tooltip.style.left = (window.innerWidth - rect.width - 5) + 'px';
+                }
+                if (rect.bottom > window.innerHeight) {
+                    tooltip.style.top = (window.innerHeight - rect.height - 5) + 'px';
+                }
+                if (rect.left < 0) {
+                    tooltip.style.left = '5px';
+                }
+                 if (rect.top < 0) {
+                    tooltip.style.top = '5px';
+                }
+
+            } else {
+                if (tooltip) {
+                    tooltip.style.display = 'none'; // Hide if no (or empty) transliteration
+                }
+            }
+        }
+    });
+    // Also hide tooltip on mousedown, as selection is likely changing
+    document.addEventListener('mousedown', function() {
+        let tooltip = document.getElementById('transliteration-tooltip');
+        if (tooltip) {
+            tooltip.style.display = 'none';
+        }
+    });
+
+
+    console.log("DEBUG: initializeEventListeners completed with new listeners.");
 }
 
 window.addEventListener('DOMContentLoaded', initializeEventListeners);

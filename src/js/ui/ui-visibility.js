@@ -104,25 +104,6 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
             if (diaryBtn) diaryBtn.style.display = 'none';
         }
     }
-
-    // Ensure the main options panels themselves are hidden by default after day change,
-    // index.html click handlers will show the one corresponding to a clicked main button.
-    // ---- START: Lines to be commented out ----
-    // if (typeof vocabularyOptions !== 'undefined' && vocabularyOptions) vocabularyOptions.style.display = 'none'; 
-    // if (grammarOptionsEl) grammarOptionsEl.style.display = 'none';
-    // if (readingOptionsEl) readingOptionsEl.style.display = 'none';
-    // if (speakingOptionsEl) speakingOptionsEl.style.display = 'none';
-    // if (writingOptionsEl) writingOptionsEl.style.display = 'none';
-    
-    // Show the main practice types, which might have been changed by hideOtherMainPracticeTypes
-    // This ensures that after a day/language change, the main menu is visible.
-    // const practiceAllMainBtn = document.getElementById('practice-all-btn');
-    // if (practiceAllMainBtn && practiceAllMainBtn.style.display === 'none') { 
-    //    if(typeof showAllMainPracticeTypes === 'function') showAllMainPracticeTypes(); 
-    // }
-    // ---- END: Lines to be commented out ----
-
-
     console.log(`DEBUG: updateUIVisibilityForDay finished for Day: ${day}, Language: ${selectedLanguage}`);
 }
 
@@ -185,10 +166,6 @@ function updateGrammarOptions() {
         grammarOptionsContainer.appendChild(practiceAllGrammarBtn);
     }
 
-    // Re-apply setupOptionToggle from buttons.js to these dynamically created buttons
-    // This assumes setupOptionToggle can be safely called multiple times or handles it internally.
-    // Or, buttons.js needs to be aware of dynamic button creation.
-    // For now, this relies on the global setupOptionToggle in buttons.js being robust.
     if (typeof setupOptionToggle === 'function' && grammarOptionsContainer.children.length > 0) {
         const buttonIds = Array.from(grammarOptionsContainer.children).map(btn => btn.id).filter(id => id);
         const practiceFns = buttonIds.map(id => {
@@ -196,11 +173,36 @@ function updateGrammarOptions() {
             if (id === 'verbs-btn') return () => practiceGrammar('verbs');
             if (id === 'possessives-btn') return () => practiceGrammar('possessives');
             if (id === 'practice-all-grammar-btn') return practiceAllGrammar;
-            return () => {}; // Default empty function
+            return () => {}; 
         });
         setupOptionToggle('grammar-options', buttonIds, practiceFns);
     }
 }
+
+function showPracticeAllButtons() {
+    const practiceAllBtn = document.getElementById('practice-all-btn');
+    const practiceAllVocabBtn = document.getElementById('practice-all-vocab-btn');
+    const practiceAllGrammarBtn = document.getElementById('practice-all-grammar-btn');
+    const practiceAllSpeakingBtn = document.getElementById('practice-all-speaking-btn');
+    // Assuming there isn't a specific "practice-all-reading-btn" or "practice-all-writing-btn"
+    // based on common patterns, but they could be added if they exist.
+
+    if (practiceAllBtn) practiceAllBtn.style.display = 'inline-block'; // Main practice all
+    
+    // These are sub-option "Practice All" buttons, their visibility is typically
+    // controlled when their respective main category (e.g., vocabulary-options) is visible.
+    // However, goBackToMainMenu implies resetting to a state where these *could* be shown
+    // if their parent category was the last one open, or if they are meant to be shown alongside
+    // the main practiceAllBtn. For now, ensure they are visible if their parent panel would be.
+    // This might need refinement based on exact UI flow desired when coming "back to main menu".
+    // A simpler approach for goBackToMainMenu is that it just shows *all main categories* and the *main* practice-all-btn.
+    // The sub-practice-all buttons would appear when a category like "Vocabulary" is selected.
+    // The current goBackToMainMenu already makes the main practiceAllBtn visible.
+    // Let's assume this function is primarily for the main #practice-all-btn.
+    // If the others need to be shown, their parent containers also need to be visible.
+}
+window.showPracticeAllButtons = showPracticeAllButtons;
+
 
 // --- Hide/show day and day-from/day-to options depending on selection ---
 function updateDaySelectors() {

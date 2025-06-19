@@ -51,6 +51,17 @@ function updateUIForLanguage(language) {
     document.getElementById('practice-all-btn').title = t.aria.practiceAll;
   }
   // ...repeat for all main and option buttons as needed...
+
+  // Control visibility of the Latinize button
+  const latinizeBtn = document.getElementById('toggle-latinization-btn');
+  if (latinizeBtn) {
+    const visibleLanguages = ['ΚΟΖΥελληνικά', 'ТАКОЙрусский', 'ԾՈՍՅհայկական'];
+    if (visibleLanguages.includes(language)) {
+      latinizeBtn.style.display = ''; // Or 'inline-block', depending on original styling
+    } else {
+      latinizeBtn.style.display = 'none';
+    }
+  }
 }
 
 // Initialize language change handler

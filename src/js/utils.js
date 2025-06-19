@@ -12,6 +12,9 @@ function shuffleArray(array) {
 function showNoDataMessage() {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = '<p class="no-data">No data available for selected day/language.</p>';
+    if (typeof window.refreshLatinization === 'function') {
+        window.refreshLatinization();
+    }
 }
 
 function clearResultArea() {
@@ -242,6 +245,9 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
             container.appendChild(bottomButtonContainer); // Append for bottom placement
         }
         // --- END MODIFICATION ---
+        if (typeof window.refreshLatinization === 'function') {
+            window.refreshLatinization();
+        }
     }
 }
 

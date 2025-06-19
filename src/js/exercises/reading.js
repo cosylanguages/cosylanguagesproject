@@ -14,6 +14,9 @@ async function showStoryPractice() {
             <p>${t.imagineStoryHere || 'Imagine you read a story here.'}</p>
         </div>
     `;
+    if (typeof window.refreshLatinization === 'function') {
+        window.refreshLatinization();
+    }
 
     const exerciseContainer = resultArea.querySelector('.reading-exercise-container');
     if (exerciseContainer) {
@@ -24,6 +27,9 @@ async function showStoryPractice() {
             hintDisplay.className = 'hint-display exercise-hint';
             hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintReadingGeneric || 'Focus on understanding the main idea and any new vocabulary. Take your time!'}`;
             this.appendChild(hintDisplay);
+            if (typeof window.refreshLatinization === 'function') {
+                window.refreshLatinization();
+            }
         };
         // For passive reading, checkAnswer and revealAnswer might not be applicable
         exerciseContainer.checkAnswer = function() {
@@ -36,6 +42,9 @@ async function showStoryPractice() {
              feedbackArea.className = 'exercise-feedback';
              feedbackArea.innerHTML = t.noSpecificRevealReading || "This is a reading exercise. Try to read and understand the text.";
              if(!feedbackArea.parentElement) this.appendChild(feedbackArea);
+             if (typeof window.refreshLatinization === 'function') {
+                window.refreshLatinization();
+            }
         };
     }
 
@@ -58,6 +67,9 @@ async function showInterestingFactPractice() {
             <p>${t.imagineFactHere || 'Imagine you read an interesting fact here.'}</p>
         </div>
     `;
+    if (typeof window.refreshLatinization === 'function') {
+        window.refreshLatinization();
+    }
     
     const exerciseContainer = resultArea.querySelector('.reading-exercise-container');
     if (exerciseContainer) {
@@ -68,6 +80,9 @@ async function showInterestingFactPractice() {
             hintDisplay.className = 'hint-display exercise-hint';
             hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.hintReadingFact || 'Try to learn something new from this fact!'}`;
             this.appendChild(hintDisplay);
+            if (typeof window.refreshLatinization === 'function') {
+                window.refreshLatinization();
+            }
         };
         // For passive reading, checkAnswer and revealAnswer might not be applicable
         exerciseContainer.checkAnswer = function() {
@@ -80,6 +95,9 @@ async function showInterestingFactPractice() {
             feedbackArea.className = 'exercise-feedback';
             feedbackArea.innerHTML = t.noSpecificRevealReadingFact || "This is an interesting fact. Read it carefully to learn!";
             if(!feedbackArea.parentElement) this.appendChild(feedbackArea);
+            if (typeof window.refreshLatinization === 'function') {
+                window.refreshLatinization();
+            }
         };
     }
     
@@ -106,6 +124,7 @@ async function startRandomReadingPractice() {
     if(resultArea) resultArea.innerHTML = ''; // Clear previous content
 
     await randomExerciseFunction(); // Call the selected exercise function
+                                    // refreshLatinization is called within the specific exercise functions
 }
 
 function initReadingPractice() {
@@ -129,12 +148,12 @@ window.showStoryPractice = patchExerciseWithExtraButtons(
     '.reading-exercise-container', 
     window.startRandomReadingPractice, 
     { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomReadingPractice, textKey: 'newExercise' } } 
-);
+); // patchExerciseWithExtraButtons calls refreshLatinization at its end
 window.showInterestingFactPractice = patchExerciseWithExtraButtons(
     window.showInterestingFactPractice, 
     '.reading-exercise-container', 
     window.startRandomReadingPractice, 
     { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomReadingPractice, textKey: 'newExercise' } } 
-);
+); // patchExerciseWithExtraButtons calls refreshLatinization at its end
 
 document.addEventListener('DOMContentLoaded', initReadingPractice);
