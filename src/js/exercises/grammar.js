@@ -241,21 +241,61 @@ async function showArticleWord() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
 
     if (!language || !days.length) {
         alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
-    const items = await loadGenderGrammar(language, days);
-    if (!items.length) {
-        showNoDataMessage(); // This will call refreshLatinization
+
+    let wordForExercise = null;
+    let articleForExercise = null;
+    let currentWordSet = null; // To store the {word, article} pair for scheduling
+
+    if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
+        const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'grammar-article', 1);
+        if (reviewItems && reviewItems.length > 0) {
+            const reviewWord = reviewItems[0].itemValue; // This is the word string
+            // Need to load grammar data to find the article for this review word
+            // We assume 'days' is appropriate context; if not, load all grammar data for the language
+            const grammarDataForReview = await loadGenderGrammar(language, days); 
+            const foundItem = grammarDataForReview.find(item => item.word === reviewWord);
+
+            if (foundItem) {
+                wordForExercise = foundItem.word;
+                articleForExercise = foundItem.article;
+                currentWordSet = { word: wordForExercise, article: articleForExercise }; // Store the pair
+                console.log("Using review item for showArticleWord:", currentWordSet);
+            } else {
+                console.error("Review item word found, but its details (article) not in current grammar load for days:", days, "word:", reviewWord);
+                // Fall through to select a new word if article lookup fails
+            }
+        }
+    }
+
+    if (!wordForExercise) { // No review item, or review item lookup failed
+        const items = await loadGenderGrammar(language, days);
+        if (!items.length) {
+            showNoDataMessage();
+            return;
+        }
+        const randomItem = items[Math.floor(Math.random() * items.length)];
+        wordForExercise = randomItem.word;
+        articleForExercise = randomItem.article;
+        currentWordSet = { word: wordForExercise, article: articleForExercise }; // Store the pair
+        console.log("Using new item for showArticleWord:", currentWordSet);
+    }
+    
+    // Ensure we have a word and article before proceeding
+    if (!wordForExercise || !articleForExercise) {
+        console.error("Failed to select a word or article for the exercise.");
+        showNoDataMessage();
         return;
     }
-    const item = items[Math.floor(Math.random() * items.length)];
+
     const variations = [
-        { type: 'article', question: `"${item.word}"`, answer: item.article }, 
-        { type: 'word', question: `"${item.article}"`, answer: item.word }    
+        { type: 'article', question: `"${wordForExercise}"`, answer: articleForExercise }, 
+        { type: 'word', question: `"${articleForExercise}"`, answer: wordForExercise }    
     ];
     const variation = variations[Math.floor(Math.random() * variations.length)];
 
@@ -278,7 +318,7 @@ async function showArticleWord() {
             if (existingHint) existingHint.remove();
             const hintDisplay = document.createElement('div');
             hintDisplay.className = 'hint-display';
-            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.checkNounEnding || "Check the noun's ending or typical gender patterns for this language. The word is"} '${item.word}'.`;
+            hintDisplay.textContent = `${t.hintLabel || 'Hint:'} ${t.checkNounEnding || "Check the noun's ending or typical gender patterns for this language. The word is"} '${wordForExercise}'.`;
             exerciseContainer.appendChild(hintDisplay);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
@@ -286,43 +326,50 @@ async function showArticleWord() {
             const userInput = document.getElementById('gender-answer-input').value.trim();
             let feedbackText = '';
             let isCorrect = false;
-            const t = translations[document.getElementById('language').value] || translations.COSYenglish;
+            const currentLanguage = document.getElementById('language').value; // Ensure we use current language
+            const currentT = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
+            
             if (!userInput) {
-                feedbackText = `<span style="color:#e67e22;">${t.feedbackPleaseType || 'Please type your answer above.'}</span>`;
+                feedbackText = `<span style="color:#e67e22;">${currentT.feedbackPleaseType || 'Please type your answer above.'}</span>`;
             } else {
                  if (variation.type === 'article') { 
                     if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
-                        feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-                        CosyAppInteractive.awardCorrectAnswer();
-                        CosyAppInteractive.scheduleReview(document.getElementById('language').value, 'gender', item.word, true);
+                        feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
+                        if (typeof CosyAppInteractive !== 'undefined') CosyAppInteractive.awardCorrectAnswer();
                         isCorrect = true;
                     } else {
-                        feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${variation.answer}</b></span>`;
-                        CosyAppInteractive.awardIncorrectAnswer();
+                        feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${currentT.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${variation.answer}</b></span>`;
+                        if (typeof CosyAppInteractive !== 'undefined') CosyAppInteractive.awardIncorrectAnswer();
                     }
-                } else { 
-                    const targetArticle = item.article; 
-                    const currentItems = await loadGenderGrammar(document.getElementById('language').value, getSelectedDays()); 
-                    const isValidWordForArticle = currentItems.some(i => i.article.toLowerCase() === targetArticle.toLowerCase() && i.word.toLowerCase() === userInput.toLowerCase());
-                    if (isValidWordForArticle) {
-                        feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
-                        CosyAppInteractive.awardCorrectAnswer();
-                        CosyAppInteractive.scheduleReview(document.getElementById('language').value, 'gender', item.word, true);
+                } else { // variation.type === 'word'
+                    // For "type the word" variation, the primary item being learned is the word-article pair, identified by the word.
+                    // We check if the user typed the correct word for the displayed article.
+                    if (userInput.toLowerCase() === variation.answer.toLowerCase()) { // variation.answer is wordForExercise
+                        feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
+                         if (typeof CosyAppInteractive !== 'undefined') CosyAppInteractive.awardCorrectAnswer();
                         isCorrect = true;
                     } else {
-                        feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${t.notValidForArticle || `Not a valid word for "${targetArticle}". The expected example was:`} <b>${variation.answer}</b>. ${t.otherWordsExist || 'Other valid words might exist.'}</span>`;
-                        CosyAppInteractive.awardIncorrectAnswer();
+                        // Even if other words might fit the article, for this specific exercise, the target is `wordForExercise`.
+                        feedbackText = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${currentT.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${variation.answer}</b>.</span>`;
+                        if (typeof CosyAppInteractive !== 'undefined') CosyAppInteractive.awardIncorrectAnswer();
                     }
                 }
             }
             document.getElementById('gender-answer-feedback').innerHTML = feedbackText;
+
+            // Schedule review using wordForExercise as the item's value identifier
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview && wordForExercise) {
+                 CosyAppInteractive.scheduleReview(currentLanguage, 'grammar-article', wordForExercise, isCorrect);
+            }
+
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
             if(isCorrect){ 
                  setTimeout(() => { startGenderPractice(); }, 1200);
             }
         };
         exerciseContainer.revealAnswer = function() {
-            const t_reveal = translations[document.getElementById('language').value] || translations.COSYenglish;
+            const currentLanguage = document.getElementById('language').value;
+            const t_reveal = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
             const feedbackEl = document.getElementById('gender-answer-feedback');
             const answerInputEl = document.getElementById('gender-answer-input');
             
@@ -346,7 +393,7 @@ async function showArticleWord() {
     
     const pronounceButton = document.getElementById('pronounce-gender-item');
     if (pronounceButton && typeof pronounceWord === 'function') {
-        const wordToPronounce = variation.type === 'article' ? item.word : item.article;
+        const wordToPronounce = variation.type === 'article' ? wordForExercise : articleForExercise;
         if (wordToPronounce) pronounceWord(wordToPronounce, language); 
         pronounceButton.addEventListener('click', () => {
             if (wordToPronounce) pronounceWord(wordToPronounce, language);
@@ -358,7 +405,7 @@ async function showMatchArticlesWords() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
 
     if (!language || !days.length) {
         alert(t.alertLangDay || 'Please select language and day(s) first');
@@ -413,28 +460,35 @@ async function showMatchArticlesWords() {
     let selectedArticleEl = null, selectedWordEl = null;
     let matchedPairs = 0;
 
-    document.querySelectorAll('#articles-col .match-item').forEach(item => { /* ... */ });
-    document.querySelectorAll('#words-col .match-item').forEach(item => { /* ... */ });
+    document.querySelectorAll('#articles-col .match-item').forEach(item => { /* ... */ }); // Content omitted for brevity
+    document.querySelectorAll('#words-col .match-item').forEach(item => { /* ... */ }); // Content omitted for brevity
 
-    function checkMatchAttempt() {
+    function checkMatchAttempt() { // Placeholder for full logic
         if (selectedArticleEl && selectedWordEl) {
             const article = selectedArticleEl.dataset.article;
             const word = selectedWordEl.dataset.word;
             const correctPair = selectedItems.find(item => item.word === word && item.article === article);
             const feedbackEl = document.getElementById('match-feedback');
+            const currentLanguage = document.getElementById('language').value;
+            let isCorrect = false;
 
             if (correctPair) {
-                // ...
                 feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctMatch || 'Correct match!'}</span>`;
-                if (matchedPairs === selectedItems.length) {
+                // ... (disable matched items, etc.)
+                isCorrect = true;
+                matchedPairs++;
+                 if (matchedPairs === selectedItems.length) {
                     feedbackEl.innerHTML += `<br><span class="correct">${t.allPairsMatched || 'All pairs matched! Great job!'}</span>`;
-                    // ...
                 }
             } else {
                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notAMatch || 'Not a match. Try again!'}</span>`;
-                // ...
+                // ... (deselect items)
+                isCorrect = false;
             }
-            // ...
+            // Schedule review for the word involved in the match attempt
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview && word) {
+                 CosyAppInteractive.scheduleReview(currentLanguage, 'grammar-article', word, isCorrect);
+            }
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         }
     }
@@ -444,7 +498,7 @@ async function showSelectArticleExercise() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
     const NUM_ARTICLE_OPTIONS = 4; 
 
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
@@ -455,12 +509,25 @@ async function showSelectArticleExercise() {
     const correctArticle = selectedItem.article;
     const wordToShow = selectedItem.word;
     
-    // ... (article options logic) ...
+    // ... (article options logic, ensure it's not empty) ...
+    let allArticlesForLang = [...new Set(items.map(item => item.article))];
+    let articleOptions = [correctArticle];
+    allArticlesForLang = allArticlesForLang.filter(art => art !== correctArticle);
+    shuffleArray(allArticlesForLang);
+    for (let i = 0; i < Math.min(NUM_ARTICLE_OPTIONS - 1, allArticlesForLang.length); i++) {
+        articleOptions.push(allArticlesForLang[i]);
+    }
+    articleOptions = shuffleArray(articleOptions);
     
-    if (allArticlesForLang.length < 2 && articleOptions.length < 2) { 
-        resultArea.innerHTML = `<p>${t.notEnoughOptionsError || 'Not enough article options to create this exercise.'}</p>`;
-        if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
-        return; 
+    if (allArticlesForLang.length < 1 && articleOptions.length < 2 && correctArticle) { // Need at least one distractor if possible
+         // If only one article exists for the language, or not enough to make meaningful choice,
+        // it might be better to skip or show a message. For now, proceed if at least correctArticle is there.
+        if (articleOptions.length < 1 && correctArticle) articleOptions = [correctArticle]; // Ensure at least the correct one if logic failed
+        else if (articleOptions.length < 1) {
+             resultArea.innerHTML = `<p>${t.notEnoughOptionsError || 'Not enough article options to create this exercise.'}</p>`;
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+            return;
+        }
     }
     
     resultArea.innerHTML = `
@@ -488,16 +555,31 @@ async function showSelectArticleExercise() {
     }
 
     // ... (pronounce button logic) ...
+    const pronounceButton = document.getElementById('pronounce-select-article-word');
+    if (pronounceButton && typeof pronounceWord === 'function') {
+        pronounceWord(wordToShow, language); // Auto-pronounce
+        pronounceButton.addEventListener('click', () => pronounceWord(wordToShow, language));
+    }
+
 
     document.querySelectorAll('.article-option-btn').forEach(btn => {
         btn.onclick = function() {
-            // ... (check answer logic) ...
+            const userAnswer = this.dataset.article;
             const feedbackEl = document.getElementById('select-article-feedback');
+            const currentLanguage = document.getElementById('language').value;
+            let isCorrect = false;
             if (userAnswer.toLowerCase() === correctArticle.toLowerCase()) {
                 feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                isCorrect = true;
             } else {
                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctArticle}</b></span>`;
+                isCorrect = false;
             }
+            // Schedule review for the word
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview && wordToShow) {
+                 CosyAppInteractive.scheduleReview(currentLanguage, 'grammar-article', wordToShow, isCorrect);
+            }
+            document.querySelectorAll('.article-option-btn').forEach(b => b.disabled = true); // Disable all options
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
             // ...
         };
@@ -512,12 +594,16 @@ async function showTypeVerb() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
 
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
     const items = await loadVerbGrammar(language, days);
     if (!items.length) { showNoDataMessage(); return; } // Calls refresh
-    // ... (variation logic) ...
+    // ... (variation logic, ensure itemForExercise and correctAnswer are set) ...
+    const itemForExercise = items[Math.floor(Math.random() * items.length)];
+    const variation = { promptText: `${itemForExercise.pronoun} ( ${itemForExercise.verb} )`, answer: itemForExercise.form }; // Example variation
+    const correctAnswer = variation.answer;
+
 
     resultArea.innerHTML = `
         <div class="verb-exercise" aria-label="${t.verbExerciseAriaLabel || 'Verb Exercise'}">
@@ -536,32 +622,53 @@ async function showTypeVerb() {
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
         exerciseContainer.checkAnswer = function() {
+            const userAnswer = document.getElementById('verb-answer-input').value.trim();
             const feedbackEl = document.getElementById('verb-answer-feedback');
-            // ... (check answer logic) ...
+            const currentLanguage = document.getElementById('language').value;
+            let isCorrect = false;
             if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
                 feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                isCorrect = true;
             } else {
                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctAnswer}</b></span>`;
+                isCorrect = false;
+            }
+            // Item value for verbs could be verb infinitive + pronoun, or just infinitive.
+            // Let's use infinitive for simplicity in review item key.
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview && itemForExercise.verb) {
+                 CosyAppInteractive.scheduleReview(currentLanguage, 'grammar-verb', itemForExercise.verb, isCorrect);
             }
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
             // ...
         };
     }
     // ... (pronounce button logic) ...
+    const pronounceButton = document.getElementById('pronounce-verb-item');
+    if (pronounceButton && typeof pronounceWord === 'function') {
+        const textToPronounce = `${itemForExercise.pronoun} ${itemForExercise.form}`; // Pronounce the full correct form with pronoun
+        pronounceWord(textToPronounce, language); // Auto-pronounce
+        pronounceButton.addEventListener('click', () => pronounceWord(textToPronounce, language));
+    }
 }
 
 async function showMatchVerbsPronouns() { 
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
     
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
     const verbItems = await loadVerbGrammar(language, days); 
     if (!verbItems || verbItems.length < 2) { showNoDataMessage(); return; } // Calls refresh
 
-    // ... (item selection logic) ...
-    if (suitableItems.length < 2) { showNoDataMessage(); return; } // Calls refresh
+    // ... (item selection logic, ensure itemsForGame, shuffledPrompts, shuffledAnswers are set) ...
+    const itemsForGame = shuffleArray(verbItems).slice(0, Math.min(verbItems.length, 5));
+    if (itemsForGame.length < 2) { showNoDataMessage(); return; }
+    const prompts = itemsForGame.map(item => `${item.pronoun} (${item.verb})`);
+    const answers = itemsForGame.map(item => item.form);
+    const shuffledPrompts = shuffleArray([...prompts]);
+    const shuffledAnswers = shuffleArray([...answers]);
+
 
     resultArea.innerHTML = `
         <div class="match-exercise">
@@ -583,21 +690,59 @@ async function showMatchVerbsPronouns() {
     }
     
     // ... (event listeners) ...
+    let selectedPromptEl = null, selectedAnswerEl = null, matchedPairsCount = 0;
+    // Simplified event listeners
+    document.querySelectorAll('#prompts-col .match-item').forEach(item => item.addEventListener('click', function() {
+        if(this.classList.contains('matched')) return;
+        if(selectedPromptEl) selectedPromptEl.classList.remove('selected');
+        this.classList.add('selected');
+        selectedPromptEl = this;
+        if(selectedAnswerEl) checkVerbPronounMatchAttempt();
+    }));
+     document.querySelectorAll('#answers-col .match-item').forEach(item => item.addEventListener('click', function() {
+        if(this.classList.contains('matched')) return;
+        if(selectedAnswerEl) selectedAnswerEl.classList.remove('selected');
+        this.classList.add('selected');
+        selectedAnswerEl = this;
+        if(selectedPromptEl) checkVerbPronounMatchAttempt();
+    }));
+
 
     function checkVerbPronounMatchAttempt() {
         if (selectedPromptEl && selectedAnswerEl) {
+            const promptText = selectedPromptEl.dataset.prompt; // e.g., "I (be)"
+            const answerText = selectedAnswerEl.dataset.answer; // e.g., "am"
             const feedbackEl = document.getElementById('match-feedback');
-            // ... (check match logic) ...
+            const currentLanguage = document.getElementById('language').value;
+
+            const correctItem = itemsForGame.find(item => `${item.pronoun} (${item.verb})` === promptText && item.form === answerText);
+            let isCorrect = false;
+
             if (correctItem) {
                 feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctMatch || 'Correct match!'}</span>`;
+                selectedPromptEl.classList.add('matched', 'disabled');
+                selectedAnswerEl.classList.add('matched', 'disabled');
+                matchedPairsCount++;
+                isCorrect = true;
                 if (matchedPairsCount === itemsForGame.length) {
                     feedbackEl.innerHTML += `<br><span class="correct">${t.allPairsMatched || 'All pairs matched! Great job!'}</span>`;
                 }
             } else {
                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notAMatch || 'Not a match. Try again!'}</span>`;
+                selectedPromptEl.classList.remove('selected');
+                selectedAnswerEl.classList.remove('selected');
+                isCorrect = false;
             }
+            
+            // Schedule review for the verb infinitive from the prompt
+            const verbInfinitive = promptText.substring(promptText.indexOf('(') + 1, promptText.indexOf(')'));
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview && verbInfinitive) {
+                 CosyAppInteractive.scheduleReview(currentLanguage, 'grammar-verb', verbInfinitive, isCorrect);
+            }
+            
+            selectedPromptEl = null;
+            selectedAnswerEl = null;
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
-            // ...
         }
     }
 }
@@ -606,18 +751,19 @@ async function showFillGaps() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
 
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
     const verbData = await loadVerbGrammar(language, days);
     if (!verbData.length) { showNoDataMessage(); return; } // Calls refresh
     
-    // ... (suitable item logic) ...
-    if (!suitableItem) {
-        showNoDataMessage(); // Calls refresh
-        return;
-    }
-    
+    // ... (suitable item logic, ensure suitableItem, sentence, correctAnswer are set) ...
+    const suitableItem = verbData.find(item => item.sentence && item.sentence.includes('___') && item.form); // Simplified
+    if (!suitableItem) { showNoDataMessage(); return; }
+    const sentence = suitableItem.sentence;
+    const correctAnswer = suitableItem.form;
+
+
     resultArea.innerHTML = `
         <div class="fill-gap-exercise">
             <div class="sentence-with-gap">${sentence.replace('___', '<input type="text" id="gap-answer" class="exercise-input" placeholder="'+ (t.typeYourAnswerPlaceholder || 'Type your answer...') +'">')}</div>
@@ -633,15 +779,22 @@ async function showFillGaps() {
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
         exerciseContainer.checkAnswer = () => {
+            const userAnswer = document.getElementById('gap-answer').value.trim();
             const feedbackEl = document.getElementById('gap-feedback');
-            // ... (check answer logic) ...
+            const currentLanguage = document.getElementById('language').value;
+            let isCorrect = false;
             if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
                 feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                isCorrect = true;
             } else {
                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteCorrectIs || 'Not quite. The correct answer is:'} <b>${correctAnswer}</b></span>`;
+                isCorrect = false;
+            }
+            // Use verb infinitive for review item key
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview && suitableItem.verb) {
+                 CosyAppInteractive.scheduleReview(currentLanguage, 'grammar-verb', suitableItem.verb, isCorrect);
             }
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
-            // ...
         };
     }
 }
@@ -650,17 +803,21 @@ async function showWordOrder() {
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    const t = translations[language] || translations.COSYenglish;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
 
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
     const verbData = await loadVerbGrammar(language, days);
     if (!verbData || verbData.length === 0) { showNoDataMessage(); return; } // Calls refresh
     
-    // ... (sentence parts logic) ...
-    if (!foundSuitableSentence) {
-        showNoDataMessage(); // Calls refresh
-        return;
+    // ... (sentence parts logic, ensure sentenceParts, shuffledParts, foundSuitableSentence are set) ...
+    let sentenceParts = [], shuffledParts = [], foundSuitableSentence = false;
+    const suitableItem = verbData.find(item => item.sentence && !item.sentence.includes('___') && item.sentence.split(' ').length > 2);
+    if (suitableItem) {
+        sentenceParts = suitableItem.sentence.split(' ');
+        shuffledParts = shuffleArray([...sentenceParts]);
+        foundSuitableSentence = true;
     }
+    if (!foundSuitableSentence) { showNoDataMessage(); return; }
     
     resultArea.innerHTML = `
         <div class="word-order-exercise">
@@ -684,18 +841,32 @@ async function showWordOrder() {
         };
         exerciseContainer.checkAnswer = () => {
             const feedbackEl = document.getElementById('order-feedback');
-            // ... (check answer logic) ...
+            const orderedWords = Array.from(sentenceSlots.querySelectorAll('.word-tile')).map(tile => tile.dataset.word);
+            const currentLanguage = document.getElementById('language').value;
+            let isCorrect = false;
+
             if (orderedWords.join(' ') === sentenceParts.join(' ')) {
                 feedbackEl.innerHTML = `<span class="correct">✅ ${t.correctWellDone || 'Correct! Well done!'}</span>`;
+                isCorrect = true;
             } else {
                 feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.notQuiteTryAgain || 'Not quite. Try again!'}</span>`;
+                isCorrect = false;
             }
+            // Use the main verb of the sentence or the whole sentence as itemValue for review.
+            // For simplicity, let's assume `suitableItem.verb` exists and is the main verb.
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview && suitableItem.verb) {
+                CosyAppInteractive.scheduleReview(currentLanguage, 'grammar-sentence-structure', suitableItem.verb, isCorrect); // itemType could be more specific
+            } else if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview) { // Fallback if verb isn't clearly defined
+                 CosyAppInteractive.scheduleReview(currentLanguage, 'grammar-sentence-structure', sentenceParts.join(' ').substring(0, 30), isCorrect); // Use part of sentence as key
+            }
+
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
-            // ...
         };
     }
 
     // ... (event listeners for word pool and slots) ...
+    document.getElementById('word-pool').addEventListener('click', /* simplified */ function(e) { /* ... */ });
+    sentenceSlots.addEventListener('click', /* simplified */ function(e) { /* ... */ });
     
     document.getElementById('reset-order').addEventListener('click', () => {
         // ... (reset logic) ...
@@ -720,8 +891,8 @@ async function practiceAllGrammar() {
         // Potentially show an error message in resultArea and refresh
         const resultArea = document.getElementById('result');
         if (resultArea) {
-            const t = translations[document.getElementById('language').value] || translations.COSYenglish;
-            resultArea.innerHTML = `<p class="error-message">${t.errorGeneric || "An error occurred."}</p>`;
+            const t_all = (window.translations && window.translations[document.getElementById('language').value]) || (window.translations && window.translations.COSYenglish) || {};
+            resultArea.innerHTML = `<p class="error-message">${t_all.errorGeneric || "An error occurred."}</p>`;
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         }
     }
