@@ -1,6 +1,8 @@
+console.log('[SpeakingJS] Script start');
 // Speaking Exercises
 let speakingPracticeTimer = null; // Timer for auto-progression
 
+console.log('[SpeakingJS] Before showQuestionPractice definition');
 async function showQuestionPractice() {
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
@@ -281,10 +283,13 @@ async function showRolePlayPractice() {
     });
 }
 
+console.log('[SpeakingJS] After all show... function definitions');
+console.log('[SpeakingJS] Before practiceAllSpeaking definition');
 async function practiceAllSpeaking() {
     await startRandomSpeakingPractice(); 
 }
 
+console.log('[SpeakingJS] Before startRandomSpeakingPractice definition');
 async function startRandomSpeakingPractice() {
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
@@ -306,6 +311,7 @@ async function startRandomSpeakingPractice() {
     await randomExerciseFunction(); 
 }
 
+console.log('[SpeakingJS] Before initSpeakingPractice definition');
 function initSpeakingPractice() {
     const speakingButton = document.getElementById('speaking-practice-btn'); 
     if (speakingButton) {
@@ -315,6 +321,7 @@ function initSpeakingPractice() {
     }
 }
 
+console.log('[SpeakingJS] After all function definitions, before global assignments');
 // Global assignments of original functions first
 window.showQuestionPractice = showQuestionPractice;
 window.showMonologuePractice = showMonologuePractice;
@@ -322,12 +329,15 @@ window.showRolePlayPractice = showRolePlayPractice;
 window.startRandomSpeakingPractice = startRandomSpeakingPractice;
 window.initSpeakingPractice = initSpeakingPractice;
 window.practiceAllSpeaking = practiceAllSpeaking; 
+console.log('[SpeakingJS] After global assignments, before patching calls');
 
 // Then, patching calls, re-assigning to the window properties
 window.showQuestionPractice = patchExerciseWithExtraButtons(showQuestionPractice, '.speaking-exercise-container', window.startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
 window.showMonologuePractice = patchExerciseWithExtraButtons(showMonologuePractice, '.speaking-exercise-container', window.startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
 window.showRolePlayPractice = patchExerciseWithExtraButtons(showRolePlayPractice, '.speaking-exercise-container', window.startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
+console.log('[SpeakingJS] After patching calls');
 
 // Note:DOMContentLoaded listener was removed as init functions are called directly by event-listeners-setup.js or similar.
 // If this file is loaded standalone and needs to self-initialize, uncomment:
 // document.addEventListener('DOMContentLoaded', initSpeakingPractice);
+console.log('[SpeakingJS] Script end');

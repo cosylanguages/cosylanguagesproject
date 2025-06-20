@@ -151,7 +151,7 @@ const VOCABULARY_PRACTICE_TYPES = {
 };
 
 async function showMatchOpposites() {
-    console.warn("Placeholder: showMatchOpposites called but not implemented.");
+    console.warn("Placeholder: Match Opposites exercise (showMatchOpposites) called but not implemented.");
     const resultArea = document.getElementById('result');
     if (resultArea) {
         resultArea.innerHTML = '<p>The "Match Opposites" exercise is currently unavailable. Please try another exercise.</p>';
@@ -161,7 +161,7 @@ async function showMatchOpposites() {
 }
 
 async function showMatchImageWord() {
-    console.warn("Placeholder: showMatchImageWord called but not implemented.");
+    console.warn("Placeholder: Match Image with Word exercise (showMatchImageWord) called but not implemented.");
     const resultArea = document.getElementById('result');
     if (resultArea) {
         resultArea.innerHTML = '<p>The "Match Image with Word" exercise is currently unavailable. Please try another exercise.</p>';
@@ -169,50 +169,181 @@ async function showMatchImageWord() {
 }
 
 async function showTranscribeWordYesNo() {
-    console.warn("Placeholder: showTranscribeWordYesNo called but not implemented.");
+    console.warn("Placeholder: Transcribe Word (Yes/No) listening exercise (showTranscribeWordYesNo) called but not implemented.");
     const resultArea = document.getElementById('result');
     if (resultArea) {
-        resultArea.innerHTML = '<p>The "Transcribe Word (Yes/No)" exercise is currently unavailable. Please try another exercise.</p>';
+        resultArea.innerHTML = '<p>The "Transcribe Word (Yes/No)" listening exercise is currently unavailable. Please try another exercise.</p>';
     }
 }
 
 async function showMatchSoundWord() {
-    console.warn("Placeholder: showMatchSoundWord called but not implemented.");
+    console.warn("Placeholder: Match Sound with Word listening exercise (showMatchSoundWord) called but not implemented.");
     const resultArea = document.getElementById('result');
     if (resultArea) {
-        resultArea.innerHTML = '<p>The "Match Sound with Word" exercise is currently unavailable. Please try another exercise.</p>';
+        resultArea.innerHTML = '<p>The "Match Sound with Word" listening exercise is currently unavailable. Please try another exercise.</p>';
     }
 }
 
 async function showIdentifyImageYesNo() {
-    console.warn("Placeholder: showIdentifyImageYesNo called but not implemented.");
+    console.warn("Placeholder: Identify Image (Yes/No) exercise (showIdentifyImageYesNo) called but not implemented.");
     const resultArea = document.getElementById('result');
     if (resultArea) {
-        resultArea.innerHTML = '<p>The "Identify Image (Yes/No)" exercise is currently unavailable.</p>';
+        resultArea.innerHTML = '<p>The "Identify Image (Yes/No)" exercise is currently unavailable. Please try another exercise.</p>';
     }
 }
 
 async function startRandomImagePractice() {
-    console.warn("Placeholder: startRandomImagePractice called but not implemented.");
-    const resultArea = document.getElementById('result');
-    if (resultArea) {
-        resultArea.innerHTML = '<p>Random Image practice is currently unavailable.</p>';
+    // 1. Clear any existing speaking practice timers or auto-advance timers.
+    if (window.speakingPracticeTimer) {
+        clearTimeout(window.speakingPracticeTimer);
+        window.speakingPracticeTimer = null;
+    }
+    if (typeof window.cancelAutoAdvanceTimer === 'function') {
+        window.cancelAutoAdvanceTimer();
+    }
+
+    // 2. Get the selected language and day(s).
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays(); // Assuming getSelectedDays() is globally available
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+
+    // 3. Check if a language and day(s) are selected; if not, show an alert.
+    if (!language || !days.length) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
+        return;
+    }
+
+    // 4. Define the available exercises for random image practice.
+    const exercises = VOCABULARY_PRACTICE_TYPES['random-image'].exercises;
+
+    // 5. Select one of these exercises randomly.
+    const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
+
+    // 6. Call the corresponding function to start the selected exercise.
+    // 7. Make sure to await these calls if they are asynchronous.
+    switch(randomExercise) {
+        case 'identify-image':
+            await window.showIdentifyImage();
+            break;
+        case 'match-image-word':
+            await window.showMatchImageWord();
+            break;
+        case 'identify-image-yes-no':
+            await window.showIdentifyImageYesNo();
+            break;
+        default:
+            console.error("Unknown random image exercise selected:", randomExercise);
+            const resultArea = document.getElementById('result');
+            if (resultArea) {
+                resultArea.innerHTML = '<p>An unexpected error occurred while selecting an image exercise. Please try again.</p>';
+            }
+            break;
     }
 }
 
 async function startListeningPractice() {
-    console.warn("Placeholder: startListeningPractice called but. not implemented.");
-    const resultArea = document.getElementById('result');
-    if (resultArea) {
-        resultArea.innerHTML = '<p>Listening practice is currently unavailable.</p>';
+    // 1. Clear any existing speaking practice timers or auto-advance timers.
+    if (window.speakingPracticeTimer) {
+        clearTimeout(window.speakingPracticeTimer);
+        window.speakingPracticeTimer = null;
+    }
+    if (typeof window.cancelAutoAdvanceTimer === 'function') {
+        window.cancelAutoAdvanceTimer();
+    }
+
+    // 2. Get the selected language and day(s).
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays(); // Assuming getSelectedDays() is globally available
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+
+    // 3. Check if a language and day(s) are selected; if not, show an alert.
+    if (!language || !days.length) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
+        return;
+    }
+
+    // 4. Define the available exercises for listening practice.
+    const exercises = VOCABULARY_PRACTICE_TYPES['listening'].exercises;
+
+    // 5. Select one of these exercises randomly.
+    const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
+
+    // 6. Call the corresponding function to start the selected exercise.
+    // 7. Make sure to await these calls as they are asynchronous.
+    switch(randomExercise) {
+        case 'transcribe-word':
+            await window.showTranscribeWord();
+            break;
+        case 'match-sound-word':
+            await window.showMatchSoundWord();
+            break;
+        case 'transcribe-word-yes-no':
+            await window.showTranscribeWordYesNo();
+            break;
+        default:
+            console.error("Unknown listening exercise selected:", randomExercise);
+            const resultArea = document.getElementById('result');
+            if (resultArea) {
+                resultArea.innerHTML = '<p>An unexpected error occurred while selecting a listening exercise. Please try again.</p>';
+            }
+            break;
     }
 }
 
 async function practiceAllVocabulary() {
-    console.warn("Placeholder: practiceAllVocabulary called but not implemented.");
-    const resultArea = document.getElementById('result');
-    if (resultArea) {
-        resultArea.innerHTML = '<p>Practice All Vocabulary is currently unavailable.</p>';
+    // 1. Clear any existing speaking practice timers or auto-advance timers.
+    if (window.speakingPracticeTimer) {
+        clearTimeout(window.speakingPracticeTimer);
+        window.speakingPracticeTimer = null;
+    }
+    if (typeof window.cancelAutoAdvanceTimer === 'function') {
+        window.cancelAutoAdvanceTimer();
+    }
+
+    // 2. Get the selected language and day(s).
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays(); // Assuming getSelectedDays() is globally available
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+
+    // 3. Check if a language and day(s) are selected; if not, show an alert.
+    if (!language || !days.length) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
+        return;
+    }
+
+    // 4. Get the keys from VOCABULARY_PRACTICE_TYPES
+    const practiceTypes = Object.keys(VOCABULARY_PRACTICE_TYPES);
+    if (!practiceTypes.length) {
+        console.error("No practice types defined in VOCABULARY_PRACTICE_TYPES.");
+        const resultArea = document.getElementById('result');
+        if (resultArea) {
+            resultArea.innerHTML = '<p>No vocabulary practice types are currently available. Please check the configuration.</p>';
+        }
+        return;
+    }
+
+    // 5. Select one of these practice types randomly.
+    const randomPracticeType = practiceTypes[Math.floor(Math.random() * practiceTypes.length)];
+
+    // 6. Based on the selected type, call the corresponding main practice function.
+    // 7. Make sure to await these calls as they are asynchronous.
+    switch(randomPracticeType) {
+        case 'random-word':
+            await window.startRandomWordPractice();
+            break;
+        case 'random-image':
+            await window.startRandomImagePractice();
+            break;
+        case 'listening':
+            await window.startListeningPractice();
+            break;
+        default:
+            console.error("Unknown practice type selected:", randomPracticeType);
+            const resultArea = document.getElementById('result');
+            if (resultArea) {
+                resultArea.innerHTML = '<p>An unexpected error occurred while selecting a practice type. Please try again.</p>';
+            }
+            break;
     }
 }
 
