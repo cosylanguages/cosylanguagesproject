@@ -1,14 +1,5 @@
 // UI Visibility Management
 
-const thematicDayNames = {
-    1: "Basic words", 
-    2: "Who are you?", 
-    3: "My family", 
-    4: "Numbers", 
-    5: "Is it good or bad?"
-    // Add more day names if provided by the user later
-};
-
 function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     // Ensure selectedDay is a number; it might be NaN if parsing failed or value was empty.
     const day = Number(selectedDay);
@@ -203,11 +194,15 @@ function updateDaySelectorsVisibility(isInitialLoad = false) {
             dayRangeContainer.style.display = 'none'; 
             
             const dayNumber = parseInt(singleDayValue);
-            const name = thematicDayNames[dayNumber] || null; 
-            if (name) {
+            const currentLanguage = document.getElementById('language').value || 'COSYenglish';
+            const langTranslations = translations[currentLanguage] || translations.COSYenglish;
+            const name = (langTranslations.dayNames && langTranslations.dayNames[dayNumber]) ? langTranslations.dayNames[dayNumber] : `Day ${dayNumber}`; // Fallback to "Day X" if name not found
+
+            if (name) { // Name will now usually be present due to fallback
                 thematicNameDisplay.textContent = name;
                 thematicNameDisplay.style.display = 'block';
             } else {
+                // This else block might be less likely to be hit if "Day X" is always a fallback
                 thematicNameDisplay.style.display = 'none';
             }
         } else if (dayFromValue) { 
@@ -234,5 +229,3 @@ window.updateDaySelectorsVisibility = updateDaySelectorsVisibility;
 // If updateDaySelectors was global and might be called elsewhere, alias it:
 // window.updateDaySelectors = updateDaySelectorsVisibility;
 // However, the plan is to update event-listeners-setup.js, so direct replacement is better.
-
-

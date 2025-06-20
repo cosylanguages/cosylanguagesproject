@@ -1,5 +1,12 @@
 const translations = {
   COSYenglish: {
+    dayNames: {
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     chooseLanguage: '🌎 Choose Your Language:',
     chooseDay: '📅 Choose Your Day:',
     dayFrom: 'Day From:',
@@ -238,6 +245,13 @@ const translations = {
     }
   },
   COSYfrançais: {
+    dayNames: { // TODO: Translate these day names
+        1: "Basic words", // Should be "Mots de base"
+        2: "Who are you?", // Should be "Qui êtes-vous ?"
+        3: "My family", // Should be "Ma famille"
+        4: "Numbers", // Should be "Nombres"
+        5: "Is it good or bad?" // Should be "Est-ce bon ou mauvais ?"
+    },
     chooseLanguage: '🌎 Choisissez votre langue :',
     chooseDay: '📅 Choisissez votre jour :',
     dayFrom: 'Jour de :',
@@ -475,6 +489,13 @@ const translations = {
     }
   },
 COSYitaliano: {
+  dayNames: { // TODO: Translate these day names
+      1: "Basic words",
+      2: "Who are you?",
+      3: "My family",
+      4: "Numbers",
+      5: "Is it good or bad?"
+  },
   chooseLanguage: '🌎 Scegli la tua lingua:',
   chooseDay: '📅 Scegli il giorno:',
   dayFrom: 'Dal giorno:',
@@ -713,6 +734,13 @@ COSYitaliano: {
 }
   },
     COSYespañol: {
+    dayNames: { // TODO: Translate these day names
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     chooseLanguage: '🌎 Elige tu idioma:',
     chooseDay: '📅 Elige tu día:',
     dayFrom: 'Día desde:',
@@ -1104,6 +1132,13 @@ COSYitaliano: {
     statsXp: 'XP:',
     statsLevel: 'Nível:',
     statsStreak: 'Sequência:',
+    dayNames: {
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     aria: {
       genderExercise: 'Exercício de gênero',
       matchArticlesWords: 'Associe artigos e palavras',
@@ -1353,6 +1388,13 @@ COSYitaliano: {
     statsXp: 'XP :',
     statsLevel: 'Live :',
     statsStreak: 'Steud :',
+    dayNames: {
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     aria: {
       genderExercise: 'Pleustr war ar reizh',
       matchArticlesWords: 'Kevreit anvioù ha gerioù',
@@ -1460,6 +1502,13 @@ COSYitaliano: {
     }
   },
   COSYdeutsch: {
+    dayNames: { // TODO: Translate these day names
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     chooseLanguage: '🌎 Wählen Sie Ihre Sprache:',
     chooseDay: '📅 Wählen Sie Ihren Tag:',
     dayFrom: 'Tag von:',
@@ -1737,6 +1786,13 @@ COSYitaliano: {
     }
   },
   ΚΟΖΥελληνικά: {
+    dayNames: { // TODO: Translate these day names
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     chooseLanguage: '🌎 Επιλέξτε τη γλώσσα σας:',
     chooseDay: '📅 Επιλέξτε την ημέρα σας:',
     dayFrom: 'Ημέρα από:',
@@ -1986,6 +2042,13 @@ COSYitaliano: {
     }
   },
   ТАКОЙрусский: {
+    dayNames: { // TODO: Translate these day names
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     chooseLanguage: '🌎 Выберите язык:',
     chooseDay: '📅 Выберите день:',
     dayFrom: 'День с:',
@@ -2238,6 +2301,13 @@ COSYitaliano: {
     }
   },
   COSYtatarça: {
+    dayNames: { // TODO: Translate these day names
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     chooseLanguage: '🌎 Телне сайлагыз:',
     chooseDay: '📅 Көнне сайлагыз:',
     dayFrom: 'Көннән:',
@@ -2487,6 +2557,13 @@ COSYitaliano: {
     }
   },
   COSYbashkort: {
+  dayNames: { // TODO: Translate these day names
+      1: "Basic words",
+      2: "Who are you?",
+      3: "My family",
+      4: "Numbers",
+      5: "Is it good or bad?"
+  },
   chooseLanguage: '🌎 Телде һайлағыҙ:',
   chooseDay: '📅 Көндө һайлағыҙ:',
   dayFrom: 'Көндән:',
@@ -2724,6 +2801,13 @@ COSYitaliano: {
   }
   },
   ԾՈՍՅհայկական: {
+    dayNames: { // TODO: Translate these day names
+        1: "Basic words",
+        2: "Who are you?",
+        3: "My family",
+        4: "Numbers",
+        5: "Is it good or bad?"
+    },
     chooseLanguage: '🌎 Ընտրեք ձեր լեզուն:',
     chooseDay: '📅 Ընտրեք ձեր օրը:',
     dayFrom: 'Օրից սկսած՝',
