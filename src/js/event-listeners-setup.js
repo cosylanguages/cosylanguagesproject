@@ -2,7 +2,7 @@
 
 // Placeholder stub for updateGrammarOptions
 function updateGrammarOptions() { 
-    console.log("DEBUG: updateGrammarOptions called (stub)"); 
+    // console.log("DEBUG: updateGrammarOptions called (stub)");  // Debug log removed
 }
 
 function populateDaysDropdowns() {
@@ -23,7 +23,7 @@ function populateDaysDropdowns() {
 }
 
 function initializeEventListeners() {
-    console.log("DEBUG: initializeEventListeners called");
+    // console.log("DEBUG: initializeEventListeners called"); // Debug log removed
 
     populateDaysDropdowns();
 
@@ -51,14 +51,39 @@ function initializeEventListeners() {
     if (languageSelectElement) {
         languageSelectElement.addEventListener('change', function() {
             const lang = this.value;
+
+            // Save or remove language and day selections from localStorage
+            if (lang) { // Only save if a real language is selected
+                localStorage.setItem('selectedLanguage', lang);
+                // Persist day selections as well
+                if (daySelectElement) localStorage.setItem('selectedDay', daySelectElement.value);
+                if (dayFromSelectElement) localStorage.setItem('selectedDayFrom', dayFromSelectElement.value);
+                if (dayToSelectElement) localStorage.setItem('selectedDayTo', dayToSelectElement.value);
+            } else {
+                // If "Your Language" is chosen, clear the saved language
+                localStorage.removeItem('selectedLanguage');
+                // Optionally clear day selections
+                localStorage.removeItem('selectedDay');
+                localStorage.removeItem('selectedDayFrom');
+                localStorage.removeItem('selectedDayTo');
+            }
+
+            // Call updateUIForLanguage from language-handler.js
+            // This is already called by the listener in language-handler.js, so ensure no conflict or redundancy.
+            // For clarity and consolidation, it's better if language-handler.js's own listener calls updateUIForLanguage and refreshLatinization.
+            // This event-listeners-setup.js listener should primarily focus on OTHER UI changes tied to language if any,
+            // or this entire block could be refactored/removed if language-handler.js handles all necessary UI updates.
+            // For now, assuming language-handler.js handles the main text translations and latinizer refresh.
+
+            // UI visibility updates specific to event-listeners-setup.js
             let dayToUse = 1; 
             const singleDayValue = daySelectElement ? daySelectElement.value : "";
             if (singleDayValue) {
-                dayToUse = parseInt(singleDayValue);
+                dayToUse = parseInt(singleDayValue) || 1; // Ensure fallback if NaN
             } else {
                 const dayFromValue = dayFromSelectElement ? dayFromSelectElement.value : "";
                 if (dayFromValue) {
-                    dayToUse = parseInt(dayFromValue);
+                    dayToUse = parseInt(dayFromValue) || 1; // Ensure fallback if NaN
                 }
             }
             if (typeof updateUIVisibilityForDay === 'function') {
@@ -117,80 +142,10 @@ function initializeEventListeners() {
         updateUIVisibilityForDay(initialDay, initialLang);
     }
 
-    // --- Latinize Button Event Listener ---
-    const latinizeButton = document.getElementById('toggle-latinization-btn');
-    if (latinizeButton) {
-        // Set initial text based on global state (which should be true)
-        latinizeButton.textContent = window.isLatinizationActive ? 'Latinize: On' : 'Latinize: Off';
+    // Latinization button functionality is now handled by src/js/latinizer.js
+    // Text selection transliteration tooltip functionality is being removed.
 
-        latinizeButton.addEventListener('click', function() {
-            window.isLatinizationActive = !window.isLatinizationActive;
-            this.textContent = window.isLatinizationActive ? 'Latinize: On' : 'Latinize: Off';
-            // If latinization is turned off, hide any existing tooltip
-            if (!window.isLatinizationActive) {
-                let tooltip = document.getElementById('transliteration-tooltip');
-                if (tooltip) {
-                    tooltip.style.display = 'none';
-                }
-            }
-        });
-    }
-
-    // --- Text Selection Event Listener (for transliteration tooltip) ---
-    document.addEventListener('mouseup', function(event) {
-        if (typeof window.transliterateSelectedText === 'function') {
-            const transliterated = window.transliterateSelectedText();
-            let tooltip = document.getElementById('transliteration-tooltip');
-
-            if (transliterated && transliterated.trim() !== "") {
-                if (!tooltip) {
-                    tooltip = document.createElement('div');
-                    tooltip.id = 'transliteration-tooltip';
-                    // Styles like position, padding, background, color, border, borderRadius, zIndex, fontSize, fontFamily, pointerEvents
-                    // are now primarily handled by CSS in main.css.
-                    // JS will still manage dynamic properties: display, left, top.
-                    document.body.appendChild(tooltip);
-                }
-                tooltip.textContent = transliterated;
-                // Position near mouse, with offset, ensuring it stays within viewport
-                let x = event.clientX + 15;
-                let y = event.clientY + 15;
-                tooltip.style.left = x + 'px';
-                tooltip.style.top = y + 'px';
-                tooltip.style.display = 'block';
-                
-                // Check if tooltip is out of bounds and adjust
-                const rect = tooltip.getBoundingClientRect();
-                if (rect.right > window.innerWidth) {
-                    tooltip.style.left = (window.innerWidth - rect.width - 5) + 'px';
-                }
-                if (rect.bottom > window.innerHeight) {
-                    tooltip.style.top = (window.innerHeight - rect.height - 5) + 'px';
-                }
-                if (rect.left < 0) {
-                    tooltip.style.left = '5px';
-                }
-                 if (rect.top < 0) {
-                    tooltip.style.top = '5px';
-                }
-
-            } else {
-                if (tooltip) {
-                    tooltip.style.display = 'none'; // Hide if no (or empty) transliteration
-                }
-            }
-        }
-    });
-    // Also hide tooltip on mousedown, as selection is likely changing
-    document.addEventListener('mousedown', function() {
-        let tooltip = document.getElementById('transliteration-tooltip');
-        if (tooltip) {
-            tooltip.style.display = 'none';
-        }
-    });
-
-
-    console.log("DEBUG: initializeEventListeners completed with new listeners.");
+    // console.log("DEBUG: initializeEventListeners completed."); // Debug log removed
 }
 
 window.addEventListener('DOMContentLoaded', initializeEventListeners);

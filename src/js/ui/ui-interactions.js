@@ -1,29 +1,4 @@
-let isLatinized = false;
-
-const latinizeBtn = document.getElementById('latinize-btn');
-
-if (latinizeBtn) {
-  latinizeBtn.addEventListener('click', function() {
-    isLatinized = !isLatinized;
-    console.log("Latinization active:", isLatinized);
-    
-    const currentSelectedLanguage = document.getElementById('language').value;
-    // Update button text based on the new state and translations
-    const t = translations[currentSelectedLanguage] || translations['COSYenglish']; // Get translations for current language
-    if (isLatinized) {
-      latinizeBtn.textContent = t.showOriginal || "Show Original"; 
-    } else {
-      latinizeBtn.textContent = t.latinize || "Latinize";
-    }
-
-    // Apply or revert transliteration on page elements
-    if (typeof applyTransliteration === 'function') {
-      applyTransliteration(isLatinized, currentSelectedLanguage);
-    } else {
-      console.error("applyTransliteration function is not defined. Make sure transliteration.js is loaded.");
-    }
-  });
-}
+// Latinization state and button are managed by latinizer.js
 
 // Practice type buttons
 const vocabularyBtn = document.getElementById('vocabulary-btn');

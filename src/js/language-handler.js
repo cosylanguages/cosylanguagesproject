@@ -8,7 +8,12 @@ function updateUIForLanguage(language) {
   document.querySelector('label[for="day"]').textContent = t.chooseDay;
   document.querySelector('label[for="day-from"]').textContent = t.dayFrom;
   document.querySelector('label[for="day-to"]').textContent = t.dayTo;
-  document.querySelectorAll('.menu-section label')[1].textContent = t.selectPractice;
+  
+  // Use ID for "Choose Your Practice" label for robustness
+  const choosePracticeLabel = document.getElementById('choose-practice-label');
+  if (choosePracticeLabel) {
+    choosePracticeLabel.textContent = t.selectPractice;
+  }
 
   // Update main practice buttons
   document.getElementById('vocabulary-btn').textContent = t.vocabulary;
@@ -68,10 +73,26 @@ function updateUIForLanguage(language) {
 document.getElementById('language').addEventListener('change', function() {
   const lang = this.value;
   updateUIForLanguage(lang);
+  // Refresh latinization after UI text has been updated
+  if (typeof window.refreshLatinization === 'function') {
+    window.refreshLatinization();
+  }
 });
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-  const lang = document.getElementById('language').value || 'COSYenglish';
-  updateUIForLanguage(lang);
+  // restoreUserSelection in index.html now sets the language dropdown to "" if no language is saved.
+  // So, we directly use its value.
+  const languageSelect = document.getElementById('language');
+  const initialLang = languageSelect.value; 
+
+  // updateUIForLanguage should be capable of handling initialLang = "" (Your Language)
+  // to set placeholder texts or a neutral UI state.
+  // It will use translations[""] or default to COSYenglish if translations[""] is not fully defined.
+  updateUIForLanguage(initialLang); 
+
+  // Also refresh latinization on initial load based on the actual initial language
+  if (typeof window.refreshLatinization === 'function') {
+    window.refreshLatinization();
+  }
 });

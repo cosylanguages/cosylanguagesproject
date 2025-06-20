@@ -5,9 +5,10 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     const day = Number(selectedDay);
 
     // Fallback to English if selectedLanguage is not found in translations
-    const currentTranslations = translations[selectedLanguage] || translations.COSYenglish;
+    // const currentTranslations = translations[selectedLanguage] || translations.COSYenglish; // Not used directly in this function anymore for main text
 
     // Main practice category buttons and their option panels
+    const grammarBtnMain = document.getElementById('grammar-btn'); 
     const grammarOptionsEl = document.getElementById('grammar-options');
     const grammarOptionsContainer = document.querySelector('#grammar-options .grammar-options'); 
     
@@ -30,12 +31,10 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     const writingQuestionBtn = document.getElementById('writing-question-btn'); 
     const storytellingBtn = document.getElementById('storytelling-btn');
     const diaryBtn = document.getElementById('diary-btn');
-
-    // Initial checks for element existence (optional, for debugging)
-    // ... console.warn if elements not found ...
     
     // --- Handle Invalid Day Globally for all sections first ---
     if (isNaN(day) || day <= 0) {
+        if (grammarBtnMain) grammarBtnMain.style.display = 'none'; // Hide main grammar button too
         if (grammarOptionsEl) grammarOptionsEl.style.display = 'none';
         if (grammarOptionsContainer) grammarOptionsContainer.innerHTML = '';
         if (readingBtnEl) readingBtnEl.style.display = 'none';
@@ -47,33 +46,21 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
         return; 
     }
 
-    // --- Default visibility for main category buttons (can be overridden below) ---
-    // Vocabulary button is always visible if day is valid.
-    // Assuming grammarBtnEl, readingBtnEl etc. are defined or checked before use.
-    const grammarBtnMain = document.getElementById('grammar-btn'); // Defined here for safety
-    const vocabBtnMain = document.getElementById('vocabulary-btn'); // For completeness
-
+    // --- Default visibility for main category buttons ---
+    const vocabBtnMain = document.getElementById('vocabulary-btn');
     if(vocabBtnMain) vocabBtnMain.style.display = 'inline-block';
-    if (grammarBtnMain) grammarBtnMain.style.display = 'inline-block';
+    if (grammarBtnMain) grammarBtnMain.style.display = 'inline-block'; // Default to visible
     if (readingBtnEl) readingBtnEl.style.display = 'inline-block';
     if (speakingBtnEl) speakingBtnEl.style.display = 'inline-block';
     if (writingBtnEl) writingBtnEl.style.display = 'inline-block';
 
-
-    // --- Grammar Section Visibility ---
-    if (grammarOptionsEl && grammarOptionsContainer) {
-        grammarOptionsContainer.innerHTML = ''; 
-        if (day === 1 && selectedLanguage === 'COSYenglish') {
-             if(grammarBtnMain) grammarBtnMain.style.display = 'none';
-             if(grammarOptionsEl) grammarOptionsEl.style.display = 'none'; // Also hide the panel
-        } else if (day === 1 && selectedLanguage !== 'COSYenglish') {
-            if(grammarBtnMain) grammarBtnMain.style.display = 'inline-block';
-            updateGrammarOptions(); 
-        } else if (day > 1) {
-            if(grammarBtnMain) grammarBtnMain.style.display = 'inline-block';
-            updateGrammarOptions();
-        }
-    } 
+    // --- Grammar Section ---
+    // Main grammar button visibility is now handled by default visibility rules.
+    // Call updateGrammarOptions to populate or clear based on day/language.
+    // updateGrammarOptions handles the English Day 1 case internally.
+    if (grammarOptionsEl && grammarOptionsContainer) { // Ensure elements exist
+        updateGrammarOptions(); 
+    }
 
     // --- Reading Section Visibility (Main button) ---
     if (readingBtnEl) { 
@@ -85,6 +72,7 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     }
     
     // --- Speaking Sub-Options Visibility (within speakingOptionsEl) ---
+    // (Assuming speakingBtnEl itself is visible based on default rules)
     if (speakingOptionsEl) { 
         [questionPracticeBtn, monologueBtn, rolePlayBtn, practiceAllSpeakingBtn].forEach(btn => {
             if (btn) btn.style.display = ''; 
@@ -95,6 +83,7 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     }
 
     // --- Writing Sub-Options Visibility (within writingOptionsEl) ---
+    // (Assuming writingBtnEl itself is visible based on default rules)
     if (writingOptionsEl) { 
         [writingQuestionBtn, storytellingBtn, diaryBtn].forEach(btn => {
             if (btn) btn.style.display = '';
@@ -104,67 +93,86 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
             if (diaryBtn) diaryBtn.style.display = 'none';
         }
     }
-    console.log(`DEBUG: updateUIVisibilityForDay finished for Day: ${day}, Language: ${selectedLanguage}`);
+    // console.log(`DEBUG: updateUIVisibilityForDay finished for Day: ${day}, Language: ${selectedLanguage}`);
 }
 
 
 // Update grammar options based on selected day or range
 function updateGrammarOptions() {
     const lang = document.getElementById('language').value;
-    const t = translations[lang] || translations['COSYenglish'];
+    const t = translations[lang] || translations.COSYenglish; // Fallback for main translation object
     const days = getSelectedDays(); 
     const grammarOptionsContainer = document.querySelector('#grammar-options .grammar-options');
+    const grammarOptionsEl = document.getElementById('grammar-options');
 
-    if (!grammarOptionsContainer) return;
-    grammarOptionsContainer.innerHTML = ''; 
+
+    if (!grammarOptionsContainer || !grammarOptionsEl) return;
+    grammarOptionsContainer.innerHTML = ''; // Clear previous options
 
     if (!days || !days.length) { 
         const noDayMsg = document.createElement('p');
-        noDayMsg.textContent = t.selectDay || "Please select a day."; 
+        noDayMsg.textContent = (t && t.selectDay) ? t.selectDay : (translations.COSYenglish.selectDay || "Please select a day."); 
         grammarOptionsContainer.appendChild(noDayMsg);
+        // grammarOptionsEl.style.display = 'block'; // Ensure panel is visible to show message
         return;
     }
     
     const day = parseInt(days[0]); 
 
+    // Specific condition for English Day 1: No grammar options.
     if (day === 1 && lang === 'COSYenglish') {
-        return;
+        // grammarOptionsEl.style.display = 'none'; // Hide the panel itself
+        return; // No options to add
     }
-    
+    // grammarOptionsEl.style.display = 'block'; // Ensure panel is visible if we might add options
+
     let optionsAdded = false; // Flag to check if any button is added
+
+    // Default texts (English or generic) if specific translations are missing
+    const genderText = (t && t.gender) ? t.gender : (translations.COSYenglish.gender || 'Gender');
+    const verbsText = (t && t.verbs) ? t.verbs : (translations.COSYenglish.verbs || 'Verbs');
+    const possessivesText = (t && t.possessives) ? t.possessives : (translations.COSYenglish.possessives || 'Possessives');
+    const practiceAllText = (t && t.practiceAll) ? t.practiceAll : (translations.COSYenglish.practiceAll || 'Practice All');
 
     if (day >= 1) { 
         const genderBtn = document.createElement('button');
-        genderBtn.id = 'gender-btn'; // Use static ID for setupOptionToggle
-        genderBtn.textContent = t.gender || 'Gender';
+        genderBtn.id = 'gender-btn'; 
+        genderBtn.textContent = genderText;
         genderBtn.className = 'btn-secondary option-btn'; 
         grammarOptionsContainer.appendChild(genderBtn);
         optionsAdded = true;
     }
     if (day >= 2) {
         const verbBtn = document.createElement('button');
-        verbBtn.id = 'verbs-btn'; // Use static ID
-        verbBtn.textContent = t.verbs || 'Verbs';
+        verbBtn.id = 'verbs-btn'; 
+        verbBtn.textContent = verbsText;
         verbBtn.className = 'btn-secondary option-btn';
         grammarOptionsContainer.appendChild(verbBtn);
         optionsAdded = true;
     }
     if (day >= 3) {
         const possBtn = document.createElement('button');
-        possBtn.id = 'possessives-btn'; // Use static ID
-        possBtn.textContent = t.possessives || 'Possessives';
+        possBtn.id = 'possessives-btn'; 
+        possBtn.textContent = possessivesText;
         possBtn.className = 'btn-secondary option-btn';
         grammarOptionsContainer.appendChild(possBtn);
         optionsAdded = true;
     }
   
-    if (optionsAdded){ // Only add "Practice All" if there are other options
+    if (optionsAdded){ 
         const practiceAllGrammarBtn = document.createElement('button');
-        practiceAllGrammarBtn.id = 'practice-all-grammar-btn'; // Use static ID
-        practiceAllGrammarBtn.textContent = t.practiceAll || 'Practice All';
+        practiceAllGrammarBtn.id = 'practice-all-grammar-btn'; 
+        practiceAllGrammarBtn.textContent = practiceAllText;
         practiceAllGrammarBtn.className = 'btn-secondary option-btn';
         grammarOptionsContainer.appendChild(practiceAllGrammarBtn);
     }
+
+    // if (!optionsAdded && !(day === 1 && lang === 'COSYenglish')) {
+    //    // If no options were added (e.g. day 1 for non-English where only Gender might be available but files are missing)
+    //    // and it's not the specific English Day 1 case, we might want to show a message.
+    //    // For now, an empty panel is the outcome if optionsAdded remains false.
+    // }
+
 
     if (typeof setupOptionToggle === 'function' && grammarOptionsContainer.children.length > 0) {
         const buttonIds = Array.from(grammarOptionsContainer.children).map(btn => btn.id).filter(id => id);
@@ -181,25 +189,11 @@ function updateGrammarOptions() {
 
 function showPracticeAllButtons() {
     const practiceAllBtn = document.getElementById('practice-all-btn');
-    const practiceAllVocabBtn = document.getElementById('practice-all-vocab-btn');
-    const practiceAllGrammarBtn = document.getElementById('practice-all-grammar-btn');
-    const practiceAllSpeakingBtn = document.getElementById('practice-all-speaking-btn');
-    // Assuming there isn't a specific "practice-all-reading-btn" or "practice-all-writing-btn"
-    // based on common patterns, but they could be added if they exist.
-
-    if (practiceAllBtn) practiceAllBtn.style.display = 'inline-block'; // Main practice all
-    
-    // These are sub-option "Practice All" buttons, their visibility is typically
-    // controlled when their respective main category (e.g., vocabulary-options) is visible.
-    // However, goBackToMainMenu implies resetting to a state where these *could* be shown
-    // if their parent category was the last one open, or if they are meant to be shown alongside
-    // the main practiceAllBtn. For now, ensure they are visible if their parent panel would be.
-    // This might need refinement based on exact UI flow desired when coming "back to main menu".
-    // A simpler approach for goBackToMainMenu is that it just shows *all main categories* and the *main* practice-all-btn.
-    // The sub-practice-all buttons would appear when a category like "Vocabulary" is selected.
-    // The current goBackToMainMenu already makes the main practiceAllBtn visible.
-    // Let's assume this function is primarily for the main #practice-all-btn.
-    // If the others need to be shown, their parent containers also need to be visible.
+    // const practiceAllVocabBtn = document.getElementById('practice-all-vocab-btn'); // Not managed here
+    // const practiceAllGrammarBtn = document.getElementById('practice-all-grammar-btn'); // Not managed here
+    // const practiceAllSpeakingBtn = document.getElementById('practice-all-speaking-btn'); // Not managed here
+   
+    if (practiceAllBtn) practiceAllBtn.style.display = 'inline-block'; 
 }
 window.showPracticeAllButtons = showPracticeAllButtons;
 
