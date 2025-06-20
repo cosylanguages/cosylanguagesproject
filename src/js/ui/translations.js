@@ -245,12 +245,12 @@ const translations = {
     }
   },
   COSYfrançais: {
-    dayNames: { // TODO: Translate these day names
-        1: "Basic words", // Should be "Mots de base"
-        2: "Who are you?", // Should be "Qui êtes-vous ?"
-        3: "My family", // Should be "Ma famille"
-        4: "Numbers", // Should be "Nombres"
-        5: "Is it good or bad?" // Should be "Est-ce bon ou mauvais ?"
+    dayNames: { 
+        1: "Mots de base", 
+        2: "Qui es-tu ?",
+        3: "Ma famille", 
+        4: "Les chiffres",
+        5: "Est-ce bon ou mauvais ?"
     },
     chooseLanguage: '🌎 Choisissez votre langue :',
     chooseDay: '📅 Choisissez votre jour :',
@@ -489,12 +489,12 @@ const translations = {
     }
   },
 COSYitaliano: {
-  dayNames: { // TODO: Translate these day names
-      1: "Basic words",
-      2: "Who are you?",
-      3: "My family",
-      4: "Numbers",
-      5: "Is it good or bad?"
+  dayNames: { 
+      1: "Parole di base",
+      2: "Chi sei?",
+      3: "La mia famiglia",
+      4: "Numeri",
+      5: "È buono o cattivo?"
   },
   chooseLanguage: '🌎 Scegli la tua lingua:',
   chooseDay: '📅 Scegli il giorno:',
@@ -734,12 +734,12 @@ COSYitaliano: {
 }
   },
     COSYespañol: {
-    dayNames: { // TODO: Translate these day names
-        1: "Basic words",
-        2: "Who are you?",
-        3: "My family",
-        4: "Numbers",
-        5: "Is it good or bad?"
+    dayNames: { 
+        1: "Palabras básicas",
+        2: "¿Quién eres?",
+        3: "Mi familia",
+        4: "Números",
+        5: "¿Es bueno o malo?"
     },
     chooseLanguage: '🌎 Elige tu idioma:',
     chooseDay: '📅 Elige tu día:',
@@ -990,6 +990,13 @@ COSYitaliano: {
     }
   },
   COSYportuguês: {
+    dayNames: { 
+      1: "Palavras básicas",
+      2: "Quem é você?",
+      3: "Minha família",
+      4: "Números",
+      5: "É bom ou ruim?"
+    },
     chooseLanguage: '🌎 Escolha seu idioma:',
     chooseDay: '📅 Escolha seu dia:',
     dayFrom: 'Dia de:',
@@ -1246,6 +1253,13 @@ COSYitaliano: {
     }
   },
   COSYbrezhoneg: {
+    dayNames: {
+      1: "Gerioù diazez",
+      2: "Piv oc'h ?",
+      3: "Ma familh",
+      4: "Niveroù",
+      5: "Mat pe fall eo ?"
+    },
     chooseLanguage: '🌎 Dibabit ho yezh :',
     chooseDay: '📅 Dibabit ho devezh :',
     dayFrom: 'Deiz adalek :',
@@ -1502,12 +1516,12 @@ COSYitaliano: {
     }
   },
   COSYdeutsch: {
-    dayNames: { // TODO: Translate these day names
-        1: "Basic words",
-        2: "Who are you?",
-        3: "My family",
-        4: "Numbers",
-        5: "Is it good or bad?"
+    dayNames: { 
+        1: "Grundlegende Wörter",
+        2: "Wer bist du?",
+        3: "Meine Familie",
+        4: "Zahlen",
+        5: "Ist es gut oder schlecht?"
     },
     chooseLanguage: '🌎 Wählen Sie Ihre Sprache:',
     chooseDay: '📅 Wählen Sie Ihren Tag:',
@@ -1786,12 +1800,12 @@ COSYitaliano: {
     }
   },
   ΚΟΖΥελληνικά: {
-    dayNames: { // TODO: Translate these day names
-        1: "Basic words",
-        2: "Who are you?",
-        3: "My family",
-        4: "Numbers",
-        5: "Is it good or bad?"
+    dayNames: { 
+        1: "Βασικές λέξεις",
+        2: "Ποιος είσαι;",
+        3: "Η οικογένειά μου",
+        4: "Αριθμοί",
+        5: "Είναι καλό ή κακό;"
     },
     chooseLanguage: '🌎 Επιλέξτε τη γλώσσα σας:',
     chooseDay: '📅 Επιλέξτε την ημέρα σας:',
@@ -2042,12 +2056,12 @@ COSYitaliano: {
     }
   },
   ТАКОЙрусский: {
-    dayNames: { // TODO: Translate these day names
-        1: "Basic words",
-        2: "Who are you?",
-        3: "My family",
-        4: "Numbers",
-        5: "Is it good or bad?"
+    dayNames: { 
+        1: "Базовые слова",
+        2: "Кто ты?",
+        3: "Моя семья",
+        4: "Цифры",
+        5: "Это хорошо или плохо?"
     },
     chooseLanguage: '🌎 Выберите язык:',
     chooseDay: '📅 Выберите день:',
@@ -2301,12 +2315,12 @@ COSYitaliano: {
     }
   },
   COSYtatarça: {
-    dayNames: { // TODO: Translate these day names
-        1: "Basic words",
-        2: "Who are you?",
-        3: "My family",
-        4: "Numbers",
-        5: "Is it good or bad?"
+    dayNames: { 
+        1: "Базовые сүзләр",
+        2: "Сез кем?",
+        3: "Минем гаиләм",
+        4: "Саннар",
+        5: "Бу яхшы яки начармы?"
     },
     chooseLanguage: '🌎 Телне сайлагыз:',
     chooseDay: '📅 Көнне сайлагыз:',
@@ -2557,12 +2571,12 @@ COSYitaliano: {
     }
   },
   COSYbashkort: {
-  dayNames: { // TODO: Translate these day names
-      1: "Basic words",
-      2: "Who are you?",
-      3: "My family",
-      4: "Numbers",
-      5: "Is it good or bad?"
+  dayNames: { 
+      1: "Базовые һүҙҙәр",
+      2: "Һеҙ кем?",
+      3: "Минең ғаиләм",
+      4: "Саннар",
+      5: "Был яҡшы йәки насармы?"
   },
   chooseLanguage: '🌎 Телде һайлағыҙ:',
   chooseDay: '📅 Көндө һайлағыҙ:',
@@ -2801,12 +2815,12 @@ COSYitaliano: {
   }
   },
   ԾՈՍՅհայկական: {
-    dayNames: { // TODO: Translate these day names
-        1: "Basic words",
-        2: "Who are you?",
-        3: "My family",
-        4: "Numbers",
-        5: "Is it good or bad?"
+    dayNames: { 
+        1: "Հիմնական բառեր",
+        2: "Ո՞վ եք դուք",
+        3: "Իմ ընտանիքը",
+        4: "Թվեր",
+        5: "Լավ է, թե վատ"
     },
     chooseLanguage: '🌎 Ընտրեք ձեր լեզուն:',
     chooseDay: '📅 Ընտրեք ձեր օրը:',
