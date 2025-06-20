@@ -3,14 +3,15 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         const latinizeBtn = document.getElementById('toggle-latinization-btn');
         const languageSelect = document.getElementById('language');
+        const latinizableLanguages = ['ΚΟΖΥελληνικά', 'ТАКОЙрусский', 'ԾՈՍՅհայկական']; // Define once
 
         if (!latinizeBtn) {
             console.warn('Latinize button not found.');
             return;
         }
 
-        // Load persisted state
-        let isLatinized = localStorage.getItem('latinizeState') === 'true';
+        let isLatinized = false;
+        localStorage.setItem('latinizeState', 'false');
 
         function applyTransliterationToPage(shouldLatinize, currentLanguage) {
             try {
@@ -21,25 +22,34 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    let originalText = element.dataset.originalText;
                     const visualClass = 'latinized-text-visual';
+                    const isCurrentLangLatinizable = currentLanguage && latinizableLanguages.includes(currentLanguage);
 
-                    if (shouldLatinize) {
-                        if (!originalText) {
-                            originalText = element.textContent.trim();
-                            element.dataset.originalText = originalText;
-                        }
-                        if (originalText) {
-                            const transliteratedText = window.getLatinization(originalText, currentLanguage);
-                            if (transliteratedText !== originalText) { 
+                    if (shouldLatinize && isCurrentLangLatinizable) {
+                        const currentElementText = element.textContent.trim();
+                        element.dataset.originalText = currentElementText; 
+                        
+                        if (currentElementText) {
+                            const transliteratedText = window.getLatinization(currentElementText, currentLanguage);
+                            if (transliteratedText !== currentElementText) { 
                                 element.textContent = transliteratedText;
                                 element.classList.add(visualClass);
+                            } else {
+                                element.classList.remove(visualClass); 
                             }
                         }
-                    } else {
-                        if (originalText) { 
-                            element.textContent = originalText;
-                            element.classList.remove(visualClass);
+                    } else { 
+                        element.classList.remove(visualClass);
+                        if (element.dataset.originalText) {
+                            if (isCurrentLangLatinizable) {
+                                // Only revert if current lang is latinizable and we are turning it off
+                                element.textContent = element.dataset.originalText;
+                            }
+                            // For non-latinizable languages, textContent is already correct from language-handler.
+                            // Clean up dataset.originalText for non-latinizable languages to prevent misuse.
+                            if (!isCurrentLangLatinizable) {
+                                element.removeAttribute('data-original-text');
+                            }
                         }
                     }
                 });
@@ -49,61 +59,72 @@ document.addEventListener('DOMContentLoaded', () => {
                     const resultChildren = resultArea.querySelectorAll('*'); 
                     const resultElements = [resultArea, ...resultChildren]; 
                     resultElements.forEach(element => {
-                        let originalTextContent = element.dataset.originalTextContent;
                         const visualClass = 'latinized-text-visual';
-                        if (shouldLatinize) {
-                            if (!originalTextContent) {
-                                if (element.childNodes.length === 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
-                                   originalTextContent = element.textContent.trim();
-                                   element.dataset.originalTextContent = originalTextContent;
-                                }
+                        const isCurrentLangLatinizable = currentLanguage && latinizableLanguages.includes(currentLanguage);
+                        let originalTextContent = element.dataset.originalTextContent;
+
+                        if (shouldLatinize && isCurrentLangLatinizable) {
+                            let textToTransliterate = "";
+                            if (element.childNodes.length === 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
+                                textToTransliterate = element.textContent.trim();
+                                element.dataset.originalTextContent = textToTransliterate; // Store current translated text
+                            } else if (originalTextContent) { // Should not happen if logic is correct elsewhere
+                                textToTransliterate = originalTextContent;
                             }
-                            if (originalTextContent) {
-                                const transliterated = window.getLatinization(originalTextContent, currentLanguage);
-                                if (transliterated !== originalTextContent) {
+                            
+                            if (textToTransliterate) {
+                                const transliterated = window.getLatinization(textToTransliterate, currentLanguage);
+                                if (transliterated !== textToTransliterate) {
                                     element.textContent = transliterated;
                                     element.classList.add(visualClass);
-                                }
-                            } else if (element.childNodes.length === 1 && element.childNodes[0].nodeType === Node.TEXT_NODE && element.textContent.trim()) {
-                                const text = element.textContent.trim();
-                                element.dataset.originalTextContent = text; 
-                                const transliterated = window.getLatinization(text, currentLanguage);
-                                 if (transliterated !== text) {
-                                    element.textContent = transliterated;
-                                    element.classList.add(visualClass);
+                                } else {
+                                    element.classList.remove(visualClass);
                                 }
                             }
                         } else {
+                            element.classList.remove(visualClass);
                             if (originalTextContent) {
-                                element.textContent = originalTextContent;
-                                element.classList.remove(visualClass);
+                                if (isCurrentLangLatinizable) {
+                                    element.textContent = originalTextContent;
+                                }
+                                if (!isCurrentLangLatinizable) {
+                                     element.removeAttribute('data-original-text-content');
+                                }
                             }
                         }
                     });
                 }
 
                 if (languageSelect) {
-                    const targetLanguageValues = ['ΚΟΖΥελληνικά', 'ТАКОЙрусский', 'ԾՈՍՅհայկական'];
+                    // const targetLanguageValues = ['ΚΟΖΥελληνικά', 'ТАКОЙрусский', 'ԾՈՍՅհայկական']; // Already defined as latinizableLanguages
+
                     for (let option of languageSelect.options) {
                         const visualClass = 'latinized-text-visual';
-                        if (targetLanguageValues.includes(option.value)) {
-                            if (shouldLatinize) {
-                                if (!option.dataset.originalText) {
-                                    option.dataset.originalText = option.textContent;
-                                }
-                                option.textContent = window.getLatinization(option.dataset.originalText, option.value);
+                        const optionValue = option.value; 
+                        let originalOptionText = option.dataset.originalText;
+
+                        if (!originalOptionText) {
+                            originalOptionText = option.textContent.trim();
+                            option.dataset.originalText = originalOptionText;
+                        }
+
+                        // Determine if this specific option should be transliterated
+                        if (shouldLatinize && optionValue === currentLanguage && latinizableLanguages.includes(optionValue)) {
+                            const transliteratedOptionText = window.getLatinization(originalOptionText, optionValue);
+                            if (transliteratedOptionText !== originalOptionText) {
+                                option.textContent = transliteratedOptionText;
                                 option.classList.add(visualClass);
                             } else {
-                                if (option.dataset.originalText) {
-                                    option.textContent = option.dataset.originalText;
-                                    option.classList.remove(visualClass);
-                                }
+                                option.textContent = originalOptionText; 
+                                option.classList.remove(visualClass);
                             }
                         } else {
-                            if (option.dataset.originalText) {
-                                 option.textContent = option.dataset.originalText;
-                                 option.classList.remove(visualClass);
+                            // For all other cases (latinization off, or not the current selected lang, or not a latinizable lang)
+                            // ensure original text and no visual class.
+                            if (originalOptionText) {
+                                option.textContent = originalOptionText;
                             }
+                            option.classList.remove(visualClass);
                         }
                     }
                 }
@@ -113,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function updateButtonText() {
-            const currentUiLanguage = window.currentLanguage || 'COSYenglish'; // Assuming currentLanguage is globally available
+            const currentUiLanguage = window.currentLanguage || 'COSYenglish'; 
             const translations = window.translations || {};
             const langTranslations = translations[currentUiLanguage] || translations.COSYenglish || {};
 
@@ -127,11 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function actualApplyTransliteration() {
             try {
                 const currentLang = languageSelect ? languageSelect.value : null;
-                const visibleLanguages = ['ΚΟΖΥελληνικά', 'ТАКОЙрусский', 'ԾՈՍՅհայկական'];
-                
                 updateButtonText();
 
-                if (visibleLanguages.includes(currentLang)) {
+                if (currentLang && latinizableLanguages.includes(currentLang)) {
                     latinizeBtn.style.display = ''; 
                     applyTransliterationToPage(isLatinized, currentLang);
                 } else {
@@ -146,29 +165,28 @@ document.addEventListener('DOMContentLoaded', () => {
         latinizeBtn.addEventListener('click', () => {
             try {
                 isLatinized = !isLatinized;
-                localStorage.setItem('latinizeState', isLatinized);
+                localStorage.setItem('latinizeState', isLatinized.toString());
                 actualApplyTransliteration();
             } catch (e) {
                 console.error('Error in latinizeBtn click listener:', e);
             }
         });
-
-        // The language change event is now handled by language-handler.js,
-        // which calls window.refreshLatinization after updating UI text.
-        // So, the direct 'change' listener on languageSelect here is redundant.
         
         window.refreshLatinization = () => {
-            // Ensure isLatinized is correctly read from localStorage before applying
-            isLatinized = localStorage.getItem('latinizeState') === 'true';
+            const currentLang = languageSelect ? languageSelect.value : null;
+
+            if (currentLang && !latinizableLanguages.includes(currentLang)) {
+                if (isLatinized) { 
+                    isLatinized = false;
+                    localStorage.setItem('latinizeState', 'false');
+                }
+            } else {
+                isLatinized = localStorage.getItem('latinizeState') === 'true';
+            }
             actualApplyTransliteration();
         };
-
-        // Initial application of latinization state
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            actualApplyTransliteration();
-        } else {
-            window.addEventListener('load', actualApplyTransliteration);
-        }
+        
+        actualApplyTransliteration();
 
     } catch (e) {
         console.error('Error in DOMContentLoaded latinizer:', e);
