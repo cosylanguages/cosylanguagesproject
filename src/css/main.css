@@ -1053,3 +1053,19 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
 #btn-new-original-story {
     display: none;
 }
+
+/* Styles for the selected day name display */
+#selected-day-name-display {
+    font-size: 1.5rem;                     /* เดิม 1rem โดยประมาณจาก inline style และ menu-section-subtitle */
+    font-weight: bold;                     /* มีอยู่แล้วใน inline style */
+    color: #FFFFFF;                        /* มีอยู่แล้วใน inline style */
+    background-color: rgba(0, 0, 0, 0.2);  /* เพิ่มพื้นหลังกึ่งโปร่งใส */
+    padding: 8px 15px;
+    border-radius: 20px;                   /* ทำให้มุมโค้งมน */
+    margin-top: 15px;                      /* ปรับ margin ด้านบนเล็กน้อย */
+    text-align: center;                    /* มีอยู่แล้วใน inline style */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* เพิ่มเงาข้อความ */
+    display: inline-block;                 /* เพื่อให้ background-color พอดีกับข้อความ และ padding มีผล */
+    max-width: 80%;                        /* ป้องกันไม่ให้กว้างเกินไปใน container */
+    box-sizing: border-box;                /* เพื่อให้ padding และ border ถูกรวมใน max-width */
+}
