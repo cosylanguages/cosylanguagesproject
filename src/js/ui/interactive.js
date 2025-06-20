@@ -50,6 +50,28 @@ window.CosyAppInteractive = {};
         showAchievementNotification(achievementId) { /* ... existing ... */ }
         checkAndAwardAchievement(achievementId) { /* ... existing ... */ }
         addXP(amount) { /* ... existing ... */ }
+
+        reduceXP(amount) {
+            if (amount <= 0) return; // Only reduce by positive amounts
+
+            this.xp = Math.max(0, this.xp - amount); // Ensure XP doesn't go below 0
+            
+            // Recalculate level based on new XP
+            const newLevel = Math.floor(this.xp / 50) + 1;
+            if (newLevel < this.level) {
+                this.level = newLevel;
+                // Potentially show a "level down" or just update UI
+            } else if (newLevel > this.level) {
+                // This case should ideally not happen if only reducing XP,
+                // but good for robustness if levels are tightly coupled to XP ranges.
+                this.level = newLevel;
+            }
+            
+            this.save();
+            this.updateUI(); // Update the displayed stats
+            console.log(`Reduced XP by ${amount}. New XP: ${this.xp}`);
+        }
+
         updateStreak() { /* ... existing ... */ }
         completeLesson(lessonId) { /* ... existing ... */ }
         async updateUI() { /* ... existing ... */ }
@@ -60,6 +82,8 @@ window.CosyAppInteractive = {};
     function showToast(msg) { /* ... existing ... */ }
     CosyAppInteractive.showToast = showToast;
     CosyAppInteractive.addXP = function(amount) { gameState.addXP(amount); };
+    CosyAppInteractive.reduceXP = function(amount) { if (gameState) gameState.reduceXP(amount); };
+
     function awardCorrectAnswer() { 
         if (typeof playSound === 'function') playSound('success'); 
     }

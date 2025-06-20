@@ -298,11 +298,16 @@ async function practiceAllSpeaking() {
 }
 
 async function startRandomSpeakingPractice() {
+    // Although this function SETS speakingPracticeTimer,
+    // clearing it here ensures that if it was somehow set by another stale process,
+    // or if this function is called rapidly, it resets.
+    // Also, clear other global timers.
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
+        window.speakingPracticeTimer = null;
     }
-    if (typeof cancelAutoAdvanceTimer === 'function') { 
-        cancelAutoAdvanceTimer();
+    if (typeof window.cancelAutoAdvanceTimer === 'function') {
+        window.cancelAutoAdvanceTimer();
     }
 
     const resultArea = document.getElementById('result');

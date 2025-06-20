@@ -162,3 +162,76 @@ function hideOtherMainPracticeTypes(selectedId) {
             const resultDiv = document.getElementById('result');
             if (resultDiv) resultDiv.innerHTML = '';
         }
+
+// Tooltip-Style Hint Display Functions
+let hintTooltipElement = null;
+
+function ensureHintTooltipExists() {
+    if (!hintTooltipElement || !document.body.contains(hintTooltipElement)) {
+        hintTooltipElement = document.createElement('div');
+        hintTooltipElement.id = 'hint-tooltip';
+        // Basic styles set here, detailed ones in CSS
+        hintTooltipElement.style.position = 'absolute';
+        hintTooltipElement.style.display = 'none'; // Initially hidden
+        hintTooltipElement.style.zIndex = '1050'; // Ensure it's on top
+        // CSS will handle background, color, padding, border-radius, box-shadow, font-size, max-width, word-wrap
+        document.body.appendChild(hintTooltipElement);
+    }
+}
+
+function showHintTooltip(buttonElement, hintText) {
+    ensureHintTooltipExists();
+    hintTooltipElement.textContent = hintText;
+
+    const rect = buttonElement.getBoundingClientRect();
+    
+    // Temporarily display the tooltip to measure its dimensions
+    hintTooltipElement.style.visibility = 'hidden'; // Use visibility to measure without flicker
+    hintTooltipElement.style.display = 'block';
+    const tooltipHeight = hintTooltipElement.offsetHeight;
+    const tooltipWidth = hintTooltipElement.offsetWidth;
+    hintTooltipElement.style.display = 'none'; // Hide again
+    hintTooltipElement.style.visibility = 'visible';
+
+    let tooltipX, tooltipY;
+
+    // Attempt to position above the button
+    tooltipY = rect.top + window.scrollY - tooltipHeight - 10; // 10px offset
+
+    // If not enough space above, try below
+    if (tooltipY < window.scrollY) { // Check if it's going off-screen at the top
+        tooltipY = rect.bottom + window.scrollY + 10; // 10px offset
+    }
+
+    // Center horizontally
+    tooltipX = rect.left + window.scrollX + (rect.width / 2) - (tooltipWidth / 2);
+    
+    // Boundary checks for X
+    if (tooltipX < (window.scrollX + 5)) { // 5px margin from left edge
+        tooltipX = window.scrollX + 5;
+    }
+    if (tooltipX + tooltipWidth > (window.innerWidth + window.scrollX - 5)) { // 5px margin from right edge
+        tooltipX = window.innerWidth + window.scrollX - tooltipWidth - 5;
+    }
+
+    // Boundary checks for Y (simple check for top, bottom boundary would also be good if it often overflows)
+     if (tooltipY < window.scrollY + 5) { // Ensure it's not off the top of the viewport if scrolled
+        tooltipY = window.scrollY + 5;
+     }
+
+
+    hintTooltipElement.style.left = tooltipX + 'px';
+    hintTooltipElement.style.top = tooltipY + 'px';
+    hintTooltipElement.style.display = 'block';
+}
+
+function hideHintTooltip() {
+    if (hintTooltipElement) { // Check if it exists before trying to hide
+        hintTooltipElement.style.display = 'none';
+    }
+}
+
+// Expose functions globally or via an object
+window.CosyUI = window.CosyUI || {};
+window.CosyUI.showHintTooltip = showHintTooltip;
+window.CosyUI.hideHintTooltip = hideHintTooltip;

@@ -174,24 +174,39 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
         randomizeBtn.innerHTML = `🎲`;
         randomizeBtn.title = t.aria?.randomizeCategory || 'Start a new random exercise in this category';
         randomizeBtn.setAttribute('aria-label', t.aria?.randomizeCategory || 'Start a new random exercise in this category');
-        randomizeBtn.onclick = randomizeFn; 
+        
+        if (options.deferRandomizeClick) {
+            // If the option is set, defer the actual assignment slightly
+            const actualRandomizeFn = randomizeFn; // Capture randomizeFn
+            randomizeBtn.onclick = null; // Initially set to null or a no-op
+            setTimeout(() => {
+                if (document.body.contains(randomizeBtn)) { // Ensure button still exists
+                    randomizeBtn.onclick = actualRandomizeFn;
+                }
+            }, 100); // Delay of 100ms, can be adjusted
+        } else {
+            // Default behavior
+            randomizeBtn.onclick = randomizeFn;
+        }
         topButtonContainer.appendChild(randomizeBtn);
 
-        // "💡 Hint" button - Always added to top.
-        let hintBtn = document.createElement('button');
-        hintBtn.id = 'btn-hint';
-        hintBtn.className = 'exercise-button';
-        hintBtn.innerHTML = `💡`;
-        hintBtn.title = t.aria?.hint || 'Show a hint';
-        hintBtn.setAttribute('aria-label', t.aria?.hint || 'Show a hint');
-        hintBtn.onclick = () => {
-            if (typeof container.showHint === 'function') {
-                container.showHint();
-            } else {
-                alert(t.noHintAvailable || 'No hint available for this exercise.');
-            }
-        };
-        topButtonContainer.appendChild(hintBtn);
+        // "💡 Hint" button - Conditionally added to top.
+        if (!options.noHint) { // Check for the new option
+            let hintBtn = document.createElement('button');
+            hintBtn.id = 'btn-hint';
+            hintBtn.className = 'exercise-button';
+            hintBtn.innerHTML = `💡`;
+            hintBtn.title = t.aria?.hint || 'Show a hint';
+            hintBtn.setAttribute('aria-label', t.aria?.hint || 'Show a hint');
+            hintBtn.onclick = () => {
+                if (typeof container.showHint === 'function') {
+                    container.showHint();
+                } else {
+                    alert(t.noHintAvailable || 'No hint available for this exercise.');
+                }
+            };
+            topButtonContainer.appendChild(hintBtn);
+        }
         
         // "👁️ Reveal Answer" button - Added to top if not disabled
         if (!options.noReveal) {

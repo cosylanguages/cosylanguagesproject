@@ -75,33 +75,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 // --- End Logic for showBuildWord ---
 
                 // --- Logic for showRandomWord (word-display-container) ---
-                const wordDisplayContainer = resultArea.querySelector('.word-display-container');
-                if (wordDisplayContainer && !wordDisplayContainer.dataset.autoProgressionScheduled) {
-                    wordDisplayContainer.dataset.autoProgressionScheduled = 'true'; // Prevent multiple timers
+                // const wordDisplayContainer = resultArea.querySelector('.word-display-container');
+                // if (wordDisplayContainer && !wordDisplayContainer.dataset.autoProgressionScheduled) {
+                //     wordDisplayContainer.dataset.autoProgressionScheduled = 'true'; // Prevent multiple timers
 
-                    const nextWordButton = document.getElementById('next-word'); // ID from vocabulary.js
-                    if (nextWordButton) {
-                        nextWordButton.style.display = 'none';
-                    }
+                //     const nextWordButton = document.getElementById('next-word'); // ID from vocabulary.js
+                //     if (nextWordButton) {
+                //         nextWordButton.style.display = 'none';
+                //     }
                     
-                    setTimeout(() => {
-                        // Check if the word display is still the primary content in resultArea
-                        // This simple check assumes that if another exercise took over, 
-                        // .word-display-container might be removed or no longer the direct relevant child.
-                        if (resultArea.contains(wordDisplayContainer) && resultArea.querySelector('.word-display-container')) {
-                             // More specific check: ensure no other exercise container has replaced it
-                            const otherExerciseActive = resultArea.querySelector('.opposites-exercise, .build-word-exercise, .match-exercise');
-                            if (!otherExerciseActive || !resultArea.contains(otherExerciseActive)) {
-                                console.log('Auto-progressing from showRandomWord (word-display-container)');
-                                if (typeof startRandomWordPractice === 'function') {
-                                    startRandomWordPractice();
-                                } else {
-                                    console.error('startRandomWordPractice function not found for show-word progression.');
-                                }
-                            }
-                        }
-                    }, 3000); // 3-second delay
-                }
+                //     setTimeout(() => {
+                //         // Check if the word display is still the primary content in resultArea
+                //         // This simple check assumes that if another exercise took over, 
+                //         // .word-display-container might be removed or no longer the direct relevant child.
+                //         if (resultArea.contains(wordDisplayContainer) && resultArea.querySelector('.word-display-container')) {
+                //              // More specific check: ensure no other exercise container has replaced it
+                //             const otherExerciseActive = resultArea.querySelector('.opposites-exercise, .build-word-exercise, .match-exercise');
+                //             if (!otherExerciseActive || !resultArea.contains(otherExerciseActive)) {
+                //                 console.log('Auto-progressing from showRandomWord (word-display-container)');
+                //                 if (typeof startRandomWordPractice === 'function') {
+                //                     startRandomWordPractice();
+                //                 } else {
+                //                     console.error('startRandomWordPractice function not found for show-word progression.');
+                //                 }
+                //             }
+                //         }
+                //     }, 3000); // 3-second delay
+                // }
                 // --- End Logic for showRandomWord ---
 
 

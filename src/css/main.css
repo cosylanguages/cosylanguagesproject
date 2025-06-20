@@ -1071,3 +1071,18 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
     box-sizing: border-box;
     text-shadow: none; /* Remove previous text-shadow */
 }
+
+/* Tooltip-Style Hint Display */
+#hint-tooltip {
+    position: absolute;
+    background-color: #333; /* Dark background */
+    color: #fff; /* Light text */
+    padding: 8px 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-size: 0.9rem;
+    z-index: 1050; /* To be above most other elements */
+    max-width: 250px;
+    word-wrap: break-word;
+    display: none; /* Initially hidden, JS controls display */
+}

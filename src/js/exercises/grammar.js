@@ -290,7 +290,6 @@ async function showArticleWord() {
             if (!userInput) {
                 feedbackText = `<span style="color:#e67e22;">${t.feedbackPleaseType || 'Please type your answer above.'}</span>`;
             } else {
-                // ... (check answer logic) ...
                  if (variation.type === 'article') { 
                     if (userInput.toLowerCase() === variation.answer.toLowerCase()) {
                         feedbackText = `<span class="correct" aria-label="Correct">✅🎉 ${t.correctWellDone || 'Correct! Well done!'}</span>`;
@@ -321,6 +320,27 @@ async function showArticleWord() {
             if(isCorrect){ 
                  setTimeout(() => { startGenderPractice(); }, 1200);
             }
+        };
+        exerciseContainer.revealAnswer = function() {
+            const t_reveal = translations[document.getElementById('language').value] || translations.COSYenglish;
+            const feedbackEl = document.getElementById('gender-answer-feedback');
+            const answerInputEl = document.getElementById('gender-answer-input');
+            
+            if (variation && variation.answer) {
+                if (answerInputEl) answerInputEl.value = variation.answer;
+                if (feedbackEl) {
+                    feedbackEl.innerHTML = `${t_reveal.correctAnswerIs || "The correct answer is:"} <b>${variation.answer}</b>`;
+                    feedbackEl.className = 'exercise-feedback correct'; 
+                }
+                if (answerInputEl) answerInputEl.disabled = true;
+                
+                const optionButtons = exerciseContainer.querySelectorAll('.article-option-btn'); 
+                optionButtons.forEach(btn => btn.disabled = true);
+
+            } else {
+                if (feedbackEl) feedbackEl.innerHTML = t_reveal.errors?.revealNotPossible || "Cannot reveal answer for this item.";
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
     }
     

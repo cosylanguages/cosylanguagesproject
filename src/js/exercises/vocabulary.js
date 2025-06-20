@@ -165,6 +165,13 @@ function initVocabularyPractice() {
 }
 
 async function startRandomWordPractice() {
+    if (window.speakingPracticeTimer) {
+        clearTimeout(window.speakingPracticeTimer);
+        window.speakingPracticeTimer = null;
+    }
+    if (typeof window.cancelAutoAdvanceTimer === 'function') {
+        window.cancelAutoAdvanceTimer();
+    }
     const exercises = VOCABULARY_PRACTICE_TYPES['random-word'].exercises;
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
     
@@ -210,7 +217,8 @@ async function showRandomWord() {
                 <button id="say-word-mc" class="btn-emoji" title="Say it (Microphone Check)">🎤</button> 
                 <button id="btn-new-show-word" class="btn-emoji" onclick="window.showRandomWord()" aria-label="${t.buttons?.newShowWord || t.buttons?.newExerciseSameType || 'New Exercise'}">🔄 ${t.buttons?.newShowWord || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
             </div>
-            <div id="pronunciation-feedback" style="margin-top:10px; text-align:center;"></div>
+            <div id="word-transcript" class="transcript-area" style="margin-top: 10px; min-height: 25px; padding: 5px; border: 1px solid #eee; border-radius: 4px;"></div>
+            <div id="pronunciation-feedback" style="margin-top:10px; text-align:center; min-height: 25px;"></div>
         </div>
     `;
     if (typeof window.refreshLatinization === 'function') {
@@ -266,6 +274,81 @@ async function showRandomWord() {
     document.getElementById('pronounce-word')?.addEventListener('click', () => {
         pronounceWord(word, language);
     });
+
+    const recordButton = document.getElementById('say-word-mc');
+    const transcriptDiv = document.getElementById('word-transcript');
+    const feedbackDiv = document.getElementById('pronunciation-feedback');
+
+    if (recordButton) {
+        recordButton.addEventListener('click', () => {
+            if (typeof recognition !== 'undefined' && recognition.recognizing) {
+                recognition.stop();
+                // UI update for stopping will be handled by onEndCallback
+                return;
+            }
+
+            const langCode = mapLanguageToSpeechCode(language);
+
+            const onStartCallback = () => {
+                recordButton.classList.add('recording');
+                recordButton.textContent = t.recordingInProgress || 'Recording...';
+                if (transcriptDiv) transcriptDiv.textContent = '';
+                if (feedbackDiv) feedbackDiv.textContent = t.feedbackListening || 'Listening...'; // Provide initial listening feedback
+                if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+            };
+
+            const onResultCallback = (transcript) => {
+                if (transcriptDiv) transcriptDiv.textContent = `${t.youSaid || "You said:"} "${transcript}"`;
+            
+                const normalizedSpoken = typeof normalizeString === 'function' ? normalizeString(transcript.toLowerCase()) : transcript.toLowerCase();
+                const normalizedTarget = typeof normalizeString === 'function' ? normalizeString(word.toLowerCase()) : word.toLowerCase();
+            
+                if (normalizedSpoken === normalizedTarget) {
+                    if (feedbackDiv) feedbackDiv.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
+                } else {
+                    if (feedbackDiv) feedbackDiv.innerHTML = `<span class="incorrect">❌ ${t.tryAgain || 'Try again.'} ${t.youSaidWas || "You said:"} "${transcript}".</span>`;
+                }
+                // Button state will be reset by onEndCallback
+                if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+            };
+            
+            const onErrorCallback = (event) => {
+                // recordButton.classList.remove('recording'); // Handled by onEnd
+                // recordButton.textContent = '🎤'; // Handled by onEnd
+                let errorMsg = t.errorGeneric || 'An error occurred.'; // Default generic error
+
+                if (event.error === 'no-speech') {
+                    errorMsg = t.noSpeechDetected || 'No speech detected. Please try again.';
+                } else if (event.error === 'audio-capture') {
+                    errorMsg = t.micProblem || 'Microphone problem. Please check your microphone.';
+                } else if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                    errorMsg = t.micPermissionDenied || 'Microphone access denied. Please allow microphone access.';
+                } else if (event.error === 'network') {
+                    errorMsg = t.networkError || 'Network error during speech recognition.';
+                } else if (event.error === 'aborted') {
+                     errorMsg = t.recognitionAborted || 'Speech recognition aborted.'; // User might have stopped it.
+                } else {
+                    errorMsg = `${t.errorInRecognition || 'Error in recognition'}: ${event.error}`;
+                }
+
+                if (feedbackDiv) feedbackDiv.textContent = errorMsg;
+                if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+                // onEndCallback will handle button reset
+            };
+
+            const onEndCallback = () => {
+                recordButton.classList.remove('recording');
+                recordButton.textContent = '🎤';
+                // If feedback is still "Listening..." and no result/error was more specific, clear it.
+                if (feedbackDiv && feedbackDiv.textContent === (t.feedbackListening || 'Listening...')) {
+                    feedbackDiv.textContent = ''; 
+                }
+                if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+            };
+
+            startPronunciationCheck(word, langCode, 'word-transcript', 'pronunciation-feedback', onStartCallback, onResultCallback, onErrorCallback, onEndCallback);
+        });
+    }
 }
 
 async function showOppositesExercise(baseWord = null) {
@@ -681,6 +764,13 @@ function dragLeave(e) {
 }
 
 async function startRandomImagePractice() {
+    if (window.speakingPracticeTimer) {
+        clearTimeout(window.speakingPracticeTimer);
+        window.speakingPracticeTimer = null;
+    }
+    if (typeof window.cancelAutoAdvanceTimer === 'function') {
+        window.cancelAutoAdvanceTimer();
+    }
     const exercises = VOCABULARY_PRACTICE_TYPES['random-image'].exercises;
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
     switch(randomExercise) {
@@ -874,6 +964,13 @@ async function showIdentifyImageYesNo() {
 }
 
 async function startListeningPractice() {
+    if (window.speakingPracticeTimer) {
+        clearTimeout(window.speakingPracticeTimer);
+        window.speakingPracticeTimer = null;
+    }
+    if (typeof window.cancelAutoAdvanceTimer === 'function') {
+        window.cancelAutoAdvanceTimer();
+    }
     const exercises = VOCABULARY_PRACTICE_TYPES['listening'].exercises;
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
     switch(randomExercise) {
@@ -1025,6 +1122,13 @@ async function showMatchSoundWord() {
 }
 
 async function practiceAllVocabulary() {
+    if (window.speakingPracticeTimer) {
+        clearTimeout(window.speakingPracticeTimer);
+        window.speakingPracticeTimer = null;
+    }
+    if (typeof window.cancelAutoAdvanceTimer === 'function') {
+        window.cancelAutoAdvanceTimer();
+    }
     const language = document.getElementById('language').value;
     const days = getSelectedDays();
     const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
@@ -1081,7 +1185,7 @@ window.showTranscribeWord = showTranscribeWord;
 window.showMatchSoundWord = showMatchSoundWord;
 window.showTranscribeWordYesNo = showTranscribeWordYesNo;
 
-window.showRandomWord = patchExerciseWithExtraButtons(window.showRandomWord, '.word-display-container', window.startRandomWordPractice, { noCheck: true, noReveal: true });
+window.showRandomWord = patchExerciseWithExtraButtons(window.showRandomWord, '.word-display-container', window.startRandomWordPractice, { noCheck: true, noReveal: true, noHint: true, deferRandomizeClick: true });
 window.showOppositesExercise = patchExerciseWithExtraButtons(window.showOppositesExercise, '.opposites-exercise', window.startRandomWordPractice, {});
 window.showMatchOpposites = patchExerciseWithExtraButtons(window.showMatchOpposites, '.match-exercise', window.startRandomWordPractice, {});
 window.showBuildWord = patchExerciseWithExtraButtons(window.showBuildWord, '.build-word-exercise', window.startRandomWordPractice, {});
