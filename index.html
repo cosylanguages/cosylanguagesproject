@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1 data-transliterable>COSYlanguages</h1>
-        
+
         <div class="menu-section">
             <label for="language" data-transliterable>🌎 Choose Your Language:</label>
             <select id="language">
@@ -29,7 +29,7 @@
             </select>
             <button id="toggle-latinization-btn" title="Toggle Latinization" style="margin-left: 10px; padding: 5px 10px; background-color: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Latinize: On</button>
         </div>
-        
+
         <div class="menu-section">
             <label for="day" data-transliterable>📅 Choose Your Day:</label>
             <select id="day" aria-label="Choose your day">
@@ -50,9 +50,9 @@
                     </select>
                 </div>
             </div>
-            <div id="selected-day-name-display" class="menu-section-subtitle" style="display:none; color: white; margin-top: 10px; text-align: center; font-weight: bold;"></div>
+            <div id="selected-day-name-display" class="menu-section-subtitle" style="display:none;"></div>
         </div>
-        
+
         <div class="menu-section">
             <label id="choose-practice-label" data-transliterable>🧭 Choose Your Practice:</label>
             <div class="practice-types" role="navigation" aria-label="Practice type menu">
@@ -63,7 +63,7 @@
                 <button id="writing-btn" class="btn-primary" aria-label="Writing" title="Writing" role="button" data-transliterable>✍️ Writing</button>
                 <button id="practice-all-btn" class="btn-primary option-btn" aria-label="Practice All" title="Practice All" role="button" data-transliterable>🔄 Practice All</button>
             </div>
-            
+
             <div id="vocabulary-options" class="practice-options" aria-label="Vocabulary options" role="region">
                 <div class="vocabulary-options">
                     <button id="random-word-btn" class="btn-secondary option-btn" aria-label="Random Word" title="Random Word" role="button" data-transliterable>🔤 Random Word</button>
@@ -72,7 +72,7 @@
                     <button id="practice-all-vocab-btn" class="btn-secondary option-btn" aria-label="Practice All Vocabulary" title="Practice All Vocabulary" role="button" data-transliterable>🔄 Practice All</button>
                 </div>
             </div>
-            
+
             <div id="grammar-options" class="practice-options" aria-label="Grammar options" role="region">
                 <div class="grammar-options">
                     <button id="gender-btn" class="btn-secondary option-btn" aria-label="Gender" title="Gender" role="button" data-transliterable>✨ Gender</button>
@@ -88,7 +88,7 @@
                     <button id="interesting-fact-btn" class="btn-secondary option-btn" aria-label="Interesting facts" title="Interesting facts" role="button" data-transliterable>🔄 Interesting facts</button>
                 </div>
             </div>
-            
+
             <div id="speaking-options" class="practice-options" aria-label="Speaking options" role="region">
                 <div class="speaking-options">
                 <button id="question-practice-btn" class="btn-secondary option-btn" aria-label="Question" title="Question" role="button" data-transliterable>❓ Question</button>
@@ -104,9 +104,9 @@
                 <button id="storytelling-btn" class="btn-secondary option-btn" aria-label="Storytelling" title="Storytelling" role="button" data-transliterable>📜 Storytelling</button>
                 <button id="diary-btn" class="btn-secondary option-btn" aria-label="Diary" title="Diary" role="button" data-transliterable>📔 Diary</button>
                 </div>
-            </div>  
+            </div>
         </div>
-        
+
         <div id="result" class="result-area flex-center"></div>
     </div>
 
@@ -157,7 +157,7 @@
 
             if (savedLanguage && languageSelect) {
                 languageSelect.value = savedLanguage;
-            } else if (languageSelect) { 
+            } else if (languageSelect) {
                 languageSelect.value = "";
             }
 
@@ -177,15 +177,15 @@
             // if (savedDayTo && dayToSelect) {
             //     dayToSelect.value = savedDayTo;
             // }
-            
-            // The call to updateDaySelectorsVisibility(true) in event-listeners-setup.js 
+
+            // The call to updateDaySelectorsVisibility(true) in event-listeners-setup.js
             // will handle the initial correct display of both single and range day selectors.
             // No specific 'change' events for day selectors need to be dispatched here for restoration.
             // The old call to updateDaySelectors() is removed as part of this logic change.
             // if (typeof updateDaySelectors === 'function') { // This was the old function name
-            //      updateDaySelectors(); 
+            //      updateDaySelectors();
             // }
-            
+
             // The relevant 'change' events on day selectors that would trigger updateUIVisibilityForDay
             // are handled by the user interaction or by the initial call in event-listeners-setup.js.
             // No need to dispatch day 'change' events here anymore.
@@ -296,7 +296,7 @@ function hideOtherMainPracticeTypes(selectedId) {
                 document.body.classList.add('flag-' + lang);
             }
         });
-    
+
         // Helper: get selected days (single or range)
         function getSelectedDays() {
             const day = document.getElementById('day').value;
@@ -368,14 +368,14 @@ function hideOtherMainPracticeTypes(selectedId) {
     <script src="src/js/exercises/vocabulary-progression.js" defer></script>
     <script src="src/js/exercise-progression.js" defer></script>
     <script src="src/js/exercises/grammar.js"></script>
-    <script src="src/js/exercises/speaking.js"></script> 
+    <src/js/exercises/speaking.js"></script>
     <script src="src/js/exercises/writing.js"></script>
-    <script src="src/js/exercises/reading.js"></script> 
+    <script src="src/js/exercises/reading.js"></script>
     <script src="src/js/buttons.js"></script>
     <script src="src/js/language-handler.js"></script>
     <script src="src/js/latinizer.js"></script>
     <script src="src/js/event-listeners-setup.js"></script>
-    <script src="src/js/achievements-data.js"></script> 
+    <script src="src/js/achievements-data.js"></script>
     <!-- interactive.js should be loaded after all feature scripts -->
     <script src="src/js/ui/interactive.js"></script>
 

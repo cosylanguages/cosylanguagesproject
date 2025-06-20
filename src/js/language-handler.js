@@ -95,4 +95,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof window.refreshLatinization === 'function') {
     window.refreshLatinization();
   }
+  // Update the thematic day name display based on the new language
+  if (typeof window.updateDaySelectorsVisibility === 'function') {
+    window.updateDaySelectorsVisibility(false);
+  }
 });

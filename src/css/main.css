@@ -1053,3 +1053,21 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
 #btn-new-original-story {
     display: none;
 }
+
+/* Styles for the selected day name display */
+#selected-day-name-display {
+    font-size: var(--font-size-normal); /* Smaller, like normal text/labels */
+    font-weight: bold; /* Keep bold for some prominence */
+    color: var(--text-color-dark); /* Dark text for light background */
+    background-color: var(--light-grey); /* Light background like selects */
+    padding: 0.6em 1em; /* Similar padding to selects */
+    border: 1px solid var(--dark-grey); /* Standard border like selects */
+    border-left: 3px solid var(--primary-color); /* Unique touch: thicker primary color left border */
+    border-radius: 0.3rem; /* Standard border-radius like selects */
+    margin-top: 15px; /* Keep or adjust as needed */
+    text-align: center;
+    display: inline-block; /* Ensure background fits content */
+    max-width: 80%; /* Prevent it from being too wide */
+    box-sizing: border-box;
+    text-shadow: none; /* Remove previous text-shadow */
+}
