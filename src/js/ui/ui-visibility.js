@@ -1,11 +1,17 @@
 // UI Visibility Management
 
+const thematicDayNames = {
+    1: "Basic words", 
+    2: "Who are you?", 
+    3: "My family", 
+    4: "Numbers", 
+    5: "Is it good or bad?"
+    // Add more day names if provided by the user later
+};
+
 function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     // Ensure selectedDay is a number; it might be NaN if parsing failed or value was empty.
     const day = Number(selectedDay);
-
-    // Fallback to English if selectedLanguage is not found in translations
-    // const currentTranslations = translations[selectedLanguage] || translations.COSYenglish; // Not used directly in this function anymore for main text
 
     // Main practice category buttons and their option panels
     const grammarBtnMain = document.getElementById('grammar-btn'); 
@@ -34,7 +40,7 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     
     // --- Handle Invalid Day Globally for all sections first ---
     if (isNaN(day) || day <= 0) {
-        if (grammarBtnMain) grammarBtnMain.style.display = 'none'; // Hide main grammar button too
+        if (grammarBtnMain) grammarBtnMain.style.display = 'none'; 
         if (grammarOptionsEl) grammarOptionsEl.style.display = 'none';
         if (grammarOptionsContainer) grammarOptionsContainer.innerHTML = '';
         if (readingBtnEl) readingBtnEl.style.display = 'none';
@@ -49,86 +55,63 @@ function updateUIVisibilityForDay(selectedDay, selectedLanguage) {
     // --- Default visibility for main category buttons ---
     const vocabBtnMain = document.getElementById('vocabulary-btn');
     if(vocabBtnMain) vocabBtnMain.style.display = 'inline-block';
-    if (grammarBtnMain) grammarBtnMain.style.display = 'inline-block'; // Default to visible
+    if (grammarBtnMain) grammarBtnMain.style.display = 'inline-block'; 
     if (readingBtnEl) readingBtnEl.style.display = 'inline-block';
     if (speakingBtnEl) speakingBtnEl.style.display = 'inline-block';
     if (writingBtnEl) writingBtnEl.style.display = 'inline-block';
 
     // --- Grammar Section ---
-    // Main grammar button visibility is now handled by default visibility rules.
-    // Call updateGrammarOptions to populate or clear based on day/language.
-    // updateGrammarOptions handles the English Day 1 case internally.
-    if (grammarOptionsEl && grammarOptionsContainer) { // Ensure elements exist
+    if (grammarOptionsEl && grammarOptionsContainer) { 
         updateGrammarOptions(); 
     }
-
-    // --- Reading Section Visibility (Main button) ---
-    if (readingBtnEl) { 
-        if (day === 1) { 
-            readingBtnEl.style.display = 'none'; 
-        } else { 
-            readingBtnEl.style.display = 'inline-block'; 
-        }
-    }
     
-    // --- Speaking Sub-Options Visibility (within speakingOptionsEl) ---
-    // (Assuming speakingBtnEl itself is visible based on default rules)
+    // --- Speaking Sub-Options Visibility ---
     if (speakingOptionsEl) { 
+        // Ensure all speaking sub-options are visible by default when the panel is shown.
+        // Specific exercise functions will handle "no data" for Day 1 if applicable.
         [questionPracticeBtn, monologueBtn, rolePlayBtn, practiceAllSpeakingBtn].forEach(btn => {
             if (btn) btn.style.display = ''; 
         });
-        if (day === 1) {
-            if (monologueBtn) monologueBtn.style.display = 'none';
-        }
+        // Removed: Day 1 specific hiding for monologueBtn
     }
 
-    // --- Writing Sub-Options Visibility (within writingOptionsEl) ---
-    // (Assuming writingBtnEl itself is visible based on default rules)
+    // --- Writing Sub-Options Visibility ---
     if (writingOptionsEl) { 
+        // Ensure all writing sub-options are visible by default when the panel is shown.
         [writingQuestionBtn, storytellingBtn, diaryBtn].forEach(btn => {
             if (btn) btn.style.display = '';
         });
-        if (day === 1) {
-            if (storytellingBtn) storytellingBtn.style.display = 'none';
-            if (diaryBtn) diaryBtn.style.display = 'none';
-        }
+        // Removed: Day 1 specific hiding for storytellingBtn and diaryBtn
     }
-    // console.log(`DEBUG: updateUIVisibilityForDay finished for Day: ${day}, Language: ${selectedLanguage}`);
 }
 
 
 // Update grammar options based on selected day or range
 function updateGrammarOptions() {
     const lang = document.getElementById('language').value;
-    const t = translations[lang] || translations.COSYenglish; // Fallback for main translation object
+    const t = translations[lang] || translations.COSYenglish; 
     const days = getSelectedDays(); 
     const grammarOptionsContainer = document.querySelector('#grammar-options .grammar-options');
     const grammarOptionsEl = document.getElementById('grammar-options');
 
-
     if (!grammarOptionsContainer || !grammarOptionsEl) return;
-    grammarOptionsContainer.innerHTML = ''; // Clear previous options
+    grammarOptionsContainer.innerHTML = ''; 
 
     if (!days || !days.length) { 
         const noDayMsg = document.createElement('p');
         noDayMsg.textContent = (t && t.selectDay) ? t.selectDay : (translations.COSYenglish.selectDay || "Please select a day."); 
         grammarOptionsContainer.appendChild(noDayMsg);
-        // grammarOptionsEl.style.display = 'block'; // Ensure panel is visible to show message
         return;
     }
     
     const day = parseInt(days[0]); 
 
-    // Specific condition for English Day 1: No grammar options.
     if (day === 1 && lang === 'COSYenglish') {
-        // grammarOptionsEl.style.display = 'none'; // Hide the panel itself
-        return; // No options to add
+        return; 
     }
-    // grammarOptionsEl.style.display = 'block'; // Ensure panel is visible if we might add options
 
-    let optionsAdded = false; // Flag to check if any button is added
+    let optionsAdded = false; 
 
-    // Default texts (English or generic) if specific translations are missing
     const genderText = (t && t.gender) ? t.gender : (translations.COSYenglish.gender || 'Gender');
     const verbsText = (t && t.verbs) ? t.verbs : (translations.COSYenglish.verbs || 'Verbs');
     const possessivesText = (t && t.possessives) ? t.possessives : (translations.COSYenglish.possessives || 'Possessives');
@@ -167,13 +150,6 @@ function updateGrammarOptions() {
         grammarOptionsContainer.appendChild(practiceAllGrammarBtn);
     }
 
-    // if (!optionsAdded && !(day === 1 && lang === 'COSYenglish')) {
-    //    // If no options were added (e.g. day 1 for non-English where only Gender might be available but files are missing)
-    //    // and it's not the specific English Day 1 case, we might want to show a message.
-    //    // For now, an empty panel is the outcome if optionsAdded remains false.
-    // }
-
-
     if (typeof setupOptionToggle === 'function' && grammarOptionsContainer.children.length > 0) {
         const buttonIds = Array.from(grammarOptionsContainer.children).map(btn => btn.id).filter(id => id);
         const practiceFns = buttonIds.map(id => {
@@ -189,43 +165,74 @@ function updateGrammarOptions() {
 
 function showPracticeAllButtons() {
     const practiceAllBtn = document.getElementById('practice-all-btn');
-    // const practiceAllVocabBtn = document.getElementById('practice-all-vocab-btn'); // Not managed here
-    // const practiceAllGrammarBtn = document.getElementById('practice-all-grammar-btn'); // Not managed here
-    // const practiceAllSpeakingBtn = document.getElementById('practice-all-speaking-btn'); // Not managed here
-   
     if (practiceAllBtn) practiceAllBtn.style.display = 'inline-block'; 
 }
 window.showPracticeAllButtons = showPracticeAllButtons;
 
 
-// --- Hide/show day and day-from/day-to options depending on selection ---
-function updateDaySelectors() {
+// New function to handle visibility of day selectors and thematic name display
+function updateDaySelectorsVisibility(isInitialLoad = false) {
     const daySelect = document.getElementById('day');
     const dayFromSelect = document.getElementById('day-from');
     const dayToSelect = document.getElementById('day-to');
+    const dayLabel = document.querySelector('label[for="day"]');
+    const dayRangeContainer = document.querySelector('.day-range'); 
+    const thematicNameDisplay = document.getElementById('selected-day-name-display');
 
-    if (!daySelect || !dayFromSelect || !dayToSelect) return; 
+    if (!daySelect || !dayFromSelect || !dayToSelect || !dayLabel || !dayRangeContainer || !thematicNameDisplay) {
+        // console.warn("Day selector UI elements not all found for visibility update."); // Keep console.warn for essential debug
+        return;
+    }
 
-    const day = daySelect.value;
-    const dayFrom = dayFromSelect.value;
-    const dayTo = dayToSelect.value;
+    const singleDayValue = daySelect.value;
+    const dayFromValue = dayFromSelect.value; 
+    // const dayToValue = dayToSelect.value; // Not strictly needed for this logic branch
 
-    const dayFromParent = dayFromSelect.parentElement;
-    const dayToParent = dayToSelect.parentElement;
-
-    if (!dayFromParent || !dayToParent) return; 
-
-    if (day) {
-        dayFromParent.style.display = 'none';
-        dayToParent.style.display = 'none';
-        daySelect.style.display = ''; 
-    } else if (dayFrom || dayTo) {
-        daySelect.style.display = 'none';
-        dayFromParent.style.display = ''; 
-        dayToParent.style.display = '';
-    } else {
+    if (isInitialLoad) {
+        dayLabel.style.display = '';
         daySelect.style.display = '';
-        dayFromParent.style.display = '';
-        dayToParent.style.display = '';
+        dayRangeContainer.style.display = 'flex'; // Or 'block' or '' depending on desired default
+        thematicNameDisplay.style.display = 'none';
+    } else {
+        const singleDayValue = daySelect.value;
+        const dayFromValue = dayFromSelect.value;
+
+        if (singleDayValue) { 
+            dayLabel.style.display = '';
+            daySelect.style.display = '';
+            dayRangeContainer.style.display = 'none'; 
+            
+            const dayNumber = parseInt(singleDayValue);
+            const name = thematicDayNames[dayNumber] || null; 
+            if (name) {
+                thematicNameDisplay.textContent = name;
+                thematicNameDisplay.style.display = 'block';
+            } else {
+                thematicNameDisplay.style.display = 'none';
+            }
+        } else if (dayFromValue) { 
+            dayLabel.style.display = 'none';
+            daySelect.style.display = 'none';
+            dayRangeContainer.style.display = 'flex'; 
+            thematicNameDisplay.style.display = 'none';
+        } else { 
+            // This state (no single day, no dayFrom) should ideally mean "show all options to select either single or range start"
+            // which is the same as isInitialLoad state.
+            dayLabel.style.display = '';
+            daySelect.style.display = '';
+            dayRangeContainer.style.display = 'flex';
+            thematicNameDisplay.style.display = 'none';
+        }
     }
 }
+// Expose the new function globally
+window.updateDaySelectorsVisibility = updateDaySelectorsVisibility;
+
+// Keep the old updateDaySelectors function if it's still called by very old code,
+// but ensure it calls the new one or is phased out.
+// For now, we assume event-listeners-setup.js will be updated to call the new function.
+// If updateDaySelectors was global and might be called elsewhere, alias it:
+// window.updateDaySelectors = updateDaySelectorsVisibility;
+// However, the plan is to update event-listeners-setup.js, so direct replacement is better.
+
+

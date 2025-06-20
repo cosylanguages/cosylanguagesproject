@@ -38,8 +38,11 @@ function initializeEventListeners() {
     }
 
     // From ui-visibility.js (or index.html if not moved)
-    if (typeof updateDaySelectors === 'function') {
-        updateDaySelectors(); 
+    // if (typeof updateDaySelectors === 'function') { // Old function, replaced by updateDaySelectorsVisibility
+    //     updateDaySelectors(); 
+    // }
+    if (typeof window.updateDaySelectorsVisibility === 'function') { // Call the new function
+        window.updateDaySelectorsVisibility(true); // Indicate initial load
     }
     
     const languageSelectElement = document.getElementById('language');
@@ -52,20 +55,20 @@ function initializeEventListeners() {
         languageSelectElement.addEventListener('change', function() {
             const lang = this.value;
 
-            // Save or remove language and day selections from localStorage
+            // Save or remove language selection from localStorage
             if (lang) { // Only save if a real language is selected
                 localStorage.setItem('selectedLanguage', lang);
-                // Persist day selections as well
-                if (daySelectElement) localStorage.setItem('selectedDay', daySelectElement.value);
-                if (dayFromSelectElement) localStorage.setItem('selectedDayFrom', dayFromSelectElement.value);
-                if (dayToSelectElement) localStorage.setItem('selectedDayTo', dayToSelectElement.value);
+                // Day selections are NO LONGER SAVED here
+                // if (daySelectElement) localStorage.setItem('selectedDay', daySelectElement.value);
+                // if (dayFromSelectElement) localStorage.setItem('selectedDayFrom', dayFromSelectElement.value);
+                // if (dayToSelectElement) localStorage.setItem('selectedDayTo', dayToSelectElement.value);
             } else {
                 // If "Your Language" is chosen, clear the saved language
                 localStorage.removeItem('selectedLanguage');
-                // Optionally clear day selections
-                localStorage.removeItem('selectedDay');
-                localStorage.removeItem('selectedDayFrom');
-                localStorage.removeItem('selectedDayTo');
+                // Day selections are NO LONGER REMOVED here (as they are not saved)
+                // localStorage.removeItem('selectedDay');
+                // localStorage.removeItem('selectedDayFrom');
+                // localStorage.removeItem('selectedDayTo');
             }
 
             // Call updateUIForLanguage from language-handler.js
@@ -99,9 +102,11 @@ function initializeEventListeners() {
     daySelectors.forEach(selector => {
         if (selector) {
             selector.addEventListener('change', function() {
-                if (typeof updateDaySelectors === 'function') {
-                    updateDaySelectors(); 
+                // Call the new visibility function
+                if (typeof window.updateDaySelectorsVisibility === 'function') {
+                    window.updateDaySelectorsVisibility(false); // Indicate it's NOT initial load
                 }
+                // The rest of the logic in this listener updates based on day for specific content loading
                 const currentLanguage = languageSelectElement ? languageSelectElement.value : 'COSYenglish';
                 let dayToUseForVisibility = 1;
                 const singleDayValue = daySelectElement ? daySelectElement.value : "";

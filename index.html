@@ -50,6 +50,7 @@
                     </select>
                 </div>
             </div>
+            <div id="selected-day-name-display" class="menu-section-subtitle" style="display:none; color: white; margin-top: 10px; text-align: center; font-weight: bold;"></div>
         </div>
         
         <div class="menu-section">
@@ -124,12 +125,20 @@
         const speakingOptions = document.getElementById('speaking-options');
         const writingOptions = document.getElementById('writing-options');
 
-        // Hide all options initially
-        vocabularyOptions.style.display = 'none';
-        grammarOptions.style.display = 'none';
-        readingOptions.style.display = 'none';
-        speakingOptions.style.display = 'none';
-        writingOptions.style.display = 'none';
+        // Hide all options initially using a more robust approach
+        const allOptionPanelsToHide = [
+            vocabularyOptions, // Already defined above
+            grammarOptions,    // Already defined above
+            readingOptions,    // Already defined above
+            speakingOptions,   // Already defined above
+            writingOptions     // Already defined above
+        ];
+
+        allOptionPanelsToHide.forEach(panel => {
+            if (panel) { // Check if the element actually exists
+                panel.style.display = 'none';
+            }
+        });
 
         // Show Practice All button on load
         const practiceAllBtn = document.getElementById('practice-all-btn');
@@ -138,47 +147,53 @@
         function restoreUserSelection() {
             const languageSelect = document.getElementById('language');
             const daySelect = document.getElementById('day');
-            const dayFromSelect = document.getElementById('day-from');
-            const dayToSelect = document.getElementById('day-to');
+            const dayFromSelect = document.getElementById('day-from'); // Keep for reference if other logic needs it
+            const dayToSelect = document.getElementById('day-to');   // Keep for reference
 
             const savedLanguage = localStorage.getItem('selectedLanguage');
-            const savedDay = localStorage.getItem('selectedDay');
-            const savedDayFrom = localStorage.getItem('selectedDayFrom');
-            const savedDayTo = localStorage.getItem('selectedDayTo');
+            // const savedDay = localStorage.getItem('selectedDay'); // No longer retrieving
+            // const savedDayFrom = localStorage.getItem('selectedDayFrom'); // No longer retrieving
+            // const savedDayTo = localStorage.getItem('selectedDayTo'); // No longer retrieving
 
             if (savedLanguage && languageSelect) {
                 languageSelect.value = savedLanguage;
-            } else if (languageSelect) { // If no saved language, default to "Your Language"
+            } else if (languageSelect) { 
                 languageSelect.value = "";
             }
 
-            // Dispatch change event to trigger language-specific UI updates if a language (even "") is set
+            // Dispatch change event for language to trigger its UI updates
             if (languageSelect && (savedLanguage || languageSelect.value === "")) {
                  languageSelect.dispatchEvent(new Event('change'));
             }
 
-            if (savedDay && daySelect) {
-                daySelect.value = savedDay;
-            }
-            if (savedDayFrom && dayFromSelect) {
-                dayFromSelect.value = savedDayFrom;
-            }
-            if (savedDayTo && dayToSelect) {
-                dayToSelect.value = savedDayTo;
-            }
+            // Day selections are no longer restored from localStorage here.
+            // daySelect.value, dayFromSelect.value, dayToSelect.value will remain at their default (empty/placeholder).
+            // if (savedDay && daySelect) {
+            //     daySelect.value = savedDay;
+            // }
+            // if (savedDayFrom && dayFromSelect) {
+            //     dayFromSelect.value = savedDayFrom;
+            // }
+            // if (savedDayTo && dayToSelect) {
+            //     dayToSelect.value = savedDayTo;
+            // }
             
-            // After restoring day selections, ensure dependent UI updates
-            if (typeof updateDaySelectors === 'function') {
-                 updateDaySelectors(); // This function should handle visibility of single vs range
-            }
-            // Trigger change on one of the day selectors if values were restored,
-            // to ensure dependent logic like updateUIVisibilityForDay runs.
-            // Check if daySelect has a value; if not, maybe dayFromSelect.
-            if (savedDay && daySelect) {
-                 daySelect.dispatchEvent(new Event('change'));
-            } else if (savedDayFrom && dayFromSelect) {
-                 dayFromSelect.dispatchEvent(new Event('change'));
-            }
+            // The call to updateDaySelectorsVisibility(true) in event-listeners-setup.js 
+            // will handle the initial correct display of both single and range day selectors.
+            // No specific 'change' events for day selectors need to be dispatched here for restoration.
+            // The old call to updateDaySelectors() is removed as part of this logic change.
+            // if (typeof updateDaySelectors === 'function') { // This was the old function name
+            //      updateDaySelectors(); 
+            // }
+            
+            // The relevant 'change' events on day selectors that would trigger updateUIVisibilityForDay
+            // are handled by the user interaction or by the initial call in event-listeners-setup.js.
+            // No need to dispatch day 'change' events here anymore.
+            // if (savedDay && daySelect) {
+            //      daySelect.dispatchEvent(new Event('change'));
+            // } else if (savedDayFrom && dayFromSelect) {
+            //      dayFromSelect.dispatchEvent(new Event('change'));
+            // }
         }
 
 // Show all main practice type buttons

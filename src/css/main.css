@@ -1010,7 +1010,6 @@ body.flag-COSYbashkort #choose-practice-label::before { content: "🧭 Choose Yo
     }
 }
 
-
 /* Ensure specific patched circular buttons maintain their look if they also get .exercise-button */
 #btn-randomize-category.exercise-button,
 #btn-hint.exercise-button {
