@@ -118,7 +118,9 @@ async function loadData(filePath) {
 // };
 
 function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrElement, randomizeFn, options = {}) {
+    console.log('[PatchDiagSetup] Called to patch function:', (originalExerciseFn && originalExerciseFn.name) || 'anonymous/undefined', 'for container selector:', containerSelectorOrElement);
     return async function() {
+        console.log('[PatchDiagWrapper] Entered wrapper. Original function is:', (originalExerciseFn && originalExerciseFn.name) || 'anonymous/undefined', '. Container selector is:', containerSelectorOrElement);
         await originalExerciseFn.apply(this, arguments);
         
         let container;

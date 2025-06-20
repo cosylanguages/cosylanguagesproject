@@ -1,3 +1,4 @@
+console.log('[VocabJS] Script start');
 // Functions moved to utils.js: shuffleArray, showNoDataMessage, addRandomizeButton
 
 // Data loading functions
@@ -132,6 +133,7 @@ async function loadOpposites(language, day) {
   }
 }
 
+console.log('[VocabJS] Before VOCABULARY_PRACTICE_TYPES definition');
 // Vocabulary Practice Types
 const VOCABULARY_PRACTICE_TYPES = {
     'random-word': {
@@ -148,6 +150,73 @@ const VOCABULARY_PRACTICE_TYPES = {
     }
 };
 
+async function showMatchOpposites() {
+    console.warn("Placeholder: showMatchOpposites called but not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>The "Match Opposites" exercise is currently unavailable. Please try another exercise.</p>';
+    }
+    // This placeholder might not need button patching if it's meant to be temporary and non-interactive.
+    // However, for consistency with the patching mechanism, it will be patched.
+}
+
+async function showMatchImageWord() {
+    console.warn("Placeholder: showMatchImageWord called but not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>The "Match Image with Word" exercise is currently unavailable. Please try another exercise.</p>';
+    }
+}
+
+async function showTranscribeWordYesNo() {
+    console.warn("Placeholder: showTranscribeWordYesNo called but not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>The "Transcribe Word (Yes/No)" exercise is currently unavailable. Please try another exercise.</p>';
+    }
+}
+
+async function showMatchSoundWord() {
+    console.warn("Placeholder: showMatchSoundWord called but not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>The "Match Sound with Word" exercise is currently unavailable. Please try another exercise.</p>';
+    }
+}
+
+async function showIdentifyImageYesNo() {
+    console.warn("Placeholder: showIdentifyImageYesNo called but not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>The "Identify Image (Yes/No)" exercise is currently unavailable.</p>';
+    }
+}
+
+async function startRandomImagePractice() {
+    console.warn("Placeholder: startRandomImagePractice called but not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>Random Image practice is currently unavailable.</p>';
+    }
+}
+
+async function startListeningPractice() {
+    console.warn("Placeholder: startListeningPractice called but. not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>Listening practice is currently unavailable.</p>';
+    }
+}
+
+async function practiceAllVocabulary() {
+    console.warn("Placeholder: practiceAllVocabulary called but not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>Practice All Vocabulary is currently unavailable.</p>';
+    }
+}
+
+console.log('[VocabJS] Before initVocabularyPractice definition');
 // Initialize vocabulary practice
 function initVocabularyPractice() {
     document.getElementById('random-word-btn')?.addEventListener('click', () => {
@@ -164,6 +233,7 @@ function initVocabularyPractice() {
     });
 }
 
+console.log('[VocabJS] After initVocabularyPractice definition');
 async function startRandomWordPractice() {
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
@@ -637,7 +707,7 @@ window.practiceAllVocabulary = practiceAllVocabulary;
 
 window.showRandomWord = showRandomWord;
 window.showOppositesExercise = showOppositesExercise;
-window.showMatchOpposites = showMatchOpposites;
+window.showMatchOpposites = showMatchOpposites; // Definition now added as placeholder
 window.showBuildWord = showBuildWord;
 window.showIdentifyImage = showIdentifyImage;
 window.showMatchImageWord = showMatchImageWord;
@@ -646,16 +716,19 @@ window.showTranscribeWord = showTranscribeWord;
 window.showMatchSoundWord = showMatchSoundWord;
 window.showTranscribeWordYesNo = showTranscribeWordYesNo;
 
-window.showRandomWord = patchExerciseWithExtraButtons(window.showRandomWord, '.word-display-container', window.startRandomWordPractice, { noCheck: true, noReveal: true, noHint: true, deferRandomizeClick: true });
-window.showOppositesExercise = patchExerciseWithExtraButtons(window.showOppositesExercise, '.opposites-exercise', window.startRandomWordPractice, {});
-window.showMatchOpposites = patchExerciseWithExtraButtons(window.showMatchOpposites, '.match-exercise', window.startRandomWordPractice, {});
-window.showBuildWord = patchExerciseWithExtraButtons(window.showBuildWord, '.build-word-exercise', window.startRandomWordPractice, {});
-window.showIdentifyImage = patchExerciseWithExtraButtons(window.showIdentifyImage, '.image-exercise', window.startRandomImagePractice, {});
-window.showMatchImageWord = patchExerciseWithExtraButtons(window.showMatchImageWord, '.match-image-word-exercise', window.startRandomImagePractice, { noCheck: true }); 
-window.showIdentifyImageYesNo = patchExerciseWithExtraButtons(window.showIdentifyImageYesNo, '.identify-yes-no-exercise', window.startRandomImagePractice, { noCheck: true, noReveal: true }); 
-window.showTranscribeWord = patchExerciseWithExtraButtons(window.showTranscribeWord, '.transcribe-word-exercise', window.startListeningPractice, {});
-window.showMatchSoundWord = patchExerciseWithExtraButtons(window.showMatchSoundWord, '.match-sound-exercise', window.startListeningPractice, { noCheck: true }); 
-window.showTranscribeWordYesNo = patchExerciseWithExtraButtons(window.showTranscribeWordYesNo, '.transcribe-word-yes-no-exercise', window.startListeningPractice, { noCheck: true, noReveal: true }); 
+console.log('[VocabJS] After all function definitions, before global assignments for show... functions');
+console.log('[VocabJS] After global assignments for show... functions, before patching calls');
+window.showRandomWord = patchExerciseWithExtraButtons(showRandomWord, '.word-display-container', window.startRandomWordPractice, { noCheck: true, noReveal: true, noHint: true, deferRandomizeClick: true });
+window.showOppositesExercise = patchExerciseWithExtraButtons(showOppositesExercise, '.opposites-exercise', window.startRandomWordPractice, {});
+window.showMatchOpposites = patchExerciseWithExtraButtons(showMatchOpposites, '.match-exercise', window.startRandomWordPractice, {}); // Definition now added, can be patched
+window.showBuildWord = patchExerciseWithExtraButtons(showBuildWord, '.build-word-exercise', window.startRandomWordPractice, {});
+window.showIdentifyImage = patchExerciseWithExtraButtons(showIdentifyImage, '.image-exercise', window.startRandomImagePractice, {});
+window.showMatchImageWord = patchExerciseWithExtraButtons(showMatchImageWord, '.match-image-word-exercise', window.startRandomImagePractice, { noCheck: true }); 
+window.showIdentifyImageYesNo = patchExerciseWithExtraButtons(showIdentifyImageYesNo, '.identify-yes-no-exercise', window.startRandomImagePractice, { noCheck: true, noReveal: true }); 
+window.showTranscribeWord = patchExerciseWithExtraButtons(showTranscribeWord, '.transcribe-word-exercise', window.startListeningPractice, {});
+window.showMatchSoundWord = patchExerciseWithExtraButtons(showMatchSoundWord, '.match-sound-exercise', window.startListeningPractice, { noCheck: true }); 
+window.showTranscribeWordYesNo = patchExerciseWithExtraButtons(showTranscribeWordYesNo, '.transcribe-word-yes-no-exercise', window.startListeningPractice, { noCheck: true, noReveal: true }); 
+console.log('[VocabJS] After patching calls');
 
 async function getRequiredDay1Pairs(language) {
     const words = await loadVocabulary(language, '1');
@@ -680,4 +753,6 @@ async function getRequiredDay1Pairs(language) {
     return pairs;
 }
 
+console.log('[VocabJS] Before DOMContentLoaded listener');
 document.addEventListener('DOMContentLoaded', window.initVocabularyPractice);
+console.log('[VocabJS] Script end');

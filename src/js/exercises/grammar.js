@@ -1,3 +1,11 @@
+async function startPossessivesPractice() {
+    console.warn("Placeholder: startPossessivesPractice called but not implemented.");
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.innerHTML = '<p>Possessives practice is currently unavailable.</p>';
+    }
+}
+
 // Functions moved to utils.js: shuffleArray, showNoDataMessage, addRandomizeButton
 // Data loading functions
 async function loadGenderGrammar(language, day) {
@@ -471,14 +479,29 @@ async function showFillGaps() { /* ... existing, could add strength if based on 
 async function showWordOrder() { /* ... existing, complex to assign strength to a whole sentence structure ... */ }
 async function practiceAllGrammar() { /* ... existing ... */ }
 
-showArticleWord = patchExerciseWithExtraButtons(showArticleWord, '.gender-exercise', startGenderPractice, { newExercise: { fn: startGenderPractice, textKey: 'newExercise' } })
-showMatchArticlesWords = patchExerciseWithExtraButtons(showMatchArticlesWords, '.match-exercise', startGenderPractice, { noCheck: true, newExercise: { fn: startGenderPractice, textKey: 'newExercise' } })
-showSelectArticleExercise = patchExerciseWithExtraButtons(showSelectArticleExercise, '.select-article-exercise', startGenderPractice, { noCheck: true, newExercise: { fn: startGenderPractice, textKey: 'newExercise' } })
-showTypeVerb = patchExerciseWithExtraButtons(showTypeVerb, '.verb-exercise', startVerbsPractice, { newExercise: { fn: startVerbsPractice, textKey: 'newExercise' } })
-showMatchVerbsPronouns = patchExerciseWithExtraButtons(showMatchVerbsPronouns, '.match-exercise', startVerbsPractice, { noCheck: true, newExercise: { fn: startVerbsPractice, textKey: 'newExercise' } })
-showFillGaps = patchExerciseWithExtraButtons(showFillGaps, '.fill-gap-exercise', startVerbsPractice, { newExercise: { fn: startVerbsPractice, textKey: 'newExercise' } })
-showWordOrder = patchExerciseWithExtraButtons(showWordOrder, '.word-order-exercise', startVerbsPractice, { newExercise: { fn: startVerbsPractice, textKey: 'newExercise' } })
+// Global Assignments for functions to be accessible via window object
+window.initGrammarPractice = initGrammarPractice;
+window.startGenderPractice = startGenderPractice;
+window.startVerbsPractice = startVerbsPractice;
+window.startPossessivesPractice = startPossessivesPractice; // Newly added placeholder
+window.practiceAllGrammar = practiceAllGrammar;
+
+window.showArticleWord = showArticleWord;
+window.showMatchArticlesWords = showMatchArticlesWords;
+window.showSelectArticleExercise = showSelectArticleExercise;
+window.showTypeVerb = showTypeVerb;
+window.showMatchVerbsPronouns = showMatchVerbsPronouns;
+window.showFillGaps = showFillGaps;
+window.showWordOrder = showWordOrder;
+
+// Patching exercise functions
+// Ensure the first argument is the local function name, and callbacks use window.functionName if they are global
+window.showArticleWord = patchExerciseWithExtraButtons(showArticleWord, '.gender-exercise', window.startGenderPractice, { newExercise: { fn: window.startGenderPractice, textKey: 'newExercise' } });
+window.showMatchArticlesWords = patchExerciseWithExtraButtons(showMatchArticlesWords, '.match-exercise', window.startGenderPractice, { noCheck: true, newExercise: { fn: window.startGenderPractice, textKey: 'newExercise' } });
+window.showSelectArticleExercise = patchExerciseWithExtraButtons(showSelectArticleExercise, '.select-article-exercise', window.startGenderPractice, { noCheck: true, newExercise: { fn: window.startGenderPractice, textKey: 'newExercise' } });
+window.showTypeVerb = patchExerciseWithExtraButtons(showTypeVerb, '.verb-exercise', window.startVerbsPractice, { newExercise: { fn: window.startVerbsPractice, textKey: 'newExercise' } });
+window.showMatchVerbsPronouns = patchExerciseWithExtraButtons(showMatchVerbsPronouns, '.match-exercise', window.startVerbsPractice, { noCheck: true, newExercise: { fn: window.startVerbsPractice, textKey: 'newExercise' } });
+window.showFillGaps = patchExerciseWithExtraButtons(showFillGaps, '.fill-gap-exercise', window.startVerbsPractice, { newExercise: { fn: window.startVerbsPractice, textKey: 'newExercise' } });
+window.showWordOrder = patchExerciseWithExtraButtons(showWordOrder, '.word-order-exercise', window.startVerbsPractice, { newExercise: { fn: window.startVerbsPractice, textKey: 'newExercise' } });
 
 document.addEventListener('DOMContentLoaded', initGrammarPractice);
-
-
