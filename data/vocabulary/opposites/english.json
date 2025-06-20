@@ -1,17 +1,17 @@
 {
   "1": {
-    "Hello": ["Goodbye", "Bye"],
-    "Goodbye": ["Hello", "Bye"],
+    "Hello": "Goodbye",
+    "Goodbye": "Hello",
     "Yes": "No",
     "No": "Yes",
     "Thank you": "You're welcome",
     "You're welcome": "Thank you"
   },
   "2": {
-    "Boy": ["Girl", "Man"],
-    "Girl": ["Boy", "Woman"],
-    "Woman": ["Man", "Boy"],
-    "Man": ["Woman", "Girl"],
+    "Boy": "Girl",
+    "Girl": "Boy",
+    "Woman": "Man",
+    "Man": "Woman",
     "Person": "Thing",
     "Thing": "Person",
     "Student": "Teacher",
