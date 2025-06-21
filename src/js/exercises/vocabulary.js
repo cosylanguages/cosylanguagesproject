@@ -150,14 +150,235 @@ const VOCABULARY_PRACTICE_TYPES = {
     }
 };
 
-async function showMatchOpposites() {
-    console.warn("Placeholder: Match Opposites exercise (showMatchOpposites) called but not implemented.");
-    const resultArea = document.getElementById('result');
-    if (resultArea) {
-        resultArea.innerHTML = '<p>The "Match Opposites" exercise is currently unavailable. Please try another exercise.</p>';
+async function showMatchOpposites(basePairs = null) {
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+
+    if (!language || !days.length) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
+        return;
     }
-    // This placeholder might not need button patching if it's meant to be temporary and non-interactive.
-    // However, for consistency with the patching mechanism, it will be patched.
+
+    // Ensure utils.js functions are available
+    if (typeof shuffleArray !== 'function' || typeof showNoDataMessage !== 'function') {
+        console.error("Required utility functions (shuffleArray, showNoDataMessage) not found. Make sure utils.js is loaded.");
+        const resultArea = document.getElementById('result');
+        if (resultArea) {
+            resultArea.innerHTML = `<p>${t.error_generic || 'A critical error occurred. Utility functions missing.'}</p>`;
+        }
+        return;
+    }
+    
+    // Ensure CosyAppInteractive is available for progress tracking
+    if (typeof CosyAppInteractive === 'undefined' || 
+        typeof CosyAppInteractive.awardCorrectAnswer !== 'function' ||
+        typeof CosyAppInteractive.awardIncorrectAnswer !== 'function' ||
+        typeof CosyAppInteractive.scheduleReview !== 'function') {
+        console.warn("CosyAppInteractive or its methods are not available. Progress tracking will be affected.");
+    }
+
+    const oppositesData = await loadOpposites(language, days);
+    if (Object.keys(oppositesData).length < 2) { 
+        showNoDataMessage(t.notEnoughOpposites || 'Not enough opposites data for this exercise.');
+        return;
+    }
+
+    let selectedPairs = [];
+    if (basePairs && basePairs.length >=2) { 
+        selectedPairs = basePairs.filter(p => p.word && p.opposite && oppositesData[p.word] === p.opposite); 
+    }
+    
+    if (selectedPairs.length < 2) { 
+        const allWordsWithOpposites = Object.keys(oppositesData);
+        if (allWordsWithOpposites.length < 2) {
+             showNoDataMessage(t.notEnoughOpposites || 'Not enough opposites data for this exercise.');
+             return;
+        }
+        const numPairsToSelect = Math.min(Math.max(2, allWordsWithOpposites.length), 4); 
+        const shuffledWords = shuffleArray(allWordsWithOpposites);
+        selectedPairs = []; 
+        for (let i = 0; i < shuffledWords.length && selectedPairs.length < numPairsToSelect; i++) {
+            const word = shuffledWords[i];
+            if (oppositesData[word]) { 
+                selectedPairs.push({ word: word, opposite: oppositesData[word] });
+            }
+        }
+    }
+    
+    if (selectedPairs.length < 2) {
+        showNoDataMessage(t.notEnoughOpposites || 'Not enough opposites data for this exercise after selection.');
+        return;
+    }
+
+    const wordsColumn = shuffleArray(selectedPairs.map(p => p.word));
+    const oppositesColumn = shuffleArray(selectedPairs.map(p => p.opposite));
+
+    const resultArea = document.getElementById('result');
+    resultArea.innerHTML = `
+        <div class="match-exercise match-opposites-exercise" role="form" aria-label="${t.matchOppositesExercise || 'Match Opposites Exercise'}">
+            <p class="exercise-prompt" data-transliterable>${t.matchOppositesPrompt || 'Match the words with their opposites:'}</p>
+            <div class="matching-area">
+                <div class="column words-column" id="match-words-col">
+                    ${wordsColumn.map((word, index) => `<button class="match-item btn-match-item" data-id="word-${index}" data-value="${word}" data-transliterable>${word}</button>`).join('')}
+                </div>
+                <div class="column opposites-column" id="match-opposites-col">
+                    ${oppositesColumn.map((opposite, index) => `<button class="match-item btn-match-item" data-id="opposite-${index}" data-value="${opposite}" data-transliterable>${opposite}</button>`).join('')}
+                </div>
+            </div>
+            <div id="match-feedback" class="exercise-feedback" aria-live="polite" style="min-height: 25px; margin-top:10px;"></div>
+            <button id="btn-new-match-opposites" class="exercise-button" onclick="window.showMatchOpposites()">🔄 ${t.buttons?.newMatchOpposites || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
+        </div>
+    `;
+
+    if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+
+    let selectedItem = null;
+    const items = Array.from(resultArea.querySelectorAll('.match-item'));
+    const feedbackDiv = document.getElementById('match-feedback');
+
+    items.forEach(item => {
+        item.addEventListener('click', function() {
+            if (this.classList.contains('matched') || this.disabled) return; 
+
+            if (!selectedItem) {
+                selectedItem = this;
+                this.classList.add('selected');
+                this.disabled = true; 
+            } else {
+                const selectedIsWord = selectedItem.parentElement.id === 'match-words-col';
+                const currentIsOpposite = this.parentElement.id === 'match-opposites-col';
+                const selectedIsOpposite = selectedItem.parentElement.id === 'match-opposites-col';
+                const currentIsWord = this.parentElement.id === 'match-words-col';
+
+                if (!((selectedIsWord && currentIsOpposite) || (selectedIsOpposite && currentIsWord))) {
+                    selectedItem.classList.remove('selected');
+                    selectedItem.disabled = false;
+                    selectedItem = this;
+                    this.classList.add('selected');
+                    this.disabled = true;
+                    return;
+                }
+
+                const word1 = selectedItem.dataset.value;
+                const word2 = this.dataset.value;
+                let isCorrectPair = false;
+
+                if (oppositesData[word1] === word2 || oppositesData[word2] === word1) {
+                    isCorrectPair = true;
+                }
+
+                if (isCorrectPair) {
+                    selectedItem.classList.add('matched', 'correct');
+                    this.classList.add('matched', 'correct');
+                    selectedItem.classList.remove('selected'); 
+                    this.disabled = true; 
+                    feedbackDiv.innerHTML = `<span class="correct">✅ ${t.correctMatch || 'Correct Match!'}</span>`;
+                    if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
+                    
+                    if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                        CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word1, true);
+                        CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word2, true);
+                    }
+                } else {
+                    selectedItem.classList.add('incorrect');
+                    this.classList.add('incorrect'); 
+                    feedbackDiv.innerHTML = `<span class="incorrect">❌ ${t.incorrectMatch || 'Incorrect Match. Try again.'}</span>`;
+                    if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
+
+                    if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                        CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word1, false);
+                        CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word2, false);
+                    }
+                    
+                    const tempSelectedItem = selectedItem;
+                    const tempThisItem = this;
+                    setTimeout(() => {
+                        tempSelectedItem.classList.remove('selected', 'incorrect');
+                        tempSelectedItem.disabled = false; 
+                        tempThisItem.classList.remove('incorrect'); 
+                        if (feedbackDiv.innerHTML.includes(t.incorrectMatch)) feedbackDiv.innerHTML = '';
+                    }, 1500);
+                }
+                selectedItem = null; 
+
+                const allMatched = items.every(i => i.classList.contains('matched'));
+                if (allMatched) {
+                    feedbackDiv.innerHTML = `<span class="correct">🎉 ${t.allPairsMatched || 'All pairs matched! Well done!'}</span>`;
+                    setTimeout(() => {
+                       if (window.practiceAllVocabulary) window.practiceAllVocabulary();
+                    }, 2000);
+                }
+            }
+        });
+    });
+    
+    const exerciseContainer = resultArea.querySelector('.match-opposites-exercise');
+    if (exerciseContainer) {
+        exerciseContainer.revealAnswer = function() {
+            items.forEach(item => {
+                item.classList.remove('selected', 'incorrect', 'matched', 'correct');
+                item.disabled = true; 
+            });
+            feedbackDiv.innerHTML = `<span data-transliterable>${t.answersRevealed || "Answers revealed."}</span><br>`;
+            selectedPairs.forEach(pair => {
+                feedbackDiv.innerHTML += `<b data-transliterable>${pair.word}</b> ≠ <b data-transliterable>${pair.opposite}</b><br>`;
+                const wordEl = items.find(el => el.dataset.value === pair.word);
+                const oppEl = items.find(el => el.dataset.value === pair.opposite);
+                if(wordEl) wordEl.classList.add('revealed-correct');
+                if(oppEl) oppEl.classList.add('revealed-correct');
+                
+                if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                     CosyAppInteractive.scheduleReview(language, 'vocabulary-word', pair.word, false);
+                     CosyAppInteractive.scheduleReview(language, 'vocabulary-word', pair.opposite, false);
+                }
+            });
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
+        exerciseContainer.checkAnswer = function() { 
+            const allCorrectlyMatched = items.every(i => i.classList.contains('matched') && i.classList.contains('correct'));
+            const allAttemptedAndMatched = items.every(i => i.classList.contains('matched'));
+
+            if (allCorrectlyMatched && allAttemptedAndMatched && items.length > 0) {
+                 feedbackDiv.innerHTML = `<span class="correct">🎉 ${t.allPairsMatched || 'All pairs matched! Well done!'}</span>`;
+            } else if (!allAttemptedAndMatched) {
+                 feedbackDiv.innerHTML = `<span class="neutral">${t.notAllMatchedYet || 'Not all pairs have been matched yet.'}</span>`;
+            } else { 
+                 feedbackDiv.innerHTML = `<span class="neutral">${t.continueMatching || 'Continue matching the pairs.'}</span>`;
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
+         exerciseContainer.showHint = function() {
+            const unmatchedWords = items.filter(item => item.parentElement.id === 'match-words-col' && !item.classList.contains('matched') && !item.disabled);
+            if (unmatchedWords.length > 0) {
+                const hintWordItem = unmatchedWords[0]; 
+                const hintWord = hintWordItem.dataset.value;
+                const correctOppositeValue = oppositesData[hintWord];
+                const oppositeItem = items.find(item => item.parentElement.id === 'match-opposites-col' && item.dataset.value === correctOppositeValue && !item.classList.contains('matched') && !item.disabled);
+
+                if (hintWordItem && oppositeItem) { 
+                    hintWordItem.classList.add('hint-highlight');
+                    oppositeItem.classList.add('hint-highlight');
+                    feedbackDiv.innerHTML = `<span data-transliterable>${t.hint_matchOppositesPair || "Hint: These two items form a pair."}</span>`;
+                    setTimeout(() => {
+                        hintWordItem.classList.remove('hint-highlight');
+                        oppositeItem.classList.remove('hint-highlight');
+                        if (feedbackDiv.innerHTML.includes(t.hint_matchOppositesPair)) feedbackDiv.innerHTML = '';
+                    }, 2500);
+                } else { 
+                    hintWordItem.classList.add('hint-highlight');
+                     feedbackDiv.innerHTML = `<span data-transliterable>${t.hint_tryMatchingThis || "Hint: Try matching this word."}</span>`;
+                     setTimeout(() => {
+                        hintWordItem.classList.remove('hint-highlight');
+                        if (feedbackDiv.innerHTML.includes(t.hint_tryMatchingThis)) feedbackDiv.innerHTML = '';
+                    }, 2000);
+                }
+            } else {
+                feedbackDiv.innerHTML = `<span data-transliterable>${t.noHintAvailable || "No more hints available or all matched."}</span>`;
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
+    }
 }
 
 async function showMatchImageWord() {
@@ -165,6 +386,19 @@ async function showMatchImageWord() {
     const resultArea = document.getElementById('result');
     if (resultArea) {
         resultArea.innerHTML = '<p>The "Match Image with Word" exercise is currently unavailable. Please try another exercise.</p>';
+        const exerciseContainer = resultArea.firstChild; 
+        if (exerciseContainer && typeof exerciseContainer === 'object' && exerciseContainer.innerHTML) { 
+             exerciseContainer.revealAnswer = function() {
+                const lang = document.getElementById('language')?.value || 'COSYenglish';
+                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
+                alert(trans.exerciseNotFullyImplemented || "This exercise is not fully implemented yet, so reveal is unavailable.");
+            };
+            exerciseContainer.showHint = function() {
+                const lang = document.getElementById('language')?.value || 'COSYenglish';
+                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
+                alert(trans.hintNotImplemented || "Hint not available for this exercise yet.");
+            };
+        }
     }
 }
 
@@ -173,6 +407,19 @@ async function showTranscribeWordYesNo() {
     const resultArea = document.getElementById('result');
     if (resultArea) {
         resultArea.innerHTML = '<p>The "Transcribe Word (Yes/No)" listening exercise is currently unavailable. Please try another exercise.</p>';
+        const exerciseContainer = resultArea.firstChild;
+        if (exerciseContainer && typeof exerciseContainer === 'object' && exerciseContainer.innerHTML) {
+             exerciseContainer.revealAnswer = function() {
+                const lang = document.getElementById('language')?.value || 'COSYenglish';
+                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
+                alert(trans.exerciseNotFullyImplemented || "This exercise is not fully implemented yet, so reveal is unavailable.");
+            };
+            exerciseContainer.showHint = function() {
+                const lang = document.getElementById('language')?.value || 'COSYenglish';
+                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
+                alert(trans.hintNotImplemented || "Hint not available for this exercise yet.");
+            };
+        }
     }
 }
 
@@ -181,19 +428,156 @@ async function showMatchSoundWord() {
     const resultArea = document.getElementById('result');
     if (resultArea) {
         resultArea.innerHTML = '<p>The "Match Sound with Word" listening exercise is currently unavailable. Please try another exercise.</p>';
+        const exerciseContainer = resultArea.firstChild;
+        if (exerciseContainer && typeof exerciseContainer === 'object' && exerciseContainer.innerHTML) {
+             exerciseContainer.revealAnswer = function() {
+                const lang = document.getElementById('language')?.value || 'COSYenglish';
+                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
+                alert(trans.exerciseNotFullyImplemented || "This exercise is not fully implemented yet, so reveal is unavailable.");
+            };
+            exerciseContainer.showHint = function() {
+                const lang = document.getElementById('language')?.value || 'COSYenglish';
+                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
+                alert(trans.hintNotImplemented || "Hint not available for this exercise yet.");
+            };
+        }
     }
 }
 
-async function showIdentifyImageYesNo() {
-    console.warn("Placeholder: Identify Image (Yes/No) exercise (showIdentifyImageYesNo) called but not implemented.");
+async function showIdentifyImageYesNo(imageInfo = null, displayedNameInfo = null, isCorrectlyNamed = null) {
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+
+    if (!language || !days.length) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
+        return;
+    }
+
+    if (typeof shuffleArray !== 'function' || typeof showNoDataMessage !== 'function') {
+        console.error("Required utility functions missing.");
+        return;
+    }
+    if (typeof CosyAppInteractive === 'undefined') {
+        console.warn("CosyAppInteractive is not available.");
+    }
+
+    let currentImage;
+    let displayedName;
+    let actualCorrectName;
+    let isQuestionCorrectlyNamed; 
+    let itemToReviewType = 'vocabulary-image'; 
+    let itemToReviewValue; 
+
+    if (imageInfo && displayedNameInfo && typeof isCorrectlyNamed === 'boolean') {
+        currentImage = imageInfo;
+        displayedName = displayedNameInfo;
+        isQuestionCorrectlyNamed = isCorrectlyNamed;
+        actualCorrectName = currentImage.translations[language];
+        itemToReviewValue = currentImage.src;
+    } else {
+        const images = await loadImageVocabulary(language, days);
+        if (!images.length) {
+            showNoDataMessage(t.noImagesAvailable || 'No images available for this selection.');
+            return;
+        }
+        currentImage = images[Math.floor(Math.random() * images.length)];
+        actualCorrectName = currentImage.translations[language];
+        itemToReviewValue = currentImage.src;
+        isQuestionCorrectlyNamed = Math.random() < 0.5; 
+
+        if (isQuestionCorrectlyNamed) {
+            displayedName = actualCorrectName;
+        } else {
+            const words = await loadVocabulary(language, days);
+            let potentialIncorrectNames = words.filter(w => w.toLowerCase() !== actualCorrectName.toLowerCase());
+            if (potentialIncorrectNames.length > 0) {
+                displayedName = potentialIncorrectNames[Math.floor(Math.random() * potentialIncorrectNames.length)];
+            } else {
+                displayedName = actualCorrectName;
+                isQuestionCorrectlyNamed = true; 
+            }
+        }
+    }
+    
     const resultArea = document.getElementById('result');
-    if (resultArea) {
-        resultArea.innerHTML = '<p>The "Identify Image (Yes/No)" exercise is currently unavailable. Please try another exercise.</p>';
+    resultArea.innerHTML = `
+        <div class="identify-yes-no-exercise image-exercise" role="form" aria-label="${t.identifyImageYesNoExercise || 'Identify Image (Yes/No) Exercise'}">
+            <img src="${currentImage.src}" alt="${currentImage.alt || actualCorrectName}" class="vocabulary-image">
+            <p class="exercise-prompt" data-transliterable>${t.isThisA || 'Is this a...'} <strong data-transliterable>${displayedName}</strong>?</p>
+            <div id="identify-yn-feedback" class="exercise-feedback" aria-live="polite" style="min-height:25px; margin-top:10px;"></div>
+            <div class="yes-no-buttons">
+                <button id="btn-identify-yes" class="exercise-button btn-yes-no">✅ ${t.buttons?.yes || 'Yes'}</button>
+                <button id="btn-identify-no" class="exercise-button btn-yes-no">❌ ${t.buttons?.no || 'No'}</button>
+            </div>
+            <button id="btn-new-identify-image-yes-no" class="exercise-button" style="margin-top: 15px;" onclick="window.showIdentifyImageYesNo()">🔄 ${t.buttons?.newIdentifyImageYesNo || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
+        </div>
+    `;
+    if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+
+    const feedbackDiv = document.getElementById('identify-yn-feedback');
+    
+    function handleAnswer(userSaidYes) {
+        let isUserCorrect = userSaidYes === isQuestionCorrectlyNamed;
+
+        document.getElementById('btn-identify-yes').disabled = true;
+        document.getElementById('btn-identify-no').disabled = true;
+
+        if (isUserCorrect) {
+            feedbackDiv.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
+            if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
+        } else {
+            feedbackDiv.innerHTML = `<span class="incorrect">❌ ${t.incorrect || 'Incorrect.'} ${t.correctAnswerWas || 'The correct answer was:'} ${isQuestionCorrectlyNamed ? (t.buttons?.yes || 'Yes') : (t.buttons?.no || 'No')}.</span>`;
+            if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
+        }
+        
+        if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+            CosyAppInteractive.scheduleReview(language, itemToReviewType, itemToReviewValue, isUserCorrect);
+        }
+
+        if (isUserCorrect) {
+            setTimeout(() => {
+                if (window.startRandomImagePractice) window.startRandomImagePractice();
+            }, 1500);
+        }
+    }
+
+    document.getElementById('btn-identify-yes').addEventListener('click', () => handleAnswer(true));
+    document.getElementById('btn-identify-no').addEventListener('click', () => handleAnswer(false));
+
+    const exerciseContainer = resultArea.querySelector('.identify-yes-no-exercise');
+    if (exerciseContainer) {
+        exerciseContainer.revealAnswer = function() { 
+            feedbackDiv.innerHTML = `<span data-transliterable>${t.correctAnswerWas || 'The correct answer was:'} <strong data-transliterable>${isQuestionCorrectlyNamed ? (t.buttons?.yes || 'Yes') : (t.buttons?.no || 'No')}</strong>. 
+            (${t.imageIsA || 'The image is a'} <strong data-transliterable>${actualCorrectName}</strong>).</span>`;
+            document.getElementById('btn-identify-yes').disabled = true;
+            document.getElementById('btn-identify-no').disabled = true;
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                 CosyAppInteractive.scheduleReview(language, itemToReviewType, itemToReviewValue, false); 
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
+        exerciseContainer.checkAnswer = function() { /* Not applicable */ };
+        exerciseContainer.showHint = function() {
+            if (displayedName && actualCorrectName) {
+                const firstLetterDisplayed = displayedName.substring(0,1).toLowerCase();
+                const firstLetterActual = actualCorrectName.substring(0,1).toLowerCase();
+                if (isQuestionCorrectlyNamed) {
+                     feedbackDiv.innerHTML = `<span data-transliterable>${t.hint_yesNo_positive || "Hint: The displayed name is indeed correct for the image."}</span>`;
+                } else if (firstLetterActual === firstLetterDisplayed) {
+                    feedbackDiv.innerHTML = `<span data-transliterable>${t.hint_yesNo_sameLetter || "Hint: The displayed name and the actual image name start with the same letter, but are they the same word?"}</span>`;
+                } else {
+                    feedbackDiv.innerHTML = `<span data-transliterable>${t.hint_yesNo_firstLetter || "Hint: The actual image's name starts with the letter:"} <strong data-transliterable>${firstLetterActual.toUpperCase()}</strong>.</span>`;
+                }
+            } else {
+                 feedbackDiv.innerHTML = `<span data-transliterable>${t.noHintAvailable || "No hint available for this item."}</span>`;
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
     }
 }
 
 async function startRandomImagePractice() {
-    // 1. Clear any existing speaking practice timers or auto-advance timers.
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
         window.speakingPracticeTimer = null;
@@ -201,26 +585,15 @@ async function startRandomImagePractice() {
     if (typeof window.cancelAutoAdvanceTimer === 'function') {
         window.cancelAutoAdvanceTimer();
     }
-
-    // 2. Get the selected language and day(s).
     const language = document.getElementById('language').value;
-    const days = getSelectedDays(); // Assuming getSelectedDays() is globally available
+    const days = getSelectedDays(); 
     const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
-
-    // 3. Check if a language and day(s) are selected; if not, show an alert.
     if (!language || !days.length) {
         alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
-
-    // 4. Define the available exercises for random image practice.
     const exercises = VOCABULARY_PRACTICE_TYPES['random-image'].exercises;
-
-    // 5. Select one of these exercises randomly.
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
-
-    // 6. Call the corresponding function to start the selected exercise.
-    // 7. Make sure to await these calls if they are asynchronous.
     switch(randomExercise) {
         case 'identify-image':
             await window.showIdentifyImage();
@@ -242,7 +615,6 @@ async function startRandomImagePractice() {
 }
 
 async function startListeningPractice() {
-    // 1. Clear any existing speaking practice timers or auto-advance timers.
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
         window.speakingPracticeTimer = null;
@@ -250,26 +622,15 @@ async function startListeningPractice() {
     if (typeof window.cancelAutoAdvanceTimer === 'function') {
         window.cancelAutoAdvanceTimer();
     }
-
-    // 2. Get the selected language and day(s).
     const language = document.getElementById('language').value;
-    const days = getSelectedDays(); // Assuming getSelectedDays() is globally available
+    const days = getSelectedDays(); 
     const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
-
-    // 3. Check if a language and day(s) are selected; if not, show an alert.
     if (!language || !days.length) {
         alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
-
-    // 4. Define the available exercises for listening practice.
     const exercises = VOCABULARY_PRACTICE_TYPES['listening'].exercises;
-
-    // 5. Select one of these exercises randomly.
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
-
-    // 6. Call the corresponding function to start the selected exercise.
-    // 7. Make sure to await these calls as they are asynchronous.
     switch(randomExercise) {
         case 'transcribe-word':
             await window.showTranscribeWord();
@@ -291,7 +652,6 @@ async function startListeningPractice() {
 }
 
 async function practiceAllVocabulary() {
-    // 1. Clear any existing speaking practice timers or auto-advance timers.
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
         window.speakingPracticeTimer = null;
@@ -299,19 +659,13 @@ async function practiceAllVocabulary() {
     if (typeof window.cancelAutoAdvanceTimer === 'function') {
         window.cancelAutoAdvanceTimer();
     }
-
-    // 2. Get the selected language and day(s).
     const language = document.getElementById('language').value;
-    const days = getSelectedDays(); // Assuming getSelectedDays() is globally available
+    const days = getSelectedDays(); 
     const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
-
-    // 3. Check if a language and day(s) are selected; if not, show an alert.
     if (!language || !days.length) {
         alert(t.alertLangDay || 'Please select language and day(s) first');
         return;
     }
-
-    // 4. Get the keys from VOCABULARY_PRACTICE_TYPES
     const practiceTypes = Object.keys(VOCABULARY_PRACTICE_TYPES);
     if (!practiceTypes.length) {
         console.error("No practice types defined in VOCABULARY_PRACTICE_TYPES.");
@@ -321,12 +675,7 @@ async function practiceAllVocabulary() {
         }
         return;
     }
-
-    // 5. Select one of these practice types randomly.
     const randomPracticeType = practiceTypes[Math.floor(Math.random() * practiceTypes.length)];
-
-    // 6. Based on the selected type, call the corresponding main practice function.
-    // 7. Make sure to await these calls as they are asynchronous.
     switch(randomPracticeType) {
         case 'random-word':
             await window.startRandomWordPractice();
@@ -348,7 +697,6 @@ async function practiceAllVocabulary() {
 }
 
 console.log('[VocabJS] Before initVocabularyPractice definition');
-// Initialize vocabulary practice
 function initVocabularyPractice() {
     document.getElementById('random-word-btn')?.addEventListener('click', () => {
         startRandomWordPractice();
@@ -438,7 +786,7 @@ async function showRandomWord() {
     resultArea.innerHTML = `
         <div class="word-display-container ${isReview ? 'review-item-cue' : ''}" role="region" aria-label="${t.randomWordExercise || 'Random Word Exercise'}">
             <div class="item-strength" aria-label="Item strength: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength: ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
-            <div class="word-display" id="displayed-word" aria-label="${t.wordToPracticeLabel || 'Word to practice'}"><b>${word}</b></div>
+            <div class="word-display" id="displayed-word" aria-label="${t.wordToPracticeLabel || 'Word to practice'}"><b data-transliterable>${word}</b></div>
             <div class="word-actions">
                 <button id="pronounce-word" class="btn-emoji" aria-label="${t.pronounceWord || 'Pronounce word'}">🔊</button>
                 <button id="say-word-mc" class="btn-emoji" title="Say it (Microphone Check)">🎤</button> 
@@ -455,7 +803,7 @@ async function showRandomWord() {
 
     const exerciseContainer = resultArea.querySelector('.word-display-container');
     if (exerciseContainer) {
-        exerciseContainer.showHint = function() { /* ... existing hint logic ... */ };
+        // showRandomWord has noHint: true in patchExerciseWithExtraButtons, so no showHint needed here.
     }
 
     document.getElementById('pronounce-word')?.addEventListener('click', () => {
@@ -476,12 +824,12 @@ async function showRandomWord() {
                 let isCorrect = (typeof normalizeString === 'function' ? normalizeString(transcript.toLowerCase()) : transcript.toLowerCase()) === (typeof normalizeString === 'function' ? normalizeString(word.toLowerCase()) : word.toLowerCase());
                 if (isCorrect) {
                     feedbackEl.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
-                    CosyAppInteractive.awardCorrectAnswer();
+                    if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
                 } else {
                     feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.tryAgain || 'Try again!'} "${transcript}"</span>`;
-                    CosyAppInteractive.awardIncorrectAnswer();
+                    if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
                 }
-                if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview) {
+                if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
                     CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, isCorrect);
                 }
                 if (isCorrect) {
@@ -510,6 +858,7 @@ async function showOppositesExercise(baseWord = null) {
     let word = baseWord;
     let reviewItemObj = null;
     let currentProficiencyBucket = 0;
+    let actualOpposite = ''; // Define actualOpposite here
 
     if (!word && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
         const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-word', 1);
@@ -519,13 +868,9 @@ async function showOppositesExercise(baseWord = null) {
             if (tempOppositesData[reviewItemObj.itemValue]) {
                 word = reviewItemObj.itemValue;
                 currentProficiencyBucket = reviewItemObj.proficiencyBucket;
-                console.log("Using review item for showOppositesExercise:", reviewItemObj);
             } else {
-                console.log("Review item found, but not suitable for opposites (no opposite). Selecting new word.");
                 reviewItemObj = null; 
             }
-        } else {
-            console.log("No review item, selecting new word for showOppositesExercise.");
         }
     }
     
@@ -537,7 +882,6 @@ async function showOppositesExercise(baseWord = null) {
             showNoDataMessage(); return;
         }
         word = potentialWords[Math.floor(Math.random() * potentialWords.length)];
-        console.log("Using new item for showOppositesExercise:", word);
         if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
             currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', word);
         }
@@ -546,7 +890,7 @@ async function showOppositesExercise(baseWord = null) {
     if (!word || !oppositesData[word]) { 
         showNoDataMessage(); return;
     }
-    const opposite = oppositesData[word] || (t.noOppositeFound || 'No opposite found');
+    actualOpposite = oppositesData[word] || (t.noOppositeFound || 'No opposite found');
 
     const isReview = !!reviewItemObj;
     const MAX_BUCKET_DISPLAY = 5;
@@ -554,36 +898,65 @@ async function showOppositesExercise(baseWord = null) {
     const resultArea = document.getElementById('result');
     resultArea.innerHTML = `
         <div class="opposites-exercise ${isReview ? 'review-item-cue' : ''}" role="form" aria-label="${t.oppositesExercise || 'Opposites Exercise'}">
-            <div class="item-strength" aria-label="Item strength for ${word}: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength (${word}): ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
+            <div class="item-strength" aria-label="Item strength for ${word}: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength (<span data-transliterable>${word}</span>): ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
             <div class="word-pair">
-                <div class="word-box" aria-label="${t.wordAriaLabel || 'Word'}">${word}</div>
+                <div class="word-box" aria-label="${t.wordAriaLabel || 'Word'}" data-transliterable>${word}</div>
                 <div class="opposite-arrow" aria-label="${t.oppositeArrowLabel || 'Opposite arrow'}">≠</div>
-                <div class="word-box opposite-answer" id="opposite-answer-display" aria-label="${t.oppositeLabel || 'Opposite'}">?</div>
+                <div class="word-box opposite-answer" id="opposite-answer-display" aria-label="${t.oppositeLabel || 'Opposite'}" data-transliterable>?</div>
             </div>
             <input type="text" id="opposite-input" class="exercise-input" aria-label="${t.typeTheOpposite || 'Type the opposite'}" placeholder="${t.typeTheOppositePlaceholder || 'Type the opposite...'}">
             <div id="opposite-feedback" class="exercise-feedback" aria-live="polite"></div>
             <div class="exercise-actions">
-                <button id="btn-new-opposite-exercise" class="exercise-button" onclick="window.showOppositesExercise()" aria-label="${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Exercise'}">🔄 ${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
+                <button id="btn-new-opposite-exercise" class="exercise-button" onclick="window.showOppositesExercise()">🔄 ${t.buttons?.newOppositeExercise || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
             </div>
         </div>
     `;
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
     const exerciseContainer = resultArea.querySelector('.opposites-exercise');
+
     if (exerciseContainer) {
+        exerciseContainer.revealAnswer = function() {
+            const feedback = document.getElementById('opposite-feedback');
+            const oppositeAnswerDisplay = document.getElementById('opposite-answer-display');
+            const oppositeInput = document.getElementById('opposite-input');
+            
+            oppositeAnswerDisplay.textContent = actualOpposite;
+            oppositeAnswerDisplay.classList.add('revealed');
+            if (oppositeInput) oppositeInput.value = actualOpposite;
+
+            feedback.innerHTML = `<span class="revealed-answer">${t.answerIs || 'The answer is:'} <strong data-transliterable>${actualOpposite}</strong></span>`;
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                 CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, false);
+                 if (actualOpposite !== (t.noOppositeFound || 'No opposite found')) {
+                    CosyAppInteractive.scheduleReview(language, 'vocabulary-word', actualOpposite, false);
+                 }
+            }
+        };
+        exerciseContainer.showHint = function() {
+            const feedback = document.getElementById('opposite-feedback');
+            if (actualOpposite && actualOpposite !== (t.noOppositeFound || 'No opposite found') && actualOpposite.length > 0) {
+                feedback.innerHTML = `<span class="hint-text">${t.hint_firstLetter || 'Hint: The first letter is'} "<span data-transliterable>${actualOpposite[0]}</span>"</span>`;
+            } else {
+                feedback.innerHTML = `<span class="hint-text">${t.noHintAvailable || 'No hint available for this item.'}</span>`;
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
         exerciseContainer.checkAnswer = () => {
             const userAnswer = document.getElementById('opposite-input').value.trim();
             const feedback = document.getElementById('opposite-feedback');
             const currentLanguage = document.getElementById('language').value; 
             const currentT = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
             let isWordCorrect = false; 
-            if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
+            if (userAnswer.toLowerCase() === actualOpposite.toLowerCase()) {
                 feedback.innerHTML = `<span class="correct" aria-label="Correct">✅👏 ${currentT.correct || 'Correct!'}</span>`;
-                CosyAppInteractive.awardCorrectAnswer();
+                if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
                 isWordCorrect = true; 
-                if (opposite !== (currentT.noOppositeFound || 'No opposite found')) { 
-                    CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', opposite, true); 
+                if (actualOpposite !== (currentT.noOppositeFound || 'No opposite found')) { 
+                    if (CosyAppInteractive && CosyAppInteractive.scheduleReview) CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', actualOpposite, true); 
                 }
-                document.getElementById('opposite-answer-display').textContent = opposite;
+                document.getElementById('opposite-answer-display').textContent = actualOpposite;
                 if (isWordCorrect) {
                     setTimeout(() => {
                         window.practiceAllVocabulary();
@@ -591,10 +964,10 @@ async function showOppositesExercise(baseWord = null) {
                 }
             } else {
                 feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${currentT.feedbackNotQuiteTryAgain || 'Try again!'}</span>`;
-                 CosyAppInteractive.awardIncorrectAnswer();
+                 if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
                  isWordCorrect = false;
             }
-            CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isWordCorrect);
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isWordCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
     }
@@ -611,7 +984,7 @@ async function showBuildWord(baseWord = null) {
         return;
     }
 
-    let word = baseWord;
+    let word = baseWord; // Use this to store the target word
     let reviewItemObj = null;
     let currentProficiencyBucket = 0;
 
@@ -621,9 +994,6 @@ async function showBuildWord(baseWord = null) {
             reviewItemObj = reviewItems[0];
             word = reviewItemObj.itemValue;
             currentProficiencyBucket = reviewItemObj.proficiencyBucket;
-            console.log("Using review item for showBuildWord:", reviewItemObj);
-        } else {
-            console.log("No review item, selecting new word for showBuildWord.");
         }
     }
 
@@ -633,7 +1003,6 @@ async function showBuildWord(baseWord = null) {
             showNoDataMessage(); return;
         }
         word = words[Math.floor(Math.random() * words.length)];
-        console.log("Using new item for showBuildWord:", word);
         if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
             currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', word);
         }
@@ -647,10 +1016,10 @@ async function showBuildWord(baseWord = null) {
     resultArea.innerHTML = `
         <div class="build-word-exercise ${isReview ? 'review-item-cue' : ''}">
             <div class="item-strength" aria-label="Item strength: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength: ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
-            <div class="word-to-build-label" style="text-align:center; margin-bottom:10px; font-style:italic;">${isReview ? `Word: ${word}` : 'Build the word from letters:'}</div>
+            <div class="word-to-build-label" style="text-align:center; margin-bottom:10px; font-style:italic;" data-transliterable>${isReview ? `Word: ${word}` : 'Build the word from letters:'}</div>
             <div class="letter-pool" id="letter-pool">
                 ${shuffledLetters.map((letter) => `
-                    <div class="letter-tile" data-letter="${letter}" draggable="true">${letter}</div>
+                    <div class="letter-tile" data-letter="${letter}" draggable="true" data-transliterable>${letter}</div>
                 `).join('')}
             </div>
             <div class="word-slots" id="word-slots">
@@ -668,6 +1037,42 @@ async function showBuildWord(baseWord = null) {
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
     const exerciseContainer = resultArea.querySelector('.build-word-exercise');
     if (exerciseContainer) {
+        exerciseContainer.revealAnswer = function() {
+            const feedback = document.getElementById('build-feedback');
+            const wordSlots = document.getElementById('word-slots');
+            const letterPool = document.getElementById('letter-pool');
+            
+            wordSlots.innerHTML = '';
+            if (letterPool) letterPool.innerHTML = `<p style="text-align:center;font-style:italic;" data-transliterable>${t.answerRevealed || 'Answer revealed'}</p>`;
+
+            word.split('').forEach(letter => {
+                const slot = document.createElement('div');
+                slot.className = 'letter-slot';
+                const tile = document.createElement('div');
+                tile.className = 'letter-tile revealed'; 
+                tile.textContent = letter;
+                tile.setAttribute('data-transliterable', '');
+                slot.appendChild(tile);
+                wordSlots.appendChild(slot);
+            });
+
+            feedback.innerHTML = `<span class="revealed-answer">${t.answerIs || 'The answer is:'} <strong data-transliterable>${word}</strong></span>`;
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, false);
+            }
+        };
+        exerciseContainer.showHint = function() {
+            const feedback = document.getElementById('build-feedback');
+            const firstLetter = word.length > 0 ? word[0] : '';
+            if (firstLetter) {
+                 feedback.innerHTML = `<span class="hint-text">${t.hint_firstLetter || 'Hint: The first letter is'} "<span data-transliterable>${firstLetter}</span>"</span>`;
+            } else {
+                 feedback.innerHTML = `<span class="hint-text">${t.noHintAvailable || 'No hint available for this item.'}</span>`;
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
         exerciseContainer.checkAnswer = () => {
             const builtWordArr = Array.from(document.querySelectorAll('.word-slots .letter-tile')).map(tile => tile.dataset.letter);
             const builtWord = builtWordArr.join('');
@@ -677,7 +1082,7 @@ async function showBuildWord(baseWord = null) {
             let isCorrect = false;
             if (builtWord.toLowerCase() === word.toLowerCase()) {
                 feedback.innerHTML = `<span class="correct">✅ ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
-                CosyAppInteractive.awardCorrectAnswer();
+                if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
                 isCorrect = true;
                 if (isCorrect) {
                     setTimeout(() => {
@@ -686,10 +1091,10 @@ async function showBuildWord(baseWord = null) {
                 }
             } else {
                 feedback.innerHTML = `<span class="incorrect">❌ ${currentT.notQuiteTryAgain || 'Not quite. Keep trying!'}</span>`;
-                CosyAppInteractive.awardIncorrectAnswer();
+                if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
                 isCorrect = false;
             }
-            CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isCorrect);
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
     }
@@ -705,7 +1110,7 @@ async function showIdentifyImage() {
 
     let imageItem = null;
     let reviewItemObj = null; 
-    let correctAnswer = null;
+    let correctAnswer = null; // Stores the correct name for the image
     let currentProficiencyBucket = 0;
 
     if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
@@ -717,13 +1122,9 @@ async function showIdentifyImage() {
             if (imageItem) {
                 correctAnswer = imageItem.translations[language];
                 currentProficiencyBucket = reviewItemObj.proficiencyBucket;
-                console.log("Using review image for showIdentifyImage:", imageItem, "Correct Answer:", correctAnswer);
             } else {
-                console.log("Review image src found, but image details not in current load. Selecting new image.");
                 reviewItemObj = null; 
             }
-        } else {
-            console.log("No review image, selecting new image for showIdentifyImage.");
         }
     }
 
@@ -732,7 +1133,6 @@ async function showIdentifyImage() {
         if (!allImages.length) { showNoDataMessage(); return; }
         imageItem = allImages[Math.floor(Math.random() * allImages.length)];
         correctAnswer = imageItem.translations[language];
-        console.log("Using new image for showIdentifyImage:", imageItem, "Correct Answer:", correctAnswer);
         reviewItemObj = null; 
         if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
             currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-image', imageItem.src);
@@ -759,6 +1159,29 @@ async function showIdentifyImage() {
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
     const exerciseContainer = resultArea.querySelector('.image-exercise');
     if (exerciseContainer) {
+        exerciseContainer.revealAnswer = function() {
+            const feedback = document.getElementById('image-feedback');
+            const answerInput = document.getElementById('image-answer-input');
+            if (answerInput) {
+                answerInput.value = correctAnswer; 
+                answerInput.disabled = true;
+            }
+            feedback.innerHTML = `<span class="revealed-answer">${t.answerIs || 'The answer is:'} <strong data-transliterable>${correctAnswer}</strong></span>`;
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+            
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                CosyAppInteractive.scheduleReview(language, 'vocabulary-image', imageItem.src, false);
+            }
+        };
+        exerciseContainer.showHint = function() {
+            const feedback = document.getElementById('image-feedback');
+            if (correctAnswer && correctAnswer.length > 0) {
+                feedback.innerHTML = `<span class="hint-text">${t.hint_firstLetter || 'Hint: The first letter is'} "<span data-transliterable>${correctAnswer[0]}</span>"</span>`;
+            } else {
+                feedback.innerHTML = `<span class="hint-text">${t.noHintAvailable || 'No hint available for this item.'}</span>`;
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
         exerciseContainer.checkAnswer = () => {
             const userAnswer = document.getElementById('image-answer-input').value.trim();
             const feedback = document.getElementById('image-feedback');
@@ -767,7 +1190,7 @@ async function showIdentifyImage() {
             let isCorrect = false;
             if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
                 feedback.innerHTML = `<span class="correct">✅ ${currentT.correct || 'Correct!'}</span>`;
-                CosyAppInteractive.awardCorrectAnswer();
+                if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
                 isCorrect = true;
                 if (isCorrect) {
                     setTimeout(() => {
@@ -776,10 +1199,10 @@ async function showIdentifyImage() {
                 }
             } else {
                 feedback.innerHTML = `<span class="incorrect">❌ ${currentT.tryAgain || 'Try again!'}</span>`;
-                CosyAppInteractive.awardIncorrectAnswer();
+                if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
                 isCorrect = false;
             }
-            CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-image', imageItem.src, isCorrect);
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-image', imageItem.src, isCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
     }
@@ -792,7 +1215,7 @@ async function showTranscribeWord() {
     const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
     if (!language || !days.length) { alert(t.alertLangDay ||'Please select language and day(s) first'); return; }
 
-    let word = null;
+    let word = null; // This will store the word to be transcribed
     let reviewItemObj = null;
     let currentProficiencyBucket = 0;
 
@@ -802,9 +1225,6 @@ async function showTranscribeWord() {
             reviewItemObj = reviewItems[0];
             word = reviewItemObj.itemValue;
             currentProficiencyBucket = reviewItemObj.proficiencyBucket;
-            console.log("Using review item for showTranscribeWord:", reviewItemObj);
-        } else {
-            console.log("No review item, selecting new word for showTranscribeWord.");
         }
     }
 
@@ -812,7 +1232,6 @@ async function showTranscribeWord() {
         const words = await loadVocabulary(language, days);
         if (!words.length) { showNoDataMessage(); return; }
         word = words[Math.floor(Math.random() * words.length)];
-        console.log("Using new item for showTranscribeWord:", word);
         if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
             currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', word);
         }
@@ -834,6 +1253,30 @@ async function showTranscribeWord() {
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
     const exerciseContainer = resultArea.querySelector('.transcribe-word-exercise');
     if (exerciseContainer) {
+        exerciseContainer.revealAnswer = function() {
+            const feedback = document.getElementById('transcription-feedback');
+            const transcriptionInput = document.getElementById('transcription-input');
+            if (transcriptionInput) {
+                transcriptionInput.value = word; 
+                transcriptionInput.disabled = true;
+            }
+            feedback.innerHTML = `<span class="revealed-answer">${t.answerIs || 'The answer is:'} <strong data-transliterable>${word}</strong></span>`;
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, false);
+            }
+        };
+        exerciseContainer.showHint = function() {
+            const feedback = document.getElementById('transcription-feedback');
+            if (word && word.length > 0) {
+                // Show the first letter as a hint
+                feedback.innerHTML = `<span class="hint-text">${t.hint_firstLetter || 'Hint: The first letter is'} "<span data-transliterable>${word[0]}</span>"</span>`;
+            } else {
+                feedback.innerHTML = `<span class="hint-text">${t.noHintAvailable || 'No hint available for this item.'}</span>`;
+            }
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
         exerciseContainer.checkAnswer = () => {
             const userAnswer = document.getElementById('transcription-input').value.trim();
             const feedback = document.getElementById('transcription-feedback');
@@ -842,7 +1285,7 @@ async function showTranscribeWord() {
             let isCorrect = false;
             if (userAnswer.toLowerCase() === word.toLowerCase()) {
                 feedback.innerHTML = `<span class="correct">✅ ${currentT.correct || 'Correct!'}</span>`;
-                CosyAppInteractive.awardCorrectAnswer();
+                if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
                 isCorrect = true;
                 if (isCorrect) {
                     setTimeout(() => {
@@ -851,20 +1294,16 @@ async function showTranscribeWord() {
                 }
             } else {
                 feedback.innerHTML = `<span class="incorrect">❌ ${currentT.tryAgain || 'Try again!'}</span>`;
-                CosyAppInteractive.awardIncorrectAnswer();
+                if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
                 isCorrect = false;
             }
-            CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isCorrect);
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
     }
     document.getElementById('play-word-sound')?.addEventListener('click', () => pronounceWord(word, language));
 }
 
-// Omitting other functions like showMatchSoundWord, showIdentifyImageYesNo, etc. for brevity, 
-// but they would follow a similar pattern if they were to be modified.
-
-// ... (practiceAllVocabulary and other global assignments)
 window.initVocabularyPractice = initVocabularyPractice;
 window.startRandomWordPractice = startRandomWordPractice;
 window.startRandomImagePractice = startRandomImagePractice;
@@ -873,7 +1312,7 @@ window.practiceAllVocabulary = practiceAllVocabulary;
 
 window.showRandomWord = showRandomWord;
 window.showOppositesExercise = showOppositesExercise;
-window.showMatchOpposites = showMatchOpposites; // Definition now added as placeholder
+window.showMatchOpposites = showMatchOpposites; 
 window.showBuildWord = showBuildWord;
 window.showIdentifyImage = showIdentifyImage;
 window.showMatchImageWord = showMatchImageWord;
@@ -886,7 +1325,7 @@ console.log('[VocabJS] After all function definitions, before global assignments
 console.log('[VocabJS] After global assignments for show... functions, before patching calls');
 window.showRandomWord = patchExerciseWithExtraButtons(showRandomWord, '.word-display-container', window.startRandomWordPractice, { noCheck: true, noReveal: true, noHint: true, deferRandomizeClick: true });
 window.showOppositesExercise = patchExerciseWithExtraButtons(showOppositesExercise, '.opposites-exercise', window.startRandomWordPractice, {});
-window.showMatchOpposites = patchExerciseWithExtraButtons(showMatchOpposites, '.match-exercise', window.startRandomWordPractice, {}); // Definition now added, can be patched
+window.showMatchOpposites = patchExerciseWithExtraButtons(showMatchOpposites, '.match-exercise', window.startRandomWordPractice, {}); 
 window.showBuildWord = patchExerciseWithExtraButtons(showBuildWord, '.build-word-exercise', window.startRandomWordPractice, {});
 window.showIdentifyImage = patchExerciseWithExtraButtons(showIdentifyImage, '.image-exercise', window.startRandomImagePractice, {});
 window.showMatchImageWord = patchExerciseWithExtraButtons(showMatchImageWord, '.match-image-word-exercise', window.startRandomImagePractice, { noCheck: true }); 
