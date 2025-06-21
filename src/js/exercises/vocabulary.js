@@ -2031,56 +2031,46 @@ window.showRandomWord = patchExerciseWithExtraButtons(showRandomWord, '.word-dis
     noCheck: true, noReveal: true, noHint: true, deferRandomizeClick: true,
     specificNextExerciseFn: window.showRandomWord,
     specificNextExerciseLabelKey: 'buttons.newShowWord',
-    specificNextExerciseAlternateLabel: 'New Word'
 });
 window.showOppositesExercise = patchExerciseWithExtraButtons(showOppositesExercise, '.opposites-exercise', window.startRandomWordPractice, {
     specificNextExerciseFn: window.showOppositesExercise,
     specificNextExerciseLabelKey: 'buttons.newOppositeExercise',
-    specificNextExerciseAlternateLabel: 'New Opposites'
 });
 window.showMatchOpposites = patchExerciseWithExtraButtons(showMatchOpposites, '.match-opposites-exercise', window.startRandomWordPractice, { 
     specificNextExerciseFn: window.showMatchOpposites,
     specificNextExerciseLabelKey: 'buttons.newMatchOpposites',
-    specificNextExerciseAlternateLabel: 'New Match Game'
 }); 
 window.showBuildWord = patchExerciseWithExtraButtons(showBuildWord, '.build-word-exercise', window.startRandomWordPractice, {
     specificNextExerciseFn: window.showBuildWord,
     specificNextExerciseLabelKey: 'buttons.newBuildWord',
-    specificNextExerciseAlternateLabel: 'New Build Word'
 });
 window.showIdentifyImage = patchExerciseWithExtraButtons(showIdentifyImage, '.image-exercise', window.startRandomImagePractice, {
     specificNextExerciseFn: window.showIdentifyImage,
     specificNextExerciseLabelKey: 'buttons.newIdentifyImage',
-    specificNextExerciseAlternateLabel: 'New Image ID'
 });
 window.showMatchImageWord = patchExerciseWithExtraButtons(showMatchImageWord, '.match-image-word-exercise', window.startRandomImagePractice, { 
     noCheck: true, // Check is implicit in matching logic
     specificNextExerciseFn: window.showMatchImageWord,
     specificNextExerciseLabelKey: 'buttons.newMatchImage',
-    specificNextExerciseAlternateLabel: 'New Image Match'
 }); 
 window.showIdentifyImageYesNo = patchExerciseWithExtraButtons(showIdentifyImageYesNo, '.identify-yes-no-exercise', window.startRandomImagePractice, { 
     noCheck: true, /* Check is implicit in button selection */
     specificNextExerciseFn: window.showIdentifyImageYesNo,
     specificNextExerciseLabelKey: 'buttons.newIdentifyImageYesNo',
-    specificNextExerciseAlternateLabel: 'New Image Y/N'
 }); 
 window.showTranscribeWord = patchExerciseWithExtraButtons(showTranscribeWord, '.transcribe-word-exercise', window.startListeningPractice, {
     specificNextExerciseFn: window.showTranscribeWord,
     specificNextExerciseLabelKey: 'buttons.newTranscribeWord',
-    specificNextExerciseAlternateLabel: 'New Transcription'
 });
 window.showMatchSoundWord = patchExerciseWithExtraButtons(showMatchSoundWord, '.match-sound-exercise', window.startListeningPractice, { 
     noCheck: true, // Check is implicit via button click
     specificNextExerciseFn: window.showMatchSoundWord,
     specificNextExerciseLabelKey: 'buttons.newMatchSound',
-    specificNextExerciseAlternateLabel: 'New Sound Match'
 }); 
 window.showTranscribeWordYesNo = patchExerciseWithExtraButtons(showTranscribeWordYesNo, '.transcribe-word-yes-no-exercise', window.startListeningPractice, { 
     noCheck: true, // Check is implicit via button click
     specificNextExerciseFn: window.showTranscribeWordYesNo,
     specificNextExerciseLabelKey: 'buttons.newTranscribeWordYesNo',
-    specificNextExerciseAlternateLabel: 'New Transcribe Y/N'
 }); 
 console.log('[VocabJS] After patching calls');
 
