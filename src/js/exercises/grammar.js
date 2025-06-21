@@ -351,7 +351,7 @@ async function showMatchArticlesWords(baseItems = null) {
 
     resultArea.innerHTML = `
         <div class="match-exercise match-articles-words-exercise" role="form" aria-label="${t.aria?.matchArticlesWords || 'Match Articles and Words'}">
-            <p class="exercise-prompt" data-transliterable>${t.matchArticlesWordsPrompt || 'Match the articles with their corresponding words.'}</p>
+            <p class="exercise-prompt" data-transliterable></p>
             <div class="match-container">
                 <div class="match-col articles-column" id="match-articles-col">
                     ${articlesColumn.map((article, index) => `<button class="match-item btn-match-item" data-id="article-${index}" data-value="${article}" data-type="article" data-transliterable>${article}</button>`).join('')}
