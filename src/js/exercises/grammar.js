@@ -21,13 +21,6 @@ async function startPossessivesPractice() {
         return;
     }
     
-    // This is a conceptual placeholder. 
-    // Actual possessives exercises (e.g., showPossessiveExercise) would need to be created.
-    // For now, we'll show a "coming soon" message.
-    // Later, this would be:
-    // const possessivesExercises = GRAMMAR_PRACTICE_TYPES['possessives']?.exercises;
-    // if (possessivesExercises && possessivesExercises.length > 0) { ... }
-    
     resultArea.innerHTML = `<p>${t.possessivesComingSoon || 'Possessives practice exercises are coming soon!'}</p>`;
     if (typeof window.refreshLatinization === 'function') {
         window.refreshLatinization();
@@ -35,7 +28,13 @@ async function startPossessivesPractice() {
     // Example of how it might be patched if it were a real exercise display function:
     // const exerciseContainer = resultArea.firstChild; 
     // if (exerciseContainer) {
-    //     patchExerciseWithExtraButtons(() => {}, exerciseContainer, startPossessivesPractice, {});
+    //     patchExerciseWithExtraButtons(() => {
+    //         resultArea.innerHTML = `<p>${t.possessivesComingSoon || 'Possessives practice exercises are coming soon!'}</p>`;
+    //     }, exerciseContainer, startPossessivesPractice, {
+    //         specificNextExerciseFn: startPossessivesPractice, // Or a specific exercise function
+    //         specificNextExerciseAlternateLabel: 'New Possessives',
+    //         noCheck: true, noHint: true, noReveal: true 
+    //     });
     // }
 }
 
@@ -157,8 +156,8 @@ const GRAMMAR_PRACTICE_TYPES = {
         exercises: ['showTypeVerb', 'showMatchVerbsPronouns', 'showFillGaps', 'showWordOrder'],
         name: 'Verbs & Conjugation'
     },
-    'possessives': { // Added for completeness, even if exercises are placeholders
-        exercises: [/* 'showPossessiveExercise1', 'showPossessiveExercise2' */], // Example, to be defined
+    'possessives': { 
+        exercises: [/* 'showPossessiveExercise1', 'showPossessiveExercise2' */], 
         name: 'Possessives'
     }
 };
@@ -201,12 +200,9 @@ async function showArticleWord() {
     let grammarItem = null; 
     let reviewItemObj = null; 
 
-    // SRS Logic (simplified)
-    // ... (SRS logic as before)
-
     if (!grammarItem) { 
         const items = await loadGenderGrammar(language, days);
-        if (!items || !items.length) { // Check if items is null or empty
+        if (!items || !items.length) { 
             showNoDataMessage();
             return;
         }
@@ -219,8 +215,6 @@ async function showArticleWord() {
         return;
     }
     
-    const correctAnswerForVariation = grammarItem.article; // Store correct answer before variation
-
     const currentProficiencyBucket = reviewItemObj ? reviewItemObj.proficiencyBucket : 0;
     const isReview = !!reviewItemObj;
     const MAX_BUCKET_DISPLAY = 5;
@@ -305,17 +299,19 @@ async function showArticleWord() {
 }
 
 async function showMatchArticlesWords() { 
-    // This is a matching exercise, hint/reveal might be complex or handled by its own structure.
-    // For now, ensure it doesn't break if called.
-    console.warn("showMatchArticlesWords - revealAnswer/showHint not explicitly implemented for this complex match type yet via this pattern.");
-    // Actual implementation of showMatchArticlesWords...
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    resultArea.innerHTML = '<p>Match Articles Words exercise placeholder - To be fully implemented.</p>';
-    const exerciseContainer = resultArea.firstChild;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+    
+    resultArea.innerHTML = `<div class="match-exercise match-articles-words-exercise">Placeholder for Match Articles & Words.</div>`;
+    const exerciseContainer = resultArea.querySelector('.match-articles-words-exercise');
     if (exerciseContainer) {
         exerciseContainer.revealAnswer = () => { alert("Reveal not implemented for this exercise type yet."); };
         exerciseContainer.showHint = () => { alert("Hint not implemented for this exercise type yet."); };
+        exerciseContainer.checkAnswer = () => { /* Not applicable for current placeholder */ };
     }
+     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
 }
 
 async function showSelectArticleExercise() {
@@ -329,9 +325,6 @@ async function showSelectArticleExercise() {
     
     let selectedItem = null; 
     let reviewItemObj = null; 
-
-    // SRS Logic (simplified)
-    // ... (SRS logic as before)
 
     if (!selectedItem) {
         const allGenderItems = await loadGenderGrammar(language, days);
@@ -351,7 +344,7 @@ async function showSelectArticleExercise() {
     let allArticlesForLang = [...new Set((await loadGenderGrammar(language, days)).map(item => item.article))];
     let articleOptions = [correctArticle];
     allArticlesForLang = allArticlesForLang.filter(art => art !== correctArticle);
-    shuffleArray(allArticlesForLang); // Ensure shuffleArray is available
+    shuffleArray(allArticlesForLang); 
     for (let i = 0; i < Math.min(NUM_ARTICLE_OPTIONS - 1, allArticlesForLang.length); i++) {
         articleOptions.push(allArticlesForLang[i]);
     }
@@ -398,17 +391,17 @@ async function showSelectArticleExercise() {
         };
         exerciseContainer.showHint = function() {
             const feedbackEl = document.getElementById('select-article-feedback');
-            // Simple hint: remove one incorrect option if more than 2 options exist
             const incorrectButtons = Array.from(document.querySelectorAll('.article-option-btn:not([disabled])'))
                                        .filter(btn => btn.dataset.article.toLowerCase() !== correctArticle.toLowerCase());
-            if (incorrectButtons.length > 1) { // Need at least one incorrect to remove, and correct one must remain
+            if (incorrectButtons.length > 1) { 
                 incorrectButtons[0].classList.add('hint-removed');
-                incorrectButtons[0].disabled = true; // Visually disable or hide
+                incorrectButtons[0].disabled = true; 
                  feedbackEl.innerHTML = `<span class="hint-text">${t.hint_oneOptionRemoved || 'Hint: One incorrect option removed.'}</span>`;
             } else {
                  feedbackEl.innerHTML = `<span class="hint-text">${t.noMoreHints || 'No more hints available.'}</span>`;
             }
         };
+        // checkAnswer is implicit in the button clicks for this exercise type
     }
 
     const pronounceButton = document.getElementById('pronounce-select-article-word');
@@ -472,9 +465,6 @@ async function showTypeVerb() {
     let itemForExercise = null; 
     let reviewItemObj = null;   
 
-    // SRS Logic (simplified)
-    // ... (SRS logic as before)
-
     if (!itemForExercise) {
         const allVerbItems = await loadVerbGrammar(language, days);
         if (!allVerbItems || !allVerbItems.length) { showNoDataMessage(); return; }
@@ -484,7 +474,7 @@ async function showTypeVerb() {
     
     if (!itemForExercise) { showNoDataMessage(); return; }
     
-    const correctAnswer = itemForExercise.form; // Storing correct answer
+    const correctAnswer = itemForExercise.form; 
 
     const currentProficiencyBucket = reviewItemObj ? reviewItemObj.proficiencyBucket : 0;
     const isReview = !!reviewItemObj;
@@ -519,7 +509,6 @@ async function showTypeVerb() {
         };
         exerciseContainer.showHint = function() {
             const feedbackEl = document.getElementById('verb-answer-feedback');
-            // Hint: Show first letter of the correct verb form
             if (correctAnswer && correctAnswer.length > 0) {
                 feedbackEl.innerHTML = `<span class="hint-text">${t.hint_firstLetterIs || 'Hint: The first letter is'} "<span data-transliterable>${correctAnswer[0]}</span>"</span>`;
             } else {
@@ -559,45 +548,59 @@ async function showTypeVerb() {
 }
 
 async function showMatchVerbsPronouns() { 
-    console.warn("showMatchVerbsPronouns - revealAnswer/showHint not explicitly implemented for this complex match type yet via this pattern.");
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    resultArea.innerHTML = '<p>Match Verbs & Pronouns exercise placeholder - To be fully implemented.</p>';
-    const exerciseContainer = resultArea.firstChild;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+
+    resultArea.innerHTML = `<div class="match-exercise match-verbs-pronouns-exercise">Placeholder for Match Verbs & Pronouns.</div>`;
+    const exerciseContainer = resultArea.querySelector('.match-verbs-pronouns-exercise');
     if (exerciseContainer) {
         exerciseContainer.revealAnswer = () => { alert("Reveal not implemented for this exercise type yet."); };
         exerciseContainer.showHint = () => { alert("Hint not implemented for this exercise type yet."); };
+        exerciseContainer.checkAnswer = () => { /* Not applicable for current placeholder */ };
     }
+    if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
 }
 async function showFillGaps() { 
-    console.warn("showFillGaps - revealAnswer/showHint not explicitly implemented for this complex match type yet via this pattern.");
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    resultArea.innerHTML = '<p>Fill the Gaps (Verbs) exercise placeholder - To be fully implemented.</p>';
-    const exerciseContainer = resultArea.firstChild;
-    if (exerciseContainer) {
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+
+    resultArea.innerHTML = `<div class="fill-gap-exercise">Placeholder for Fill Gaps (Verbs).</div>`;
+    const exerciseContainer = resultArea.querySelector('.fill-gap-exercise');
+     if (exerciseContainer) {
         exerciseContainer.revealAnswer = () => { alert("Reveal not implemented for this exercise type yet."); };
         exerciseContainer.showHint = () => { alert("Hint not implemented for this exercise type yet."); };
+        exerciseContainer.checkAnswer = () => { /* Not applicable for current placeholder */ };
     }
+    if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
  }
 async function showWordOrder() { 
-    console.warn("showWordOrder - revealAnswer/showHint not explicitly implemented for this complex match type yet via this pattern.");
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
     const resultArea = document.getElementById('result');
-    resultArea.innerHTML = '<p>Word Order (Verbs) exercise placeholder - To be fully implemented.</p>';
-    const exerciseContainer = resultArea.firstChild;
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
+
+    resultArea.innerHTML = `<div class="word-order-exercise">Placeholder for Word Order (Verbs).</div>`;
+    const exerciseContainer = resultArea.querySelector('.word-order-exercise');
     if (exerciseContainer) {
         exerciseContainer.revealAnswer = () => { alert("Reveal not implemented for this exercise type yet."); };
         exerciseContainer.showHint = () => { alert("Hint not implemented for this exercise type yet."); };
+        exerciseContainer.checkAnswer = () => { /* Not applicable for current placeholder */ };
     }
+    if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
 }
 
 async function practiceAllGrammar() { 
-    const practiceTypes = ['gender', 'verbs']; // Add 'possessives' once it's implemented
+    const practiceTypes = ['gender', 'verbs']; 
     const randomType = practiceTypes[Math.floor(Math.random() * practiceTypes.length)];
     if (randomType === 'gender') {
         await startGenderPractice();
     } else if (randomType === 'verbs') {
         await startVerbsPractice();
     }
-    // else if (randomType === 'possessives') { await startPossessivesPractice(); }
 }
 
 window.initGrammarPractice = initGrammarPractice;
@@ -614,12 +617,43 @@ window.showMatchVerbsPronouns = showMatchVerbsPronouns;
 window.showFillGaps = showFillGaps;
 window.showWordOrder = showWordOrder;
 
-window.showArticleWord = patchExerciseWithExtraButtons(showArticleWord, '.gender-exercise', window.startGenderPractice, {});
-window.showMatchArticlesWords = patchExerciseWithExtraButtons(showMatchArticlesWords, '.match-exercise', window.startGenderPractice, { noCheck: true });
-window.showSelectArticleExercise = patchExerciseWithExtraButtons(showSelectArticleExercise, '.select-article-exercise', window.startGenderPractice, { noCheck: true });
-window.showTypeVerb = patchExerciseWithExtraButtons(showTypeVerb, '.verb-exercise', window.startVerbsPractice, {});
-window.showMatchVerbsPronouns = patchExerciseWithExtraButtons(showMatchVerbsPronouns, '.match-exercise', window.startVerbsPractice, { noCheck: true });
-window.showFillGaps = patchExerciseWithExtraButtons(showFillGaps, '.fill-gap-exercise', window.startVerbsPractice, {});
-window.showWordOrder = patchExerciseWithExtraButtons(showWordOrder, '.word-order-exercise', window.startVerbsPractice, {});
+window.showArticleWord = patchExerciseWithExtraButtons(showArticleWord, '.gender-exercise', window.startGenderPractice, {
+    specificNextExerciseFn: window.showArticleWord,
+    specificNextExerciseLabelKey: 'buttons.newArticleWord',
+    specificNextExerciseAlternateLabel: 'New Article/Word'
+});
+window.showMatchArticlesWords = patchExerciseWithExtraButtons(showMatchArticlesWords, '.match-articles-words-exercise', window.startGenderPractice, { 
+    noCheck: true,
+    specificNextExerciseFn: window.showMatchArticlesWords,
+    specificNextExerciseLabelKey: 'buttons.newMatchArticles',
+    specificNextExerciseAlternateLabel: 'New Article Match'
+});
+window.showSelectArticleExercise = patchExerciseWithExtraButtons(showSelectArticleExercise, '.select-article-exercise', window.startGenderPractice, { 
+    noCheck: true, /* Check is implicit in button selection */
+    specificNextExerciseFn: window.showSelectArticleExercise,
+    specificNextExerciseLabelKey: 'buttons.newSelectArticle',
+    specificNextExerciseAlternateLabel: 'New Select Article'
+});
+window.showTypeVerb = patchExerciseWithExtraButtons(showTypeVerb, '.verb-exercise', window.startVerbsPractice, {
+    specificNextExerciseFn: window.showTypeVerb,
+    specificNextExerciseLabelKey: 'buttons.newTypeVerb',
+    specificNextExerciseAlternateLabel: 'New Type Verb'
+});
+window.showMatchVerbsPronouns = patchExerciseWithExtraButtons(showMatchVerbsPronouns, '.match-verbs-pronouns-exercise', window.startVerbsPractice, { 
+    noCheck: true,
+    specificNextExerciseFn: window.showMatchVerbsPronouns,
+    specificNextExerciseLabelKey: 'buttons.newMatchVerbs',
+    specificNextExerciseAlternateLabel: 'New Verb Match'
+});
+window.showFillGaps = patchExerciseWithExtraButtons(showFillGaps, '.fill-gap-exercise', window.startVerbsPractice, {
+    specificNextExerciseFn: window.showFillGaps,
+    specificNextExerciseLabelKey: 'buttons.newFillGaps',
+    specificNextExerciseAlternateLabel: 'New Fill Gaps'
+});
+window.showWordOrder = patchExerciseWithExtraButtons(showWordOrder, '.word-order-exercise', window.startVerbsPractice, {
+    specificNextExerciseFn: window.showWordOrder,
+    specificNextExerciseLabelKey: 'buttons.newWordOrder',
+    specificNextExerciseAlternateLabel: 'New Word Order'
+});
 
 document.addEventListener('DOMContentLoaded', initGrammarPractice);

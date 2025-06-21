@@ -141,18 +141,20 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
         t.aria = t.aria || {};
         t.errors = t.errors || {};
 
-        // --- START MODIFICATION ---
-
-        // 1. Cleanup existing buttons from the main container (as before)
-        const btnIdsToRemove = ['btn-randomize-category', 'btn-hint', 'btn-check-exercise', 'btn-reveal-answer'];
+        // 1. Cleanup existing buttons from the main container
+        const btnIdsToRemove = ['btn-randomize-category', 'btn-hint', 'btn-check-exercise', 'btn-reveal-answer', 'btn-next-specific-exercise'];
         btnIdsToRemove.forEach(id => {
             const existingBtn = container.querySelector(`#${id}`);
             if (existingBtn) existingBtn.remove();
         });
         const oldClassBtns = container.querySelectorAll('.btn-randomize, .btn-hint, .exercise-button-bar-top, .exercise-button-bar-bottom'); 
         oldClassBtns.forEach(btn => {
-            if (!btn.id || !btnIdsToRemove.includes(btn.id) || btn.classList.contains('exercise-button-bar-top') || btn.classList.contains('exercise-button-bar-bottom')) {
-                 btn.remove(); // Remove old button bars too
+            // Check if it's one of the bars themselves or an old button without a new ID
+            if (btn.classList.contains('exercise-button-bar-top') || btn.classList.contains('exercise-button-bar-bottom')) {
+                 btn.remove(); 
+            } else if (!btn.id || !btnIdsToRemove.includes(btn.id)) {
+                 // This condition might be too broad, be careful.
+                 // Intended to remove old buttons not matching new IDs.
             }
         });
 
@@ -176,22 +178,20 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
         randomizeBtn.setAttribute('aria-label', t.aria?.randomizeCategory || 'Start a new random exercise in this category');
         
         if (options.deferRandomizeClick) {
-            // If the option is set, defer the actual assignment slightly
-            const actualRandomizeFn = randomizeFn; // Capture randomizeFn
-            randomizeBtn.onclick = null; // Initially set to null or a no-op
+            const actualRandomizeFn = randomizeFn; 
+            randomizeBtn.onclick = null; 
             setTimeout(() => {
-                if (document.body.contains(randomizeBtn)) { // Ensure button still exists
+                if (document.body.contains(randomizeBtn)) { 
                     randomizeBtn.onclick = actualRandomizeFn;
                 }
-            }, 100); // Delay of 100ms, can be adjusted
+            }, 100); 
         } else {
-            // Default behavior
             randomizeBtn.onclick = randomizeFn;
         }
         topButtonContainer.appendChild(randomizeBtn);
 
         // "💡 Hint" button - Conditionally added to top.
-        if (!options.noHint) { // Check for the new option
+        if (!options.noHint) { 
             let hintBtn = document.createElement('button');
             hintBtn.id = 'btn-hint';
             hintBtn.className = 'exercise-button';
@@ -226,13 +226,13 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
             topButtonContainer.appendChild(revealBtn);
         }
 
-        // --- BOTTOM BUTTON ---
+        // --- BOTTOM BUTTONS ---
 
         // "✅ Check" button - Added to bottom if not disabled
         if (!options.noCheck) {
             let checkBtn = document.createElement('button');
             checkBtn.id = 'btn-check-exercise';
-            checkBtn.className = 'exercise-button'; // Or potentially btn-primary if desired
+            checkBtn.className = 'exercise-button'; 
             checkBtn.innerHTML = `✅ ${t.buttons.check || 'Check'}`;
             checkBtn.title = t.aria?.check || 'Check answer';
             checkBtn.setAttribute('aria-label', t.aria?.check || 'Check answer');
@@ -240,7 +240,6 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
                 if (typeof container.checkAnswer === 'function') {
                     container.checkAnswer();
                 } else {
-                    // Fallback to click a more specific button if it exists (legacy)
                     const specificCheckButton = container.querySelector('#check-button') || container.querySelector('.check-button') || container.querySelector('button[id*="check-"]');
                     if (specificCheckButton && typeof specificCheckButton.click === 'function') {
                         specificCheckButton.click();
@@ -252,14 +251,39 @@ function patchExerciseWithExtraButtons(originalExerciseFn, containerSelectorOrEl
             bottomButtonContainer.appendChild(checkBtn);
         }
 
+        // "🔄 Next Exercise (Same Type)" button - Added to bottom if specified
+        if (options.specificNextExerciseFn) {
+            let specificNextBtn = document.createElement('button');
+            specificNextBtn.id = 'btn-next-specific-exercise'; 
+            specificNextBtn.className = 'exercise-button'; 
+            
+            let labelContent = '';
+            if (options.specificNextExerciseLabelKey && t.buttons) {
+                const actualKey = options.specificNextExerciseLabelKey.startsWith('buttons.') ? options.specificNextExerciseLabelKey.substring('buttons.'.length) : options.specificNextExerciseLabelKey;
+                if (t.buttons[actualKey]) {
+                    labelContent = t.buttons[actualKey];
+                }
+            }
+
+            if (!labelContent) { 
+                labelContent = options.specificNextExerciseAlternateLabel || (t.buttons?.newExerciseSameType || 'New Exercise');
+            }
+            
+            specificNextBtn.innerHTML = `🔄 ${labelContent}`;
+            specificNextBtn.title = labelContent;
+            specificNextBtn.setAttribute('aria-label', labelContent);
+            specificNextBtn.onclick = options.specificNextExerciseFn;
+            bottomButtonContainer.appendChild(specificNextBtn);
+        }
+
         // 4. Add button containers to the main exercise container
         if (topButtonContainer.hasChildNodes()) {
             container.prepend(topButtonContainer);
         }
         if (bottomButtonContainer.hasChildNodes()) {
-            container.appendChild(bottomButtonContainer); // Append for bottom placement
+            container.appendChild(bottomButtonContainer); 
         }
-        // --- END MODIFICATION ---
+        
         if (typeof window.refreshLatinization === 'function') {
             window.refreshLatinization();
         }
