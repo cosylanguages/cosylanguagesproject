@@ -114,8 +114,6 @@ const translations = {
     feedbackGoodMatch: "✅ Good match!",
     feedbackNotCompatible: "❌ Not compatible. Try again!",
     feedbackAllMatchesCompleted: "All possible matches completed!",
-    fillGapTitle: "Fill in the gap:",
-    wordOrderTitle: "Put the words in the correct order:",
     feedbackCorrectWellDone: "✅ Correct! Well done!",
     feedbackNotQuiteCorrectOrder: "❌ Not quite. The correct order is: ",
     continuePromptText: "Press continue for next exercise",

@@ -415,7 +415,7 @@ async function showMatchImageWord() {
 
     resultArea.innerHTML = `
         <div class="match-image-word-exercise" role="form" aria-label="${t.matchImageWordExercise || 'Match Image with Word Exercise'}">
-            <p class="exercise-prompt" data-transliterable>${t.matchImageWordPrompt || 'Match the images with their corresponding words.'}</p>
+            <p class="exercise-prompt" data-transliterable></p>
             <div class="match-grid">
                 ${gameItems.map(item => {
                     if (item.type === 'image') {
@@ -556,46 +556,334 @@ async function showMatchImageWord() {
     }
 }
 
-
-async function showTranscribeWordYesNo() {
-    console.warn("Placeholder: Transcribe Word (Yes/No) listening exercise (showTranscribeWordYesNo) called but not implemented.");
+async function showTranscribeWordYesNo(wordToHear = null, wordToDisplay = null, isMatch = null) {
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
     const resultArea = document.getElementById('result');
-    if (resultArea) {
-        resultArea.innerHTML = '<p>The "Transcribe Word (Yes/No)" listening exercise is currently unavailable. Please try another exercise.</p>';
-        const exerciseContainer = resultArea.firstChild;
-        if (exerciseContainer && typeof exerciseContainer === 'object' && exerciseContainer.innerHTML) {
-             exerciseContainer.revealAnswer = function() {
-                const lang = document.getElementById('language')?.value || 'COSYenglish';
-                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
-                alert(trans.exerciseNotFullyImplemented || "This exercise is not fully implemented yet, so reveal is unavailable.");
-            };
-            exerciseContainer.showHint = function() {
-                const lang = document.getElementById('language')?.value || 'COSYenglish';
-                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
-                alert(trans.hintNotImplemented || "Hint not available for this exercise yet.");
-            };
+
+    if (!language || !days.length) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
+        return;
+    }
+    if (typeof shuffleArray !== 'function' || typeof showNoDataMessage !== 'function' || typeof pronounceWord !== 'function') {
+        console.error("Required utility functions missing.");
+        resultArea.innerHTML = `<p>${t.error_generic || 'A critical error occurred. Utility functions missing.'}</p>`;
+        return;
+    }
+
+    let actualWordHeard = wordToHear;
+    let displayedWord = wordToDisplay;
+    let questionIsAMatch = isMatch; // True if displayedWord IS actualWordHeard
+
+    let reviewItemObj = null;
+    let currentProficiencyBucket = 0;
+
+    if (actualWordHeard === null) { // Generate new exercise if not pre-filled
+        const allWords = await loadVocabulary(language, days);
+        if (!allWords || allWords.length < 1) { // Need at least one word
+            showNoDataMessage(t.noWordsAvailable || 'Not enough words for this exercise.');
+            return;
         }
+
+        if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
+            const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-word', 1);
+            if (reviewItems && reviewItems.length > 0) {
+                reviewItemObj = reviewItems[0];
+                actualWordHeard = reviewItemObj.itemValue;
+                currentProficiencyBucket = reviewItemObj.proficiencyBucket;
+            }
+        }
+
+        if (!actualWordHeard) {
+            actualWordHeard = allWords[Math.floor(Math.random() * allWords.length)];
+            if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
+                 currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', actualWordHeard);
+            }
+        }
+        
+        questionIsAMatch = Math.random() < 0.5; // 50% chance the displayed word matches the sound
+
+        if (questionIsAMatch) {
+            displayedWord = actualWordHeard;
+        } else {
+            let distractors = allWords.filter(w => w.toLowerCase() !== actualWordHeard.toLowerCase());
+            if (distractors.length > 0) {
+                displayedWord = distractors[Math.floor(Math.random() * distractors.length)];
+            } else {
+                // If no distractors, force it to be a match
+                displayedWord = actualWordHeard;
+                questionIsAMatch = true;
+            }
+        }
+    }
+    
+    if (!actualWordHeard || !displayedWord) {
+        showNoDataMessage(t.error_generic || 'Error preparing exercise data.');
+        return;
+    }
+
+    const isReview = !!reviewItemObj;
+    const MAX_BUCKET_DISPLAY = 5;
+
+    resultArea.innerHTML = `
+        <div class="listening-exercise transcribe-word-yes-no-exercise ${isReview ? 'review-item-cue' : ''}" role="form" aria-label="${t.transcribeWordYesNoExercise || 'Transcribe Word (Yes/No) Exercise'}">
+            <div class="item-strength" aria-label="Item strength: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength: ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
+            <p class="exercise-prompt" data-transliterable></p>
+            <button id="play-transcribe-yesno-sound" class="btn-emoji large-emoji" aria-label="${t.buttons?.playSound || 'Play Sound'}">🔊</button>
+            <div class="displayed-word-yesno" data-transliterable>${displayedWord}</div>
+            <div id="transcribe-yesno-feedback" class="exercise-feedback" aria-live="polite" style="min-height:25px; margin-top:10px;"></div>
+            <div class="yes-no-buttons">
+                <button id="btn-transcribe-yes" class="exercise-button btn-yes-no">✅ ${t.buttons?.yes || 'Yes'}</button>
+                <button id="btn-transcribe-no" class="exercise-button btn-yes-no">❌ ${t.buttons?.no || 'No'}</button>
+            </div>
+        </div>
+    `;
+    if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+
+    pronounceWord(actualWordHeard, language); // Play sound on load
+    document.getElementById('play-transcribe-yesno-sound')?.addEventListener('click', () => {
+        pronounceWord(actualWordHeard, language);
+    });
+
+    const feedbackDiv = document.getElementById('transcribe-yesno-feedback');
+    const yesButton = document.getElementById('btn-transcribe-yes');
+    const noButton = document.getElementById('btn-transcribe-no');
+
+    function handleAnswer(userSaidYes) {
+        yesButton.disabled = true;
+        noButton.disabled = true;
+        let isUserCorrect = userSaidYes === questionIsAMatch;
+
+        if (isUserCorrect) {
+            feedbackDiv.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
+            if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
+        } else {
+            const correctAnswerText = questionIsAMatch ? (t.buttons?.yes || 'Yes') : (t.buttons?.no || 'No');
+            feedbackDiv.innerHTML = `<span class="incorrect">❌ ${t.incorrect || 'Incorrect.'} ${t.correctAnswerWas || 'The correct answer was:'} ${correctAnswerText}. 
+            (${t.soundWasFor || 'The sound was for:'} <strong data-transliterable>${actualWordHeard}</strong>)</span>`;
+            if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
+        }
+        if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        
+        if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+            CosyAppInteractive.scheduleReview(language, 'vocabulary-word', actualWordHeard, isUserCorrect);
+            if (displayedWord.toLowerCase() !== actualWordHeard.toLowerCase()) { // also review the distractor if it was shown
+                 CosyAppInteractive.scheduleReview(language, 'vocabulary-word', displayedWord, isUserCorrect);
+            }
+        }
+
+        if (isUserCorrect) {
+            setTimeout(() => {
+                if (window.startListeningPractice) window.startListeningPractice();
+            }, 1500);
+        }
+    }
+
+    yesButton.addEventListener('click', () => handleAnswer(true));
+    noButton.addEventListener('click', () => handleAnswer(false));
+
+    const exerciseContainer = resultArea.querySelector('.transcribe-word-yes-no-exercise');
+    if (exerciseContainer) {
+        exerciseContainer.revealAnswer = function() {
+            const correctAnswerText = questionIsAMatch ? (t.buttons?.yes || 'Yes') : (t.buttons?.no || 'No');
+            feedbackDiv.innerHTML = `<span class="revealed-answer">${t.correctAnswerWas || 'The correct answer was:'} ${correctAnswerText}. 
+            (${t.soundWasFor || 'The sound was for:'} <strong data-transliterable>${actualWordHeard}</strong>, ${t.wordShownWas || 'word shown was:'} <strong data-transliterable>${displayedWord}</strong>).</span>`;
+            yesButton.disabled = true;
+            noButton.disabled = true;
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                 CosyAppInteractive.scheduleReview(language, 'vocabulary-word', actualWordHeard, false);
+                 if (displayedWord.toLowerCase() !== actualWordHeard.toLowerCase()) {
+                     CosyAppInteractive.scheduleReview(language, 'vocabulary-word', displayedWord, false);
+                 }
+            }
+        };
+        exerciseContainer.showHint = function() {
+            // Hint could reveal if the first letters match or not, or length, etc.
+            // For Yes/No, a direct hint is often too revealing.
+            // Example: "Think carefully if the sound matches the visual."
+            let hintText = t.hint_transcribeYesNo_general || "Listen closely. Does the sound match the word you see?";
+            if (questionIsAMatch) {
+                hintText = t.hint_transcribeYesNo_isMatch || "Hint: The sound and the word are indeed the same.";
+            } else {
+                if (actualWordHeard.charAt(0).toLowerCase() === displayedWord.charAt(0).toLowerCase()) {
+                    hintText = t.hint_transcribeYesNo_sameLetter || "Hint: The sound and word start with the same letter, but are they identical?";
+                } else {
+                    hintText = t.hint_transcribeYesNo_differentLetter || "Hint: The sound and word start with different letters.";
+                }
+            }
+            feedbackDiv.innerHTML = `<span class="hint-text">${hintText}</span>`;
+             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+        };
     }
 }
 
-async function showMatchSoundWord() {
-    console.warn("Placeholder: Match Sound with Word listening exercise (showMatchSoundWord) called but not implemented.");
+
+async function showMatchSoundWord(baseWord = null) {
+    const language = document.getElementById('language').value;
+    const days = getSelectedDays();
+    const t = (window.translations && window.translations[language]) || (window.translations && window.translations.COSYenglish) || {};
     const resultArea = document.getElementById('result');
-    if (resultArea) {
-        resultArea.innerHTML = '<p>The "Match Sound with Word" listening exercise is currently unavailable. Please try another exercise.</p>';
-        const exerciseContainer = resultArea.firstChild;
-        if (exerciseContainer && typeof exerciseContainer === 'object' && exerciseContainer.innerHTML) {
-             exerciseContainer.revealAnswer = function() {
-                const lang = document.getElementById('language')?.value || 'COSYenglish';
-                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
-                alert(trans.exerciseNotFullyImplemented || "This exercise is not fully implemented yet, so reveal is unavailable.");
-            };
-            exerciseContainer.showHint = function() {
-                const lang = document.getElementById('language')?.value || 'COSYenglish';
-                const trans = (window.translations && window.translations[lang]) || (window.translations && window.translations.COSYenglish) || {};
-                alert(trans.hintNotImplemented || "Hint not available for this exercise yet.");
-            };
+    const NUM_OPTIONS = 4; // Number of word choices
+
+    if (!language || !days.length) {
+        alert(t.alertLangDay || 'Please select language and day(s) first');
+        return;
+    }
+
+    if (typeof shuffleArray !== 'function' || typeof showNoDataMessage !== 'function' || typeof pronounceWord !== 'function') {
+        console.error("Required utility functions (shuffleArray, showNoDataMessage, pronounceWord) not found.");
+        resultArea.innerHTML = `<p>${t.error_generic || 'A critical error occurred. Utility functions missing.'}</p>`;
+        return;
+    }
+    
+    let correctAnswer = baseWord;
+    let reviewItemObj = null;
+    let currentProficiencyBucket = 0;
+
+    if (!correctAnswer && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
+        const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-word', 1); 
+        if (reviewItems && reviewItems.length > 0) {
+            reviewItemObj = reviewItems[0];
+            correctAnswer = reviewItemObj.itemValue;
+            currentProficiencyBucket = reviewItemObj.proficiencyBucket;
         }
+    }
+
+    if (!correctAnswer) {
+        const allWords = await loadVocabulary(language, days);
+        if (!allWords || allWords.length === 0) {
+            showNoDataMessage(t.noWordsAvailable || 'No words available for this selection.');
+            return;
+        }
+        // Ensure correctAnswer is a string and not an object if loadVocabulary can return mixed types
+        let potentialCorrectAnswer = allWords[Math.floor(Math.random() * allWords.length)];
+        if (typeof potentialCorrectAnswer === 'object' && potentialCorrectAnswer !== null && potentialCorrectAnswer.word) {
+            correctAnswer = potentialCorrectAnswer.word;
+        } else if (typeof potentialCorrectAnswer === 'string') {
+            correctAnswer = potentialCorrectAnswer;
+        } else {
+            showNoDataMessage(t.noWordsAvailable || 'No valid words available for this selection.');
+            return;
+        }
+
+        if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
+            currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', correctAnswer);
+        }
+    }
+    
+    if (!correctAnswer) { // Final check if correctAnswer is still not set
+        showNoDataMessage(t.noWordsAvailable || 'Failed to select a correct word.');
+        return;
+    }
+    
+    const isReview = !!reviewItemObj;
+    const MAX_BUCKET_DISPLAY = 5;
+
+    const allWordsForDistraction = await loadVocabulary(language, days);
+    let distractors = allWordsForDistraction.map(w => (typeof w === 'object' && w !== null && w.word) ? w.word : (typeof w === 'string' ? w : null))
+                                          .filter(w => w && w.toLowerCase() !== correctAnswer.toLowerCase());
+    distractors = shuffleArray(distractors).slice(0, NUM_OPTIONS - 1);
+
+    const options = shuffleArray([correctAnswer, ...distractors]);
+    
+    // Ensure there are enough options, even if it means fewer than NUM_OPTIONS
+    if (options.length === 0 && correctAnswer) { options.push(correctAnswer); } // At least show the correct answer
+    if (options.length === 1 && correctAnswer && allWordsForDistraction.length > 1) { 
+        // Try to add at least one more different option if possible
+        const otherOptions = allWordsForDistraction.map(w => (typeof w === 'object' && w !== null && w.word) ? w.word : (typeof w === 'string' ? w : null))
+                                                 .filter(w => w && w.toLowerCase() !== correctAnswer.toLowerCase());
+        if (otherOptions.length > 0) options.push(otherOptions[0]);
+    }
+
+
+    resultArea.innerHTML = `
+        <div class="listening-exercise match-sound-exercise ${isReview ? 'review-item-cue' : ''}" role="form" aria-label="${t.matchSoundWordTitle || 'Match Sound to the Word:'}">
+            <div class="item-strength" aria-label="Item strength: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength: ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
+            <p class="exercise-prompt" data-transliterable></p>
+            <button id="play-match-sound" class="btn-emoji large-emoji" aria-label="${t.buttons?.playSound || (t.aria?.pronounce || 'Play Sound')}">🔊</button>
+            <div class="word-options-container match-sound-options">
+                ${options.map(word => `
+                    <button class="word-option-btn btn-secondary" data-word="${word}" aria-label="${word}" data-transliterable>
+                        ${word}
+                    </button>
+                `).join('')}
+            </div>
+            <div id="match-sound-feedback" class="exercise-feedback" aria-live="polite"></div>
+        </div>
+    `;
+
+    if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+    
+    pronounceWord(correctAnswer, language); 
+    document.getElementById('play-match-sound')?.addEventListener('click', () => {
+        pronounceWord(correctAnswer, language);
+    });
+
+    const feedbackDiv = document.getElementById('match-sound-feedback');
+    const optionButtons = Array.from(resultArea.querySelectorAll('.word-option-btn'));
+
+    optionButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userAnswer = this.dataset.word;
+            let isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+
+            optionButtons.forEach(b => b.disabled = true); 
+
+            if (isCorrect) {
+                this.classList.add('correct');
+                feedbackDiv.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
+                if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
+            } else {
+                this.classList.add('incorrect');
+                feedbackDiv.innerHTML = `<span class="incorrect">❌ ${t.incorrect || 'Incorrect.'} ${(t.answerIs || 'The answer is:')} <strong data-transliterable>${correctAnswer}</strong></span>`;
+                const correctBtn = optionButtons.find(b => b.dataset.word.toLowerCase() === correctAnswer.toLowerCase());
+                if (correctBtn) correctBtn.classList.add('correct-revealed');
+                if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
+            }
+
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                CosyAppInteractive.scheduleReview(language, 'vocabulary-word', correctAnswer, isCorrect);
+            }
+            
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+
+            if (isCorrect) {
+                setTimeout(() => {
+                    if (window.startListeningPractice) window.startListeningPractice();
+                }, 1500);
+            }
+        });
+    });
+
+    const exerciseContainer = resultArea.querySelector('.match-sound-exercise');
+    if (exerciseContainer) {
+        exerciseContainer.revealAnswer = function() {
+            feedbackDiv.innerHTML = `<span class="revealed-answer">${(t.answerIs || 'The answer is:')} <strong data-transliterable>${correctAnswer}</strong></span>`;
+            optionButtons.forEach(b => {
+                b.disabled = true;
+                if (b.dataset.word.toLowerCase() === correctAnswer.toLowerCase()) {
+                    b.classList.add('correct-revealed');
+                }
+            });
+            if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+            if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
+                 CosyAppInteractive.scheduleReview(language, 'vocabulary-word', correctAnswer, false);
+            }
+        };
+        exerciseContainer.showHint = function() {
+            const incorrectButtons = optionButtons.filter(btn => btn.dataset.word.toLowerCase() !== correctAnswer.toLowerCase() && !btn.disabled && !btn.classList.contains('hint-removed'));
+            if (incorrectButtons.length > 1) { 
+                const btnToRemove = incorrectButtons[0];
+                btnToRemove.classList.add('hint-removed');
+                btnToRemove.disabled = true; 
+                btnToRemove.style.opacity = "0.5";
+                feedbackDiv.innerHTML = `<span class="hint-text">${t.hint_oneOptionRemoved || 'Hint: One incorrect option removed.'}</span>`;
+            } else {
+                feedbackDiv.innerHTML = `<span class="hint-text">${t.noMoreHints || 'No more hints available.'}</span>`;
+            }
+        };
     }
 }
 
@@ -649,6 +937,7 @@ async function showIdentifyImageYesNo(imageInfo = null, displayedNameInfo = null
             if (potentialIncorrectNames.length > 0) {
                 displayedName = potentialIncorrectNames[Math.floor(Math.random() * potentialIncorrectNames.length)];
             } else {
+                // Fallback if no other words are available, or make the question correct
                 displayedName = actualCorrectName;
                 isQuestionCorrectlyNamed = true; 
             }
@@ -1157,7 +1446,7 @@ async function showBuildWord(baseWord = null) {
     resultArea.innerHTML = `
         <div class="build-word-exercise ${isReview ? 'review-item-cue' : ''}">
             <div class="item-strength" aria-label="Item strength: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength: ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
-            <div class="word-to-build-label" style="text-align:center; margin-bottom:10px; font-style:italic;" data-transliterable>${isReview ? `Word: ${word}` : 'Build the word from letters:'}</div>
+            <div class="word-to-build-label" style="text-align:center; margin-bottom:10px; font-style:italic;" data-transliterable></div>
             <div class="letter-pool" id="letter-pool">
                 ${shuffledLetters.map((letter) => `
                     <div class="letter-tile" data-letter="${letter}" draggable="true" data-transliterable>${letter}</div>
@@ -1521,13 +1810,13 @@ window.showTranscribeWord = patchExerciseWithExtraButtons(showTranscribeWord, '.
     specificNextExerciseAlternateLabel: 'New Transcription'
 });
 window.showMatchSoundWord = patchExerciseWithExtraButtons(showMatchSoundWord, '.match-sound-exercise', window.startListeningPractice, { 
-    noCheck: true,
+    noCheck: true, // Check is implicit via button click
     specificNextExerciseFn: window.showMatchSoundWord,
     specificNextExerciseLabelKey: 'buttons.newMatchSound',
     specificNextExerciseAlternateLabel: 'New Sound Match'
 }); 
 window.showTranscribeWordYesNo = patchExerciseWithExtraButtons(showTranscribeWordYesNo, '.transcribe-word-yes-no-exercise', window.startListeningPractice, { 
-    noCheck: true, noReveal: true,
+    noCheck: true, // Check is implicit via button click
     specificNextExerciseFn: window.showTranscribeWordYesNo,
     specificNextExerciseLabelKey: 'buttons.newTranscribeWordYesNo',
     specificNextExerciseAlternateLabel: 'New Transcribe Y/N'
