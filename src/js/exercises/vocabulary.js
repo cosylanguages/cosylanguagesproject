@@ -1432,10 +1432,24 @@ async function showBuildWord(baseWord = null) {
         if (!words.length) { 
             showNoDataMessage(); return;
         }
-        word = words[Math.floor(Math.random() * words.length)];
+        let potentialWord = words[Math.floor(Math.random() * words.length)];
+        if (typeof potentialWord === 'object' && potentialWord !== null && typeof potentialWord.word === 'string') {
+            word = potentialWord.word;
+        } else if (typeof potentialWord === 'string') {
+            word = potentialWord;
+        } else {
+            console.error("Selected word is not a string or valid object:", potentialWord);
+            showNoDataMessage(t.errorGeneric || "An error occurred selecting a word."); return;
+        }
+
         if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
             currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', word);
         }
+    }
+    if (!word || typeof word !== 'string' || word.trim() === "") {
+        console.error("Invalid word for showBuildWord:", word);
+        showNoDataMessage(t.errorGeneric || "Invalid word data for this exercise.");
+        return;
     }
     
     const isReview = !!reviewItemObj;
@@ -1448,80 +1462,324 @@ async function showBuildWord(baseWord = null) {
             <div class="item-strength" aria-label="Item strength: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength: ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
             <div class="word-to-build-label" style="text-align:center; margin-bottom:10px; font-style:italic;" data-transliterable></div>
             <div class="letter-pool" id="letter-pool">
-                ${shuffledLetters.map((letter) => `
-                    <div class="letter-tile" data-letter="${letter}" draggable="true" data-transliterable>${letter}</div>
+                ${shuffledLetters.map((letter, index) => `
+                    <div class="letter-tile" data-letter="${letter}" data-id="tile-${index}" draggable="true" tabindex="0" role="button" aria-label="${t.letter || 'Letter'} ${letter}" data-transliterable>${letter}</div>
                 `).join('')}
             </div>
             <div class="word-slots" id="word-slots">
-                ${Array(word.length).fill().map(() => `
-                    <div class="letter-slot"></div>
+                ${Array(word.length).fill().map((_, slotIndex) => `
+                    <div class="letter-slot" data-slot-index="${slotIndex}" tabindex="0" role="button" aria-label="${t.slot || 'Slot'} ${slotIndex + 1}"></div>
                 `).join('')}
             </div>
-            <div id="build-feedback" class="exercise-feedback"></div>
+            <div id="build-feedback" class="exercise-feedback" aria-live="polite"></div>
             <div class="build-actions">
                 <button id="reset-build" class="exercise-button">🔄 ${t.buttons?.reset || 'Reset'}</button>
             </div>
         </div>
     `;
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+
+    let selectedTileForClick = null; 
+    let draggedTile = null; // For drag and drop
+
+    function clearSelectedTileForClick() {
+        if (selectedTileForClick) {
+            selectedTileForClick.classList.remove('selected');
+            selectedTileForClick = null;
+        }
+        document.querySelectorAll('.letter-tile.hint-highlight').forEach(t => t.classList.remove('hint-highlight'));
+    }
+
+    // --- Click Handlers ---
+    function handleTileClick(event) {
+        const clickedTile = event.currentTarget;
+        const letterPool = document.getElementById('letter-pool');
+        
+        if (clickedTile.parentElement.classList.contains('letter-slot')) {
+            const slot = clickedTile.parentElement;
+            slot.innerHTML = ''; 
+            letterPool.appendChild(clickedTile); 
+            clickedTile.classList.remove('in-slot'); 
+            clearSelectedTileForClick();
+            addInteractiveListenersToTile(clickedTile); // Re-add all listeners
+            return;
+        }
+
+        if (selectedTileForClick === clickedTile) { 
+            clearSelectedTileForClick();
+        } else { 
+            clearSelectedTileForClick();
+            selectedTileForClick = clickedTile;
+            selectedTileForClick.classList.add('selected');
+        }
+    }
+    
+    function handleTileKeydown(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            handleTileClick(event);
+        }
+    }
+
+    function handleSlotClick(event) {
+        const clickedSlot = event.currentTarget;
+        
+        if (selectedTileForClick && !clickedSlot.hasChildNodes()) {
+            clickedSlot.appendChild(selectedTileForClick);
+            selectedTileForClick.classList.remove('selected', 'hint-highlight');
+            selectedTileForClick.classList.add('in-slot');
+            addInteractiveListenersToTile(selectedTileForClick); // Ensure it's still interactive in the slot
+            selectedTileForClick = null;
+            checkWordCompletion();
+        } else if (clickedSlot.hasChildNodes()) {
+            const tileInSlot = clickedSlot.querySelector('.letter-tile');
+            if (tileInSlot) {
+                tileInSlot.click(); 
+            }
+        }
+    }
+
+    function handleSlotKeydown(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            handleSlotClick(event);
+        }
+    }
+    
+    // --- Drag and Drop Handlers ---
+    function handleDragStart(event) {
+        draggedTile = event.target;
+        event.dataTransfer.setData('text/plain', draggedTile.dataset.id);
+        event.target.classList.add('dragging');
+        clearSelectedTileForClick(); // Clear click selection when dragging
+    }
+
+    function handleDragEnd(event) {
+        event.target.classList.remove('dragging');
+    }
+
+    function handleDragOver(event) {
+        event.preventDefault(); // Necessary to allow dropping
+        const targetSlot = event.target.closest('.letter-slot');
+        const targetPool = event.target.closest('#letter-pool');
+        if (targetSlot || targetPool) {
+            event.dataTransfer.dropEffect = 'move';
+        } else {
+            event.dataTransfer.dropEffect = 'none';
+        }
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        if (!draggedTile) return;
+
+        const targetSlot = event.target.closest('.letter-slot');
+        const letterPool = document.getElementById('letter-pool');
+        const targetIsPool = event.target.closest('#letter-pool') || event.target.id === 'letter-pool';
+
+        if (targetSlot) {
+            if (!targetSlot.hasChildNodes()) { // If slot is empty
+                targetSlot.appendChild(draggedTile);
+                draggedTile.classList.remove('dragging');
+                draggedTile.classList.add('in-slot');
+                checkWordCompletion();
+            } else { // Slot is occupied, swap content or return to pool
+                const tileInSlot = targetSlot.firstChild;
+                // If dragged from pool to occupied slot, return to pool
+                if (draggedTile.parentElement.id === 'letter-pool') {
+                     letterPool.appendChild(draggedTile); // Put it back
+                } else { // Swapping from another slot
+                    draggedTile.parentElement.appendChild(tileInSlot); // Old slot gets the target's tile
+                    targetSlot.appendChild(draggedTile); // Target slot gets dragged tile
+                }
+            }
+        } else if (targetIsPool) { // Dropped onto the letter pool
+            if (draggedTile.parentElement.classList.contains('letter-slot')) { // only move if it came from a slot
+                letterPool.appendChild(draggedTile);
+                draggedTile.classList.remove('in-slot');
+            }
+        }
+        draggedTile.classList.remove('dragging');
+        draggedTile = null;
+    }
+
+    function checkWordCompletion() {
+        const filledSlots = Array.from(document.querySelectorAll('#word-slots .letter-slot .letter-tile'));
+        if (filledSlots.length === word.length) {
+            // Optional: auto-check or enable check button
+        }
+    }
+    
+    function addInteractiveListenersToTile(tile) {
+        // Click and Keydown
+        tile.removeEventListener('click', handleTileClick); // Prevent duplicates
+        tile.removeEventListener('keydown', handleTileKeydown);
+        tile.addEventListener('click', handleTileClick);
+        tile.addEventListener('keydown', handleTileKeydown);
+
+        // Drag and Drop
+        tile.removeEventListener('dragstart', handleDragStart);
+        tile.removeEventListener('dragend', handleDragEnd);
+        tile.addEventListener('dragstart', handleDragStart);
+        tile.addEventListener('dragend', handleDragEnd);
+    }
+
+    function setupInteractiveListeners() {
+        document.querySelectorAll('.letter-tile').forEach(tile => {
+            addInteractiveListenersToTile(tile);
+        });
+        
+        document.querySelectorAll('#word-slots .letter-slot').forEach(slot => {
+            slot.removeEventListener('click', handleSlotClick); // Prevent duplicates
+            slot.removeEventListener('keydown', handleSlotKeydown);
+            slot.removeEventListener('dragover', handleDragOver);
+            slot.removeEventListener('drop', handleDrop);
+
+            slot.addEventListener('click', handleSlotClick);
+            slot.addEventListener('keydown', handleSlotKeydown);
+            slot.addEventListener('dragover', handleDragOver);
+            slot.addEventListener('drop', handleDrop);
+        });
+        
+        const letterPool = document.getElementById('letter-pool');
+        letterPool.removeEventListener('dragover', handleDragOver); // Prevent duplicates
+        letterPool.removeEventListener('drop', handleDrop);
+        letterPool.addEventListener('dragover', handleDragOver);
+        letterPool.addEventListener('drop', handleDrop);
+
+        // If tiles are dynamically added back to pool (e.g. from slots)
+        letterPool.addEventListener('DOMNodeInserted', function(event) {
+            if (event.target.classList && event.target.classList.contains('letter-tile')) {
+                addInteractiveListenersToTile(event.target);
+            }
+        });
+    }
+    setupInteractiveListeners(); 
+
     const exerciseContainer = resultArea.querySelector('.build-word-exercise');
     if (exerciseContainer) {
         exerciseContainer.revealAnswer = function() {
             const feedback = document.getElementById('build-feedback');
             const wordSlots = document.getElementById('word-slots');
             const letterPool = document.getElementById('letter-pool');
+            clearSelectedTileForClick();
             
-            wordSlots.innerHTML = '';
+            wordSlots.innerHTML = ''; 
             if (letterPool) letterPool.innerHTML = `<p style="text-align:center;font-style:italic;" data-transliterable>${t.answerRevealed || 'Answer revealed'}</p>`;
 
-            word.split('').forEach(letter => {
-                const slot = document.createElement('div');
-                slot.className = 'letter-slot';
-                const tile = document.createElement('div');
-                tile.className = 'letter-tile revealed'; 
-                tile.textContent = letter;
-                tile.setAttribute('data-transliterable', '');
-                slot.appendChild(tile);
-                wordSlots.appendChild(slot);
+            word.split('').forEach((letter, slotIndex) => {
+                const slotDiv = document.createElement('div');
+                slotDiv.className = 'letter-slot';
+                slotDiv.setAttribute('data-slot-index', slotIndex);
+                
+                const tileDiv = document.createElement('div');
+                tileDiv.className = 'letter-tile revealed'; 
+                tileDiv.textContent = letter;
+                tileDiv.dataset.letter = letter; 
+                tileDiv.setAttribute('data-transliterable', '');
+                
+                slotDiv.appendChild(tileDiv);
+                wordSlots.appendChild(slotDiv);
             });
 
             feedback.innerHTML = `<span class="revealed-answer">${t.answerIs || 'The answer is:'} <strong data-transliterable>${word}</strong></span>`;
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
 
             if (CosyAppInteractive && CosyAppInteractive.scheduleReview) {
-                CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, false);
+                CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, false); 
             }
+            document.querySelectorAll('.letter-tile, .letter-slot').forEach(el => {
+                el.onclick = null; el.onkeydown = null; el.draggable = false;
+                 if (el.classList.contains('letter-tile')) {
+                    el.removeEventListener('dragstart', handleDragStart);
+                    el.removeEventListener('dragend', handleDragEnd);
+                } else if (el.classList.contains('letter-slot') || el.id === 'letter-pool') {
+                    el.removeEventListener('dragover', handleDragOver);
+                    el.removeEventListener('drop', handleDrop);
+                }
+            });
         };
         exerciseContainer.showHint = function() {
             const feedback = document.getElementById('build-feedback');
-            const firstLetter = word.length > 0 ? word[0] : '';
-            if (firstLetter) {
-                 feedback.innerHTML = `<span class="hint-text">${t.hint_firstLetter || 'Hint: The first letter is'} "<span data-transliterable>${firstLetter}</span>"</span>`;
+            clearSelectedTileForClick(); 
+
+            const firstEmptySlot = document.querySelector('#word-slots .letter-slot:empty');
+            if (!firstEmptySlot) {
+                feedback.innerHTML = `<span class="hint-text" data-transliterable>${t.noMoreHintsSlotsFull || 'All slots are full. Try checking your answer or resetting.'}</span>`;
+                if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+                return;
+            }
+
+            const slotIndex = parseInt(firstEmptySlot.dataset.slotIndex);
+            if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= word.length) {
+                 feedback.innerHTML = `<span class="hint-text" data-transliterable>${t.noHintAvailable || 'Cannot determine hint for this slot.'}</span>`;
+                 if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+                 return;
+            }
+            const correctLetterForSlot = word.charAt(slotIndex);
+            
+            const hintTileInPool = Array.from(document.querySelectorAll('#letter-pool .letter-tile')).find(tile => tile.dataset.letter === correctLetterForSlot);
+
+            if (hintTileInPool) {
+                selectedTileForClick = hintTileInPool; 
+                selectedTileForClick.classList.add('selected', 'hint-highlight'); 
+                feedback.innerHTML = `<span class="hint-text" data-transliterable>${t.hint_correctLetterForNextSlot || `Hint: The letter <strong data-transliterable>${correctLetterForSlot}</strong> goes into the next empty slot. It's highlighted in the pool.`}</span>`;
             } else {
-                 feedback.innerHTML = `<span class="hint-text">${t.noHintAvailable || 'No hint available for this item.'}</span>`;
+                if (slotIndex === 0) {
+                    feedback.innerHTML = `<span class="hint-text" data-transliterable>${t.hint_firstLetter || 'Hint: The first letter of the word is'} "<strong data-transliterable>${word[0]}</strong>".</span>`;
+                } else {
+                    feedback.innerHTML = `<span class="hint-text" data-transliterable>${t.hint_nextLetterIs || 'Hint: The next correct letter is'} "<strong data-transliterable>${correctLetterForSlot}</strong>".</span>`;
+                }
             }
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
         exerciseContainer.checkAnswer = () => {
-            const builtWordArr = Array.from(document.querySelectorAll('.word-slots .letter-tile')).map(tile => tile.dataset.letter);
-            const builtWord = builtWordArr.join('');
+            const builtWordArr = Array.from(document.querySelectorAll('#word-slots .letter-slot .letter-tile')).map(tile => tile.dataset.letter);
+            const builtWordString = builtWordArr.join('');
             const feedback = document.getElementById('build-feedback');
             const currentLanguage = document.getElementById('language').value; 
             const currentT = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
             let isCorrect = false;
-            if (builtWord.toLowerCase() === word.toLowerCase()) {
-                feedback.innerHTML = `<span class="correct">✅ ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
+
+            clearSelectedTileForClick();
+
+            if (builtWordArr.length < word.length) {
+                feedback.innerHTML = `<span class="neutral" data-transliterable>${currentT.notAllLettersPlaced || 'Not all letters have been placed yet.'}</span>`;
+                if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
+                return; 
+            }
+
+            if (builtWordString.toLowerCase() === word.toLowerCase()) {
+                feedback.innerHTML = `<span class="correct" data-transliterable>✅ ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
                 if (CosyAppInteractive && CosyAppInteractive.awardCorrectAnswer) CosyAppInteractive.awardCorrectAnswer();
                 isCorrect = true;
-                if (isCorrect) {
+                document.querySelectorAll('.letter-tile, .letter-slot').forEach(el => {
+                    el.onclick = null; el.onkeydown = null; el.draggable = false;
+                    if (el.classList.contains('letter-tile')) {
+                       el.classList.add('correct');
+                       el.removeEventListener('dragstart', handleDragStart);
+                       el.removeEventListener('dragend', handleDragEnd);
+                    } else if (el.classList.contains('letter-slot') || el.id === 'letter-pool') {
+                       el.removeEventListener('dragover', handleDragOver);
+                       el.removeEventListener('drop', handleDrop);
+                    }
+                });
+
+                if (isCorrect) { 
                     setTimeout(() => {
-                        window.practiceAllVocabulary();
+                        if (document.querySelector('.build-word-exercise')) { 
+                           window.practiceAllVocabulary();
+                        }
                     }, 1500);
                 }
             } else {
-                feedback.innerHTML = `<span class="incorrect">❌ ${currentT.notQuiteTryAgain || 'Not quite. Keep trying!'}</span>`;
+                feedback.innerHTML = `<span class="incorrect" data-transliterable>❌ ${currentT.notQuiteTryAgain || 'Not quite. Keep trying!'}</span>`;
                 if (CosyAppInteractive && CosyAppInteractive.awardIncorrectAnswer) CosyAppInteractive.awardIncorrectAnswer();
                 isCorrect = false;
+                document.querySelectorAll('#word-slots .letter-tile').forEach(tile => tile.classList.add('incorrect'));
+                 setTimeout(() => {
+                    document.querySelectorAll('#word-slots .letter-tile.incorrect').forEach(tile => tile.classList.remove('incorrect'));
+                 }, 1000);
             }
             if (CosyAppInteractive && CosyAppInteractive.scheduleReview) CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
@@ -1530,13 +1788,16 @@ async function showBuildWord(baseWord = null) {
         const resetBtn = document.getElementById('reset-build');
         if(resetBtn) {
             resetBtn.addEventListener('click', () => {
-                document.querySelectorAll('.word-slots .letter-slot').forEach(slot => slot.innerHTML = '');
+                clearSelectedTileForClick();
+                draggedTile = null;
+                document.querySelectorAll('#word-slots .letter-slot').forEach(slot => slot.innerHTML = '');
                 const letterPool = document.getElementById('letter-pool');
                 if (letterPool) {
-                    letterPool.innerHTML = shuffledLetters.map((letter) => `
-                        <div class="letter-tile" data-letter="${letter}" draggable="true" data-transliterable>${letter}</div>
+                    letterPool.innerHTML = shuffledLetters.map((letter, index) => `
+                        <div class="letter-tile" data-letter="${letter}" data-id="tile-${index}" draggable="true" tabindex="0" role="button" aria-label="${t.letter || 'Letter'} ${letter}" data-transliterable>${letter}</div>
                     `).join('');
                 }
+                setupInteractiveListeners(); 
                 const feedbackDiv = document.getElementById('build-feedback');
                 if (feedbackDiv) feedbackDiv.innerHTML = '';
                 if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }

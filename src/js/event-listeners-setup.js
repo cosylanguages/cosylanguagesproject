@@ -2,7 +2,7 @@
 
 // Placeholder stub for updateGrammarOptions
 function updateGrammarOptions() { 
-    // console.log("DEBUG: updateGrammarOptions called (stub)");  // Debug log removed
+    // console.log("DEBUG: updateGrammarOptions called (stub)");
 }
 
 function populateDaysDropdowns() {
@@ -23,26 +23,29 @@ function populateDaysDropdowns() {
 }
 
 function initializeEventListeners() {
-    // console.log("DEBUG: initializeEventListeners called"); // Debug log removed
+    console.log("[DEBUG] initializeEventListeners: Function called."); // Debug log added
 
     populateDaysDropdowns();
 
-    // restoreUserSelection is expected to be global (from index.html)
     if (typeof restoreUserSelection === 'function') {
+        console.log("[DEBUG] initializeEventListeners: Calling restoreUserSelection().");
         restoreUserSelection(); 
+    } else {
+        console.error("[DEBUG] initializeEventListeners: restoreUserSelection IS NOT a function!");
     }
 
-    // From ui-visibility.js
     if (typeof goBackToMainMenu === 'function') {
+        console.log("[DEBUG] initializeEventListeners: Calling goBackToMainMenu().");
         goBackToMainMenu(); 
+    } else {
+        console.error("[DEBUG] initializeEventListeners: goBackToMainMenu IS NOT a function!");
     }
 
-    // From ui-visibility.js (or index.html if not moved)
-    // if (typeof updateDaySelectors === 'function') { // Old function, replaced by updateDaySelectorsVisibility
-    //     updateDaySelectors(); 
-    // }
-    if (typeof window.updateDaySelectorsVisibility === 'function') { // Call the new function
-        window.updateDaySelectorsVisibility(true); // Indicate initial load
+    if (typeof window.updateDaySelectorsVisibility === 'function') { 
+        console.log("[DEBUG] initializeEventListeners: Calling updateDaySelectorsVisibility(true).");
+        window.updateDaySelectorsVisibility(true); 
+    } else {
+        console.error("[DEBUG] initializeEventListeners: updateDaySelectorsVisibility IS NOT a function!");
     }
     
     const languageSelectElement = document.getElementById('language');
@@ -53,46 +56,30 @@ function initializeEventListeners() {
 
     if (languageSelectElement) {
         languageSelectElement.addEventListener('change', function() {
+            console.log("[DEBUG] initializeEventListeners: Language changed to " + this.value);
             const lang = this.value;
-
-            // Save or remove language selection from localStorage
-            if (lang) { // Only save if a real language is selected
+            if (lang) { 
                 localStorage.setItem('selectedLanguage', lang);
-                // Day selections are NO LONGER SAVED here
-                // if (daySelectElement) localStorage.setItem('selectedDay', daySelectElement.value);
-                // if (dayFromSelectElement) localStorage.setItem('selectedDayFrom', dayFromSelectElement.value);
-                // if (dayToSelectElement) localStorage.setItem('selectedDayTo', dayToSelectElement.value);
             } else {
-                // If "Your Language" is chosen, clear the saved language
                 localStorage.removeItem('selectedLanguage');
-                // Day selections are NO LONGER REMOVED here (as they are not saved)
-                // localStorage.removeItem('selectedDay');
-                // localStorage.removeItem('selectedDayFrom');
-                // localStorage.removeItem('selectedDayTo');
             }
 
-            // Call updateUIForLanguage from language-handler.js
-            // This is already called by the listener in language-handler.js, so ensure no conflict or redundancy.
-            // For clarity and consolidation, it's better if language-handler.js's own listener calls updateUIForLanguage and refreshLatinization.
-            // This event-listeners-setup.js listener should primarily focus on OTHER UI changes tied to language if any,
-            // or this entire block could be refactored/removed if language-handler.js handles all necessary UI updates.
-            // For now, assuming language-handler.js handles the main text translations and latinizer refresh.
-
-            // UI visibility updates specific to event-listeners-setup.js
             let dayToUse = 1; 
             const singleDayValue = daySelectElement ? daySelectElement.value : "";
             if (singleDayValue) {
-                dayToUse = parseInt(singleDayValue) || 1; // Ensure fallback if NaN
+                dayToUse = parseInt(singleDayValue) || 1;
             } else {
                 const dayFromValue = dayFromSelectElement ? dayFromSelectElement.value : "";
                 if (dayFromValue) {
-                    dayToUse = parseInt(dayFromValue) || 1; // Ensure fallback if NaN
+                    dayToUse = parseInt(dayFromValue) || 1;
                 }
             }
             if (typeof updateUIVisibilityForDay === 'function') {
+                console.log("[DEBUG] initializeEventListeners: Language change - Calling updateUIVisibilityForDay().");
                 updateUIVisibilityForDay(dayToUse, lang);
             }
             if (grammarOptionsElement && grammarOptionsElement.style.display === 'block' && typeof updateGrammarOptions === 'function') {
+                console.log("[DEBUG] initializeEventListeners: Language change - Calling updateGrammarOptions().");
                 updateGrammarOptions();
             }
         });
@@ -102,11 +89,11 @@ function initializeEventListeners() {
     daySelectors.forEach(selector => {
         if (selector) {
             selector.addEventListener('change', function() {
-                // Call the new visibility function
+                console.log("[DEBUG] initializeEventListeners: Day selector changed.");
                 if (typeof window.updateDaySelectorsVisibility === 'function') {
-                    window.updateDaySelectorsVisibility(false); // Indicate it's NOT initial load
+                    console.log("[DEBUG] initializeEventListeners: Day change - Calling updateDaySelectorsVisibility(false).");
+                    window.updateDaySelectorsVisibility(false); 
                 }
-                // The rest of the logic in this listener updates based on day for specific content loading
                 const currentLanguage = languageSelectElement ? languageSelectElement.value : 'COSYenglish';
                 let dayToUseForVisibility = 1;
                 const singleDayValue = daySelectElement ? daySelectElement.value : "";
@@ -119,65 +106,74 @@ function initializeEventListeners() {
                     }
                 }
                 if (typeof updateUIVisibilityForDay === 'function') {
+                     console.log("[DEBUG] initializeEventListeners: Day change - Calling updateUIVisibilityForDay().");
                     updateUIVisibilityForDay(dayToUseForVisibility, currentLanguage);
                 }
                 if (grammarOptionsElement && grammarOptionsElement.style.display === 'block' && typeof updateGrammarOptions === 'function') {
+                     console.log("[DEBUG] initializeEventListeners: Day change - Calling updateGrammarOptions().");
                     updateGrammarOptions();
                 }
             });
         }
     });
     
-    // Call other init functions
     if (typeof initButtons === 'function') {
+        console.log("[DEBUG] initializeEventListeners: Calling initButtons().");
         initButtons();
+    } else {
+        console.error("[DEBUG] initializeEventListeners: initButtons IS NOT a function!");
     }
     if (typeof initVocabularyPractice === 'function') {
+        console.log("[DEBUG] initializeEventListeners: Calling initVocabularyPractice().");
         initVocabularyPractice();
+    } else {
+        console.error("[DEBUG] initializeEventListeners: initVocabularyPractice IS NOT a function!");
     }
     if (typeof initGrammarPractice === 'function') {
+        console.log("[DEBUG] initializeEventListeners: Calling initGrammarPractice().");
         initGrammarPractice();
+    } else {
+        console.error("[DEBUG] initializeEventListeners: initGrammarPractice IS NOT a function!");
     }
+    // Assuming initSpeakingPractice and initWritingPractice are called from their respective files on DOMContentLoaded.
+    // If they also need to be called here, add similar checks.
 
-    // Delegated event listener for Enter key on exercise inputs
     const resultArea = document.getElementById('result');
     if (resultArea) {
         resultArea.addEventListener('keyup', function(event) {
             if (event.key === 'Enter') {
                 if (event.target.classList.contains('exercise-input')) {
                     const specificSelectors = [
-                        '.opposites-exercise',     // For showOppositesExercise
-                        '.image-exercise',         // For showIdentifyImage
-                        '.transcribe-word-exercise'// For showTranscribeWord
-                        // Add other specific containers if they have inputs and checkAnswer defined
+                        '.opposites-exercise',    
+                        '.image-exercise',        
+                        '.transcribe-word-exercise',
+                        '.fill-gap-exercise', // Added for FillGaps
+                        '.gender-exercise', // Added for showArticleWord (if input based)
+                        '.verb-exercise' // Added for showTypeVerb
                     ].join(', ');
 
                     const containerWithCheckAnswer = event.target.closest(specificSelectors);
 
                     if (containerWithCheckAnswer && typeof containerWithCheckAnswer.checkAnswer === 'function') {
+                        console.log(`[DEBUG] Enter key: Calling checkAnswer on container for input:`, event.target);
                         containerWithCheckAnswer.checkAnswer();
                     } else {
-                        // This console.warn can be helpful for debugging if new exercises are added 
-                        // and Enter isn't working as expected.
-                        console.warn('Enter key pressed on exercise-input, but no checkAnswer method found on a suitable parent container using selectors:', specificSelectors);
+                        console.warn('[DEBUG] Enter key on exercise-input, but no checkAnswer method found on a suitable parent container:', event.target);
                     }
                 }
             }
         });
     }
     
-    // Initial UI visibility update
     const initialDayValue = daySelectElement ? daySelectElement.value : ""; 
     const initialDay = initialDayValue && initialDayValue !== "" ? parseInt(initialDayValue) : 1; 
     const initialLang = languageSelectElement ? (languageSelectElement.value || 'COSYenglish') : 'COSYenglish';
     if (typeof updateUIVisibilityForDay === 'function') {
+        console.log("[DEBUG] initializeEventListeners: Calling initial updateUIVisibilityForDay().");
         updateUIVisibilityForDay(initialDay, initialLang);
     }
 
-    // Latinization button functionality is now handled by src/js/latinizer.js
-    // Text selection transliteration tooltip functionality is being removed.
-
-    // console.log("DEBUG: initializeEventListeners completed."); // Debug log removed
+    console.log("[DEBUG] initializeEventListeners: Function completed.");
 }
 
 window.addEventListener('DOMContentLoaded', initializeEventListeners);
