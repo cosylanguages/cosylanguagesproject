@@ -149,7 +149,7 @@ label {
 
 .practice-options {
     width: 100%; 
-    display: flex;
+    display: none; /* Initially hide all sub-option panels via CSS */
     flex-direction: column; 
     align-items: center; 
 }
