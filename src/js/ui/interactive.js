@@ -126,6 +126,13 @@ window.CosyAppInteractive = {};
     CosyAppInteractive.markAndAward = markAndAward;
     CosyAppInteractive.scheduleReview = function(language, itemType, itemValue, isCorrect) { /* ... existing ... */ }; // This already calls save() which calls updateUI()
     CosyAppInteractive.getDueReviewItems = function(language, itemType, maxItems = 1) { /* ... existing ... */ };
+    CosyAppInteractive.getItemProficiency = function(language, itemType, itemValue) {
+        const key = `${language}_${itemType}_${itemValue}`;
+        if (gameState.learningItems && gameState.learningItems[key]) {
+            return gameState.learningItems[key].proficiencyBucket;
+        }
+        return 0; // Default for items not yet in learningItems
+    };
     
     // --- Language Tree Integration REMOVED ---
 

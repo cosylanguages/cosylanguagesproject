@@ -404,12 +404,14 @@ async function showRandomWord() {
 
     let word = null;
     let reviewItemObj = null; 
+    let currentProficiencyBucket = 0;
 
     if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
         const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-word', 1);
         if (reviewItems && reviewItems.length > 0) {
             reviewItemObj = reviewItems[0];
             word = reviewItemObj.itemValue;
+            currentProficiencyBucket = reviewItemObj.proficiencyBucket;
             console.log("Using review item for showRandomWord:", reviewItemObj);
         } else {
             console.log("No review item, selecting new word for showRandomWord.");
@@ -424,9 +426,11 @@ async function showRandomWord() {
         }
         word = words[Math.floor(Math.random() * words.length)];
         console.log("Using new item for showRandomWord:", word);
+        if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
+            currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', word);
+        }
     }
     
-    const currentProficiencyBucket = reviewItemObj ? reviewItemObj.proficiencyBucket : 0;
     const isReview = !!reviewItemObj;
     const MAX_BUCKET_DISPLAY = 5; 
 
@@ -459,9 +463,6 @@ async function showRandomWord() {
     });
 
     const recordButton = document.getElementById('say-word-mc');
-    // ... (rest of the speech recognition logic, including scheduleReview call, remains the same)
-    // Ensure the existing speech recognition logic is preserved here.
-    // For brevity, I'm not copying it fully but it should be there.
     if (recordButton) {
         recordButton.addEventListener('click', () => {
             if (typeof recognition !== 'undefined' && recognition.recognizing) {
@@ -471,12 +472,23 @@ async function showRandomWord() {
             const langCode = mapLanguageToSpeechCode(language);
             const onStartCallback = () => { /* ... */ };
             const onResultCallback = (transcript) => {
-                // ... (feedback logic)
+                const feedbackEl = document.getElementById('pronunciation-feedback');
                 let isCorrect = (typeof normalizeString === 'function' ? normalizeString(transcript.toLowerCase()) : transcript.toLowerCase()) === (typeof normalizeString === 'function' ? normalizeString(word.toLowerCase()) : word.toLowerCase());
+                if (isCorrect) {
+                    feedbackEl.innerHTML = `<span class="correct">✅ ${t.correct || 'Correct!'}</span>`;
+                    CosyAppInteractive.awardCorrectAnswer();
+                } else {
+                    feedbackEl.innerHTML = `<span class="incorrect">❌ ${t.tryAgain || 'Try again!'} "${transcript}"</span>`;
+                    CosyAppInteractive.awardIncorrectAnswer();
+                }
                 if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.scheduleReview) {
                     CosyAppInteractive.scheduleReview(language, 'vocabulary-word', word, isCorrect);
                 }
-                // ...
+                if (isCorrect) {
+                    setTimeout(() => {
+                        window.practiceAllVocabulary();
+                    }, 1500);
+                }
             };
             const onErrorCallback = (event) => { /* ... */ };
             const onEndCallback = () => { /* ... */ };
@@ -497,43 +509,45 @@ async function showOppositesExercise(baseWord = null) {
 
     let word = baseWord;
     let reviewItemObj = null;
+    let currentProficiencyBucket = 0;
 
     if (!word && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
-        // Try to get a review item IF baseWord is not already provided (e.g. from a specific link/test)
         const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-word', 1);
         if (reviewItems && reviewItems.length > 0) {
             reviewItemObj = reviewItems[0];
-            // Check if this review item can be used in an opposites exercise
-            const tempOppositesData = await loadOpposites(language, days);
+            const tempOppositesData = await loadOpposites(language, days); 
             if (tempOppositesData[reviewItemObj.itemValue]) {
                 word = reviewItemObj.itemValue;
+                currentProficiencyBucket = reviewItemObj.proficiencyBucket;
                 console.log("Using review item for showOppositesExercise:", reviewItemObj);
             } else {
                 console.log("Review item found, but not suitable for opposites (no opposite). Selecting new word.");
-                reviewItemObj = null; // Discard review item, proceed to new word
+                reviewItemObj = null; 
             }
         } else {
             console.log("No review item, selecting new word for showOppositesExercise.");
         }
     }
     
-    const oppositesData = await loadOpposites(language, days);
-    if (!word) { // If no baseWord and no suitable review item found
+    const oppositesData = await loadOpposites(language, days); 
+    if (!word) { 
         const words = await loadVocabulary(language, days);
-        const potentialWords = words.filter(w => oppositesData[w]); // Only words that have opposites
+        const potentialWords = words.filter(w => oppositesData[w]); 
         if (!potentialWords.length) {
             showNoDataMessage(); return;
         }
         word = potentialWords[Math.floor(Math.random() * potentialWords.length)];
         console.log("Using new item for showOppositesExercise:", word);
+        if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
+            currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', word);
+        }
     }
     
-    if (!word || !oppositesData[word]) { // Still no valid word with an opposite
+    if (!word || !oppositesData[word]) { 
         showNoDataMessage(); return;
     }
     const opposite = oppositesData[word] || (t.noOppositeFound || 'No opposite found');
 
-    const currentProficiencyBucket = reviewItemObj ? reviewItemObj.proficiencyBucket : 0;
     const isReview = !!reviewItemObj;
     const MAX_BUCKET_DISPLAY = 5;
 
@@ -553,7 +567,6 @@ async function showOppositesExercise(baseWord = null) {
             </div>
         </div>
     `;
-    // ... (rest of the function, including checkAnswer with scheduleReview calls, remains largely the same)
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
     const exerciseContainer = resultArea.querySelector('.opposites-exercise');
     if (exerciseContainer) {
@@ -562,15 +575,20 @@ async function showOppositesExercise(baseWord = null) {
             const feedback = document.getElementById('opposite-feedback');
             const currentLanguage = document.getElementById('language').value; 
             const currentT = (window.translations && window.translations[currentLanguage]) || (window.translations && window.translations.COSYenglish) || {};
-            let isWordCorrect = false; // For the main word
+            let isWordCorrect = false; 
             if (userAnswer.toLowerCase() === opposite.toLowerCase()) {
                 feedback.innerHTML = `<span class="correct" aria-label="Correct">✅👏 ${currentT.correct || 'Correct!'}</span>`;
                 CosyAppInteractive.awardCorrectAnswer();
-                isWordCorrect = true; // Correctly identified the opposite
+                isWordCorrect = true; 
                 if (opposite !== (currentT.noOppositeFound || 'No opposite found')) { 
-                    CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', opposite, true); // Mark opposite as correct too
+                    CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', opposite, true); 
                 }
                 document.getElementById('opposite-answer-display').textContent = opposite;
+                if (isWordCorrect) {
+                    setTimeout(() => {
+                        window.practiceAllVocabulary();
+                    }, 1500);
+                }
             } else {
                 feedback.innerHTML = `<span class="incorrect" aria-label="Incorrect">❌🤔 ${currentT.feedbackNotQuiteTryAgain || 'Try again!'}</span>`;
                  CosyAppInteractive.awardIncorrectAnswer();
@@ -579,7 +597,6 @@ async function showOppositesExercise(baseWord = null) {
             CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isWordCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
-        // ... (showHint, revealAnswer as before)
     }
 }
 
@@ -596,12 +613,14 @@ async function showBuildWord(baseWord = null) {
 
     let word = baseWord;
     let reviewItemObj = null;
+    let currentProficiencyBucket = 0;
 
     if (!word && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
         const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-word', 1);
         if (reviewItems && reviewItems.length > 0) {
             reviewItemObj = reviewItems[0];
             word = reviewItemObj.itemValue;
+            currentProficiencyBucket = reviewItemObj.proficiencyBucket;
             console.log("Using review item for showBuildWord:", reviewItemObj);
         } else {
             console.log("No review item, selecting new word for showBuildWord.");
@@ -615,9 +634,11 @@ async function showBuildWord(baseWord = null) {
         }
         word = words[Math.floor(Math.random() * words.length)];
         console.log("Using new item for showBuildWord:", word);
+        if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
+            currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', word);
+        }
     }
     
-    const currentProficiencyBucket = reviewItemObj ? reviewItemObj.proficiencyBucket : 0;
     const isReview = !!reviewItemObj;
     const MAX_BUCKET_DISPLAY = 5;
     const shuffledLetters = shuffleArray([...word.toLowerCase()]);
@@ -626,7 +647,6 @@ async function showBuildWord(baseWord = null) {
     resultArea.innerHTML = `
         <div class="build-word-exercise ${isReview ? 'review-item-cue' : ''}">
             <div class="item-strength" aria-label="Item strength: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength: ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
-            <!-- Display word for context if it's a review, or a placeholder like "Build the word" -->
             <div class="word-to-build-label" style="text-align:center; margin-bottom:10px; font-style:italic;">${isReview ? `Word: ${word}` : 'Build the word from letters:'}</div>
             <div class="letter-pool" id="letter-pool">
                 ${shuffledLetters.map((letter) => `
@@ -645,7 +665,6 @@ async function showBuildWord(baseWord = null) {
             </div>
         </div>
     `;
-    // ... (rest of the function, including checkAnswer with scheduleReview, drag-drop logic, etc.)
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
     const exerciseContainer = resultArea.querySelector('.build-word-exercise');
     if (exerciseContainer) {
@@ -660,6 +679,11 @@ async function showBuildWord(baseWord = null) {
                 feedback.innerHTML = `<span class="correct">✅ ${currentT.correctWellDone || 'Correct! Well done!'}</span>`;
                 CosyAppInteractive.awardCorrectAnswer();
                 isCorrect = true;
+                if (isCorrect) {
+                    setTimeout(() => {
+                        window.practiceAllVocabulary();
+                    }, 1500);
+                }
             } else {
                 feedback.innerHTML = `<span class="incorrect">❌ ${currentT.notQuiteTryAgain || 'Not quite. Keep trying!'}</span>`;
                 CosyAppInteractive.awardIncorrectAnswer();
@@ -668,7 +692,6 @@ async function showBuildWord(baseWord = null) {
             CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
-        // ... (showHint, revealAnswer, drag-drop setup)
     }
 }
 
@@ -681,42 +704,45 @@ async function showIdentifyImage() {
     if (!language || !days.length) { alert(t.alertLangDay || 'Please select language and day(s) first'); return; }
 
     let imageItem = null;
-    let reviewItemObj = null; // For proficiency and review cue
+    let reviewItemObj = null; 
     let correctAnswer = null;
+    let currentProficiencyBucket = 0;
 
     if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
-        // Assuming itemType 'vocabulary-image' stores image_src as itemValue in scheduleReview
         const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-image', 1);
         if (reviewItems && reviewItems.length > 0) {
             reviewItemObj = reviewItems[0];
-            const allImages = await loadImageVocabulary(language, days); // Load all to find the specific one
+            const allImages = await loadImageVocabulary(language, days); 
             imageItem = allImages.find(img => img.src === reviewItemObj.itemValue);
             if (imageItem) {
                 correctAnswer = imageItem.translations[language];
+                currentProficiencyBucket = reviewItemObj.proficiencyBucket;
                 console.log("Using review image for showIdentifyImage:", imageItem, "Correct Answer:", correctAnswer);
             } else {
                 console.log("Review image src found, but image details not in current load. Selecting new image.");
-                reviewItemObj = null; // Reset as we couldn't load its details
+                reviewItemObj = null; 
             }
         } else {
             console.log("No review image, selecting new image for showIdentifyImage.");
         }
     }
 
-    if (!imageItem) { // If no review item or review item lookup failed
+    if (!imageItem) { 
         const allImages = await loadImageVocabulary(language, days);
         if (!allImages.length) { showNoDataMessage(); return; }
         imageItem = allImages[Math.floor(Math.random() * allImages.length)];
         correctAnswer = imageItem.translations[language];
         console.log("Using new image for showIdentifyImage:", imageItem, "Correct Answer:", correctAnswer);
-        reviewItemObj = null; // Ensure it's null for new items
+        reviewItemObj = null; 
+        if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
+            currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-image', imageItem.src);
+        }
     }
 
     if (!imageItem || !correctAnswer) {
         showNoDataMessage(); return;
     }
 
-    const currentProficiencyBucket = reviewItemObj ? reviewItemObj.proficiencyBucket : 0;
     const isReview = !!reviewItemObj;
     const MAX_BUCKET_DISPLAY = 5;
     
@@ -730,7 +756,6 @@ async function showIdentifyImage() {
             <button id="btn-new-identify-image" class="exercise-button" onclick="window.showIdentifyImage()">🔄 ${t.buttons?.newIdentifyImage || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
         </div>
     `;
-    // ... (rest of the function, including checkAnswer with scheduleReview for imageItem.src)
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
     const exerciseContainer = resultArea.querySelector('.image-exercise');
     if (exerciseContainer) {
@@ -744,16 +769,19 @@ async function showIdentifyImage() {
                 feedback.innerHTML = `<span class="correct">✅ ${currentT.correct || 'Correct!'}</span>`;
                 CosyAppInteractive.awardCorrectAnswer();
                 isCorrect = true;
+                if (isCorrect) {
+                    setTimeout(() => {
+                        window.practiceAllVocabulary();
+                    }, 1500);
+                }
             } else {
                 feedback.innerHTML = `<span class="incorrect">❌ ${currentT.tryAgain || 'Try again!'}</span>`;
                 CosyAppInteractive.awardIncorrectAnswer();
                 isCorrect = false;
             }
-            // Use imageItem.src as itemValue for 'vocabulary-image' type
             CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-image', imageItem.src, isCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
-        // ... (showHint, revealAnswer)
     }
 }
 
@@ -766,12 +794,14 @@ async function showTranscribeWord() {
 
     let word = null;
     let reviewItemObj = null;
+    let currentProficiencyBucket = 0;
 
     if (typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getDueReviewItems) {
-        const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-word', 1); // Assuming 'vocabulary-word' for transcription
+        const reviewItems = CosyAppInteractive.getDueReviewItems(language, 'vocabulary-word', 1); 
         if (reviewItems && reviewItems.length > 0) {
             reviewItemObj = reviewItems[0];
             word = reviewItemObj.itemValue;
+            currentProficiencyBucket = reviewItemObj.proficiencyBucket;
             console.log("Using review item for showTranscribeWord:", reviewItemObj);
         } else {
             console.log("No review item, selecting new word for showTranscribeWord.");
@@ -783,9 +813,11 @@ async function showTranscribeWord() {
         if (!words.length) { showNoDataMessage(); return; }
         word = words[Math.floor(Math.random() * words.length)];
         console.log("Using new item for showTranscribeWord:", word);
+        if (!reviewItemObj && typeof CosyAppInteractive !== 'undefined' && CosyAppInteractive.getItemProficiency) {
+            currentProficiencyBucket = CosyAppInteractive.getItemProficiency(language, 'vocabulary-word', word);
+        }
     }
 
-    const currentProficiencyBucket = reviewItemObj ? reviewItemObj.proficiencyBucket : 0;
     const isReview = !!reviewItemObj;
     const MAX_BUCKET_DISPLAY = 5;
 
@@ -799,7 +831,6 @@ async function showTranscribeWord() {
             <button id="btn-new-transcribe-word" class="exercise-button" onclick="window.showTranscribeWord()">🔄 ${t.buttons?.newTranscribeWord || t.buttons?.newExerciseSameType || 'New Exercise'}</button>
         </div>
     `;
-    // ... (rest of the function, including checkAnswer with scheduleReview)
     if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
     const exerciseContainer = resultArea.querySelector('.transcribe-word-exercise');
     if (exerciseContainer) {
@@ -813,6 +844,11 @@ async function showTranscribeWord() {
                 feedback.innerHTML = `<span class="correct">✅ ${currentT.correct || 'Correct!'}</span>`;
                 CosyAppInteractive.awardCorrectAnswer();
                 isCorrect = true;
+                if (isCorrect) {
+                    setTimeout(() => {
+                        window.practiceAllVocabulary();
+                    }, 1500);
+                }
             } else {
                 feedback.innerHTML = `<span class="incorrect">❌ ${currentT.tryAgain || 'Try again!'}</span>`;
                 CosyAppInteractive.awardIncorrectAnswer();
@@ -821,7 +857,6 @@ async function showTranscribeWord() {
             CosyAppInteractive.scheduleReview(currentLanguage, 'vocabulary-word', word, isCorrect);
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
-        // ... (showHint, revealAnswer)
     }
     document.getElementById('play-word-sound')?.addEventListener('click', () => pronounceWord(word, language));
 }

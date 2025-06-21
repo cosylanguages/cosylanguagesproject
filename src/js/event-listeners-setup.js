@@ -138,6 +138,33 @@ function initializeEventListeners() {
     if (typeof initGrammarPractice === 'function') {
         initGrammarPractice();
     }
+
+    // Delegated event listener for Enter key on exercise inputs
+    const resultArea = document.getElementById('result');
+    if (resultArea) {
+        resultArea.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                if (event.target.classList.contains('exercise-input')) {
+                    const specificSelectors = [
+                        '.opposites-exercise',     // For showOppositesExercise
+                        '.image-exercise',         // For showIdentifyImage
+                        '.transcribe-word-exercise'// For showTranscribeWord
+                        // Add other specific containers if they have inputs and checkAnswer defined
+                    ].join(', ');
+
+                    const containerWithCheckAnswer = event.target.closest(specificSelectors);
+
+                    if (containerWithCheckAnswer && typeof containerWithCheckAnswer.checkAnswer === 'function') {
+                        containerWithCheckAnswer.checkAnswer();
+                    } else {
+                        // This console.warn can be helpful for debugging if new exercises are added 
+                        // and Enter isn't working as expected.
+                        console.warn('Enter key pressed on exercise-input, but no checkAnswer method found on a suitable parent container using selectors:', specificSelectors);
+                    }
+                }
+            }
+        });
+    }
     
     // Initial UI visibility update
     const initialDayValue = daySelectElement ? daySelectElement.value : ""; 
