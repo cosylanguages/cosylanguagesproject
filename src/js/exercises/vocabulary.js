@@ -1016,7 +1016,7 @@ async function showBuildWord(baseWord = null) {
     resultArea.innerHTML = `
         <div class="build-word-exercise ${isReview ? 'review-item-cue' : ''}">
             <div class="item-strength" aria-label="Item strength: ${currentProficiencyBucket} out of ${MAX_BUCKET_DISPLAY}">Strength: ${'●'.repeat(currentProficiencyBucket)}${'○'.repeat(MAX_BUCKET_DISPLAY - currentProficiencyBucket)}</div>
-            <div class="word-to-build-label" style="text-align:center; margin-bottom:10px; font-style:italic;" data-transliterable>${isReview ? `Word: ${word}` : 'Build the word from letters:'}</div>
+            <div class="word-to-build-label" style="text-align:center; margin-bottom:10px; font-style:italic;" data-transliterable>${isReview ? `Word: ${word}`}</div>
             <div class="letter-pool" id="letter-pool">
                 ${shuffledLetters.map((letter) => `
                     <div class="letter-tile" data-letter="${letter}" draggable="true" data-transliterable>${letter}</div>
