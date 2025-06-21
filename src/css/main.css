@@ -456,8 +456,6 @@ textarea.exercise-input {
 
 .exercise-button-bar-bottom {
     margin-top: calc(var(--spacing-unit, 10px) * 1.5); 
-    position: relative; 
-    z-index: 2;
 }
 
 

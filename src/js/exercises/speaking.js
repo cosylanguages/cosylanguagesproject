@@ -1,8 +1,6 @@
-console.log('[SpeakingJS] Script start');
 // Speaking Exercises
 let speakingPracticeTimer = null; // Timer for auto-progression
 
-console.log('[SpeakingJS] Before showQuestionPractice definition');
 async function showQuestionPractice() {
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
@@ -106,12 +104,14 @@ async function showQuestionPractice() {
 
         const onStartCallback = () => {
             recordButton.classList.add('recording');
-            recordButton.textContent = t.recordingInProgress || 'Recording...'; 
+            recordButton.textContent = t.recordingInProgress || 'Recording...'; // This button's text is part of main UI, refreshLatinization will handle it.
             feedbackDiv.textContent = ''; 
             if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
         };
 
         const onResultCallback = (transcript) => {
+            // Transcript itself is user input, should not be transliterated.
+            // checkSpeakingAnswer will update feedbackDiv, which will then be refreshed.
             checkSpeakingAnswer(questionText, transcript); 
         };
 
@@ -141,10 +141,11 @@ async function showQuestionPractice() {
 
         const onEndCallback = () => {
             recordButton.classList.remove('recording');
-            recordButton.textContent = '🎤'; 
+            recordButton.textContent = '🎤'; // Handled by refreshLatinization
             if (feedbackDiv.textContent === (t.feedbackListening || 'Listening...')) {
                  feedbackDiv.textContent = ''; 
             }
+            // No specific text change here that needs immediate refresh beyond what checkSpeakingAnswer or onErrorCallback would do.
         };
         
         startPronunciationCheck(
@@ -164,11 +165,18 @@ async function showQuestionPractice() {
         if (!feedbackDiv) return;
 
         let feedbackMsg = '';
-        // Simplified feedback logic
+        // ... (feedback logic) ...
         if (!transcript || !transcript.trim()) {
             feedbackMsg = t.noSpeechDetected || 'No speech detected. Please try again.';
         } else {
-            feedbackMsg = t.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
+            // ... (more feedback logic) ...
+            if (commonWordCount > 0 || transcriptWords.length > 2) { 
+                feedbackMsg = t.goodAnswerSpeaking || 'Good! Your answer seems relevant.';
+            } else if (transcriptWords.length > 0) {
+                 feedbackMsg = t.tryAgainSpeakingShort || "Try to give a more detailed answer.";
+            } else {
+                feedbackMsg = t.tryAgainSpeaking || "Try to address the question more directly.";
+            }
         }
         feedbackDiv.innerHTML = feedbackMsg; 
         if (typeof window.refreshLatinization === 'function') { window.refreshLatinization(); }
@@ -184,20 +192,20 @@ async function showQuestionPractice() {
     document.getElementById('prev-speaking-question-btn').addEventListener('click', () => {
         if (currentQuestionIndex > 0) {
             currentQuestionIndex--;
-            displayCurrentQuestion(); 
+            displayCurrentQuestion(); // Calls refreshLatinization
         }
     });
 
     document.getElementById('next-speaking-question-btn').addEventListener('click', () => {
         if (currentQuestionIndex < questions.length - 1) {
             currentQuestionIndex++;
-            displayCurrentQuestion(); 
+            displayCurrentQuestion(); // Calls refreshLatinization
         }
     });
 
     document.getElementById('speaking-record-btn').addEventListener('click', handleSpeakingRecording);
 
-    displayCurrentQuestion(); 
+    displayCurrentQuestion(); // Calls refreshLatinization
 }
 
 
@@ -217,7 +225,8 @@ async function showMonologuePractice() {
             <button id="finish-monologue-btn" class="exercise-button">${buttonText}</button>
         </div>
     `;
-    
+    // refreshLatinization will be called by patchExerciseWithExtraButtons
+
     const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
     if (exerciseContainer) {
         exerciseContainer.showHint = () => {
@@ -258,6 +267,7 @@ async function showRolePlayPractice() {
             <button id="finish-roleplay-btn" class="exercise-button">${buttonText}</button>
         </div>
     `;
+    // refreshLatinization will be called by patchExerciseWithExtraButtons
 
     const exerciseContainer = resultArea.querySelector('.speaking-exercise-container');
     if (exerciseContainer) {
@@ -283,14 +293,15 @@ async function showRolePlayPractice() {
     });
 }
 
-console.log('[SpeakingJS] After all show... function definitions');
-console.log('[SpeakingJS] Before practiceAllSpeaking definition');
 async function practiceAllSpeaking() {
-    await startRandomSpeakingPractice(); 
+    await startRandomSpeakingPractice(); // This will call a specific exercise function which then calls refresh.
 }
 
-console.log('[SpeakingJS] Before startRandomSpeakingPractice definition');
 async function startRandomSpeakingPractice() {
+    // Although this function SETS speakingPracticeTimer,
+    // clearing it here ensures that if it was somehow set by another stale process,
+    // or if this function is called rapidly, it resets.
+    // Also, clear other global timers.
     if (window.speakingPracticeTimer) {
         clearTimeout(window.speakingPracticeTimer);
         window.speakingPracticeTimer = null;
@@ -300,7 +311,7 @@ async function startRandomSpeakingPractice() {
     }
 
     const resultArea = document.getElementById('result');
-    if(resultArea) resultArea.innerHTML = ''; 
+    if(resultArea) resultArea.innerHTML = ''; // Clear previous content
 
     const exercises = [
         showQuestionPractice,
@@ -308,10 +319,9 @@ async function startRandomSpeakingPractice() {
         showRolePlayPractice
     ];
     const randomExerciseFunction = exercises[Math.floor(Math.random() * exercises.length)];
-    await randomExerciseFunction(); 
+    await randomExerciseFunction(); // The individual functions are patched or call refresh internally.
 }
 
-console.log('[SpeakingJS] Before initSpeakingPractice definition');
 function initSpeakingPractice() {
     const speakingButton = document.getElementById('speaking-practice-btn'); 
     if (speakingButton) {
@@ -321,23 +331,16 @@ function initSpeakingPractice() {
     }
 }
 
-console.log('[SpeakingJS] After all function definitions, before global assignments');
-// Global assignments of original functions first
+showQuestionPractice = patchExerciseWithExtraButtons(showQuestionPractice, '.speaking-exercise-container', startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
+showMonologuePractice = patchExerciseWithExtraButtons(showMonologuePractice, '.speaking-exercise-container', startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
+showRolePlayPractice = patchExerciseWithExtraButtons(showRolePlayPractice, '.speaking-exercise-container', startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
+
 window.showQuestionPractice = showQuestionPractice;
 window.showMonologuePractice = showMonologuePractice;
 window.showRolePlayPractice = showRolePlayPractice;
 window.startRandomSpeakingPractice = startRandomSpeakingPractice;
 window.initSpeakingPractice = initSpeakingPractice;
-window.practiceAllSpeaking = practiceAllSpeaking; 
-console.log('[SpeakingJS] After global assignments, before patching calls');
-
-// Then, patching calls, re-assigning to the window properties
-window.showQuestionPractice = patchExerciseWithExtraButtons(showQuestionPractice, '.speaking-exercise-container', window.startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
-window.showMonologuePractice = patchExerciseWithExtraButtons(showMonologuePractice, '.speaking-exercise-container', window.startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
-window.showRolePlayPractice = patchExerciseWithExtraButtons(showRolePlayPractice, '.speaking-exercise-container', window.startRandomSpeakingPractice, { noCheck: true, noReveal: true, newExercise: { fn: window.startRandomSpeakingPractice, textKey: 'newExercise' } });
-console.log('[SpeakingJS] After patching calls');
 
 // Note:DOMContentLoaded listener was removed as init functions are called directly by event-listeners-setup.js or similar.
 // If this file is loaded standalone and needs to self-initialize, uncomment:
 // document.addEventListener('DOMContentLoaded', initSpeakingPractice);
-console.log('[SpeakingJS] Script end');
